@@ -1,2 +1,1 @@
-# ANEMO
-ANEMO: Quantitative tools for the ANalysis of Eye MOvements
+# ANEMO: Quantitative tools for the ANalysis of Eye MOvements

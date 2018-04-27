@@ -18,7 +18,7 @@ class ANEMO(object):
         Parameters
         ----------
         data_x : ndarray
-            position x pour un essaie enregistré par l'eyetracker transformé par la fonction read_edf du module edfreader
+            position x pour un essai enregistré par l'eyetracker transformé par la fonction read_edf du module edfreader
         px_per_deg : float
             nb de pixel par degres
 
@@ -41,7 +41,7 @@ class ANEMO(object):
         Parameters
         ----------
         velocity : ndarray
-            vitesse de l'œuil en deg/sec
+            vitesse de l'œil en deg/sec
         saccades : list
             liste des saccades edf pour un essaie enregistré par l'eyetracker transformé par la fonction read_edf du module edfreader
         trackertime : ndarray
@@ -51,7 +51,8 @@ class ANEMO(object):
         Returns
         -------
         new_velocity : ndarray
-            vitesse de l'œuil en deg/sec sans les saccades
+            vitesse de l'œil en deg/sec sans les saccades
+
         '''
 
         trackertime_0 = trackertime[0]
@@ -77,7 +78,7 @@ class ANEMO(object):
         Parameters
         ----------
         x : ndarray
-            
+
 
         bino : float
             0 ou 1 donne la direction de la cible
@@ -151,7 +152,7 @@ class ANEMO(object):
         Returns
         -------
         result_deg : lmfit.model.ModelResult
-            
+
         '''
 
         from lmfit import  Model, Parameters
@@ -159,14 +160,14 @@ class ANEMO(object):
         #print(lmfit.__version__)
 
         trackertime_0 = trackertime[0]
-        
+
         stop_latence = []
         for s in range(len(saccades)) :
             if (saccades[s][0]-trackertime_0) >= (TargetOn-trackertime_0+100) :
                 stop_latence.append((saccades[s][0]-trackertime_0))
         if stop_latence==[] :
             stop_latence.append(len(trackertime))
-        
+
         model = Model(ANEMO.fct_exponentiel)#, nan_policy='propagate')# a tester pour lmfit 0.9.9
         params = Parameters()
 
@@ -199,7 +200,7 @@ class ANEMO(object):
             nombre de trial par block
         N_blocks : int
             nombre de block
-        binomial : ndarray 
+        binomial : ndarray
             direction de la cible pour chaque essais 0 gauche 1 droite [trial, block]
         px_per_deg : float
             nb de pixel par degres
@@ -289,7 +290,7 @@ class ANEMO(object):
                 result_deg = ANEMO.Fit_exponentiel(velocity_NAN, trackertime, TargetOn, StimulusOf, saccades, bino)
                 ##################################################
 
- 
+
                 debut  = TargetOn - trackertime_0 # TargetOn - temps_0
 
                 start_anti = result_deg.values['start_anti']-debut
@@ -446,7 +447,7 @@ class ANEMO(object):
 
         if plot != 'fonction' :
             ax.plot(trackertime_s, velocity, color='k', alpha=0.4)
-            
+
             # Saccade
             for s in range(len(saccades)) :
                 ax.axvspan(saccades[s][0]-start, saccades[s][1]-start, color='k', alpha=0.15)
@@ -674,7 +675,7 @@ class ANEMO(object):
             nombre de trial par block
         N_blocks : int
             nombre de blocks
-        bino : ndarray 
+        bino : ndarray
             direction de la cible pour chaque essais 0 gauche 1 droite
         V_X : float
             vitesse de la cible en pixel/s
@@ -829,7 +830,7 @@ class ANEMO(object):
         data : list
             données edf enregistré par l'eyetracker transformé par la fonction read_edf du module edfreader
 
-        bino : ndarray 
+        bino : ndarray
             direction de la cible pour chaque essais 0 gauche 1 droite
 
         trials : int ou  list
@@ -922,5 +923,3 @@ class ANEMO(object):
             return fig, axs
         else :
             return fig, axs, results
-
-
