@@ -102,7 +102,7 @@ class EyeTracking(object):
         sData = None
         button = 0
 
-        eye_used = self.eyelink.eyeAvailable() # Déterminez quel œuil(s) est disponible
+        eye_used = self.eyelink.eyeAvailable() # Déterminez quel œil(s) est disponible
         if eye_used == Oeil_droit:
             self.eyelink.sendMessage("EYE_USED 1 RIGHT")
         else:

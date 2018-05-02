@@ -13,7 +13,7 @@ class ANEMO(object):
 
     def velocity_deg(data_x, px_per_deg) :
         '''
-        Return la vitesse de l'œuil en deg/sec
+        Return la vitesse de l'œil en deg/sec
 
         Parameters
         ----------
@@ -26,7 +26,7 @@ class ANEMO(object):
         Returns
         -------
         gradient_deg : ndarray
-            vitesse de l'œuil en deg/sec
+            vitesse de l'œil en deg/sec
         '''
         gradient_x = np.gradient(data_x)
         gradient_deg = gradient_x * 1/px_per_deg * 1000 # gradient en deg/sec
@@ -73,7 +73,7 @@ class ANEMO(object):
     def fct_exponentiel (x, bino, start_anti, v_anti, latence, tau, maxi) : # RENOMMER !!!
 
         '''
-        Fonction reproduisant la vitesse de l'œuil lors de la pousuite lisse d'une cible en mouvement
+        Fonction reproduisant la vitesse de l'œil lors de la pousuite lisse d'une cible en mouvement
 
         Parameters
         ----------
@@ -97,7 +97,7 @@ class ANEMO(object):
         Returns
         -------
         vitesse : list
-            vitesse de l'œuil
+            vitesse de l'œil
         '''
 
         v_anti = v_anti/1000 # pour passer de sec à ms
@@ -127,7 +127,7 @@ class ANEMO(object):
     def Fit_exponentiel(data_x, trackertime, TargetOn, StimulusOf, saccades, bino, sup=True):
 
         '''
-        Returns le resultat du fits de la vitesse de l'œuil a un essais avec la fonction reproduisant la vitesse de l'œuil lors de la pousuite lisse d'une cible en mouvement
+        Returns le resultat du fits de la vitesse de l'œil a un essais avec la fonction reproduisant la vitesse de l'œil lors de la pousuite lisse d'une cible en mouvement
 
         Parameters
         ----------
@@ -398,7 +398,7 @@ class ANEMO(object):
             ax sur lequel le figure doit être afficher
 
         velocity : ndarray
-            vitesse de l'œuil en deg/sec
+            vitesse de l'œil en deg/sec
 
         saccades : list
             liste des saccades edf pour un essaie enregistré par l'eyetracker transformé par la fonction read_edf du module edfreader
@@ -420,8 +420,8 @@ class ANEMO(object):
 
         plot : str
             si 'fonction' n'affiche que la fonction exponentiel
-            si 'velocity' n'affiche que la vitesse de l'œuil
-            si 'Fitvelocity' affiche la vitesse œuil + fit
+            si 'velocity' n'affiche que la vitesse de l'œil
+            si 'Fitvelocity' affiche la vitesse œil + fit
 
         t_label : int
             taille x et y label
@@ -454,7 +454,7 @@ class ANEMO(object):
 
         if plot != 'velocity' :
             # FIT
-            result_deg = ANEMO.Fit_exponentiel(velocity, trackertime, TargetOn, StimulusOf, saccades, bino, sup=False)
+            result_deg = ANEMO.Fit_exponentiel(velocity, trackertime, TargetOn, StimulusOf, saccades, bino, sup=True)
 
         if plot == 'Fitvelocity' :
 
@@ -479,7 +479,7 @@ class ANEMO(object):
         if plot != 'velocity' :
             # COSMETIQUE
             ax.plot(trackertime_s[:int(start_anti)], result_fit[:int(start_anti)], 'k', linewidth=2)
-            ax.plot(trackertime_s[int(latence)+250:], result_fit[int(latence)+250:], 'k', linewidth=2)
+            ax.plot(trackertime_s[int(latence)+250:-280], result_fit[int(latence)+250:], 'k', linewidth=2)
             # V_a ------------------------------------------------------------------------
             ax.plot(trackertime_s[int(start_anti):int(latence)], result_fit[int(start_anti):int(latence)], c='r', linewidth=2)
             ax.annotate('', xy=(trackertime_s[int(latence)], result_fit[int(latence)]-3), xycoords='data', fontsize=t_label/1.5,
@@ -557,7 +557,7 @@ class ANEMO(object):
 
     def figure_position(ax, data_x, data_y,  saccades, StimulusOn, StimulusOf, TargetOn, TargetOff, trackertime, start, bino, V_X, RashBass, stim_tau, screen_width_px, screen_height_px, t_label) :
         '''
-        Returns figure de la position de l'œuil pendant l'enregistrement pout un essai
+        Returns figure de la position de l'œil pendant l'enregistrement pout un essai
 
         Parameters
         ----------
@@ -664,7 +664,7 @@ class ANEMO(object):
     def plot_position(data, N_trials, N_blocks, bino, V_X, RashBass=100, stim_tau=1.5, screen_width_px=1280, screen_height_px=1024, fig=None, axs=None, fig_width=10, t_label=20, file_fig=None) :
 
         '''
-        Returns figure de la position de l'œuil pendant l'enregistrement pour tous les essais
+        Returns figure de la position de l'œil pendant l'enregistrement pour tous les essais
 
         Parameters
         ----------
@@ -689,7 +689,7 @@ class ANEMO(object):
             height écran en pixel
 
         fig : NoneType ou matplotlib.figure.Figure
-            figure ou sera afficher les position de l'œuil
+            figure ou sera afficher les position de l'œil
         axs : NoneType ou ndarray
             axs ou sera afficher
         fig_width : int
@@ -740,7 +740,7 @@ class ANEMO(object):
 
     def plot_velocity(data, trials=0, block=0,  N_trials=200, px_per_deg=36.51, fig_width=15, t_titre=35, t_label=20):
         '''
-        Renvoie les figures de la vitesse de l'œuil
+        Renvoie les figures de la vitesse de l'œil
 
         Parameters
         ----------
@@ -844,7 +844,7 @@ class ANEMO(object):
 
         plot : str
             si 'fonction' n'affiche que la fonction exponentiel
-            si 'Fitvelocity' affiche la vitesse œuil + fit
+            si 'Fitvelocity' affiche la vitesse œil + fit
 
         fig_width : int
             taille figure

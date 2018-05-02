@@ -3,8 +3,7 @@
  
 from setuptools import setup, find_packages
  
-import ANEMO.ANEMO
-#import EyeTracking
+import ANEMO
 
 setup(
     name='ANEMO',
