@@ -168,7 +168,7 @@ class ANEMO(object):
         if stop_latence==[] :
             stop_latence.append(len(trackertime))
 
-        model = Model(ANEMO.fct_exponentiel)#, nan_policy='propagate')# a tester pour lmfit 0.9.9
+        model = Model(ANEMO.fct_exponentiel, nan_policy='omit')# a tester pour lmfit 0.9.9
         params = Parameters()
 
         params.add('tau', value=15., min=13., max=80.)#, vary=False)
@@ -180,9 +180,9 @@ class ANEMO(object):
 
         #result_deg = model.fit(new_gradient_deg, params, x=new_time)
         if sup==True :
-            result_deg = model.fit(data_x[:-280], params, x=trackertime[:-280], fit_kws={'nan_policy': 'omit'}) #, fit_kws={'nan_policy': 'propagate'}) #lmfit 0.9.9
+            result_deg = model.fit(data_x[:-280], params, x=trackertime[:-280])#, fit_kws={'nan_policy': 'omit'}) #, fit_kws={'nan_policy': 'propagate'}) #lmfit 0.9.9
         else :
-            result_deg = model.fit(data_x, params, x=trackertime, fit_kws={'nan_policy': 'omit'}) #, fit_kws={'nan_policy': 'propagate'}) #lmfit 0.9.9
+            result_deg = model.fit(data_x, params, x=trackertime)#, fit_kws={'nan_policy': 'omit'}) #, fit_kws={'nan_policy': 'propagate'}) #lmfit 0.9.9
 
         return result_deg
 
@@ -479,7 +479,7 @@ class ANEMO(object):
         if plot != 'velocity' :
             # COSMETIQUE
             ax.plot(trackertime_s[:int(start_anti)], result_fit[:int(start_anti)], 'k', linewidth=2)
-            ax.plot(trackertime_s[int(latence)+250:-280], result_fit[int(latence)+250:], 'k', linewidth=2)
+            # ax.plot(trackertime_s[int(latence)+250:-280], result_fit[int(latence)+250:], 'k', linewidth=2)
             # V_a ------------------------------------------------------------------------
             ax.plot(trackertime_s[int(start_anti):int(latence)], result_fit[int(start_anti):int(latence)], c='r', linewidth=2)
             ax.annotate('', xy=(trackertime_s[int(latence)], result_fit[int(latence)]-3), xycoords='data', fontsize=t_label/1.5,

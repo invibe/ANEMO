@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import pylink
+try:
+    import pylink
+except:
+    pass
 import gc
 import time
 import os, sys
@@ -11,9 +14,9 @@ import numpy as np
 ##################### FAIRE LA TRADUCTION !!!! #######################################
 ######################################################################################
 
-
-spath = os.path.dirname(sys.argv[0])
-if len(spath) !=0: os.chdir(spath)
+#  TODO: check why the above lines were used...
+# spath = os.path.dirname(sys.argv[0])
+# if len(spath) !=0: os.chdir(spath)
 
 #eyelinktracker = pylink.EyeLink()
 #eyelink = pylink.getEYELINK()
@@ -66,7 +69,7 @@ class EyeTracking(object):
 
         # Commutez le tracker sur ide et donnez-lui le temps d'effectuer un interrupteur de mode complet
         self.eyelink.setOfflineMode()
-        pylink.msecDelay(50) 
+        pylink.msecDelay(50)
 
         # Commencez à enregistrer des échantillons et des événements sur le fichier edf et sur le lien.
         error = self.eyelink.startRecording(1, 1, 1, 1) # 0 si tout se passe bien !
@@ -79,14 +82,14 @@ class EyeTracking(object):
         pylink.beginRealTimeMode(100)  # Commencer le mode temps réel
 
         # Lit et supprime les événements dans la file d'attente de données jusqu'à ce qu'ils soient dans un bloc d'enregistrement.
-        try: 
-            self.eyelink.waitForBlockStart(100,1,0) 
-        except RuntimeError: 
+        try:
+            self.eyelink.waitForBlockStart(100,1,0)
+        except RuntimeError:
             if pylink.getLastError()[0] == 0: # Temps d'attente expiré sans données de lien
                 self.End_trial()
                 self.eyelink.sendMessage("TRIAL ERROR")
-                print ("ERROR: No link samples received!") 
-                return pylink.TRIAL_ERROR 
+                print ("ERROR: No link samples received!")
+                return pylink.TRIAL_ERROR
             else:
                 raise
 
@@ -224,7 +227,7 @@ class EyeTracking(object):
     def End_exp(self):
         # Transfert et nettoyage de fichiers!
         self.eyelink.setOfflineMode()
-        pylink.msecDelay(500) 
+        pylink.msecDelay(500)
 
         # Fermez le fichier et transférez-le sur Display PC
         self.eyelink.closeDataFile()
@@ -286,7 +289,7 @@ class EyeTracking(object):
         elif (ret_value == pylink.REPEAT_TRIAL):
             self.eyelink.sendMessage("TRIAL REPEATED")
             print("TRIAL REPEATED")
-        else: 
+        else:
             self.eyelink.sendMessage("TRIAL ERROR")
             print("TRIAL ERROR")
             #break
@@ -351,6 +354,3 @@ class EyeTracking(object):
         self.eyelink.sendCommand("clear_screen 0") # Efface la boîte de l'écran Eyelink
 
     #######################################################
-
-
-
