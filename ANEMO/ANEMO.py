@@ -124,7 +124,7 @@ class ANEMO(object):
 
         return vitesse
 
-    def Fit_exponentiel(data_x, trackertime, TargetOn, StimulusOf, saccades, bino, sup=True):
+    def Fit_exponentiel(data_x, trackertime, TargetOn, StimulusOf, saccades, bino, sup=True, time_sup=-280):
 
         '''
         Returns le resultat du fits de la vitesse de l'œil a un essais avec la fonction reproduisant la vitesse de l'œil lors de la pousuite lisse d'une cible en mouvement
@@ -146,8 +146,9 @@ class ANEMO(object):
         bino : float
             0 ou 1 donne la direction de la cible
         sup : bool
-            si True ne fait pas le fit jusqu'au bout, jusqua -280 avant la fin
-
+            si True ne fait pas le fit jusqu'au bout, jusqua time_sup avant la fin
+        time_sup : int
+            temps supprimer si sup is True
 
         Returns
         -------
@@ -168,7 +169,7 @@ class ANEMO(object):
         if stop_latence==[] :
             stop_latence.append(len(trackertime))
 
-        model = Model(ANEMO.fct_exponentiel, nan_policy='omit')# a tester pour lmfit 0.9.9
+        model = Model(ANEMO.fct_exponentiel)#, nan_policy='omit')# a tester pour lmfit 0.9.9
         params = Parameters()
 
         params.add('tau', value=15., min=13., max=80.)#, vary=False)
@@ -180,13 +181,13 @@ class ANEMO(object):
 
         #result_deg = model.fit(new_gradient_deg, params, x=new_time)
         if sup==True :
-            result_deg = model.fit(data_x[:-280], params, x=trackertime[:-280])#, fit_kws={'nan_policy': 'omit'}) #, fit_kws={'nan_policy': 'propagate'}) #lmfit 0.9.9
+            result_deg = model.fit(data_x[:time_sup], params, x=trackertime[:time_sup], fit_kws={'nan_policy': 'omit'}) #, fit_kws={'nan_policy': 'propagate'}) #lmfit 0.9.9
         else :
-            result_deg = model.fit(data_x, params, x=trackertime)#, fit_kws={'nan_policy': 'omit'}) #, fit_kws={'nan_policy': 'propagate'}) #lmfit 0.9.9
+            result_deg = model.fit(data_x, params, x=trackertime, fit_kws={'nan_policy': 'omit'}) #, fit_kws={'nan_policy': 'propagate'}) #lmfit 0.9.9
 
         return result_deg
 
-    def Fit (data, N_trials, N_blocks, binomial, px_per_deg, observer=None, plot=None, fig_width=12, t_label=20, t_text=14, file_fig=None) : # a netoyer
+    def Fit(data, N_trials, N_blocks, binomial, px_per_deg, list_events=None, sup=True, time_sup=-280, observer=None, plot=None, fig_width=12, t_label=20, t_text=14, file_fig=None) : # a netoyer
 
         '''
         Renvoie un dictionnaire des paramètres Fit sur l'ensemble des data
@@ -204,11 +205,18 @@ class ANEMO(object):
             direction de la cible pour chaque essais 0 gauche 1 droite [trial, block]
         px_per_deg : float
             nb de pixel par degres
+        list_events : list
+            liste des noms des évenements dans le fichier asc ['début fixation', 'fin fixation', 'début poursuite', 'fin poursuite']
+        sup : bool
+            si True ne fait pas le fit jusqu'au bout, jusqua time_sup avant la fin
+        time_sup : int
+            temps supprimer avant la fin
         observer : str
             nom du sujet
-
         plot : NoneType or bool
             pour enregistre une figure des fits de tous les essais pour chaque block
+
+
         fig_width : int
             taille figure
         t_label : int
@@ -235,6 +243,9 @@ class ANEMO(object):
 
         if plot is not None :
             import matplotlib.pyplot as plt
+
+        if list_events is None :
+            list_events = ['StimulusOn\n', 'StimulusOff\n', 'TargetOn\n', 'TargetOff\n']
 
         liste_fit = []
         liste_start_anti = []
@@ -264,10 +275,15 @@ class ANEMO(object):
                 data_x = data[trial_data]['x']
                 trackertime = data[trial_data]['trackertime']
 
-                StimulusOn = data[trial_data]['events']['msg'][10][0]
-                StimulusOf = data[trial_data]['events']['msg'][14][0]
-                TargetOn = data[trial_data]['events']['msg'][15][0]
-                TargetOff = data[trial_data]['events']['msg'][16][0]
+                for events in range(len(data[trial_data]['events']['msg'])) :
+                    if data[trial_data]['events']['msg'][events][1] == list_events[0] :
+                        StimulusOn = data[trial_data]['events']['msg'][events][0]
+                    if data[trial_data]['events']['msg'][events][1] == list_events[1] :
+                        StimulusOf = data[trial_data]['events']['msg'][events][0]
+                    if data[trial_data]['events']['msg'][events][1] == list_events[2] :
+                        TargetOn = data[trial_data]['events']['msg'][events][0]
+                    if data[trial_data]['events']['msg'][events][1] == list_events[3] :
+                        TargetOff = data[trial_data]['events']['msg'][events][0]
                 saccades = data[trial_data]['events']['Esac']
                 bino=binomial[trial, block]
 
@@ -287,7 +303,7 @@ class ANEMO(object):
                 ##################################################
                 # FIT
                 ##################################################
-                result_deg = ANEMO.Fit_exponentiel(velocity_NAN, trackertime, TargetOn, StimulusOf, saccades, bino)
+                result_deg = ANEMO.Fit_exponentiel(velocity_NAN, trackertime, TargetOn, StimulusOf, saccades, bino, sup, time_sup)
                 ##################################################
 
 
@@ -325,8 +341,8 @@ class ANEMO(object):
                     axs[trial].xaxis.set_ticks(range(StimulusOf_s-199, TargetOff_s+10, 500))
 
                     axs[trial].plot(trackertime_s, velocity_NAN, color='k', alpha=0.6)
-                    axs[trial].plot(trackertime_s[:-280], result_deg.init_fit, 'r--', linewidth=2)
-                    axs[trial].plot(trackertime_s[:-280], result_deg.best_fit, color='r', linewidth=2)
+                    axs[trial].plot(trackertime_s[:time_sup], result_deg.init_fit, 'r--', linewidth=2)
+                    axs[trial].plot(trackertime_s[:time_sup], result_deg.best_fit, color='r', linewidth=2)
                     axs[trial].plot(trackertime_s, np.ones(np.shape(trackertime_s)[0])*(bino*2-1)*(15), color='k', linewidth=0.2, alpha=0.2)
                     axs[trial].plot(trackertime_s, np.ones(np.shape(trackertime_s)[0])*(bino*2-1)*(10), color='k', linewidth=0.2, alpha=0.2)
                     axs[trial].axvspan(StimulusOn_s, StimulusOf_s, color='k', alpha=0.2)
@@ -388,7 +404,7 @@ class ANEMO(object):
 
     ######################################################################################
 
-    def figure(ax, velocity, saccades, StimulusOn, StimulusOf, TargetOn, TargetOff, trackertime, start, bino, plot, t_label, report=None) :
+    def figure(ax, velocity, saccades, StimulusOn, StimulusOf, TargetOn, TargetOff, trackertime, start, bino, plot, t_label, sup=True, time_sup=-280, report=None) :
         '''
         Returns figure
 
@@ -417,6 +433,11 @@ class ANEMO(object):
 
         bino : float
             0 ou 1 donne la direction de la cible
+
+        sup : bool
+            si True ne fait pas le fit jusqu'au bout, jusqua time_sup avant la fin
+        time_sup : int
+            temps supprimer avant la fin
 
         plot : str
             si 'fonction' n'affiche que la fonction exponentiel
@@ -454,7 +475,7 @@ class ANEMO(object):
 
         if plot != 'velocity' :
             # FIT
-            result_deg = ANEMO.Fit_exponentiel(velocity, trackertime, TargetOn, StimulusOf, saccades, bino, sup=True)
+            result_deg = ANEMO.Fit_exponentiel(velocity, trackertime, TargetOn, StimulusOf, saccades, bino, sup, time_sup)
 
         if plot == 'Fitvelocity' :
 
@@ -661,7 +682,7 @@ class ANEMO(object):
 
 
     ######################################################################################
-    def plot_position(data, N_trials, N_blocks, bino, V_X, RashBass=100, stim_tau=1.5, screen_width_px=1280, screen_height_px=1024, fig=None, axs=None, fig_width=10, t_label=20, file_fig=None) :
+    def plot_position(data, N_trials, N_blocks, bino, V_X, RashBass=100, stim_tau=1.5, list_events=None, screen_width_px=1280, screen_height_px=1024, fig=None, axs=None, fig_width=10, t_label=20, file_fig=None) :
 
         '''
         Returns figure de la position de l'œil pendant l'enregistrement pour tous les essais
@@ -682,6 +703,8 @@ class ANEMO(object):
         RashBass : int
             temps que met la cible a arriver au centre de l'écran en ms (pour reculer la cible à t=0 de sa vitesse * latence=RashBass)
         stim_tau : float
+        list_events : list
+            liste des noms des évenements dans le fichier asc ['début fixation', 'fin fixation', 'début poursuite', 'fin poursuite']
 
         screen_width_px : int
             widht ecran en pixel
@@ -701,6 +724,9 @@ class ANEMO(object):
         '''
         import matplotlib.pyplot as plt
 
+        if list_events is None :
+            list_events = ['StimulusOn\n', 'StimulusOff\n', 'TargetOn\n', 'TargetOff\n']
+
         for block in range(N_blocks) :
 
             if fig is None:
@@ -714,10 +740,17 @@ class ANEMO(object):
                 data_y = data[trial_data]['y']
                 trackertime = data[trial_data]['trackertime']
 
-                StimulusOn = data[trial_data]['events']['msg'][10][0]
-                StimulusOf = data[trial_data]['events']['msg'][14][0]
-                TargetOn = data[trial_data]['events']['msg'][15][0]
-                TargetOff = data[trial_data]['events']['msg'][16][0]
+
+                for events in range(len(data[trial_data]['events']['msg'])) :
+                    if data[trial_data]['events']['msg'][events][1] == list_events[0] :
+                        StimulusOn = data[trial_data]['events']['msg'][events][0]
+                    if data[trial_data]['events']['msg'][events][1] == list_events[1] :
+                        StimulusOf = data[trial_data]['events']['msg'][events][0]
+                    if data[trial_data]['events']['msg'][events][1] == list_events[2] :
+                        TargetOn = data[trial_data]['events']['msg'][events][0]
+                    if data[trial_data]['events']['msg'][events][1] == list_events[3] :
+                        TargetOff = data[trial_data]['events']['msg'][events][0]
+
                 saccades = data[trial_data]['events']['Esac']
                 bino_trial = bino[trial, block]
                 start = TargetOn
@@ -738,7 +771,7 @@ class ANEMO(object):
         plt.close()
 
 
-    def plot_velocity(data, trials=0, block=0,  N_trials=200, px_per_deg=36.51, fig_width=15, t_titre=35, t_label=20):
+    def plot_velocity(data, trials=0, block=0,  N_trials=200, px_per_deg=36.51, list_events=None, fig_width=15, t_titre=35, t_label=20):
         '''
         Renvoie les figures de la vitesse de l'œil
 
@@ -755,6 +788,8 @@ class ANEMO(object):
             nombre de trial par block
         px_per_deg : float
             nb de pixel par degres
+        list_events : list
+            liste des noms des évenements dans le fichier asc ['début fixation', 'fin fixation', 'début poursuite', 'fin poursuite']
 
         fig_width : int
             taille figure
@@ -773,6 +808,9 @@ class ANEMO(object):
         '''
 
         import matplotlib.pyplot as plt
+
+        if list_events is None :
+            list_events = ['StimulusOn\n', 'StimulusOff\n', 'TargetOn\n', 'TargetOff\n']
 
         if type(trials) is not list :
             trials = [trials]
@@ -793,10 +831,16 @@ class ANEMO(object):
             data_x = data[trial_data]['x']
             trackertime = data[trial_data]['trackertime']
 
-            StimulusOn = data[trial_data]['events']['msg'][10][0]
-            StimulusOf = data[trial_data]['events']['msg'][14][0]
-            TargetOn = data[trial_data]['events']['msg'][15][0]
-            TargetOff = data[trial_data]['events']['msg'][16][0]
+            for events in range(len(data[trial_data]['events']['msg'])) :
+                if data[trial_data]['events']['msg'][events][1] == list_events[0] :
+                    StimulusOn = data[trial_data]['events']['msg'][events][0]
+                if data[trial_data]['events']['msg'][events][1] == list_events[1] :
+                    StimulusOf = data[trial_data]['events']['msg'][events][0]
+                if data[trial_data]['events']['msg'][events][1] == list_events[2] :
+                    TargetOn = data[trial_data]['events']['msg'][events][0]
+                if data[trial_data]['events']['msg'][events][1] == list_events[3] :
+                    TargetOff = data[trial_data]['events']['msg'][events][0]
+
             saccades = data[trial_data]['events']['Esac']
 
             velocity = ANEMO.velocity_deg(data_x, px_per_deg)
@@ -820,7 +864,7 @@ class ANEMO(object):
         return fig, axs
 
 
-    def plot_Fit(data, bino, trials=0, block=0, N_trials=200, px_per_deg=36.51, plot='fonction', fig_width=15, t_titre=35, t_label=20, report=None):
+    def plot_Fit(data, bino, trials=0, block=0, N_trials=200, px_per_deg=36.51, list_events=None, plot='fonction', fig_width=15, t_titre=35, t_label=20, report=None):
 
         '''
         Renvoie les figures du Fit
@@ -841,6 +885,8 @@ class ANEMO(object):
             nombre de trial par block
         px_per_deg : float
             nb de pixel par degres
+        list_events : list
+            liste des noms des évenements dans le fichier asc ['début fixation', 'fin fixation', 'début poursuite', 'fin poursuite']
 
         plot : str
             si 'fonction' n'affiche que la fonction exponentiel
@@ -868,6 +914,9 @@ class ANEMO(object):
         if type(trials) is not list :
             trials = [trials]
 
+        if list_events is None :
+            list_events = ['StimulusOn\n', 'StimulusOff\n', 'TargetOn\n', 'TargetOff\n']
+
         fig, axs = plt.subplots(len(trials), 1, figsize=(fig_width, (fig_width*(len(trials)/2)/1.6180)))
 
         results = []
@@ -885,10 +934,16 @@ class ANEMO(object):
             data_x = data[trial_data]['x']
             trackertime = data[trial_data]['trackertime']
 
-            StimulusOn = data[trial_data]['events']['msg'][10][0]
-            StimulusOf = data[trial_data]['events']['msg'][14][0]
-            TargetOn = data[trial_data]['events']['msg'][15][0]
-            TargetOff = data[trial_data]['events']['msg'][16][0]
+            for events in range(len(data[trial_data]['events']['msg'])) :
+                if data[trial_data]['events']['msg'][events][1] == list_events[0] :
+                    StimulusOn = data[trial_data]['events']['msg'][events][0]
+                if data[trial_data]['events']['msg'][events][1] == list_events[1] :
+                    StimulusOf = data[trial_data]['events']['msg'][events][0]
+                if data[trial_data]['events']['msg'][events][1] == list_events[2] :
+                    TargetOn = data[trial_data]['events']['msg'][events][0]
+                if data[trial_data]['events']['msg'][events][1] == list_events[3] :
+                    TargetOff = data[trial_data]['events']['msg'][events][0]
+
             saccades = data[trial_data]['events']['Esac']
 
             velocity = ANEMO.velocity_deg(data_x, px_per_deg)
