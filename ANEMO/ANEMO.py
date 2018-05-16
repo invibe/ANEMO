@@ -33,7 +33,81 @@ class ANEMO(object):
 
         return gradient_deg
 
-    # y ajouter microsaccade ?
+
+    def Microsaccade (velocity_x, velocity_y, VFAC=5, mindur=5, maxdur=100, minsep=30, trackertime_0=0):
+        '''
+        Détection des micro_saccades non-detectés par eyelink dans les données
+
+        Parameters
+        ----------
+        velocity_x : ndarray
+            vitesse x de l'œil en deg/sec
+        velocity_y : ndarray
+            vitesse y de l'œil en deg/sec
+
+        VFAC : int
+            relative velocity threshold
+        mindur : int
+            minimal saccade duration (ms)
+        maxdur : int
+            maximal saccade duration (ms)
+        minsep : int
+            minimal time interval between two detected saccades (ms)
+        trackertime_0 : int
+            temps 0 de l'essais
+
+        Returns
+        -------
+        misaccades : list
+            list of lists, each containing [debut microsaccades, fin microsaccade]
+
+        '''
+        msdx = np.sqrt((np.nanmedian(velocity_x**2))-((np.nanmedian(velocity_x))**2))
+        msdy = np.sqrt((np.nanmedian(velocity_y**2))-((np.nanmedian(velocity_y))**2))
+        
+        radiusx = VFAC*msdx
+        radiusy = VFAC*msdy
+
+        test = (velocity_x/radiusx)**2 + (velocity_y/radiusy)**2
+        index = [x for x in range(len(test)) if test[x] > 1]
+
+        dur = 0
+        debut_misaccades = 0
+        misaccades = []
+
+        # recherche les saccades
+        for i in range(len(index)-1) :
+            if index[i+1]-index[i]==1 :
+                dur = dur + 1;
+            else :
+                if dur >= mindur and dur < maxdur :
+                    fin_misaccades = i
+                    misaccades.append([index[debut_misaccades]+trackertime_0, index[fin_misaccades]+trackertime_0])
+                debut_misaccades = i+1
+                dur = 1
+
+        # fusionne les saccades si elles sont proche
+        if len(misaccades) > 1 :
+            s=0
+            while s < len(misaccades)-1 :
+                sep = misaccades[s+1][0]-misaccades[s][1] # temporal separation between onset of saccade s+1 and offset of saccade s
+                if sep < minsep :
+                    misaccades[s][1] = misaccades[s+1][1] #the two saccades are fused into one
+                    del(misaccades[s+1])
+                    s=s-1
+                s=s+1
+
+        # enlève les saccades trop longue
+        s=0
+        while s < len(misaccades) :
+            dur = misaccades[s][1]-misaccades[s][0] # duration of sth saccade
+            if dur >= maxdur :
+                del(misaccades[s])
+                s=s-1
+            s=s+1  
+
+        return misaccades
+
     def suppression_saccades(velocity, saccades, trackertime) :
         '''
         Supprime les saccades detectés par eyelink des données
@@ -66,7 +140,6 @@ class ANEMO(object):
                     velocity[x_data] = np.nan
 
         return velocity
-
 
     ######################################################################################
 
@@ -273,6 +346,7 @@ class ANEMO(object):
 
                 trial_data = trial + N_trials*block
                 data_x = data[trial_data]['x']
+                data_y = data[trial_data]['y']
                 trackertime = data[trial_data]['trackertime']
 
                 for events in range(len(data[trial_data]['events']['msg'])) :
@@ -290,6 +364,12 @@ class ANEMO(object):
                 trackertime_0 = data[trial_data]['trackertime'][0]
 
                 velocity = ANEMO.velocity_deg(data_x, px_per_deg)
+                velocity_y = ANEMO.velocity_deg(data_y, px_per_deg)
+
+                # détecte les microsaccades pendant la fixation
+                misac = ANEMO.Microsaccade(velocity[:TargetOn-trackertime_0+100], velocity_y[:TargetOn-trackertime_0+100], trackertime_0=trackertime_0)
+                saccades.extend(misac)
+                
                 velocity_NAN = ANEMO.suppression_saccades(velocity, saccades, trackertime)
 
                 start = TargetOn
@@ -829,6 +909,7 @@ class ANEMO(object):
 
 
             data_x = data[trial_data]['x']
+            data_y = data[trial_data]['y']
             trackertime = data[trial_data]['trackertime']
 
             for events in range(len(data[trial_data]['events']['msg'])) :
@@ -843,7 +924,15 @@ class ANEMO(object):
 
             saccades = data[trial_data]['events']['Esac']
 
+            trackertime_0 = data[trial_data]['trackertime'][0]
+
             velocity = ANEMO.velocity_deg(data_x, px_per_deg)
+            velocity_y = ANEMO.velocity_deg(data_y, px_per_deg)
+
+            # détecte les microsaccades pendant la fixation
+            misac = ANEMO.Microsaccade(velocity[:TargetOn-trackertime_0+100], velocity_y[:TargetOn-trackertime_0+100], trackertime_0=trackertime_0)
+            saccades.extend(misac)
+
             velocity_NAN = ANEMO.suppression_saccades(velocity, saccades, trackertime)
 
             start = TargetOn
@@ -932,6 +1021,7 @@ class ANEMO(object):
                 ax = axs[x]
 
             data_x = data[trial_data]['x']
+            data_y = data[trial_data]['y']
             trackertime = data[trial_data]['trackertime']
 
             for events in range(len(data[trial_data]['events']['msg'])) :
@@ -945,8 +1035,15 @@ class ANEMO(object):
                     TargetOff = data[trial_data]['events']['msg'][events][0]
 
             saccades = data[trial_data]['events']['Esac']
+            trackertime_0 = data[trial_data]['trackertime'][0]
 
             velocity = ANEMO.velocity_deg(data_x, px_per_deg)
+            velocity_y = ANEMO.velocity_deg(data_y, px_per_deg)
+
+            # détecte les microsaccades pendant la fixation
+            misac = ANEMO.Microsaccade(velocity[:TargetOn-trackertime_0+100], velocity_y[:TargetOn-trackertime_0+100], trackertime_0=trackertime_0)
+            saccades.extend(misac)
+
             velocity_NAN = ANEMO.suppression_saccades(velocity, saccades, trackertime)
 
             start = TargetOn
