@@ -33,7 +33,7 @@ class ANEMO(object):
 
         return gradient_deg
 
-
+    # y ajouter microsaccade ?
     def Microsaccade (velocity_x, velocity_y, VFAC=5, mindur=5, maxdur=100, minsep=30, trackertime_0=0):
         '''
         Détection des micro_saccades non-detectés par eyelink dans les données
@@ -73,9 +73,9 @@ class ANEMO(object):
 
         dur = 0
         debut_misaccades = 0
+        k = 0
         misaccades = []
 
-        # recherche les saccades
         for i in range(len(index)-1) :
             if index[i+1]-index[i]==1 :
                 dur = dur + 1;
@@ -85,8 +85,8 @@ class ANEMO(object):
                     misaccades.append([index[debut_misaccades]+trackertime_0, index[fin_misaccades]+trackertime_0])
                 debut_misaccades = i+1
                 dur = 1
+            i = i + 1
 
-        # fusionne les saccades si elles sont proche
         if len(misaccades) > 1 :
             s=0
             while s < len(misaccades)-1 :
@@ -97,7 +97,6 @@ class ANEMO(object):
                     s=s-1
                 s=s+1
 
-        # enlève les saccades trop longue
         s=0
         while s < len(misaccades) :
             dur = misaccades[s][1]-misaccades[s][0] # duration of sth saccade
@@ -230,7 +229,8 @@ class ANEMO(object):
         '''
 
         from lmfit import  Model, Parameters
-        #import lmfit
+
+        import lmfit
         #print(lmfit.__version__)
 
         trackertime_0 = trackertime[0]
@@ -242,7 +242,7 @@ class ANEMO(object):
         if stop_latence==[] :
             stop_latence.append(len(trackertime))
 
-        model = Model(ANEMO.fct_exponentiel)#, nan_policy='omit')# a tester pour lmfit 0.9.9
+        model = Model(ANEMO.fct_exponentiel)#, nan_policy='propagate') #'omit')# a tester pour lmfit 0.9.9
         params = Parameters()
 
         params.add('tau', value=15., min=13., max=80.)#, vary=False)
@@ -254,9 +254,17 @@ class ANEMO(object):
 
         #result_deg = model.fit(new_gradient_deg, params, x=new_time)
         if sup==True :
-            result_deg = model.fit(data_x[:time_sup], params, x=trackertime[:time_sup], fit_kws={'nan_policy': 'omit'}) #, fit_kws={'nan_policy': 'propagate'}) #lmfit 0.9.9
+            if lmfit.__version__ <= '0.9.7' :
+                result_deg = model.fit(data_x[:time_sup], params, x=trackertime[:time_sup], fit_kws={'nan_policy': 'omit'})
+            else :
+                print('/!\ version lmfit > 0.9.7')
+                result_deg = model.fit(data_x[:time_sup], params, x=trackertime[:time_sup], nan_policy='omit') #fit_kws={'nan_policy': 'omit'})# 
         else :
-            result_deg = model.fit(data_x, params, x=trackertime, fit_kws={'nan_policy': 'omit'}) #, fit_kws={'nan_policy': 'propagate'}) #lmfit 0.9.9
+            if lmfit.__version__ <= '0.9.7' :
+                result_deg = model.fit(data_x, params, x=trackertime, fit_kws={'nan_policy': 'omit'})
+            else :
+                print('/!\ version lmfit > 0.9.7')
+                result_deg = model.fit(data_x, params, x=trackertime, nan_policy='omit') #fit_kws={'nan_policy': 'omit'}) #
 
         return result_deg
 
@@ -365,8 +373,7 @@ class ANEMO(object):
 
                 velocity = ANEMO.velocity_deg(data_x, px_per_deg)
                 velocity_y = ANEMO.velocity_deg(data_y, px_per_deg)
-
-                # détecte les microsaccades pendant la fixation
+                
                 misac = ANEMO.Microsaccade(velocity[:TargetOn-trackertime_0+100], velocity_y[:TargetOn-trackertime_0+100], trackertime_0=trackertime_0)
                 saccades.extend(misac)
                 
@@ -929,7 +936,6 @@ class ANEMO(object):
             velocity = ANEMO.velocity_deg(data_x, px_per_deg)
             velocity_y = ANEMO.velocity_deg(data_y, px_per_deg)
 
-            # détecte les microsaccades pendant la fixation
             misac = ANEMO.Microsaccade(velocity[:TargetOn-trackertime_0+100], velocity_y[:TargetOn-trackertime_0+100], trackertime_0=trackertime_0)
             saccades.extend(misac)
 
@@ -1040,7 +1046,6 @@ class ANEMO(object):
             velocity = ANEMO.velocity_deg(data_x, px_per_deg)
             velocity_y = ANEMO.velocity_deg(data_y, px_per_deg)
 
-            # détecte les microsaccades pendant la fixation
             misac = ANEMO.Microsaccade(velocity[:TargetOn-trackertime_0+100], velocity_y[:TargetOn-trackertime_0+100], trackertime_0=trackertime_0)
             saccades.extend(misac)
 
