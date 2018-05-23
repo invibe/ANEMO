@@ -175,7 +175,7 @@ class ANEMO(object):
         '''
 
         v_anti = v_anti/1000 # pour passer de sec à ms
-        time = np.arange(len(x))
+        time = x # np.arange(len(x))
         vitesse = []
 
         for t in range(len(time)):
@@ -192,9 +192,9 @@ class ANEMO(object):
                     if time[t] < latence :
                         #vitesse.append((bino*2-1)*(time[t]-start_anti)*v_anti)
                         vitesse.append((time[t]-start_anti)*v_anti)
-                        x = (time[t]-start_anti)*v_anti
+                        y = (time[t]-start_anti)*v_anti
                     else :
-                        vitesse.append((bino*2-1)*maxi*(1-np.exp(-1/tau*(time[t]-latence)))+x)
+                        vitesse.append((bino*2-1)*maxi*(1-np.exp(-1/tau*(time[t]-latence)))+y)
 
         return vitesse
 
@@ -278,17 +278,19 @@ class ANEMO(object):
 
         #result_deg = model.fit(new_gradient_deg, params, x=new_time)
         if sup==True :
+            x = np.arange(len(trackertime[:time_sup]))
             if lmfit.__version__ <= '0.9.7' :
-                result_deg = model.fit(data_x[:time_sup], params, x=trackertime[:time_sup], fit_kws={'nan_policy': 'omit'})
+                result_deg = model.fit(data_x[:time_sup], params, x=x, fit_kws={'nan_policy': 'omit'})
             else :
-                print('/!\ version lmfit > 0.9.7')
-                result_deg = model.fit(data_x[:time_sup], params, x=trackertime[:time_sup], nan_policy='omit') #fit_kws={'nan_policy': 'omit'})# 
+                #print('/!\ version lmfit > 0.9.7')
+                result_deg = model.fit(data_x[:time_sup], params, x=x, nan_policy='omit')
         else :
+            x = np.arange(len(trackertime))
             if lmfit.__version__ <= '0.9.7' :
-                result_deg = model.fit(data_x, params, x=trackertime, fit_kws={'nan_policy': 'omit'})
+                result_deg = model.fit(data_x, params, x=x, fit_kws={'nan_policy': 'omit'})
             else :
-                print('/!\ version lmfit > 0.9.7')
-                result_deg = model.fit(data_x, params, x=trackertime, nan_policy='omit') #fit_kws={'nan_policy': 'omit'}) #
+                #print('/!\ version lmfit > 0.9.7')
+                result_deg = model.fit(data_x, params, x=x, nan_policy='omit')
 
         return result_deg
 
@@ -611,7 +613,9 @@ class ANEMO(object):
             latence = result_deg.values['latence']
             tau = result_deg.values['tau']
             maxi = result_deg.values['maxi']
-            result_fit = result_deg.best_fit
+            #result_fit = result_deg.best_fit
+            result_fit = ANEMO.fct_exponentiel (np.arange(len(trackertime_s)), bino, start_anti, v_anti, latence, tau, maxi)
+
 
         if plot == 'fonction' :
 
@@ -660,7 +664,7 @@ class ANEMO(object):
                         xytext=(trackertime_s[int(latence)]+70, result_fit[int(latence)]), textcoords='data', arrowprops=dict(arrowstyle="->", color='darkred'))
             # Max ------------------------------------------------------------------------
             ax.text(TargetOn_s+450+25, (result_fit[int(latence)]+result_fit[int(latence)+250])/2,
-                    "Max = %0.2f °/s"%(-maxi), color='k', va='center', fontsize=t_label/1.5)
+                    "Max = %0.2f °/s"%(maxi), color='k', va='center', fontsize=t_label/1.5)
             ax.annotate('', xy=(TargetOn_s+450, result_fit[int(latence)]), xycoords='data', fontsize=t_label/1.5,
                         xytext=(TargetOn_s+450, result_fit[int(latence)+250]), textcoords='data', arrowprops=dict(arrowstyle="<->"))
 
