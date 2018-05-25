@@ -199,7 +199,8 @@ class ANEMO(object):
         return vitesse
 
     def Fit_exponentiel(data_x, trackertime, TargetOn, StimulusOf, saccades, bino, sup=True, time_sup=-280, param_fit=None):
-
+        print('TODO : make a double fit')
+        print('TODO : make a fit on position')
         '''
         Returns le resultat du fits de la vitesse de l'œil a un essais avec la fonction reproduisant la vitesse de l'œil lors de la pousuite lisse d'une cible en mouvement
 
