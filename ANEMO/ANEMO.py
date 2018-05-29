@@ -63,7 +63,7 @@ class ANEMO(object):
         '''
         msdx = np.sqrt((np.nanmedian(velocity_x**2))-((np.nanmedian(velocity_x))**2))
         msdy = np.sqrt((np.nanmedian(velocity_y**2))-((np.nanmedian(velocity_y))**2))
-        
+
         radiusx = VFAC*msdx
         radiusy = VFAC*msdy
 
@@ -102,7 +102,7 @@ class ANEMO(object):
             if dur >= maxdur :
                 del(misaccades[s])
                 s=s-1
-            s=s+1  
+            s=s+1
 
         return misaccades
 
@@ -198,8 +198,9 @@ class ANEMO(object):
 
         return vitesse
 
-    def Fit_exponentiel(velocity_x, trackertime, bino, param_fit=None, TargetOn=None, StimulusOf=None, saccades=None, sup=True, time_sup=-280, step=1):
-        #print('TODO : make a double fit')
+    def Fit_exponentiel(velocity_x, trackertime, bino, param_fit=None, TargetOn=None,
+                        StimulusOf=None, saccades=None, sup=True, time_sup=-280, step=1,
+                        maxiter=1000):
         #print('TODO : make a fit on position')
         '''
         Returns le resultat du fits de la vitesse de l'œil a un essais avec la fonction reproduisant la vitesse de l'œil lors de la pousuite lisse d'une cible en mouvement
@@ -261,14 +262,14 @@ class ANEMO(object):
             velocity_x = velocity_x[:time_sup]
             trackertime = trackertime[:time_sup]
 
-        if step == 1 :
-            vary = True
-        elif step == 2 :
-            vary = False
 
         model = Model(ANEMO.fct_exponentiel)
         params = Parameters()
 
+        if step == 1 :
+            vary = True
+        elif step == 2 :
+            vary = False
 
         params.add('maxi', value=param_fit['maxi'][0], min=param_fit['maxi'][1], max=param_fit['maxi'][2])
         params.add('latence', value=param_fit['latence'][0], min=param_fit['latence'][1], max=stop)
@@ -285,16 +286,19 @@ class ANEMO(object):
         elif step == 2 :
             out = model.fit(velocity_x, params, x=np.arange(len(trackertime)), nan_policy='omit')
             # make the other parameters vary now
-            out.params['maxi'].set(vary=False)
-            out.params['latence'].set(vary=False)
-            out.params['bino'].set(vary=False)
+            # out.params['maxi'].set(vary=False)
+            # out.params['latence'].set(vary=False)
+            # out.params['bino'].set(vary=False)
             out.params['tau'].set(vary=True)
             out.params['start_anti'].set(vary=True)
             out.params['v_anti'].set(vary=True)
-            
-            result_deg = model.fit(velocity_x, out.params, x=np.arange(len(trackertime)),nan_policy='omit')
 
-        
+            result_deg = model.fit(velocity_x, out.params,
+                                    x=np.arange(len(trackertime)),
+                                    method='nelder', fit_kws=dict(maxiter=maxiter),
+                                    nan_policy='omit')
+
+
         '''params.add('tau', value=15., min=13., max=80.)#, vary=False)
         params.add('maxi', value=15., min=1., max=40.)#, vary=False)
         params.add('latence', value=TargetOn-trackertime_0+100, min=TargetOn-trackertime_0+75, max=stop_latence[0])
@@ -308,7 +312,7 @@ class ANEMO(object):
             #result_deg = model.fit(velocity_x[:time_sup], params, x=np.arange(len(trackertime[:time_sup])), nan_policy='omit')
         #else :
         #    result_deg = model.fit(velocity_x, params, x=np.arange(len(trackertime)), nan_policy='omit')
-        
+
         return result_deg
 
     def Fit(data, N_trials, N_blocks, binomial, px_per_deg, list_events=None, sup=True, time_sup=-280, observer=None,
@@ -424,14 +428,14 @@ class ANEMO(object):
 
                 velocity = ANEMO.velocity_deg(data_x, px_per_deg)
                 velocity_y = ANEMO.velocity_deg(data_y, px_per_deg)
-                
-                
+
+
                 if stop_recherche_misac is None :
                     stop_recherche_misac = TargetOn-trackertime_0+100
-                
+
                 misac = ANEMO.Microsaccade(velocity[:stop_recherche_misac], velocity_y[:stop_recherche_misac], trackertime_0=trackertime_0)
                 saccades.extend(misac)
-                
+
                 velocity_NAN = ANEMO.suppression_saccades(velocity, saccades, trackertime)
 
                 start = TargetOn
