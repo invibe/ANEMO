@@ -198,16 +198,16 @@ class ANEMO(object):
 
         return vitesse
 
-    def Fit_exponentiel(data_x, trackertime, TargetOn, StimulusOf, saccades, bino, sup=True, time_sup=-280, param_fit=None):
-        print('TODO : make a double fit')
-        print('TODO : make a fit on position')
+    def Fit_exponentiel(velocity_x, trackertime, bino, param_fit=None, TargetOn=None, StimulusOf=None, saccades=None, sup=True, time_sup=-280, step=1):
+        #print('TODO : make a double fit')
+        #print('TODO : make a fit on position')
         '''
         Returns le resultat du fits de la vitesse de l'œil a un essais avec la fonction reproduisant la vitesse de l'œil lors de la pousuite lisse d'une cible en mouvement
 
         Parameters
         ----------
-        data_x : ndarray
-            position x pour un essaie enregistré par l'eyetracker transformé par la fonction read_edf du module edfreader
+        velocity_x : ndarray
+            vitesse x pour un essaie enregistré par l'eyetracker
 
         trackertime : ndarray
             temps du tracker
@@ -228,6 +228,8 @@ class ANEMO(object):
         param_fit : dic
             dictionnaire des parametre du fit, chaque parametre est une liste [value fit, min, max]
 
+        step :  nombre de step pour le fit
+
         Returns
         -------
         result_deg : lmfit.model.ModelResult
@@ -235,9 +237,6 @@ class ANEMO(object):
         '''
 
         from lmfit import  Model, Parameters
-
-        import lmfit
-        #print(lmfit.__version__)
 
         trackertime_0 = trackertime[0]
 
@@ -256,19 +255,46 @@ class ANEMO(object):
             stop = stop_latence[0]
         else :
             stop = param_fit['latence'][2]
-        
-        
-        model = Model(ANEMO.fct_exponentiel)#, nan_policy='propagate') #'omit')# a tester pour lmfit 0.9.9
+
+
+        if sup==True :
+            velocity_x = velocity_x[:time_sup]
+            trackertime = trackertime[:time_sup]
+
+        if step == 1 :
+            vary = True
+        elif step == 2 :
+            vary = False
+
+        model = Model(ANEMO.fct_exponentiel)
         params = Parameters()
 
-        params.add('tau', value=param_fit['tau'][0], min=param_fit['tau'][1], max=param_fit['tau'][2])
+
         params.add('maxi', value=param_fit['maxi'][0], min=param_fit['maxi'][1], max=param_fit['maxi'][2])
         params.add('latence', value=param_fit['latence'][0], min=param_fit['latence'][1], max=stop)
-        params.add('start_anti', value=param_fit['start_anti'][0], min=param_fit['start_anti'][1], max=param_fit['start_anti'][2])
-        params.add('v_anti', value=param_fit['v_anti'][0], min=param_fit['v_anti'][1], max=param_fit['v_anti'][2])
+
         params.add('bino', value=bino, vary=False)
 
+        params.add('tau', value=param_fit['tau'][0], min=param_fit['tau'][1], max=param_fit['tau'][2], vary=vary)
+        params.add('start_anti', value=param_fit['start_anti'][0], min=param_fit['start_anti'][1], max=param_fit['start_anti'][2], vary=vary)
+        params.add('v_anti', value=param_fit['v_anti'][0], min=param_fit['v_anti'][1], max=param_fit['v_anti'][2], vary=vary)
 
+        if step == 1 :
+            result_deg = model.fit(velocity_x, params, x=np.arange(len(trackertime)), nan_policy='omit')
+
+        elif step == 2 :
+            out = model.fit(velocity_x, params, x=np.arange(len(trackertime)), nan_policy='omit')
+            # make the other parameters vary now
+            out.params['maxi'].set(vary=False)
+            out.params['latence'].set(vary=False)
+            out.params['bino'].set(vary=False)
+            out.params['tau'].set(vary=True)
+            out.params['start_anti'].set(vary=True)
+            out.params['v_anti'].set(vary=True)
+            
+            result_deg = model.fit(velocity_x, out.params, x=np.arange(len(trackertime)),nan_policy='omit')
+
+        
         '''params.add('tau', value=15., min=13., max=80.)#, vary=False)
         params.add('maxi', value=15., min=1., max=40.)#, vary=False)
         params.add('latence', value=TargetOn-trackertime_0+100, min=TargetOn-trackertime_0+75, max=stop_latence[0])
@@ -278,25 +304,15 @@ class ANEMO(object):
 
 
         #result_deg = model.fit(new_gradient_deg, params, x=new_time)
-        if sup==True :
-            x = np.arange(len(trackertime[:time_sup]))
-            if lmfit.__version__ <= '0.9.7' :
-                result_deg = model.fit(data_x[:time_sup], params, x=x, fit_kws={'nan_policy': 'omit'})
-            else :
-                #print('/!\ version lmfit > 0.9.7')
-                result_deg = model.fit(data_x[:time_sup], params, x=x, nan_policy='omit')
-        else :
-            x = np.arange(len(trackertime))
-            if lmfit.__version__ <= '0.9.7' :
-                result_deg = model.fit(data_x, params, x=x, fit_kws={'nan_policy': 'omit'})
-            else :
-                #print('/!\ version lmfit > 0.9.7')
-                result_deg = model.fit(data_x, params, x=x, nan_policy='omit')
-
+        #if sup==True :
+            #result_deg = model.fit(velocity_x[:time_sup], params, x=np.arange(len(trackertime[:time_sup])), nan_policy='omit')
+        #else :
+        #    result_deg = model.fit(velocity_x, params, x=np.arange(len(trackertime)), nan_policy='omit')
+        
         return result_deg
 
     def Fit(data, N_trials, N_blocks, binomial, px_per_deg, list_events=None, sup=True, time_sup=-280, observer=None,
-            plot=None, fig_width=12, t_label=20, t_text=14, file_fig=None, param_fit=None, stop_recherche_misac=None) :
+            plot=None, fig_width=12, t_label=20, t_text=14, file_fig=None, param_fit=None, stop_recherche_misac=None, step_fit=1) :
 
         '''
         Renvoie un dictionnaire des paramètres Fit sur l'ensemble des data
@@ -339,7 +355,7 @@ class ANEMO(object):
             dictionnaire des parametre du fit, chaque parametre est une liste [value fit, min, max]
         stop_recherche_misac : int
             stop recherche de micro_saccade, si None alors arrête la recherche à la fin de la fixation +100ms
-
+        step_fit : nombre de step pour le fit
 
 
         Returns
@@ -429,7 +445,8 @@ class ANEMO(object):
                 ##################################################
                 # FIT
                 ##################################################
-                result_deg = ANEMO.Fit_exponentiel(velocity_NAN, trackertime, TargetOn, StimulusOf, saccades, bino, sup, time_sup, param_fit)
+                result_deg = ANEMO.Fit_exponentiel(velocity_NAN, trackertime, bino, param_fit=param_fit, TargetOn=TargetOn, StimulusOf=StimulusOf,
+                                                   saccades=saccades, sup=sup, time_sup=time_sup, step=step_fit)
                 ##################################################
 
 
@@ -531,7 +548,7 @@ class ANEMO(object):
     ######################################################################################
 
     def figure(ax, velocity, saccades, StimulusOn, StimulusOf, TargetOn, TargetOff, trackertime, start, bino, plot, t_label,
-               sup=True, time_sup=-280, report=None, param_fit=None) :
+               sup=True, time_sup=-280, report=None, param_fit=None, step_fit=1) :
         '''
         Returns figure
 
@@ -580,6 +597,8 @@ class ANEMO(object):
         param_fit : dic
             dictionnaire des parametre du fit, chaque parametre est une liste [value fit, min, max]
 
+        step_fit : nombre de step pour le fit
+
         Returns
         -------
         ax : AxesSubplot
@@ -604,7 +623,8 @@ class ANEMO(object):
 
         if plot != 'velocity' :
             # FIT
-            result_deg = ANEMO.Fit_exponentiel(velocity, trackertime, TargetOn, StimulusOf, saccades, bino, sup, time_sup, param_fit)
+            result_deg = ANEMO.Fit_exponentiel(velocity, trackertime, bino,param_fit=param_fit, TargetOn=TargetOn, StimulusOf=StimulusOf,
+                                               saccades=saccades, sup=sup, time_sup=time_sup, step=step_fit)
 
         if plot == 'Fitvelocity' :
 
