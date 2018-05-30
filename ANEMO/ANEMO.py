@@ -199,8 +199,8 @@ class ANEMO(object):
         return vitesse
 
     def Fit_exponentiel(velocity_x, trackertime, bino, param_fit=None, TargetOn=None,
-                        StimulusOf=None, saccades=None, sup=True, time_sup=-280, step=1,
-                        maxiter=1000):
+                        StimulusOf=None, saccades=None, sup=True, time_sup=-280, step=2) :
+                        #maxiter=1000):
         #print('TODO : make a fit on position')
         '''
         Returns le resultat du fits de la vitesse de l'œil a un essais avec la fonction reproduisant la vitesse de l'œil lors de la pousuite lisse d'une cible en mouvement
@@ -295,9 +295,8 @@ class ANEMO(object):
 
             result_deg = model.fit(velocity_x, out.params,
                                     x=np.arange(len(trackertime)),
-                                    method='nelder', fit_kws=dict(maxiter=maxiter),
-                                    nan_policy='omit')
-
+                                    method='nelder', nan_policy='omit')
+                                    #fit_kws=dict(maxiter=maxiter)) # par défaut dans  scipy.optimize.minimize(method=’Nelder-Mead’) maxiter=N*200 (N nb de variable)
 
         '''params.add('tau', value=15., min=13., max=80.)#, vary=False)
         params.add('maxi', value=15., min=1., max=40.)#, vary=False)
