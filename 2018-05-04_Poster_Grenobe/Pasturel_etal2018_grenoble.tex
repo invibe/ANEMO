@@ -110,11 +110,11 @@ pdfsubject={\Conference}%
 \renewcommand{\titlesize}{\huge}%{\Huge}
 \renewcommand{\authorsize}{\LARGE}%{\huge}
 
-\leftlogo[0.8]{logo_INT-AMU}
+\leftlogo[0.7]{logo_INT-AMU}
 \title{\Title}%
 \author{\AuthorA, \AuthorB,  \AuthorC}
 \institute{\Address}%\scriptsize
-\rightlogo[0.8]{logo_CNRS-ANR}
+\rightlogo[0.7]{logo_CNRS-ANR}
 \conference{\Conference}
 \setlength{\columnseprule}{0pt}
 
@@ -142,24 +142,24 @@ Eye movements are crucial bio-markers for a wide range of cognitive behaviours. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \vspace{-1\baselineskip}
 \section*{Introduction}
-\vspace{-.6\baselineskip}
+\vspace{-.7\baselineskip}
 Eye movements are crucial bio-markers for a wide range of cognitive behaviours. While the recordings of such movements may be provided by low- to high-cost measurement devices, there is no unique, commonly agreed method to quantify the different phases of their dynamics. Here we focus on eye movements performed during motion tracking. Based on some prior knowledge on the dynamics of the different types of eye movements, we propose here a set of robust fitting methods for the extraction of characteristic parameters of eye movements.In particular, we show how we can robustly extract the latency, initial acceleration and steady state of visually-guided smooth pursuit eye movements, as well as the velocity ramp of anticipatory pursuit. We compare these new tools with widely-used methods of smooth pursuit analysis.
 
 
-\vspace{.3\baselineskip}
+\vspace{.2\baselineskip}
 
 %----------------------------------------------------------------------------------------------------------
 \section*{Material and Method}
-\vspace{-.7\baselineskip}
+\vspace{-.8\baselineskip}
 
 \begin{tabular}{p{0.485\columnwidth}m{0.03\columnwidth}p{0.485\columnwidth}}
 \subsection*{Classical Methods}
 Here we use classical methods to extract :
 \begin{itemize}\setlength{\itemsep}{0ex}
 %\item the \textbf{anticipation acceleration} $A_a (^\circ/s^2)=\overline{v}/N$ with $\overline{v}$ the average velocity of eye from -50 to 50 ms in $(^\circ/s)$, $N=0.1$ the number of second in the interval,
-\item the \textbf{Anticipatory velocity} $V_a$, in $(^\circ/s)$, the average velocity of eye from -50 to 50 ms,
-\item the \textbf{Steady-state velocity}, in $(^\circ/s)$, is the average velocity of eye from 500 to 700 ms,
-\item the \textbf{Latency of visually-guided pursuit}, in $(ms)$,  is estimated on the basis of a local linear regression. Two regression lines are fitted to eye velocity in two temporal windows around the expected pursuit onset time. The latency is defined as the abscissa of the intersection of the two regression lines when they differ in slope by more than an arbitrary predefined threshold ($0.17$).
+\item the \textbf{Anticipatory velocity} $V_a$, in $^\circ/s$, the average velocity of eye from -50 to 50 ms,
+\item the \textbf{Steady-state velocity}, in $^\circ/s$, is the average velocity of eye from 500 to 700 ms,
+\item the \textbf{Latency of visually-guided pursuit}, in $ms$,  is estimated on the basis of a local linear regression. Two regression lines are fitted to eye velocity in two temporal windows around the expected pursuit onset time. The latency is defined as the abscissa of the intersection of the two regression lines when they differ in slope by more than an arbitrary predefined threshold ($0.17$).
 \end{itemize}
 
 %\vspace{4\baselineskip}
@@ -168,12 +168,12 @@ Here we use classical methods to extract :
 &&
 \subsection*{ANEMO Fitting Method}
 In order to extract the relevant parameters of the oculomotor responses, we developed new tools based on a best-fitting procedure of predefined patterns and in particular the typical smooth pursuit velocity profile. We can extract :
-\begin{itemize}%\setlength{\itemsep}{0ex}
+\begin{itemize}\setlength{\itemsep}{0ex}
 \item the \textbf{Anticipatory acceleration} $A_a$, in $^\circ/s^2$,
 \item the \textbf{Steady-state velocity}, in $^\circ/s$,
 \item the \textbf{Latency of visually-guided pursuit}, in $ms$,
 \item the \textbf{Anticipatory onset time},  in $ms$,
-\item the \textbf{Anticipatory velocity} $V_a$, in $(^\circ/s)$, the average fit from anticipation onset time to latency of visually-guided pursuit,
+\item the \textbf{Anticipatory velocity} $V_a$, in $^\circ/s$, the average fit from anticipation onset time to latency of visually-guided pursuit,
 \item the \textbf{{\Large $\tau$}}, in $ms$, is inertia of the oculomotor plant as modelled by a first-order linear differential equation % (lisberger et krauzlis ???)
 \end{itemize}
 \end{tabular}
@@ -190,13 +190,19 @@ In order to extract the relevant parameters of the oculomotor responses, we deve
 \end{tabular}
 
 
-\vspace{.1\baselineskip} %\vspace{.5\baselineskip}
+\vspace{-.2\baselineskip} %\vspace{.5\baselineskip}
 
 %----------------------------------------------------------------------------------------------------------
 \section*{Results}
-\vspace{-.7\baselineskip}
+\vspace{-.8\baselineskip}
 
-The true values are the values used to generate the original signal before inserting the noise. The true Anticipatory Velocity is the average from true Anticipation onset time to true Latency of visually-guided pursuit.
+The true values are the values used to generate the original signal (S$_o$, noiseless simulated eye velocity) before adding random gaussian noise. %The true Anticipatory Velocity is the average S$_o$ from true Anticipation onset time to true Latency of visually-guided pursuit.
+\vspace{-.7\baselineskip}
+\begin{itemize}\setlength{\itemsep}{0ex}
+\item The true Anticipatory Velocity (True V$_a$ 50 ( $^\circ/s$)) is the average S$_o$ from -50 to 50 ms.
+\item The true Anticipatory Velocity (True V$_a$ onset ( $^\circ/s$)) is the average S$_o$ from true Anticipation onset time to true Latency of visually-guided pursuit.
+\end{itemize}
+
 
 \vspace{-0.7\baselineskip}
 \begin{tabular}{p{0.313\columnwidth}m{0.03\columnwidth}p{0.313\columnwidth}m{0.03\columnwidth}p{0.313\columnwidth}}
@@ -208,11 +214,11 @@ The true values are the values used to generate the original signal before inser
 
 \vspace{-2\baselineskip}
 \begin{tabular}{m{0.313\columnwidth}m{0.03\columnwidth}m{0.313\columnwidth}m{0.03\columnwidth}m{0.313\columnwidth}}
-\includegraphics[width=0.293\columnwidth]{old_v_anti_true_classique_Full_\block}
+\includegraphics[width=0.293\columnwidth]{old_v_anti_true_classique_Full_2_\block}
 \includegraphics[width=0.293\columnwidth]{old_latence_Full_\block}
 \includegraphics[width=0.293\columnwidth]{old_max_Full_\block}
 & &
-\includegraphics[width=0.293\columnwidth]{old_v_anti_fit_true_Full_\block}
+\includegraphics[width=0.293\columnwidth]{old_v_anti_fit_true_Full_2_\block}
 \includegraphics[width=0.293\columnwidth]{latence_Full_\block}
 \includegraphics[width=0.293\columnwidth]{maxi_Full_\block}
 & &
@@ -222,12 +228,12 @@ The true values are the values used to generate the original signal before inser
 \end{tabular}
 
 
-\vspace{.5\baselineskip}
+\vspace{.1\baselineskip}
 
 %----------------------------------------------------------------------------------------------------------
 %\begin{tabular}{p{0.485\columnwidth}m{0.03\columnwidth}p{0.485\columnwidth}}
 \section*{Conclusions}
-\vspace{-.7\baselineskip}
+\vspace{-.8\baselineskip}
 Compared with classical methods, the ANEMO fitting method proves more efficient for validating and categorizing tracking performance globally, including prediction-based anticipation.The optimisation of the code is still in progress. Moreover, this code is made available as an open-source package at \textbf{http://github.com/invibe/ANEMO}, allowing for the community to use and modify these methods.
 %& &
 {\tiny

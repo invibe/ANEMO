@@ -11,6 +11,48 @@ class ANEMO(object):
 
     ######################################################################################
 
+    def arg(data, exp, trial, block, list_events=None):
+
+        trial_data = trial + exp['N_trials']*block
+        
+        if list_events is None :
+            list_events = ['StimulusOn\n', 'StimulusOff\n', 'TargetOn\n', 'TargetOff\n']
+
+
+        for events in range(len(data[trial_data]['events']['msg'])) :
+            if data[trial_data]['events']['msg'][events][1] == list_events[0] :
+                StimulusOn = data[trial_data]['events']['msg'][events][0]
+            if data[trial_data]['events']['msg'][events][1] == list_events[1] :
+                StimulusOf = data[trial_data]['events']['msg'][events][0]
+            if data[trial_data]['events']['msg'][events][1] == list_events[2] :
+                TargetOn = data[trial_data]['events']['msg'][events][0]
+            if data[trial_data]['events']['msg'][events][1] == list_events[3] :
+                TargetOff = data[trial_data]['events']['msg'][events][0]
+
+        kwargs = {
+                    "N_trials" : exp['N_trials'],
+                    "screen_width_px" : exp['screen_width_px'],
+                    "px_per_deg" : exp['px_per_deg'],
+                    "V_X" : exp['V_X'],
+                    "RashBass" : exp['RashBass'],
+                    "stim_tau" : exp['stim_tau'],
+                    "p" : exp['p'],
+                    "bino" : exp['p'][trial, block, 0],
+                    "data_x": data[trial_data]['x'],
+                    "data_y": data[trial_data]['y'],
+                    "trackertime":data[trial_data]['trackertime'],
+                    "saccades":data[trial_data]['events']['Esac'],
+                    "trackertime_0": data[trial_data]['trackertime'][0],
+                    "StimulusOn":StimulusOn,
+                    "StimulusOf": StimulusOf,
+                    "TargetOn": TargetOn,
+                    "TargetOff": TargetOff,
+            }
+
+        import easydict
+        return easydict.EasyDict(kwargs)
+
+
     def velocity_deg(data_x, px_per_deg) :
         '''
         Return la vitesse de l'œil en deg/sec
@@ -639,13 +681,21 @@ class ANEMO(object):
             maxi = result_deg.values['maxi']
             #result_fit = result_deg.best_fit
             result_fit = ANEMO.fct_exponentiel (np.arange(len(trackertime_s)), bino, start_anti, v_anti, latence, tau, maxi)
-
+            
 
         if plot == 'fonction' :
 
+            debut  = TargetOn - trackertime_0 # TargetOn - temps_0
             start_anti = TargetOn-trackertime_0-100
+            v_anti = -20
             latence = TargetOn-trackertime_0+100
-            result_fit = result_deg.init_fit
+            tau = 15.
+            maxi = 15.
+            result_fit = ANEMO.fct_exponentiel (np.arange(len(trackertime_s)), bino, start_anti, v_anti, latence, tau, maxi)
+            maxi = bino*maxi + bino*result_fit[latence]
+            ax.plot(trackertime_s[int(latence)+250:], result_fit[int(latence)+250:], 'k', linewidth=2)
+
+
 
         ax.axvspan(StimulusOn_s, StimulusOf_s, color='k', alpha=0.2)
         ax.axvspan(StimulusOf_s, TargetOn_s, color='r', alpha=0.2)
@@ -654,7 +704,7 @@ class ANEMO(object):
         if plot != 'velocity' :
             # COSMETIQUE
             ax.plot(trackertime_s[:int(start_anti)], result_fit[:int(start_anti)], 'k', linewidth=2)
-            # ax.plot(trackertime_s[int(latence)+250:-280], result_fit[int(latence)+250:], 'k', linewidth=2)
+            #ax.plot(trackertime_s[int(latence)+250:-280], result_fit[int(latence)+250:], 'k', linewidth=2)
             # V_a ------------------------------------------------------------------------
             ax.plot(trackertime_s[int(start_anti):int(latence)], result_fit[int(start_anti):int(latence)], c='r', linewidth=2)
             ax.annotate('', xy=(trackertime_s[int(latence)], result_fit[int(latence)]-3), xycoords='data', fontsize=t_label/1.5,
@@ -666,8 +716,8 @@ class ANEMO(object):
             # tau ------------------------------------------------------------------------
             ax.plot(trackertime_s[int(latence):int(latence)+250], result_fit[int(latence):int(latence)+250], c='darkred', linewidth=2)
             # Max ------------------------------------------------------------------------
-            ax.plot(trackertime_s[int(latence):], np.ones(len(trackertime_s[int(latence):]))*result_fit[int(latence)], '--k', linewidth=1, alpha=0.5)
-            ax.plot(trackertime_s[int(latence):], np.ones(len(trackertime_s[int(latence):]))*result_fit[int(latence)+250], '--k', linewidth=1, alpha=0.5)
+            ax.plot(trackertime_s, np.zeros(len(trackertime_s)), '--k', linewidth=1, alpha=0.5)
+            ax.plot(trackertime_s[int(latence):], np.ones(len(trackertime_s[int(latence):]))*result_fit[int(latence)+400], '--k', linewidth=1, alpha=0.5)
 
 
         if plot == 'Fitvelocity' :
@@ -688,7 +738,7 @@ class ANEMO(object):
                         xytext=(trackertime_s[int(latence)]+70, result_fit[int(latence)]), textcoords='data', arrowprops=dict(arrowstyle="->", color='darkred'))
             # Max ------------------------------------------------------------------------
             ax.text(TargetOn_s+450+25, (result_fit[int(latence)]+result_fit[int(latence)+250])/2,
-                    "Max = %0.2f °/s"%(maxi), color='k', va='center', fontsize=t_label/1.5)
+                    "Steady State = %0.2f °/s"%(maxi), color='k', va='center', fontsize=t_label/1.5)
             ax.annotate('', xy=(TargetOn_s+450, result_fit[int(latence)]), xycoords='data', fontsize=t_label/1.5,
                         xytext=(TargetOn_s+450, result_fit[int(latence)+250]), textcoords='data', arrowprops=dict(arrowstyle="<->"))
 
@@ -696,25 +746,25 @@ class ANEMO(object):
         if plot == 'fonction' :
 
             # COSMETIQUE
-            ax.text(StimulusOf_s+(TargetOn_s-StimulusOf_s)/2, 31, "GAP", color='k', fontsize=t_label, ha='center', va='bottom')
-            ax.text((StimulusOf_s-750)/2, 31, "FIXATION", color='k', fontsize=t_label, ha='center', va='bottom')
-            ax.text((750-TargetOn_s)/2, 31, "PURSUIT", color='k', fontsize=t_label, ha='center', va='bottom')
-            ax.text(TargetOn_s, 15, "Anticipation", color='r', fontsize=t_label/1.5, ha='center')
+            ax.text(StimulusOf_s+(TargetOn_s-StimulusOf_s)/2, 31, "GAP", color='k', fontsize=t_label*1.5, ha='center', va='center', alpha=0.5)
+            ax.text((StimulusOf_s-750)/2, 31, "FIXATION", color='k', fontsize=t_label*1.5, ha='center', va='center', alpha=0.5)
+            ax.text((750-TargetOn_s)/2, 31, "PURSUIT", color='k', fontsize=t_label*1.5, ha='center', va='center', alpha=0.5)
+            ax.text(TargetOn_s, 15, "Anticipation", color='r', fontsize=t_label, ha='center')
 
             # V_a ------------------------------------------------------------------------
             ax.text(TargetOn_s-50, -5, r"A$_a$", color='r', fontsize=t_label/1.5, ha='center', va='top')
             # Start_a --------------------------------------------------------------------
-            ax.text(TargetOn_s-100-25, -35, "Start anticipation", color='k', fontsize=t_label/1.5, alpha=0.7, ha='right')
+            ax.text(TargetOn_s-100-25, -35, "Start anticipation", color='k', fontsize=t_label, alpha=0.7, ha='right')
             # latence --------------------------------------------------------------------
-            ax.text(TargetOn_s+99+25, -35, "Latency", color='firebrick', fontsize=t_label/1.5)
+            ax.text(TargetOn_s+99+25, -35, "Latency", color='firebrick', fontsize=t_label)
             # tau ------------------------------------------------------------------------
-            ax.annotate(r'$\tau$', xy=(TargetOn_s+140, result_fit[TargetOn-trackertime_0+140]), xycoords='data', fontsize=t_label/1., color='darkred', va='bottom',
-                    xytext=(TargetOn_s+170, result_fit[TargetOn-trackertime_0]), textcoords='data', arrowprops=dict(arrowstyle="->", color='darkred'))
+            ax.annotate(r'$\tau$', xy=(trackertime_s[int(latence)]+15, result_fit[int(latence)+15]), xycoords='data', fontsize=t_label/1., color='darkred', va='bottom',
+                    xytext=(trackertime_s[int(latence)]+70, result_fit[int(latence)+7]), textcoords='data', arrowprops=dict(arrowstyle="->", color='darkred'))
             # Max ------------------------------------------------------------------------
-            ax.text(TargetOn_s+400+25, ((result_fit[TargetOn-trackertime_0+100]+result_fit[TargetOn-trackertime_0+250])/2),
-                   'Max', color='k', fontsize=t_label/1.5, va='center')
-            ax.annotate('', xy=(TargetOn_s+400, result_fit[TargetOn-trackertime_0+100]), xycoords='data', fontsize=t_label/1.5,
-                    xytext=(TargetOn_s+400, result_fit[TargetOn-trackertime_0+250]), textcoords='data', arrowprops=dict(arrowstyle="<->"))
+            ax.text(TargetOn_s+400+25, ((result_fit[int(latence)+400])/2),
+                   'Steady State', color='k', fontsize=t_label, va='center')
+            ax.annotate('', xy=(TargetOn_s+400, 0), xycoords='data', fontsize=t_label/1.5,
+                    xytext=(TargetOn_s+400, result_fit[int(latence)+400]), textcoords='data', arrowprops=dict(arrowstyle="<->"))
 
 
         #axs[x].axis([StimulusOn_s-10, TargetOff_s+10, -40, 40])
@@ -1033,7 +1083,8 @@ class ANEMO(object):
         return fig, axs
 
 
-    def plot_Fit(data, bino, trials=0, block=0, N_trials=200, px_per_deg=36.51, list_events=None, stop_recherche_misac=None, plot='fonction', fig_width=15, t_titre=35, t_label=20, report=None):
+    def plot_Fit(data, bino, trials=0, block=0, N_trials=200, px_per_deg=36.51, list_events=None, stop_recherche_misac=None, param_fit=None,
+                 plot='fonction', fig_width=15, t_titre=35, t_label=20, report=None, sup=True, time_sup=-280):
 
         '''
         Renvoie les figures du Fit
@@ -1135,9 +1186,9 @@ class ANEMO(object):
             start = TargetOn
 
             if report is None :
-                ax = ANEMO.figure(ax, velocity_NAN, saccades, StimulusOn, StimulusOf, TargetOn, TargetOff, trackertime, start, bino_trial, plot, t_label, report)
+                ax = ANEMO.figure(ax, velocity_NAN, saccades, StimulusOn, StimulusOf, TargetOn, TargetOff, trackertime, start, bino_trial, plot, t_label, sup, time_sup, report, param_fit, step_fit)
             else :
-                ax, result = ANEMO.figure(ax, velocity_NAN, saccades, StimulusOn, StimulusOf, TargetOn, TargetOff, trackertime, start, bino_trial, plot, t_label, report)
+                ax, result = ANEMO.figure(ax, velocity_NAN, saccades, StimulusOn, StimulusOf, TargetOn, TargetOff, trackertime, start, bino_trial, plot, t_label, sup, time_sup, report, param_fit, step_fit)
                 results.append(result)
 
             if x == int((len(trials)-1)/2) :
