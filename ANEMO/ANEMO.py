@@ -186,7 +186,7 @@ class ANEMO(object):
 
     ######################################################################################
 
-    def fct_exponentiel (x, bino, start_anti, v_anti, latence, tau, maxi) : # RENOMMER !!!
+    def fct_velocity (x, bino, start_anti, v_anti, latence, tau, maxi) : # RENOMMER !!!
 
         '''
         Fonction reproduisant la vitesse de l'œil lors de la pousuite lisse d'une cible en mouvement
@@ -240,7 +240,7 @@ class ANEMO(object):
 
         return vitesse
 
-    def Fit_exponentiel(velocity_x, trackertime, bino, param_fit=None, TargetOn=None,
+    def Fit_velocity(velocity_x, trackertime, bino, param_fit=None, TargetOn=None,
                         StimulusOf=None, saccades=None, sup=True, time_sup=-280, step=2) :
                         #maxiter=1000):
         #print('TODO : make a fit on position')
@@ -305,7 +305,7 @@ class ANEMO(object):
             trackertime = trackertime[:time_sup]
 
 
-        model = Model(ANEMO.fct_exponentiel)
+        model = Model(ANEMO.fct_velocity)
         params = Parameters()
 
         if step == 1 :
@@ -490,7 +490,7 @@ class ANEMO(object):
                 ##################################################
                 # FIT
                 ##################################################
-                result_deg = ANEMO.Fit_exponentiel(velocity_NAN, trackertime, bino, param_fit=param_fit, TargetOn=TargetOn, StimulusOf=StimulusOf,
+                result_deg = ANEMO.Fit_velocity(velocity_NAN, trackertime, bino, param_fit=param_fit, TargetOn=TargetOn, StimulusOf=StimulusOf,
                                                    saccades=saccades, sup=sup, time_sup=time_sup, step=step_fit)
                 ##################################################
 
@@ -668,7 +668,7 @@ class ANEMO(object):
 
         if plot != 'velocity' :
             # FIT
-            result_deg = ANEMO.Fit_exponentiel(velocity, trackertime, bino,param_fit=param_fit, TargetOn=TargetOn, StimulusOf=StimulusOf,
+            result_deg = ANEMO.Fit_velocity(velocity, trackertime, bino,param_fit=param_fit, TargetOn=TargetOn, StimulusOf=StimulusOf,
                                                saccades=saccades, sup=sup, time_sup=time_sup, step=step_fit)
 
         if plot == 'Fitvelocity' :
@@ -680,7 +680,7 @@ class ANEMO(object):
             tau = result_deg.values['tau']
             maxi = result_deg.values['maxi']
             #result_fit = result_deg.best_fit
-            result_fit = ANEMO.fct_exponentiel (np.arange(len(trackertime_s)), bino, start_anti, v_anti, latence, tau, maxi)
+            result_fit = ANEMO.fct_velocity (np.arange(len(trackertime_s)), bino, start_anti, v_anti, latence, tau, maxi)
             
 
         if plot == 'fonction' :
@@ -691,7 +691,7 @@ class ANEMO(object):
             latence = TargetOn-trackertime_0+100
             tau = 15.
             maxi = 15.
-            result_fit = ANEMO.fct_exponentiel (np.arange(len(trackertime_s)), bino, start_anti, v_anti, latence, tau, maxi)
+            result_fit = ANEMO.fct_velocity (np.arange(len(trackertime_s)), bino, start_anti, v_anti, latence, tau, maxi)
             maxi = bino*maxi + bino*result_fit[latence]
             ax.plot(trackertime_s[int(latence)+250:], result_fit[int(latence)+250:], 'k', linewidth=2)
 
