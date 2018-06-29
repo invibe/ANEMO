@@ -240,17 +240,46 @@ class ANEMO(object):
 
         return vitesse
 
-    def Fit_velocity(velocity_x, trackertime, bino, param_fit=None, TargetOn=None,
-                        StimulusOf=None, saccades=None, sup=True, time_sup=-280, step=2) :
+    def fct_position(x, data_x, saccades, nb_sacc,
+                 bino, start_anti, v_anti, latence, tau, maxi, px_per_deg,
+                 t_0, avant=5, apres=10):
+        ms = 1000
+        v_anti = (v_anti/ms)
+        maxi = maxi /ms
+        
+        speed = ANEMO.fct_velocity(x, bino, start_anti, v_anti, latence, tau, maxi)
+        pos = np.cumsum(speed)
+
+        i=0
+        for s in range(nb_sacc) :
+            sacc = saccades[i:i+3] # obligation d'avoir les variable indé a la même taille :/
+                                    # saccades[i] -> debut, saccades[i+1] -> fin, saccades[i+2] -> tps sacc
+            if sacc[0]-t_0 < len(pos) :
+                if sacc[0]-t_0 > int(latence) :
+                    if int(sacc[1]-t_0)+apres <= len(pos) :
+                        pos[int(sacc[0]-t_0)-avant:int(sacc[1]-t_0)+apres] = np.nan 
+                        pos[int(sacc[1]-t_0)+apres:] += ((data_x[int(sacc[1]-t_0)+apres]-data_x[int(sacc[0]-t_0)-avant-1])/px_per_deg) - np.mean(speed[int(sacc[0]-t_0):int(sacc[1]-t_0)]) * sacc[2]
+
+                    else :
+                        pos[int(sacc[0]-t_0)-avant:] = np.nan
+            i = i+3
+     
+        return pos
+
+    def Fit_trial(data_trial, trackertime, bino, fct_fit='fct_velocity', data_x=None, px_per_deg=None,
+                  param_fit=None, TargetOn=None, StimulusOf=None, saccades=None, sup=True, time_sup=-280, step=2) :
                         #maxiter=1000):
-        #print('TODO : make a fit on position')
         '''
         Returns le resultat du fits de la vitesse de l'œil a un essais avec la fonction reproduisant la vitesse de l'œil lors de la pousuite lisse d'une cible en mouvement
 
         Parameters
         ----------
-        velocity_x : ndarray
-            vitesse x pour un essaie enregistré par l'eyetracker
+        data_trial : ndarray
+            si fct_fit = velocity data_trial est la vitesse x pour un essaie enregistré par l'eyetracker
+            si fct_fit = position data_trial est la position x pour un essaie enregistré par l'eyetracker
+            
+        fct_fit :
+            fonction utiliser pour fiter les datas
 
         trackertime : ndarray
             temps du tracker
@@ -281,18 +310,18 @@ class ANEMO(object):
 
         from lmfit import  Model, Parameters
 
-        trackertime_0 = trackertime[0]
+        t_0 = trackertime[0]
 
         if param_fit is None :
             param_fit={'tau':[15.,13.,80.], 'maxi':[15.,1.,40], 'v_anti':[0.,-40.,40.],
-                       'latence':[TargetOn-trackertime_0+100,TargetOn-trackertime_0+75,'STOP'],
-                       'start_anti':[TargetOn-trackertime_0-100, StimulusOf-trackertime_0-200, TargetOn-trackertime_0+75]}
+                       'latence':[TargetOn-t_0+100,TargetOn-t_0+75,'STOP'],
+                       'start_anti':[TargetOn-t_0-100, StimulusOf-t_0-200, TargetOn-t_0+75]}
 
         if param_fit['latence'][2]=='STOP' :
             stop_latence = []
             for s in range(len(saccades)) :
-                if (saccades[s][0]-trackertime_0) >= (TargetOn-trackertime_0+100) :
-                    stop_latence.append((saccades[s][0]-trackertime_0))
+                if (saccades[s][0]-t_0) >= (TargetOn-t_0+100) :
+                    stop_latence.append((saccades[s][0]-t_0))
             if stop_latence==[] :
                 stop_latence.append(len(trackertime))
             stop = stop_latence[0]
@@ -301,12 +330,34 @@ class ANEMO(object):
 
 
         if sup==True :
-            velocity_x = velocity_x[:time_sup]
+            data_trial = data_trial[:time_sup]
             trackertime = trackertime[:time_sup]
+            if fct_fit == 'fct_position' :
+                data_x = data_x[:time_sup]
 
-
-        model = Model(ANEMO.fct_velocity)
         params = Parameters()
+
+        if fct_fit == 'fct_velocity' :
+            model = Model(ANEMO.fct_velocity)
+        elif fct_fit == 'fct_position' :
+            model = Model(ANEMO.fct_position, independent_vars=['x', 'data_x', 'saccades'])
+            params.add('t_0', value=t_0, vary=False)
+            params.add('avant', value=5, vary=False)
+            params.add('apres', value=10, vary=False)
+            params.add('px_per_deg', value=px_per_deg, vary=False)
+
+
+            params.add('nb_sacc', value=len(saccades), vary=False)
+
+            sacc = np.zeros(len(trackertime))
+            i=0
+            for s in range(len(saccades)):
+                sacc[i] = saccades[s][0] # debut sacc
+                sacc[i+1] = saccades[s][1] # fin sacc
+                sacc[i+2] = saccades[s][2] # tps sacc
+                i = i+3
+        
+        
 
         if step == 1 :
             vary = True
@@ -323,38 +374,34 @@ class ANEMO(object):
         params.add('v_anti', value=param_fit['v_anti'][0], min=param_fit['v_anti'][1], max=param_fit['v_anti'][2], vary=vary)
 
         if step == 1 :
-            result_deg = model.fit(velocity_x, params, x=np.arange(len(trackertime)), nan_policy='omit')
+            if fct_fit=='fct_velocity' :
+                result_deg = model.fit(data_trial, params, x=np.arange(len(trackertime)), nan_policy='omit')
+            elif fct_fit=='fct_position' :
+                result_deg = model.fit(data_trial, params, x=np.arange(len(trackertime)), data_x=data_x, saccades=sacc, nan_policy='omit')
+
 
         elif step == 2 :
-            out = model.fit(velocity_x, params, x=np.arange(len(trackertime)), nan_policy='omit')
+            if fct_fit=='fct_velocity' :
+                out = model.fit(data_trial, params, x=np.arange(len(trackertime)), nan_policy='omit')
+            elif fct_fit=='fct_position' :
+                out = model.fit(data_trial, params, x=np.arange(len(trackertime)), data_x=data_x, saccades=sacc, nan_policy='omit')
+
             # make the other parameters vary now
-            # out.params['maxi'].set(vary=False)
-            # out.params['latence'].set(vary=False)
-            # out.params['bino'].set(vary=False)
             out.params['tau'].set(vary=True)
             out.params['start_anti'].set(vary=True)
             out.params['v_anti'].set(vary=True)
 
-            result_deg = model.fit(velocity_x, out.params,
+            if fct_fit=='fct_velocity' :
+                result_deg = model.fit(data_trial, out.params,
                                     x=np.arange(len(trackertime)),
                                     method='nelder', nan_policy='omit')
-                                    #fit_kws=dict(maxiter=maxiter)) # par défaut dans  scipy.optimize.minimize(method=’Nelder-Mead’) maxiter=N*200 (N nb de variable)
-
-        '''params.add('tau', value=15., min=13., max=80.)#, vary=False)
-        params.add('maxi', value=15., min=1., max=40.)#, vary=False)
-        params.add('latence', value=TargetOn-trackertime_0+100, min=TargetOn-trackertime_0+75, max=stop_latence[0])
-        params.add('start_anti', value=TargetOn-trackertime_0-100, min=StimulusOf-trackertime_0-200, max=TargetOn-trackertime_0+75)
-        params.add('v_anti', value=(bino*2-1)*0, min=-40., max=40.)
-        params.add('bino', value=bino, min=0, max=1, vary=False)'''
-
-
-        #result_deg = model.fit(new_gradient_deg, params, x=new_time)
-        #if sup==True :
-            #result_deg = model.fit(velocity_x[:time_sup], params, x=np.arange(len(trackertime[:time_sup])), nan_policy='omit')
-        #else :
-        #    result_deg = model.fit(velocity_x, params, x=np.arange(len(trackertime)), nan_policy='omit')
-
+                                    #fit_kws=dict(maxiter=maxiter))
+                # par défaut dans scipy.optimize.minimize(method=’Nelder-Mead’) maxiter=N*200 (N nb de variable)
+            elif fct_fit=='fct_position' :
+                result_deg = model.fit(data_trial, out.params, x=np.arange(len(trackertime)), data_x=data_x, saccades=sacc, method='nelder', nan_policy='omit')
+             
         return result_deg
+
 
     def Fit(data, N_trials, N_blocks, binomial, px_per_deg, list_events=None, sup=True, time_sup=-280, observer=None,
             plot=None, fig_width=12, t_label=20, t_text=14, file_fig=None, param_fit=None, stop_recherche_misac=None, step_fit=1) :
@@ -587,6 +634,9 @@ class ANEMO(object):
         param['moyenne'] = liste_mean
 
         return param
+
+
+
 
 
 
