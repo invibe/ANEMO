@@ -247,7 +247,7 @@ class ANEMO(object):
         v_anti = (v_anti/ms)
         maxi = maxi /ms
         
-        speed = ANEMO.fct_velocity(x, bino, start_anti, v_anti, latence, tau, maxi)
+        speed = ANEMO.fct_velocity(x=x, bino=bino, start_anti=start_anti, v_anti=v_anti, latence=latence, tau=tau, maxi=maxi)
         pos = np.cumsum(speed)
 
         i=0
@@ -404,7 +404,8 @@ class ANEMO(object):
 
 
     def Fit(data, N_trials, N_blocks, binomial, px_per_deg, list_events=None, sup=True, time_sup=-280, observer=None,
-            plot=None, fig_width=12, t_label=20, t_text=14, file_fig=None, param_fit=None, stop_recherche_misac=None, step_fit=1) :
+            plot=None, fig_width=12, t_label=20, t_text=14, file_fig=None, param_fit=None, stop_recherche_misac=None,
+            fct_fit='fct_velocity', step_fit=2) :
 
         '''
         Renvoie un dictionnaire des paramètres Fit sur l'ensemble des data
@@ -514,17 +515,17 @@ class ANEMO(object):
 
                 trackertime_0 = data[trial_data]['trackertime'][0]
 
-                velocity = ANEMO.velocity_deg(data_x, px_per_deg)
-                velocity_y = ANEMO.velocity_deg(data_y, px_per_deg)
+                velocity = ANEMO.velocity_deg(data_x=data_x, px_per_deg=px_per_deg)
+                velocity_y = ANEMO.velocity_deg(data_x=data_y, px_per_deg=px_per_deg)
 
 
                 if stop_recherche_misac is None :
                     stop_recherche_misac = TargetOn-trackertime_0+100
 
-                misac = ANEMO.Microsaccade(velocity[:stop_recherche_misac], velocity_y[:stop_recherche_misac], trackertime_0=trackertime_0)
+                misac = ANEMO.Microsaccade(velocity_x=velocity[:stop_recherche_misac], velocity_y=velocity_y[:stop_recherche_misac], trackertime_0=trackertime_0)
                 saccades.extend(misac)
 
-                velocity_NAN = ANEMO.suppression_saccades(velocity, saccades, trackertime)
+                velocity_NAN = ANEMO.suppression_saccades(velocity=velocity, saccades=saccades, trackertime=trackertime)
 
                 start = TargetOn
 
@@ -537,8 +538,8 @@ class ANEMO(object):
                 ##################################################
                 # FIT
                 ##################################################
-                result_deg = ANEMO.Fit_velocity(velocity_NAN, trackertime, bino, param_fit=param_fit, TargetOn=TargetOn, StimulusOf=StimulusOf,
-                                                   saccades=saccades, sup=sup, time_sup=time_sup, step=step_fit)
+                result_deg = ANEMO.Fit_trial(data_trial=velocity_NAN, trackertime=trackertime, bino=bino, param_fit=param_fit, TargetOn=TargetOn, StimulusOf=StimulusOf,
+                                                   saccades=saccades, sup=sup, time_sup=time_sup, step=step_fit, fct_fit=fct_fit)
                 ##################################################
 
 
@@ -643,7 +644,7 @@ class ANEMO(object):
     ######################################################################################
 
     def figure(ax, velocity, saccades, StimulusOn, StimulusOf, TargetOn, TargetOff, trackertime, start, bino, plot, t_label,
-               sup=True, time_sup=-280, report=None, param_fit=None, step_fit=1) :
+               sup=True, time_sup=-280, report=None, param_fit=None, step_fit=2, fct_fit='fct_velocity') :
         '''
         Returns figure
 
@@ -718,8 +719,8 @@ class ANEMO(object):
 
         if plot != 'velocity' :
             # FIT
-            result_deg = ANEMO.Fit_velocity(velocity, trackertime, bino,param_fit=param_fit, TargetOn=TargetOn, StimulusOf=StimulusOf,
-                                               saccades=saccades, sup=sup, time_sup=time_sup, step=step_fit)
+            result_deg = ANEMO.Fit_trial(data_trial=velocity, trackertime=trackertime, bino=bino,param_fit=param_fit, TargetOn=TargetOn, StimulusOf=StimulusOf,
+                                         saccades=saccades, sup=sup, time_sup=time_sup, step=step_fit, fct_fit=fct_fit)
 
         if plot == 'Fitvelocity' :
 
@@ -730,8 +731,7 @@ class ANEMO(object):
             tau = result_deg.values['tau']
             maxi = result_deg.values['maxi']
             #result_fit = result_deg.best_fit
-            result_fit = ANEMO.fct_velocity (np.arange(len(trackertime_s)), bino, start_anti, v_anti, latence, tau, maxi)
-            
+            result_fit = ANEMO.fct_velocity (x=np.arange(len(trackertime_s)), bino=bino, start_anti=start_anti, v_anti=v_anti, latence=latence, tau=tau, maxi=maxi)
 
         if plot == 'fonction' :
 
@@ -741,7 +741,7 @@ class ANEMO(object):
             latence = TargetOn-trackertime_0+100
             tau = 15.
             maxi = 15.
-            result_fit = ANEMO.fct_velocity (np.arange(len(trackertime_s)), bino, start_anti, v_anti, latence, tau, maxi)
+            result_fit = ANEMO.fct_velocity (x=np.arange(len(trackertime_s)), bino=bino, start_anti=start_anti, v_anti=v_anti, latence=latence, tau=tau, maxi=maxi)
             maxi = bino*maxi + bino*result_fit[latence]
             ax.plot(trackertime_s[int(latence)+250:], result_fit[int(latence)+250:], 'k', linewidth=2)
 
@@ -1009,7 +1009,10 @@ class ANEMO(object):
                 bino_trial = bino[trial, block]
                 start = TargetOn
 
-                axs[trial] = ANEMO.figure_position(axs[trial], data_x, data_y,  saccades, StimulusOn, StimulusOf, TargetOn, TargetOff, trackertime, start, bino_trial, V_X, RashBass, stim_tau, screen_width_px, screen_height_px, t_label)
+                axs[trial] = ANEMO.figure_position(ax=axs[trial], data_x=data_x, data_y=data_y,  saccades=saccades, StimulusOn=StimulusOn,
+                                                   StimulusOf=StimulusOf, TargetOn=TargetOn, TargetOff=TargetOff, trackertime=trackertime,
+                                                   start=start, bino=bino_trial, V_X=V_X, RashBass=RashBass, stim_tau=stim_tau, screen_width_px=screen_width_px,
+                                                   screen_height_px=screen_height_px, t_label=t_label)
 
                 axs[trial].axis([StimulusOf-start-30, TargetOff-start+30, -30, 1280+30])
                 axs[trial].set_xlabel('Time (ms)', fontsize=t_label)
@@ -1025,7 +1028,7 @@ class ANEMO(object):
         plt.close()
 
 
-    def plot_velocity(data, trials=0, block=0,  N_trials=200, px_per_deg=36.51, list_events=None, stop_recherche_misac=None, fig_width=15, t_titre=35, t_label=20, ):
+    def plot_velocity(data, trials=0, block=0,  N_trials=200, px_per_deg=36.51, list_events=None, stop_recherche_misac=None, fig_width=15, t_titre=35, t_label=20, fct_fit='fct_velocity'):
         '''
         Renvoie les figures de la vitesse de l'œil
 
@@ -1104,20 +1107,21 @@ class ANEMO(object):
 
             trackertime_0 = data[trial_data]['trackertime'][0]
 
-            velocity = ANEMO.velocity_deg(data_x, px_per_deg)
-            velocity_y = ANEMO.velocity_deg(data_y, px_per_deg)
+            velocity = ANEMO.velocity_deg(data_x=data_x, px_per_deg=px_per_deg)
+            velocity_y = ANEMO.velocity_deg(data_x=data_y, px_per_deg=px_per_deg)
 
             if stop_recherche_misac is None :
                 stop_recherche_misac = TargetOn-trackertime_0+100
 
-            misac = ANEMO.Microsaccade(velocity[:stop_recherche_misac], velocity_y[:stop_recherche_misac], trackertime_0=trackertime_0)
+            misac = ANEMO.Microsaccade(velocity_x=velocity[:stop_recherche_misac], velocity_y=velocity_y[:stop_recherche_misac], trackertime_0=trackertime_0)
             saccades.extend(misac)
 
-            velocity_NAN = ANEMO.suppression_saccades(velocity, saccades, trackertime)
+            velocity_NAN = ANEMO.suppression_saccades(velocity=velocity, saccades=saccades, trackertime=trackertime)
 
             start = TargetOn
 
-            ax = ANEMO.figure(ax, velocity_NAN, saccades, StimulusOn, StimulusOf, TargetOn, TargetOff, trackertime, start, 0, 'velocity', t_label)
+            ax = ANEMO.figure(ax=ax, velocity=velocity_NAN, saccades=saccades, StimulusOn=StimulusOn, StimulusOf=StimulusOf, TargetOn=TargetOn,
+                              TargetOff=TargetOff, trackertime=trackertime, start=start, bino=0, plot='velocity', t_label=t_label, fct_fit=fct_fit)
 
             if x == int((len(trials)-1)/2) :
                 ax.set_ylabel('Velocity (°/s)', fontsize=t_label)
@@ -1134,7 +1138,7 @@ class ANEMO(object):
 
 
     def plot_Fit(data, bino, trials=0, block=0, N_trials=200, px_per_deg=36.51, list_events=None, stop_recherche_misac=None, param_fit=None,
-                 plot='fonction', fig_width=15, t_titre=35, t_label=20, report=None, sup=True, time_sup=-280):
+                 plot='fonction', fig_width=15, t_titre=35, t_label=20, report=None, sup=True, time_sup=-280, step_fit=2, fct_fit='fct_velocity'):
 
         '''
         Renvoie les figures du Fit
@@ -1222,23 +1226,29 @@ class ANEMO(object):
             saccades = data[trial_data]['events']['Esac']
             trackertime_0 = data[trial_data]['trackertime'][0]
 
-            velocity = ANEMO.velocity_deg(data_x, px_per_deg)
-            velocity_y = ANEMO.velocity_deg(data_y, px_per_deg)
+            velocity = ANEMO.velocity_deg(data_x=data_x, px_per_deg=px_per_deg)
+            velocity_y = ANEMO.velocity_deg(data_x=data_y, px_per_deg=px_per_deg)
 
             if stop_recherche_misac is None :
                 stop_recherche_misac = TargetOn-trackertime_0+100
 
-            misac = ANEMO.Microsaccade(velocity[:stop_recherche_misac], velocity_y[:stop_recherche_misac], trackertime_0=trackertime_0)
+            misac = ANEMO.Microsaccade(velocity_x=velocity[:stop_recherche_misac], velocity_y=velocity_y[:stop_recherche_misac], trackertime_0=trackertime_0)
             saccades.extend(misac)
 
-            velocity_NAN = ANEMO.suppression_saccades(velocity, saccades, trackertime)
+            velocity_NAN = ANEMO.suppression_saccades(velocity=velocity, saccades=saccades, trackertime=trackertime)
 
             start = TargetOn
 
             if report is None :
-                ax = ANEMO.figure(ax, velocity_NAN, saccades, StimulusOn, StimulusOf, TargetOn, TargetOff, trackertime, start, bino_trial, plot, t_label, sup, time_sup, report, param_fit, step_fit)
+                ax = ANEMO.figure(ax=ax, velocity=velocity_NAN, saccades=saccades, StimulusOn=StimulusOn, StimulusOf=StimulusOf,
+                                  TargetOn=TargetOn, TargetOff=TargetOff, trackertime=trackertime, start=start, bino=bino_trial,
+                                  plot=plot, t_label=t_label, sup=sup, time_sup=time_sup, report=report, param_fit=param_fit,
+                                  step_fit=step_fit, fct_fit=fct_fit)
             else :
-                ax, result = ANEMO.figure(ax, velocity_NAN, saccades, StimulusOn, StimulusOf, TargetOn, TargetOff, trackertime, start, bino_trial, plot, t_label, sup, time_sup, report, param_fit, step_fit)
+                ax, result = ANEMO.figure(ax=ax, velocity=velocity_NAN, saccades=saccades, StimulusOn=StimulusOn, StimulusOf=StimulusOf,
+                                          TargetOn=TargetOn, TargetOff=TargetOff, trackertime=trackertime, start=start, bino=bino_trial,
+                                          plot=plot, t_label=t_label, sup=sup, time_sup=time_sup, report=report, param_fit=param_fit,
+                                          step_fit=step_fit, fct_fit=fct_fit)
                 results.append(result)
 
             if x == int((len(trials)-1)/2) :
