@@ -42,7 +42,7 @@ class ANEMO(object):
                     "data_y": data[trial_data]['y'],
                     "trackertime":data[trial_data]['trackertime'],
                     "saccades":data[trial_data]['events']['Esac'],
-                    "trackertime_0": data[trial_data]['trackertime'][0],
+                    "t_0": data[trial_data]['trackertime'][0],
                     "StimulusOn":StimulusOn,
                     "StimulusOf": StimulusOf,
                     "TargetOn": TargetOn,
@@ -75,7 +75,7 @@ class ANEMO(object):
         return gradient_deg
 
     # y ajouter microsaccade ?
-    def Microsaccade (velocity_x, velocity_y, VFAC=5, mindur=5, maxdur=100, minsep=30, trackertime_0=0):
+    def Microsaccade (velocity_x, velocity_y, VFAC=5, mindur=5, maxdur=100, minsep=30, t_0=0):
         '''
         Détection des micro_saccades non-detectés par eyelink dans les données
 
@@ -94,7 +94,7 @@ class ANEMO(object):
             maximal saccade duration (ms)
         minsep : int
             minimal time interval between two detected saccades (ms)
-        trackertime_0 : int
+        t_0 : int
             temps 0 de l'essais
 
         Returns
@@ -123,7 +123,7 @@ class ANEMO(object):
             else :
                 if dur >= mindur and dur < maxdur :
                     fin_misaccades = i
-                    misaccades.append([index[debut_misaccades]+trackertime_0, index[fin_misaccades]+trackertime_0])
+                    misaccades.append([index[debut_misaccades]+t_0, index[fin_misaccades]+t_0])
                 debut_misaccades = i+1
                 dur = 1
             i = i + 1
@@ -172,14 +172,14 @@ class ANEMO(object):
 
         '''
 
-        trackertime_0 = trackertime[0]
+        t_0 = trackertime[0]
 
         for s in range(len(saccades)) :
-            if saccades[s][1]-trackertime_0+apres <= (len(trackertime)) :
-                for x_data in np.arange((saccades[s][0]-trackertime_0-avant), (saccades[s][1]-trackertime_0+apres)) :
+            if saccades[s][1]-t_0+apres <= (len(trackertime)) :
+                for x_data in np.arange((saccades[s][0]-t_0-avant), (saccades[s][1]-t_0+apres)) :
                     velocity[x_data] = np.nan
             else :
-                for x_data in np.arange((saccades[s][0]-trackertime_0-avant), (len(trackertime))) :
+                for x_data in np.arange((saccades[s][0]-t_0-avant), (len(trackertime))) :
                     velocity[x_data] = np.nan
 
         return velocity
@@ -513,16 +513,16 @@ class ANEMO(object):
                 saccades = data[trial_data]['events']['Esac']
                 bino=binomial[trial, block]
 
-                trackertime_0 = data[trial_data]['trackertime'][0]
+                t_0 = data[trial_data]['trackertime'][0]
 
                 velocity = ANEMO.velocity_deg(data_x=data_x, px_per_deg=px_per_deg)
                 velocity_y = ANEMO.velocity_deg(data_x=data_y, px_per_deg=px_per_deg)
 
 
                 if stop_recherche_misac is None :
-                    stop_recherche_misac = TargetOn-trackertime_0+100
+                    stop_recherche_misac = TargetOn-t_0+100
 
-                misac = ANEMO.Microsaccade(velocity_x=velocity[:stop_recherche_misac], velocity_y=velocity_y[:stop_recherche_misac], trackertime_0=trackertime_0)
+                misac = ANEMO.Microsaccade(velocity_x=velocity[:stop_recherche_misac], velocity_y=velocity_y[:stop_recherche_misac], t_0=t_0)
                 saccades.extend(misac)
 
                 velocity_NAN = ANEMO.suppression_saccades(velocity=velocity, saccades=saccades, trackertime=trackertime)
@@ -543,7 +543,7 @@ class ANEMO(object):
                 ##################################################
 
 
-                debut  = TargetOn - trackertime_0 # TargetOn - temps_0
+                debut  = TargetOn - t_0 # TargetOn - temps_0
 
                 start_anti = result_deg.values['start_anti']-debut
                 v_anti = result_deg.values['v_anti']
@@ -703,7 +703,7 @@ class ANEMO(object):
             fit report
         '''
 
-        trackertime_0 = trackertime[0]
+        t_0 = trackertime[0]
         StimulusOn_s = StimulusOn - start
         StimulusOf_s = StimulusOf - start
         TargetOn_s = TargetOn - start
@@ -724,7 +724,7 @@ class ANEMO(object):
 
         if plot == 'Fitvelocity' :
 
-            debut  = TargetOn - trackertime_0 # TargetOn - temps_0
+            debut  = TargetOn - t_0 # TargetOn - temps_0
             start_anti = result_deg.values['start_anti']
             v_anti = result_deg.values['v_anti']
             latence = result_deg.values['latence']
@@ -735,10 +735,10 @@ class ANEMO(object):
 
         if plot == 'fonction' :
 
-            debut  = TargetOn - trackertime_0 # TargetOn - temps_0
-            start_anti = TargetOn-trackertime_0-100
+            debut  = TargetOn - t_0 # TargetOn - temps_0
+            start_anti = TargetOn-t_0-100
             v_anti = -20
-            latence = TargetOn-trackertime_0+100
+            latence = TargetOn-t_0+100
             tau = 15.
             maxi = 15.
             result_fit = ANEMO.fct_velocity (x=np.arange(len(trackertime_s)), bino=bino, start_anti=start_anti, v_anti=v_anti, latence=latence, tau=tau, maxi=maxi)
@@ -888,7 +888,7 @@ class ANEMO(object):
         TargetOn_s = TargetOn - start
         TargetOff_s = TargetOff - start
         trackertime_s = trackertime - start
-        trackertime_0 = trackertime_s[0]
+        t_0 = trackertime_s[0]
 
         #------------------------------------------------
         # TARGET
@@ -898,12 +898,12 @@ class ANEMO(object):
         x = screen_width_px/2
 
         for t in range(len(trackertime_s)):
-            if t < (TargetOn_s-trackertime_0) :
+            if t < (TargetOn_s-t_0) :
                 x = screen_width_px/2
-            elif t == (TargetOn_s-trackertime_0) :
+            elif t == (TargetOn_s-t_0) :
                 # la cible à t=0 recule de sa vitesse * latence=RashBass (ici mis en ms)
                 x = x -(dir_bool * ((V_X/1000)*RashBass))
-            elif (t > (TargetOn_s-trackertime_0) and t <= ((TargetOn_s-trackertime_0)+stim_tau*1000)) :
+            elif (t > (TargetOn_s-t_0) and t <= ((TargetOn_s-t_0)+stim_tau*1000)) :
                 x = x + (dir_bool*(V_X/1000))
             else :
                 x = x
@@ -1105,15 +1105,15 @@ class ANEMO(object):
 
             saccades = data[trial_data]['events']['Esac']
 
-            trackertime_0 = data[trial_data]['trackertime'][0]
+            t_0 = data[trial_data]['trackertime'][0]
 
             velocity = ANEMO.velocity_deg(data_x=data_x, px_per_deg=px_per_deg)
             velocity_y = ANEMO.velocity_deg(data_x=data_y, px_per_deg=px_per_deg)
 
             if stop_recherche_misac is None :
-                stop_recherche_misac = TargetOn-trackertime_0+100
+                stop_recherche_misac = TargetOn-t_0+100
 
-            misac = ANEMO.Microsaccade(velocity_x=velocity[:stop_recherche_misac], velocity_y=velocity_y[:stop_recherche_misac], trackertime_0=trackertime_0)
+            misac = ANEMO.Microsaccade(velocity_x=velocity[:stop_recherche_misac], velocity_y=velocity_y[:stop_recherche_misac], t_0=t_0)
             saccades.extend(misac)
 
             velocity_NAN = ANEMO.suppression_saccades(velocity=velocity, saccades=saccades, trackertime=trackertime)
@@ -1224,15 +1224,15 @@ class ANEMO(object):
                     TargetOff = data[trial_data]['events']['msg'][events][0]
 
             saccades = data[trial_data]['events']['Esac']
-            trackertime_0 = data[trial_data]['trackertime'][0]
+            t_0 = data[trial_data]['trackertime'][0]
 
             velocity = ANEMO.velocity_deg(data_x=data_x, px_per_deg=px_per_deg)
             velocity_y = ANEMO.velocity_deg(data_x=data_y, px_per_deg=px_per_deg)
 
             if stop_recherche_misac is None :
-                stop_recherche_misac = TargetOn-trackertime_0+100
+                stop_recherche_misac = TargetOn-t_0+100
 
-            misac = ANEMO.Microsaccade(velocity_x=velocity[:stop_recherche_misac], velocity_y=velocity_y[:stop_recherche_misac], trackertime_0=trackertime_0)
+            misac = ANEMO.Microsaccade(velocity_x=velocity[:stop_recherche_misac], velocity_y=velocity_y[:stop_recherche_misac], t_0=t_0)
             saccades.extend(misac)
 
             velocity_NAN = ANEMO.suppression_saccades(velocity=velocity, saccades=saccades, trackertime=trackertime)
