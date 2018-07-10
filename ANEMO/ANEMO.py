@@ -743,8 +743,8 @@ class ANEMO(object):
                     #axs[trial].plot(trackertime_s[:time_sup], result_deg.init_fit, 'r--', linewidth=2)
 
                     if fct_fit=='fct_velocity' :
-                        rere = fct_velocity(x=range(len(arg.trackertime)), dir_target=dir_target, start_anti=start_anti,
-                                            v_anti=v_anti, latence=latence, tau=tau, maxi=maxi, do_whitening=False)
+                        rere = fct_velocity(x=range(len(arg.trackertime)), dir_target=dir_target, start_anti=start_anti+debut,
+                                            v_anti=v_anti, latence=latence+debut, tau=tau, maxi=maxi, do_whitening=False)
 
                     if fct_fit=='fct_position' :
                         sacc = np.zeros(len(arg.trackertime))
@@ -755,7 +755,7 @@ class ANEMO(object):
                             sacc[i+2] = saccades[s][2] # tps sacc
                             i = i+3
                         rere = fct_position(x=range(len(arg.trackertime)), data_x=arg.data_x, saccades=sacc, nb_sacc=len(saccades),
-                                            dir_target=dir_target, start_anti=start_anti,v_anti=v_anti, latence=latence,
+                                            dir_target=dir_target, start_anti=start_anti+debut,v_anti=v_anti, latence=latence+debut,
                                             tau=tau, maxi=maxi, t_0=arg.t_0, px_per_deg=self.param_exp['px_per_deg'], avant=avant,
                                             apres=apres, do_whitening=False)
 
