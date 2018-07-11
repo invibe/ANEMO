@@ -94,7 +94,7 @@ def fct_position(x, data_x, saccades, nb_sacc, dir_target, start_anti, v_anti, l
     v_anti = (v_anti/ms)
     maxi = maxi /ms
     
-    speed = fct_velocity(x=x, dir_target=dir_target, start_anti=start_anti, v_anti=v_anti, latence=latence, tau=tau, maxi=maxi, do_whitening=do_whitening)
+    speed = fct_velocity(x=x, dir_target=dir_target, start_anti=start_anti, v_anti=v_anti, latence=latence, tau=tau, maxi=maxi, do_whitening=False)
     pos = np.cumsum(speed)
 
     i=0
