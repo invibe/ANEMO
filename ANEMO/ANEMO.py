@@ -452,7 +452,7 @@ class ANEMO(object):
 
     def Fit_trial(self, data_trial, trackertime, dir_target, fct_fit='fct_velocity', data_x=None,
                   param_fit=None, old_latence=None, old_max=None, old_anti=None, TargetOn=None, StimulusOf=None, saccades=None, sup=True, time_sup=-280,
-                  avant=5, apres=10, do_whitening=True, step=2) :
+                  avant=5, apres=10, do_whitening=False, step=2) :
                         #maxiter=1000):
         '''
         Returns le resultat du fits de la vitesse de l'œil a un essais avec la fonction reproduisant la vitesse de l'œil lors de la pousuite lisse d'une cible en mouvement
@@ -498,7 +498,7 @@ class ANEMO(object):
         t_0 = trackertime[0]
 
         if param_fit is None :
-            print(old_latence)
+            #print(old_latence)
             try :
                 if np.isnan(old_latence)==True :
                     old_latence = None
@@ -891,7 +891,7 @@ class ANEMO(object):
     ######################################################################################
 
     def figure(self, ax, velocity, saccades, StimulusOn, StimulusOf, TargetOn, TargetOff, trackertime, start, bino, plot, t_label,
-               sup=True, time_sup=-280, report=None, param_fit=None, step_fit=2, fct_fit='fct_velocity') :
+               sup=True, time_sup=-280, report=None, param_fit=None, step_fit=2, fct_fit='fct_velocity', do_whitening=False) :
         '''
         Returns figure
 
@@ -969,8 +969,8 @@ class ANEMO(object):
 
         if plot != 'velocity' :
             # FIT
-            result_deg = ANEMO.Fit_trial(self, data_trial=velocity, trackertime=trackertime, dir_target=dir_target,param_fit=param_fit, TargetOn=TargetOn, StimulusOf=StimulusOf,
-                                         saccades=saccades, sup=sup, time_sup=time_sup, step=step_fit, fct_fit=fct_fit)
+            result_deg = ANEMO.Fit_trial(self, data_trial=velocity, trackertime=trackertime, dir_target=dir_target,param_fit=param_fit, TargetOn=TargetOn,
+                                         StimulusOf=StimulusOf, saccades=saccades, sup=sup, time_sup=time_sup, step=step_fit, fct_fit=fct_fit, do_whitening=do_whitening)
 
         if plot == 'Fitvelocity' :
 
@@ -981,7 +981,8 @@ class ANEMO(object):
             tau = result_deg.values['tau']
             maxi = result_deg.values['maxi']
             #result_fit = result_deg.best_fit
-            result_fit = fct_velocity (x=np.arange(len(trackertime_s)), dir_target=dir_target, start_anti=start_anti, v_anti=v_anti, latence=latence, tau=tau, maxi=maxi)
+            result_fit = fct_velocity (x=np.arange(len(trackertime_s)), dir_target=dir_target, start_anti=start_anti, v_anti=v_anti, latence=latence,
+                                       tau=tau, maxi=maxi, do_whitening=do_whitening)
 
         if plot == 'fonction' :
 
@@ -991,7 +992,8 @@ class ANEMO(object):
             latence = TargetOn-t_0+100
             tau = 15.
             maxi = 15.
-            result_fit = fct_velocity (x=np.arange(len(trackertime_s)), dir_target=dir_target, start_anti=start_anti, v_anti=v_anti, latence=latence, tau=tau, maxi=maxi)
+            result_fit = fct_velocity (x=np.arange(len(trackertime_s)), dir_target=dir_target, start_anti=start_anti, v_anti=v_anti, latence=latence,
+                                       tau=tau, maxi=maxi, do_whitening=do_whitening)
             maxi = bino*maxi + bino*result_fit[latence]
             ax.plot(trackertime_s[int(latence)+250:], result_fit[int(latence)+250:], 'k', linewidth=2)
 
@@ -1274,7 +1276,7 @@ class ANEMO(object):
 
 
     def plot_velocity(self, data, trials=0, block=0, list_events=None, stop_recherche_misac=None,
-                      fig_width=15, t_titre=35, t_label=20, fct_fit='fct_velocity'):
+                      fig_width=15, t_titre=35, t_label=20, fct_fit='fct_velocity', do_whitening=False):
         '''
         Renvoie les figures de la vitesse de l'œil
 
@@ -1361,7 +1363,7 @@ class ANEMO(object):
             start = TargetOn
 
             ax = ANEMO.figure(self, ax=ax, velocity=velocity_NAN, saccades=saccades, StimulusOn=StimulusOn, StimulusOf=StimulusOf, TargetOn=TargetOn,
-                              TargetOff=TargetOff, trackertime=trackertime, start=start, bino=0, plot='velocity', t_label=t_label, fct_fit=fct_fit)
+                              TargetOff=TargetOff, trackertime=trackertime, start=start, bino=0, plot='velocity', t_label=t_label, fct_fit=fct_fit, do_whitening=do_whitening)
 
             if x == int((len(trials)-1)/2) :
                 ax.set_ylabel('Velocity (°/s)', fontsize=t_label)
@@ -1378,7 +1380,7 @@ class ANEMO(object):
 
 
     def plot_Fit(self, data, trials=0, block=0, list_events=None, stop_recherche_misac=None, param_fit=None,
-                 plot='fonction', fig_width=15, t_titre=35, t_label=20, report=None, sup=True, time_sup=-280, step_fit=2, fct_fit='fct_velocity'):
+                 plot='fonction', fig_width=15, t_titre=35, t_label=20, report=None, sup=True, time_sup=-280, step_fit=2, fct_fit='fct_velocity', do_whitening=False):
 
         '''
         Renvoie les figures du Fit
@@ -1479,12 +1481,12 @@ class ANEMO(object):
                 ax = ANEMO.figure(self, ax=ax, velocity=velocity_NAN, saccades=saccades, StimulusOn=StimulusOn, StimulusOf=StimulusOf,
                                   TargetOn=TargetOn, TargetOff=TargetOff, trackertime=trackertime, start=start, bino=bino_trial,
                                   plot=plot, t_label=t_label, sup=sup, time_sup=time_sup, report=report, param_fit=param_fit,
-                                  step_fit=step_fit, fct_fit=fct_fit)
+                                  step_fit=step_fit, fct_fit=fct_fit, do_whitening=do_whitening)
             else :
                 ax, result = ANEMO.figure(self, ax=ax, velocity=velocity_NAN, saccades=saccades, StimulusOn=StimulusOn, StimulusOf=StimulusOf,
                                           TargetOn=TargetOn, TargetOff=TargetOff, trackertime=trackertime, start=start, bino=bino_trial,
                                           plot=plot, t_label=t_label, sup=sup, time_sup=time_sup, report=report, param_fit=param_fit,
-                                          step_fit=step_fit, fct_fit=fct_fit)
+                                          step_fit=step_fit, fct_fit=fct_fit, do_whitening=do_whitening)
                 results.append(result)
 
             if x == int((len(trials)-1)/2) :
