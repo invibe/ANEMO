@@ -35,6 +35,48 @@ def whitening(position, white_f_0=.4, white_alpha=.5, white_steepness=4):
     return np.real(np.fft.ifft(f_position*K))
 
 
+def fct_old_latence(data, w1=300, w2=50, off=50, crit=0.17) :
+    
+    from scipy import stats
+    
+    time = np.arange(len(data))
+    tps = time
+    a = None
+    for t in range(len(time)-(w1+off+w2)-300) :
+        slope1, intercept1, r_, p_value, std_err = stats.linregress(tps[t:t+w1], data[t:t+w1])
+        slope2, intercept2, r_, p_value, std_err = stats.linregress(tps[t+w1+off:t+w1+off+w2], data[t+w1+off:t+w1+off+w2])
+        diff = abs(slope2) - abs(slope1)
+        if abs(diff) >= crit :
+            a = True
+            tw = time[t:t+w1+off+w2]
+            timew = np.linspace(np.min(tw), np.max(tw), len(tw))
+
+            fitLine1 = slope1 * timew + intercept1
+            fitLine2 = slope2 * timew + intercept2
+
+            idx = np.argwhere(np.isclose(fitLine1, fitLine2, atol=0.1)).reshape(-1)
+            old_latence = timew[idx]
+            break
+
+    if a is None :
+        old_latence = [np.nan]
+    if len(old_latence)==0 :
+        old_latence = [np.nan]
+
+    return(old_latence[0])
+
+def classical_methode(velocity_NAN, StimulusOn, StimulusOf, TargetOn, t_0):
+
+    old_latence = fct_old_latence(velocity_NAN)
+
+    a1, b1 = TargetOn-t_0+400, TargetOn-t_0+600
+    old_max = abs(np.nanmean(velocity_NAN[a1:b1]))
+
+    old_anti = np.nanmean(velocity_NAN[TargetOn-t_0-50:TargetOn-t_0+50])
+
+    return old_latence, old_max, old_anti/0.1
+
+
 def fct_velocity (x, dir_target, start_anti, v_anti, latence, tau, maxi, do_whitening) :
 
     '''
@@ -103,7 +145,7 @@ def fct_position(x, data_x, saccades, nb_sacc, dir_target, start_anti, v_anti, l
                                 # saccades[i] -> debut, saccades[i+1] -> fin, saccades[i+2] -> tps sacc
         if sacc[0]-t_0 < len(pos) :
             if sacc[0]-t_0 > int(latence) :
-                if int(sacc[1]-t_0)+apres <= len(pos) :
+                if int(sacc[1]-t_0)+apres+1 <= len(pos) :
                     pos[int(sacc[0]-t_0)-avant:int(sacc[1]-t_0)+apres] = pos[int(sacc[0]-t_0)-avant-1] #np.nan 
                     pos[int(sacc[1]-t_0)+apres:] += ((data_x[int(sacc[1]-t_0)+apres]-data_x[int(sacc[0]-t_0)-avant-1])/px_per_deg) - np.mean(speed[int(sacc[0]-t_0):int(sacc[1]-t_0)]) * sacc[2]
 
@@ -409,7 +451,7 @@ class ANEMO(object):
 
 
     def Fit_trial(self, data_trial, trackertime, dir_target, fct_fit='fct_velocity', data_x=None,
-                  param_fit=None, TargetOn=None, StimulusOf=None, saccades=None, sup=True, time_sup=-280,
+                  param_fit=None, old_latence=None, old_max=None, old_anti=None, TargetOn=None, StimulusOf=None, saccades=None, sup=True, time_sup=-280,
                   avant=5, apres=10, do_whitening=True, step=2) :
                         #maxiter=1000):
         '''
@@ -456,8 +498,17 @@ class ANEMO(object):
         t_0 = trackertime[0]
 
         if param_fit is None :
-            param_fit={'tau':[15.,13.,80.], 'maxi':[15.,1.,40], 'v_anti':[0.,-40.,40.],
-                       'latence':[TargetOn-t_0+100,TargetOn-t_0+75,'STOP'],
+            if np.isnan(old_latence)==True :
+                old_latence = None
+            if old_latence is None :
+                old_latence = TargetOn-t_0+100
+            if old_max is None :
+                old_max = 15.
+            if old_anti is None :
+                old_anti = 0.
+
+            param_fit={'tau':[15.,13.,80.], 'maxi':[old_max,1.,40], 'v_anti':[old_anti,-40.,40.],
+                       'latence':[old_latence,TargetOn-t_0+75,'STOP'],
                        'start_anti':[TargetOn-t_0-100, StimulusOf-t_0-200, TargetOn-t_0+75]}
 
         if param_fit['latence'][2]=='STOP' :
@@ -494,8 +545,6 @@ class ANEMO(object):
             params.add('apres', value=apres, vary=False)
             params.add('nb_sacc', value=len(saccades), vary=False)
 
-
-
             sacc = np.zeros(len(trackertime))
             i=0
             for s in range(len(saccades)):
@@ -516,7 +565,6 @@ class ANEMO(object):
         params.add('start_anti', value=param_fit['start_anti'][0], min=param_fit['start_anti'][1], max=param_fit['start_anti'][2], vary=vary)
         params.add('v_anti', value=param_fit['v_anti'][0], min=param_fit['v_anti'][1], max=param_fit['v_anti'][2], vary=vary)
         params.add('do_whitening', value=do_whitening, vary=False)
-
 
         if step == 1 :
             if fct_fit=='fct_velocity' :
@@ -620,8 +668,12 @@ class ANEMO(object):
         liste_latence = []
         liste_tau = []
         liste_maxi = []
-        liste_mean = []
         liste_saccades = []
+
+        liste_old_anti = []
+        liste_old_max = []
+        liste_old_latence = []
+
 
         for block in range(self.param_exp['N_blocks']) :
             if plot is not None :
@@ -633,15 +685,15 @@ class ANEMO(object):
             block_latence = []
             block_tau = []
             block_maxi = []
-            block_mean = []
             block_saccades = []
+
+            block_old_anti = []
+            block_old_max = []
+            block_old_latence = []
 
             for trial in range(self.param_exp['N_trials']) :
 
                 print('block, trial = ', block, trial)
-
-                if plot is not None :
-                    axs[trial].cla() # pour remettre ax figure a zero
 
                 arg = ANEMO.arg(self, data, trial, block, list_events=None)
                 saccades = arg.saccades
@@ -656,6 +708,13 @@ class ANEMO(object):
                 trackertime_s = arg.trackertime - start
 
 
+                if plot is not None :
+                    axs[trial].cla() # pour remettre ax figure a zero
+                    axs[trial].axvspan(StimulusOn_s, StimulusOf_s, color='k', alpha=0.2)
+                    axs[trial].axvspan(StimulusOf_s, TargetOn_s, color='r', alpha=0.2)
+                    axs[trial].axvspan(TargetOn_s, TargetOff_s, color='k', alpha=0.15)
+                    for s in range(len(saccades)) :
+                        axs[trial].axvspan(saccades[s][0]-start, saccades[s][1]-start, color='k', alpha=0.2)
 
 
                 velocity = ANEMO.velocity_deg(self, data_x=arg.data_x)
@@ -666,8 +725,6 @@ class ANEMO(object):
                     misac = ANEMO.Microsaccade(self, velocity_x=velocity[:stop_recherche_misac], velocity_y=velocity_y[:stop_recherche_misac], t_0=arg.t_0)
                     saccades.extend(misac)
                 velocity_NAN = ANEMO.suppression_saccades(self, velocity=velocity, saccades=saccades, trackertime=arg.trackertime)
-
-
 
                 if fct_fit=='fct_velocity' :
                     data_x = arg.data_x
@@ -694,19 +751,20 @@ class ANEMO(object):
 
                         data_2[arg.saccades[s][0]-arg.t_0-avant:arg.saccades[s][1]-arg.t_0+apres] = f.residual+f.values['x_0']
 
-                        axs[trial].plot(trackertime_s[arg.saccades[s][0]-arg.t_0+avant:arg.saccades[s][1]-arg.t_0+apres]-start, f.best_fit , 'r')
+                        axs[trial].plot(trackertime_s[arg.saccades[s][0]-arg.t_0+avant:arg.saccades[s][1]-arg.t_0+apres]-start, f.best_fit , color='darkred', linewidth=2)
                     data_trial = data_2
+
+                debut  = arg.TargetOn - arg.t_0 # TargetOn - temps_0
 
                 ##################################################
                 # FIT
                 ##################################################
+                old_latence, old_max, old_anti = classical_methode(velocity_NAN, arg.StimulusOn, arg.StimulusOf, arg.TargetOn, arg.t_0)
                 result_deg = ANEMO.Fit_trial(self, data_trial=data_trial, data_x=data_x, trackertime=arg.trackertime, dir_target=dir_target, param_fit=param_fit,
+                                             old_latence=old_latence, old_max=old_max, old_anti=old_anti,
                                              TargetOn=arg.TargetOn, StimulusOf=arg.StimulusOf, saccades=saccades, sup=sup, time_sup=time_sup, step=step_fit,
                                              fct_fit=fct_fit, avant=avant, apres=apres, do_whitening=do_whitening)
                 ##################################################
-
-
-                debut  = arg.TargetOn - arg.t_0 # TargetOn - temps_0
 
                 start_anti = result_deg.values['start_anti']-debut
                 v_anti = result_deg.values['v_anti']
@@ -724,29 +782,36 @@ class ANEMO(object):
                     axs[trial].bar(latence, 80, bottom=-40, color='r', width=6, linewidth=0)
                     if trial==0 :
                         axs[trial].text(latence+25, -35, "Latence"%(latence), color='r', fontsize=14)'''
-
+                
                 block_fit.append(result_deg.best_fit) # result_deg
                 block_start_anti.append(start_anti)
                 block_liste_v_anti.append(v_anti)
                 block_latence.append(latence)
                 block_tau.append(tau)
                 block_maxi.append(maxi)
-                block_mean.append(np.nanmean(velocity_NAN[debut-50:debut+50]))
                 block_saccades.append(param_sac)
+
+                block_old_anti.append(old_anti)
+                block_old_max.append(old_max)
+                block_old_latence.append(old_latence-debut)
 
                 if plot is not None :
                     #axs[trial].cla() # pour remettre ax figure a zero
-                    axs[trial].axis([StimulusOn_s-10, TargetOff_s+10, -40, 40])
+                    #axs[trial].axis([StimulusOn_s-10, TargetOff_s+10, -40, 40])
                     axs[trial].xaxis.set_ticks(range(StimulusOf_s-199, TargetOff_s+10, 500))
 
-                    axs[trial].plot(trackertime_s, data_1, color='k', alpha=0.6)
+
                     #axs[trial].plot(trackertime_s[:time_sup], result_deg.init_fit, 'r--', linewidth=2)
 
                     if fct_fit=='fct_velocity' :
+                        axs[trial].axis([TargetOn_s-700, TargetOff_s+10, -40, 40])
+                        axs[trial].plot(trackertime_s, np.ones(np.shape(trackertime_s)[0])*dir_target*(15), color='k', linewidth=0.2, alpha=0.2)
+                        axs[trial].plot(trackertime_s, np.ones(np.shape(trackertime_s)[0])*dir_target*(10), color='k', linewidth=0.2, alpha=0.2)
                         rere = fct_velocity(x=range(len(arg.trackertime)), dir_target=dir_target, start_anti=start_anti+debut,
                                             v_anti=v_anti, latence=latence+debut, tau=tau, maxi=maxi, do_whitening=False)
 
                     if fct_fit=='fct_position' :
+                        axs[trial].axis([TargetOn_s-700, TargetOff_s+10, -(arg.screen_width_px/arg.px_per_deg)/2, (arg.screen_width_px/arg.px_per_deg)/2])
                         sacc = np.zeros(len(arg.trackertime))
                         i=0
                         for s in range(len(saccades)):
@@ -760,15 +825,8 @@ class ANEMO(object):
                                             apres=apres, do_whitening=False)
 
                     axs[trial].plot(trackertime_s[:time_sup], rere[:time_sup], color='r', linewidth=2)
-                    axs[trial].plot(trackertime_s, np.ones(np.shape(trackertime_s)[0])*dir_target*(15), color='k', linewidth=0.2, alpha=0.2)
-                    axs[trial].plot(trackertime_s, np.ones(np.shape(trackertime_s)[0])*dir_target*(10), color='k', linewidth=0.2, alpha=0.2)
-                    axs[trial].axvspan(StimulusOn_s, StimulusOf_s, color='k', alpha=0.2)
-                    axs[trial].axvspan(StimulusOf_s, TargetOn_s, color='r', alpha=0.2)
-                    axs[trial].axvspan(TargetOn_s, TargetOff_s, color='k', alpha=0.15)
-                    for s in range(len(saccades)) :
-                        axs[trial].axvspan(saccades[s][0]-start, saccades[s][1]-start, color='k', alpha=0.2)
-
                     axs[trial].bar(latence, 80, bottom=-40, color='r', width=6, linewidth=0)
+                    axs[trial].plot(trackertime_s, data_1, color='k', alpha=0.6)
 
                     if trial==0 :
                         axs[trial].text(StimulusOn_s+(StimulusOf_s-StimulusOn_s)/2, 31, "FIXATION", color='k', fontsize=t_text+2, ha='center', va='bottom')
@@ -791,8 +849,11 @@ class ANEMO(object):
             liste_latence.append(block_latence)
             liste_tau.append(block_tau)
             liste_maxi.append(block_maxi)
-            liste_mean.append(block_mean)
             liste_saccades.append(block_saccades)
+
+            liste_old_anti.append(block_old_anti)
+            liste_old_max.append(block_old_max)
+            liste_old_latence.append(block_old_latence)
 
             if plot is not None :
                 plt.tight_layout() # pour supprimer les marge trop grande
@@ -814,8 +875,11 @@ class ANEMO(object):
         param['latence'] = liste_latence
         param['tau'] = liste_tau
         param['maxi'] = liste_maxi
-        param['moyenne'] = liste_mean
         param['saccades'] = liste_saccades
+
+        param['old_anti'] = liste_old_anti
+        param['old_max'] = liste_old_max
+        param['old_latence'] = liste_old_latence
 
         return param
 
