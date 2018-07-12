@@ -498,8 +498,12 @@ class ANEMO(object):
         t_0 = trackertime[0]
 
         if param_fit is None :
-            if np.isnan(old_latence)==True :
-                old_latence = None
+            print(old_latence)
+            try :
+                if np.isnan(old_latence)==True :
+                    old_latence = None
+            except :
+                pass
             if old_latence is None :
                 old_latence = TargetOn-t_0+100
             if old_max is None :
@@ -750,8 +754,8 @@ class ANEMO(object):
                         param_sac[s]['tr'] = f.values['tr']
 
                         data_2[arg.saccades[s][0]-arg.t_0-avant:arg.saccades[s][1]-arg.t_0+apres] = f.residual+f.values['x_0']
-
-                        axs[trial].plot(trackertime_s[arg.saccades[s][0]-arg.t_0+avant:arg.saccades[s][1]-arg.t_0+apres]-start, f.best_fit , color='darkred', linewidth=2)
+                        if plot is not None :
+                            axs[trial].plot(trackertime_s[arg.saccades[s][0]-arg.t_0+avant:arg.saccades[s][1]-arg.t_0+apres]-start, f.best_fit, color='r', linewidth=2)
                     data_trial = data_2
 
                 debut  = arg.TargetOn - arg.t_0 # TargetOn - temps_0
