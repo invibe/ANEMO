@@ -829,13 +829,13 @@ class ANEMO(object):
                     axs[trial].plot(trackertime_s, data_1, color='k', alpha=0.6)
 
                     if trial==0 :
-                        axs[trial].text(StimulusOn_s+(StimulusOf_s-StimulusOn_s)/2, 31, "FIXATION", color='k', fontsize=t_text+2, ha='center', va='bottom')
+                        axs[trial].text((TargetOn_s-700)+(StimulusOf_s-(TargetOn_s-700))/2, 31, "FIXATION", color='k', fontsize=t_text+2, ha='center', va='bottom')
                         axs[trial].text(StimulusOf_s+(TargetOn_s-StimulusOf_s)/2, 31, "GAP", color='r', fontsize=t_text+2, ha='center', va='bottom')
                         axs[trial].text(TargetOn_s+(TargetOff_s-TargetOn_s)/2, 31, "POURSUITE", color='k', fontsize=t_text+2, ha='center', va='bottom')
                         axs[trial].text(latence+25, -35, "Latence"%(latence), color='r', fontsize=t_text)#,  weight='bold')
                     #axs[trial].text(StimulusOn+15, -2, "%s"%(result.fit_report()), color='k', fontsize=15)
-                    axs[trial].text(StimulusOn_s+15, 18, "start_anti: %s \nv_anti: %s"%(start_anti, v_anti), color='k', fontsize=t_text, va='bottom')
-                    axs[trial].text(StimulusOn_s+15, -18, "latence: %s \ntau: %s \nmaxi: %s"%(latence, tau, maxi), color='k', fontsize=t_text, va='top')
+                    axs[trial].text((TargetOn_s-700)+15, 18, "start_anti: %s \nv_anti: %s"%(start_anti, v_anti), color='k', fontsize=t_text, va='bottom')
+                    axs[trial].text((TargetOn_s-700)+15, -18, "latence: %s \ntau: %s \nmaxi: %s"%(latence, tau, maxi), color='k', fontsize=t_text, va='top')
 
                     axs[trial].set_xlabel('Time (ms)', fontsize=t_label)
                     axs[trial].set_ylabel(trial+1, fontsize=t_label)
