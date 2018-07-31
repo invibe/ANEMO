@@ -808,6 +808,10 @@ class ANEMO(object):
                     #axs[trial].plot(trackertime_s[:time_sup], result_deg.init_fit, 'r--', linewidth=2)
 
                     if fct_fit=='fct_velocity' :
+                        pos_titre = 31
+                        pos_text = 18
+                        pos_lat = -35
+
                         axs[trial].axis([TargetOn_s-700, TargetOff_s+10, -40, 40])
                         axs[trial].plot(trackertime_s, np.ones(np.shape(trackertime_s)[0])*dir_target*(15), color='k', linewidth=0.2, alpha=0.2)
                         axs[trial].plot(trackertime_s, np.ones(np.shape(trackertime_s)[0])*dir_target*(10), color='k', linewidth=0.2, alpha=0.2)
@@ -815,6 +819,10 @@ class ANEMO(object):
                                             v_anti=v_anti, latence=latence+debut, tau=tau, maxi=maxi, do_whitening=False)
 
                     if fct_fit=='fct_position' :
+                        pos_titre = 14
+                        pos_text = 6
+                        pos_lat = -14
+
                         axs[trial].axis([TargetOn_s-700, TargetOff_s+10, -(arg.screen_width_px/arg.px_per_deg)/2, (arg.screen_width_px/arg.px_per_deg)/2])
                         sacc = np.zeros(len(arg.trackertime))
                         i=0
@@ -833,13 +841,13 @@ class ANEMO(object):
                     axs[trial].plot(trackertime_s, data_1, color='k', alpha=0.6)
 
                     if trial==0 :
-                        axs[trial].text((TargetOn_s-700)+(StimulusOf_s-(TargetOn_s-700))/2, 31, "FIXATION", color='k', fontsize=t_text+2, ha='center', va='bottom')
-                        axs[trial].text(StimulusOf_s+(TargetOn_s-StimulusOf_s)/2, 31, "GAP", color='r', fontsize=t_text+2, ha='center', va='bottom')
-                        axs[trial].text(TargetOn_s+(TargetOff_s-TargetOn_s)/2, 31, "POURSUITE", color='k', fontsize=t_text+2, ha='center', va='bottom')
-                        axs[trial].text(latence+25, -35, "Latence"%(latence), color='r', fontsize=t_text)#,  weight='bold')
+                        axs[trial].text((TargetOn_s-700)+(StimulusOf_s-(TargetOn_s-700))/2, pos_titre, "FIXATION", color='k', fontsize=t_text+2, ha='center', va='bottom')
+                        axs[trial].text(StimulusOf_s+(TargetOn_s-StimulusOf_s)/2, pos_titre, "GAP", color='r', fontsize=t_text+2, ha='center', va='bottom')
+                        axs[trial].text(TargetOn_s+(TargetOff_s-TargetOn_s)/2, pos_titre, "POURSUITE", color='k', fontsize=t_text+2, ha='center', va='bottom')
+                        axs[trial].text(latence+25, pos_lat, "Latence"%(latence), color='r', fontsize=t_text)#,  weight='bold')
                     #axs[trial].text(StimulusOn+15, -2, "%s"%(result.fit_report()), color='k', fontsize=15)
-                    axs[trial].text((TargetOn_s-700)+15, 18, "start_anti: %s \nv_anti: %s"%(start_anti, v_anti), color='k', fontsize=t_text, va='bottom')
-                    axs[trial].text((TargetOn_s-700)+15, -18, "latence: %s \ntau: %s \nmaxi: %s"%(latence, tau, maxi), color='k', fontsize=t_text, va='top')
+                    axs[trial].text((TargetOn_s-700)+15, pos_text, "start_anti: %s \nv_anti: %s"%(start_anti, v_anti), color='k', fontsize=t_text, va='bottom')
+                    axs[trial].text((TargetOn_s-700)+15, -pos_text, "latence: %s \ntau: %s \nmaxi: %s"%(latence, tau, maxi), color='k', fontsize=t_text, va='top')
 
                     axs[trial].set_xlabel('Time (ms)', fontsize=t_label)
                     axs[trial].set_ylabel(trial+1, fontsize=t_label)
