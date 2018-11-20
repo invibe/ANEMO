@@ -1012,7 +1012,7 @@ class ANEMO(object):
                     param_fit=None, inde_vars=None, step_fit=2,
                     do_whitening=False, time_sup=280, before_sacc=5, after_sacc=15, 
                     list_events=None, stop_search_misac=None,
-                    fig_width=12, t_label=20, t_text=14, ) :
+                    fig_width=12, t_label=20, t_text=14) :
 
             '''
             Return the parameters of the fit present in list_param_enre
@@ -1246,6 +1246,12 @@ class ANEMO(object):
                                 ax.text(TargetOn_s+(TargetOff_s-TargetOn_s)/2, 31*scale, "PURSUIT", color='k', fontsize=t_label*1.5, ha='center', va='center', alpha=0.5)
                                 #ax.text(result_fit['latence'][trial]+25, -35*scale, "Latence"%(result_fit['latence'][trial]), color='r', fontsize=t_text, alpha=0.5)#,  weight='bold')
 
+                            if 'latence' in f.values.keys() :
+                                ax.bar(result_fit['latence'][trial], 80, bottom=-40, color='r', width=3, linewidth=0)
+
+                            if 'start_anti' in f.values.keys() :
+                                ax.bar(result_fit['start_anti'][trial], 80, bottom=-40, color='k', width=3, linewidth=0)
+
                             if equation=='fct_velocity' :
                                 eqt = ANEMO.Equation.fct_velocity
                             elif equation=='fct_position' :
@@ -1431,6 +1437,10 @@ class ANEMO(object):
 
             fig, ax = plt.subplots(1, 1, figsize=(fig_width, (fig_width*(1/2)/1.6180)))
 
+            if fig_width < 15 :
+                lw = 1
+            else :
+                lw = 2
 
             if equation in ['fct_velocity','fct_position'] :
 
@@ -1463,10 +1473,10 @@ class ANEMO(object):
                 ax.set_xlabel('Time (ms)', fontsize=t_label)
                 #-----------------------------------------------------------------------------
 
-                ax.plot(time[latence+250:],        result_fit[latence+250:],        c='k', linewidth=2)
-                ax.plot(time[:start_anti],         result_fit[:start_anti],         c='k', linewidth=2)
-                ax.plot(time[start_anti:latence],  result_fit[start_anti:latence],  c='r', linewidth=2)
-                ax.plot(time[latence:latence+250], result_fit[latence:latence+250], c='darkred', linewidth=2)
+                ax.plot(time[latence+250:],        result_fit[latence+250:],        c='k', linewidth=lw)
+                ax.plot(time[:start_anti],         result_fit[:start_anti],         c='k', linewidth=lw)
+                ax.plot(time[start_anti:latence],  result_fit[start_anti:latence],  c='r', linewidth=lw)
+                ax.plot(time[latence:latence+250], result_fit[latence:latence+250], c='darkred', linewidth=lw)
 
                 # V_a ------------------------------------------------------------------------
                 ax.text(TargetOn, 15*scale, "Anticipation", color='r', fontsize=t_label, ha='center')
@@ -1627,6 +1637,12 @@ class ANEMO(object):
             figure
             '''
 
+            if fig_width < 15 :
+                lw = 1
+            else :
+                lw = 1.5
+
+
             import matplotlib.pyplot as plt
 
             if type(trials) is not list : trials = [trials]
@@ -1703,8 +1719,8 @@ class ANEMO(object):
 
                     data_x = (arg.data_x - (arg.data_x[arg.StimulusOf-arg.t_0])) / arg.px_per_deg
                     data_y = (arg.data_y - (arg.data_y[arg.StimulusOf-arg.t_0])) / arg.px_per_deg
-                    ax.plot(trackertime_s, data_x, color='k', linewidth=1.5)
-                    ax.plot(trackertime_s, data_y, color='c', linewidth=1.5)
+                    ax.plot(trackertime_s, data_x, color='k', linewidth=lw)
+                    ax.plot(trackertime_s, data_y, color='c', linewidth=lw)
 
 
                 if show=='position' :
@@ -1728,7 +1744,7 @@ class ANEMO(object):
                         else :
                             pos_target = pos_target
                         Target_trial.append(pos_target)
-                    ax.plot(trackertime_s, Target_trial, color='r', linewidth=1.5)
+                    ax.plot(trackertime_s, Target_trial, color='r', linewidth=lw)
                     #------------------------------------------------
 
                 if show=='saccade' :
@@ -1846,6 +1862,11 @@ class ANEMO(object):
                 list of the reports of the fit for each trial
             '''
 
+            if fig_width < 15 :
+                lw = 1
+            else :
+                lw = 2
+
             if N_trials is None :
                 N_trials = Test.test_value('N_trials', self.param_exp)
 
@@ -1937,9 +1958,9 @@ class ANEMO(object):
                     if report is not None :
                         results.append(result_deg.fit_report())
 
-                    ax.plot(trackertime_s[:int(start_anti)],              result_fit[:int(start_anti)],              c='k', linewidth=2)
-                    ax.plot(trackertime_s[int(start_anti):int(latence)],  result_fit[int(start_anti):int(latence)],  c='r', linewidth=2)
-                    ax.plot(trackertime_s[int(latence):int(latence)+250], result_fit[int(latence):int(latence)+250], c='darkred', linewidth=2)
+                    ax.plot(trackertime_s[:int(start_anti)],              result_fit[:int(start_anti)],              c='k', linewidth=lw)
+                    ax.plot(trackertime_s[int(start_anti):int(latence)],  result_fit[int(start_anti):int(latence)],  c='r', linewidth=lw)
+                    ax.plot(trackertime_s[int(latence):int(latence)+250], result_fit[int(latence):int(latence)+250], c='darkred', linewidth=lw)
 
                     y = {}
                     for y_pos in [int(start_anti), int(latence), int(latence)+50, int(latence)+250, int(latence)+400] :
@@ -2072,8 +2093,11 @@ class ANEMO(object):
                 x=x+1
 
             if equation in ['fct_velocity', 'fct_position'] :
-                plt.tight_layout() # pour supprimer les marge trop grande
-                plt.subplots_adjust(hspace=0) # pour enlever espace entre les figures
+                plt.tight_layout() # to remove the margin too large
+                plt.subplots_adjust(hspace=0) # to remove space between figures
+            if equation =='fct_saccade' :
+                axs.tight_layout(fig) # to remove the margin too large
+
 
             if report is None :
                 return fig, axs
