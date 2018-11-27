@@ -9,6 +9,7 @@ N_freq = 1301
     
 
 def whitening_filt(N_freq, white_f_0, white_alpha, white_steepness):
+
     """
     Returns the envelope of the whitening filter.
 
@@ -16,6 +17,7 @@ def whitening_filt(N_freq, white_f_0, white_alpha, white_steepness):
         is self-similar and thus that the Fourier spectrum scales a priori in 1/f.
         
     """
+
     freq = np.fft.fftfreq(N_freq, d=1.)
     K = np.abs(freq)**(white_alpha)
     K *= np.exp(-(np.abs(freq)/white_f_0)**white_steepness)
@@ -25,12 +27,14 @@ def whitening_filt(N_freq, white_f_0, white_alpha, white_steepness):
 
 
 def whitening(position, white_f_0=.4, white_alpha=.5, white_steepness=4):
+
     """
     Returns the whitened image
     
     /!\ position must not contain Nan
 
     """
+
     try :
         N_freq = position.shape[0]
     except AttributeError :
@@ -40,10 +44,12 @@ def whitening(position, white_f_0=.4, white_alpha=.5, white_steepness=4):
     return np.real(np.fft.ifft(f_position*K))
 
 
+
 class Test(object):
     '''function set used in the code to do tests'''
 
     def crash_None(name, value, print_crash=None) :
+
         '''
         Test if value is None, if the program stops and returns print_crash
 
@@ -63,6 +69,7 @@ class Test(object):
             value of the variable
         or Raise
         '''
+
         if not print_crash :
             print_crash = "%s is not defined"%name
         if value is None :
@@ -71,6 +78,7 @@ class Test(object):
             return value
 
     def test_value(name, dic, value=None, crash=True, print_crash=None) :
+
         '''
         Test if name is in dic, if not return value data
 
@@ -94,6 +102,7 @@ class Test(object):
             value of the variable
         or Raise
         '''
+
         new_value = name
         try:
             new_value = dic[name]
@@ -108,6 +117,7 @@ class Test(object):
                 Test.crash_None(name, new_value, print_crash)
 
     def test_None(var, value) :
+
         '''
         Test if var is None or nan, if it is the case returns value
 
@@ -122,30 +132,77 @@ class Test(object):
         -------
         value
         '''
-        if type(var) is float :
+
+        None_or_nan = False
+
+        if type(var) in [float, np.float64, np.float32, np.float16] :
             if np.isnan(var):
+                None_or_nan = True
                 return value
+
         elif var is None :
+            None_or_nan = True
             return value
-        else :
+
+        if None_or_nan is False :
             return var
 
 
 class ANEMO(object):
     """ docstring for the ANEMO class. """
 
-    def __init__(self, param_exp={}) :
+    def __init__(self, param_exp=None) :
 
         '''
         Parameters
         ----------
         param_exp : dict
-            dictionary containing the parameters of the experiment
+            dictionary containing the parameters of the experiment :
+
+            'px_per_deg': float
+                    number of px per degree for the experiment
+                        screen_width_deg = 2. * np.arctan((screen_width_cm/2) / viewing_Distance_cm) * 180/np.pi
+                        px_per_deg = screen_width_px / screen_width_deg
+
+
+            'dir_target' : list
+                    list of lists for each block containing the direction of the target for each trial,
+                    dir_target = param_exp['dir_target'][block][trial]
+                        the direction of the target must be equal to -1 for left or 1 for right
+            or 'p': ndarray
+                    ndarray containing for each trial of each block the direction of the target, its probability of direction and the switches of this probability
+                    dir_target = param_exp['p'][trial, block, 0]
+                        the direction of the target must be equal to 0 for left or 1 for right
+                    proba = param_exp['p'][trial, block, 1]
+                    swich = param_exp['p'][trial, block, 2]
+
+            'N_trials': int
+                number of trials per block
+
+            'N_blocks': int
+                number of blocks
+
+            'observer': str
+                subject name
+
+            'list_events' : list
+                list of the names of the events of the trial : ['onset fixation', 'end fixation', 'start pursuit', 'end pursuit']
+                by default : ['StimulusOn\n', 'StimulusOff\n', 'TargetOn\n', 'TargetOff\n']
+
+            optional not obligatory, just to display the target in Plot.plot_data for show='position' :
+
+                'V_X_deg': float
+                    target velocity in deg/s
+                'stim_tau': float
+                    presentation time of the target
+                'RashBass': int
+                    the time the target has to arrive at the center of the screen in ms (to move the target back to t=0 of its velocity * latency = RashBass)
         '''
-        self.param_exp = param_exp
+
+        self.param_exp = Test.crash_None('param_exp', param_exp)
 
 
-    def arg(self, data_trial, param_exp=None, dir_target=None, list_events=None, trial=None, block=None):
+    def arg(self, data_trial, dir_target=None, trial=None, block=None):
 
         '''
         generates a dictionary of the parameters of the trial
@@ -155,19 +212,12 @@ class ANEMO(object):
         data_trial : list
             edf data for a trial recorded by the eyetracker transformed by the read_edf function of the edfreader module
 
-        param_exp : dict
-            dictionary containing the parameters of the experiment
-        
         dir_target : int
             the direction of the target
             if None goes looking for it in param_exp,
                 be : param_exp['dir_target'][block][trial] = 1 ou -1
                 be : param_exp['p'][trial, block, 0] = 0 ou 1
 
-        list_events : list
-            list of the names of the events of the trial
-            by default : ['StimulusOn\n', 'StimulusOff\n', 'TargetOn\n', 'TargetOff\n']
-        
         must be defined if dir_target is None :
             trial : int
                 number of the trial in the block
@@ -180,9 +230,7 @@ class ANEMO(object):
             dictionary of the parameters of the trial
         '''
 
-        list_events = Test.test_None(list_events, value=['StimulusOn\n', 'StimulusOff\n', 'TargetOn\n', 'TargetOff\n'])
-        param_exp = Test.test_None(param_exp, value=self.param_exp)
-
+        list_events = Test.test_value('list_events', self.param_exp, value=['StimulusOn\n', 'StimulusOff\n', 'TargetOn\n', 'TargetOff\n'])
         kwargs = {}
 
         for events in range(len(data_trial['events']['msg'])) :
@@ -203,30 +251,15 @@ class ANEMO(object):
                     "t_0": data_trial['trackertime'][0],
                     })
 
-        if 'px_per_deg' in param_exp.keys():
-            kwargs["px_per_deg"] = param_exp['px_per_deg']
-
-        # juste pour figure position
-        if 'screen_width_px' in param_exp.keys():
-            kwargs["screen_width_px"] = param_exp['screen_width_px']
-        if 'screen_height_px' in param_exp.keys():
-            kwargs["screen_height_px"] = param_exp['screen_height_px']
-
-        # juste pour figure position
-        if 'V_X' in param_exp.keys():
-            kwargs["V_X"] = param_exp['V_X']
-        if 'RashBass' in param_exp.keys():
-            kwargs["RashBass"] = param_exp['RashBass']
-        if 'stim_tau' in param_exp.keys():
-            kwargs["stim_tau"] = param_exp['stim_tau']
+        kwargs["px_per_deg"] = Test.test_value('px_per_deg', self.param_exp, print_crash="px_per_deg is not defined in param_exp") 
 
         kwargs["dir_target"] = dir_target
         if dir_target is None :
             try :
-                kwargs["dir_target"] = param_exp['dir_target'][block][trial]
+                kwargs["dir_target"] = self.param_exp['dir_target'][block][trial]
             except :
                 try :
-                    kwargs["dir_target"] = (param_exp['p'][trial, block, 0]*2)-1
+                    kwargs["dir_target"] = (self.param_exp['p'][trial, block, 0]*2)-1
                 except :
                     pass
 
@@ -234,28 +267,23 @@ class ANEMO(object):
         return easydict.EasyDict(kwargs)
 
 
-    def velocity_deg(self, data_x, px_per_deg=None) :
+    def velocity_deg(self, data_x) :
+
         '''
-        Return the speed of the eye in deg/sec
+        Return the velocity of the eye in deg/sec
 
         Parameters
         ----------
         data_x : ndarray
             x position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module
-        px_per_deg : float
-            number of px per degree for the experiment
-                screen_width_deg = 2. * np.arctan((screen_width_cm/2) / viewing_Distance_cm) * 180/np.pi
-                px_per_deg = screen_width_px / screen_width_deg
-            if None : goes looking for it in param_exp
 
         Returns
         -------
         gradient_deg : ndarray
-            speed of the eye in deg/sec
+            velocity of the eye in deg/sec
         '''
 
-        if px_per_deg is None :
-            px_per_deg = Test.test_value('px_per_deg', self.param_exp) 
+        px_per_deg = Test.test_value('px_per_deg', self.param_exp, print_crash="px_per_deg is not defined in param_exp") 
 
         gradient_x = np.gradient(data_x)
         gradient_deg = gradient_x * 1/px_per_deg * 1000 # gradient in deg/sec
@@ -263,15 +291,16 @@ class ANEMO(object):
         return gradient_deg
 
     def detec_misac (self, velocity_x, velocity_y, t_0=0, VFAC=5, mindur=5, maxdur=100, minsep=30):
+
         '''
         Detection of micro-saccades not detected by eyelink in the data
 
         Parameters
         ----------
         velocity_x : ndarray
-            speed x of the eye in deg/sec
+            velocity x of the eye in deg/sec
         velocity_y : ndarray
-            speed y of the eye in deg/sec
+            velocity y of the eye in deg/sec
 
         t_0 : int
             time 0 of the trial
@@ -337,6 +366,7 @@ class ANEMO(object):
         return misaccades
 
     def supp_sacc(self, velocity, saccades, trackertime, before_sacc, after_sacc) :
+
         '''
         Eliminates saccades detected by eyelink data
 
@@ -371,9 +401,10 @@ class ANEMO(object):
 
         return velocity
 
-    def velocity_NAN(self, data_x, data_y, saccades, trackertime, TargetOn, before_sacc=5, after_sacc=15, stop_search_misac=None, px_per_deg=None, **opt) :
+    def velocity_NAN(self, data_x, data_y, saccades, trackertime, TargetOn, before_sacc=5, after_sacc=15, stop_search_misac=None, **opt) :
+
         '''
-        returns speed of the eye in deg / sec without the saccades
+        returns velocity of the eye in deg / sec without the saccades
 
         Parameters
         ----------
@@ -394,25 +425,18 @@ class ANEMO(object):
         stop_search_misac : int
             stop search of micro_saccade
             if None: stops searching at the end of fixation + 100ms
-        px_per_deg : float
-            number of px per degree for the experiment
-                screen_width_deg = 2. * np.arctan((screen_width_cm/2) / viewing_Distance_cm) * 180/np.pi
-                px_per_deg = screen_width_px / screen_width_deg
-            if None : goes looking for it in param_exp
 
         Returns
         -------
         velocity : ndarray
-            speed of the eye in deg / sec without the saccades
+            velocity of the eye in deg / sec without the saccades
         '''
 
-        if px_per_deg is None :
-            px_per_deg = Test.test_value('px_per_deg', self.param_exp) 
         stop_search_misac = Test.test_None(stop_search_misac, value=TargetOn-trackertime[0]+100)
 
 
-        velocity = ANEMO.velocity_deg(self, data_x=data_x, px_per_deg=px_per_deg)
-        velocity_y = ANEMO.velocity_deg(self, data_x=data_y, px_per_deg=px_per_deg)
+        velocity = ANEMO.velocity_deg(self, data_x=data_x)
+        velocity_y = ANEMO.velocity_deg(self, data_x=data_y)
 
         new_saccades = saccades.copy()
         misac = ANEMO.detec_misac(self, velocity_x=velocity[:stop_search_misac], velocity_y=velocity_y[:stop_search_misac], t_0=trackertime[0])
@@ -423,20 +447,45 @@ class ANEMO(object):
         return velocity_NAN, new_saccades
 
 
-    ######################################################################################
 
     class classical_method(object):
+        """ function used to calculate in a 'classical' way,
+                - the latency of the pursuit,
+                - the maximum velocity of the pursuit, and
+                - the anticipation of the pursuit, during smooth pursuit """
 
-        def latence(data, w1=300, w2=50, off=50, crit=0.17) :
+        def latence(velocity_NAN, w1=300, w2=50, off=50, crit=0.17) :
+
+            '''
+            return the latency of the pursuit during a smooth pursuit calculated in a 'classic' way
+
+            Parameters
+            ----------
+            velocity_NAN : nparray
+                velocity of the eye in deg/sec without the saccades
+            w1 : int
+                size of the window 1 in ms
+            w2 : int
+                size of the window 2 in ms
+            off : int
+                gap between the two windows
+            crit : float
+                difference criterion between the two linregress detecting if the pursuit begins
+
+            Returns
+            -------
+            latency : int
+                the latency in ms
+            '''
 
             from scipy import stats
 
-            time = np.arange(len(data))
+            time = np.arange(len(velocity_NAN))
             tps = time
             a = None
             for t in range(len(time)-(w1+off+w2)-300) :
-                slope1, intercept1, r_, p_value, std_err = stats.linregress(tps[t:t+w1], data[t:t+w1])
-                slope2, intercept2, r_, p_value, std_err = stats.linregress(tps[t+w1+off:t+w1+off+w2], data[t+w1+off:t+w1+off+w2])
+                slope1, intercept1, r_, p_value, std_err = stats.linregress(tps[t:t+w1], velocity_NAN[t:t+w1])
+                slope2, intercept2, r_, p_value, std_err = stats.linregress(tps[t+w1+off:t+w1+off+w2], velocity_NAN[t+w1+off:t+w1+off+w2])
                 diff = abs(slope2) - abs(slope1)
                 if abs(diff) >= crit :
                     a = True
@@ -457,13 +506,78 @@ class ANEMO(object):
 
             return old_latence[0]
 
-        def maximum(data, TargetOn_0):
-            return abs(np.nanmean(data[TargetOn_0+400:TargetOn_0+600]))
+        def maximum(velocity_NAN, TargetOn_0):
 
-        def anticipation(data, TargetOn_0) :
-            return np.nanmean(data[TargetOn_0-50:TargetOn_0+50])
+            '''
+            return the maximum velocity of the pursuit during a smooth pursuit calculated in a 'classic' way
+
+            Parameters
+            ----------
+            velocity_NAN : nparray
+                velocity of the eye in deg/sec without the saccades
+            TargetOn_0 : int
+                time since the beginning of the trial when the target to follow appears
+
+            Returns
+            -------
+            maximum : int
+                the maximum velocity in deg/s
+            '''
+
+            return abs(np.nanmean(velocity_NAN[TargetOn_0+400:TargetOn_0+600]))
+
+        def anticipation(velocity_NAN, TargetOn_0) :
+
+            '''
+            return the anticipation of the pursuit during a smooth pursuit calculated in a 'classic' way
+
+            Parameters
+            ----------
+            velocity_NAN : nparray
+                velocity of the eye in deg/sec without the saccades
+            TargetOn_0 : int
+                time since the beginning of the trial when the target to follow appears
+
+            Returns
+            -------
+            anticipation : int
+                the anticipation in deg/s
+            '''
+
+            return np.nanmean(velocity_NAN[TargetOn_0-50:TargetOn_0+50])
 
         def Full(velocity_NAN, TargetOn_0, w1=300, w2=50, off=50, crit=0.17):
+
+            '''
+            return :
+                    - the latency of the pursuit,
+                    - the maximum velocity of the pursuit, and
+                    - the anticipation of the pursuit,
+                during smooth pursuit calculated in a 'classical' way
+
+            Parameters
+            ----------
+            velocity_NAN : nparray
+                velocity of the eye in deg/sec without the saccades
+            TargetOn_0 : int
+                time since the beginning of the trial when the target to follow appears
+
+            w1 : int
+                size of the window 1 to detect latency in ms
+            w2 : int
+                size of the window 2 to detect latency in ms
+            off : int
+                gap between the two windows to detect latency
+            crit : float
+                difference criterion between the two linregress detecting if the pursuit begins to detect latency
+
+            Returns
+            -------
+            latency : int
+                the latency in ms
+
+            '''
+
 
             latence = ANEMO.classical_method.latence(velocity_NAN, w1, w2, off, crit)
             maximum = ANEMO.classical_method.maximum(velocity_NAN, TargetOn_0)
@@ -471,30 +585,32 @@ class ANEMO(object):
 
             return latence, maximum, anticipation/0.1
 
-    ######################################################################################
+
 
     class Equation(object):
+        """ Function used to perform the Fits """
 
         def fct_velocity (x, dir_target, start_anti, v_anti, latence, tau, maxi, do_whitening) :
 
             '''
-            Function reproducing the speed of the eye during the smooth pursuit of a moving target
+            Function reproducing the velocity of the eye during the smooth pursuit of a moving target
 
             Parameters
             ----------
             x : ndarray
+                time of the function
             dir_target : int
                 direction of the target -1 ou 1
             start_anti : int
                 time when anticipation begins
             v_anti : float
-                speed of anticipation in seconds
+                velocity of anticipation in seconds
             latence : int
                 time when the movement begins
             tau : float
                 curve of the pursuit
             maxi : float
-                maximum speed reached during the pursuit
+                maximum velocity reached during the pursuit
             do_whitening : bool
                 if True return the whitened velocity
 
@@ -539,6 +655,7 @@ class ANEMO(object):
             Parameters
             ----------
             x : ndarray
+                time of the function
             data_x : ndarray
                 position x of the eye during the trial
             saccades : ndarray the same size as data_x
@@ -553,13 +670,13 @@ class ANEMO(object):
             start_anti : int
                 time when anticipation begins
             v_anti : float
-                speed of anticipation in seconds
+                velocity of anticipation in seconds
             latence : int
                 time when the movement begins
             tau : float
                 curve of the pursuit
             maxi : float
-                maximum speed reached during the pursuit
+                maximum velocity reached during the pursuit
             t_0 : int
                 time 0 of the trial
             px_per_deg : float
@@ -610,20 +727,30 @@ class ANEMO(object):
             return pos
 
         def fct_saccade(x, x_0, tau, x1, x2, T0, t1, t2, tr, do_whitening):
+
             '''
             Function reproducing the position of the eye during the sacades
 
             Parameters
             ----------
             x : ndarray
-            x_0 :
-            tau :
-            x1 :
-            x2 :
-            T0 :
-            t1 :
-            t2 :
-            tr :
+                time of the function
+            x_0 : float
+                initial position of the beginning of the saccade in deg
+            tau : float
+                curvature of the saccade
+            x1 : float
+                maximum of the first curvature in deg
+            x2 : float
+                maximum of the second curvature in deg
+            T0 : float
+                time of the beginning of the first curvature after x_0 in ms
+            t1 : float
+                maximum time of the first curvature after T0 in ms
+            t2 : float
+                time of the maximum of the second curvature after t1 in ms
+            tr : float
+                time of the end of the second curvature after t2 in ms
             do_whitening : bool
                 if True return the whitened position
 
@@ -632,6 +759,7 @@ class ANEMO(object):
             position : list
                 position of the eye during the sacades in deg
             '''
+
             time = x-T0
             T1 = t1
             T2 = t1+t2
@@ -665,19 +793,57 @@ class ANEMO(object):
 
             return xx
 
-    ######################################################################################
+
 
     class Fit(object) :
+        """ docstring for the Fit class. """
 
-        def __init__(self, param_exp={}) :
+        def __init__(self, param_exp=None) :
+
+            '''
+            Parameters
+            ----------
+            param_exp : dict
+                dictionary containing the parameters of the experiment :
+
+                'px_per_deg': float
+                        number of px per degree for the experiment
+                            screen_width_deg = 2. * np.arctan((screen_width_cm/2) / viewing_Distance_cm) * 180/np.pi
+                            px_per_deg = screen_width_px / screen_width_deg
+
+
+                'dir_target' : list
+                        list of lists for each block containing the direction of the target for each trial,
+                        dir_target = param_exp['dir_target'][block][trial]
+                            the direction of the target must be equal to -1 for left or 1 for right
+                or 'p': ndarray
+                        ndarray containing for each trial of each block the direction of the target, its probability of direction and the switches of this probability
+                        dir_target = param_exp['p'][trial, block, 0]
+                            the direction of the target must be equal to 0 for left or 1 for right
+                        proba = param_exp['p'][trial, block, 1]
+                        swich = param_exp['p'][trial, block, 2]
+
+                'N_trials': int
+                    number of trials per block
+
+                'N_blocks': int
+                    number of blocks
+
+                'observer': str
+                    subject name
+
+                'list_events' : list
+                    list of the names of the events of the trial : ['onset fixation', 'end fixation', 'start pursuit', 'end pursuit']
+                    by default : ['StimulusOn\n', 'StimulusOff\n', 'TargetOn\n', 'TargetOff\n']
+            '''
+
             ANEMO.__init__(self, param_exp)
 
 
         def generation_param_fit(self, equation='fct_velocity',
                 trackertime=None,TargetOn=None, StimulusOf=None, saccades=None, dir_target=None, 
-                value_latence=None, value_maxi=15., value_anti=0.,
-                before_sacc=5, after_sacc=15,
-                px_per_deg=None, data_x=None, **opt) :
+                value_latence=None, value_maxi=None, value_anti=None,
+                before_sacc=5, after_sacc=15,  data_x=None, **opt) :
 
             '''
             Generates the parameters and independent variables of the fit
@@ -707,11 +873,13 @@ class ANEMO(object):
                 optional not obligatory :
                     value_latence : int
                         value that takes the parameter latence to begin the fit
-                        by default = TargetOn-t_0+100
+                        if None oor nan by default = TargetOn-t_0+100
                     value_maxi: float
                         value that takes the parameter maxi to begin the fit
+                        if None oor nan by default = 15.
                     value_anti: float
                         value that takes the parameter v_anti to begin the fit
+                        if None oor nan by default = 0.
                     before_sacc: int
                         time to remove before saccades
                     after_sacc: int
@@ -722,15 +890,6 @@ class ANEMO(object):
                 option obligatory :
                      data_x : ndarray
                         x position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module
-
-            if equation == 'fct_position' :
-
-                optional not obligatory :
-                    px_per_deg : float
-                        number of px per degree for the experiment
-                            screen_width_deg = 2. * np.arctan((screen_width_cm/2) / viewing_Distance_cm) * 180/np.pi
-                            px_per_deg = screen_width_px / screen_width_deg
-                        if None : goes looking for it in param_exp
 
             Returns
             -------
@@ -753,10 +912,10 @@ class ANEMO(object):
                     dir_target = Test.test_value('dir_target', self.param_exp, value=None)
 
                 value_latence = Test.test_None(value_latence, value=TargetOn-t_0+100)
-
+                value_anti = Test.test_None(value_anti, value=0.)
+                value_maxi = Test.test_None(value_maxi, value=15.)
 
                 max_latence = []
-
                 for s in range(len(saccades)) :
                     if (saccades[s][0]-t_0) >= (TargetOn-t_0+100) :
                         max_latence.append((saccades[s][0]-t_0))
@@ -764,10 +923,18 @@ class ANEMO(object):
                     max_latence.append(len(trackertime))
                 max_latence = max_latence[0]
 
+                #----------------------------------------------
+                if value_latence >= max_latence-50 :
+                    value_latence = max_latence-150
+                if value_latence > 250 :
+                    value_latence = TargetOn-t_0+100
+                #----------------------------------------------
+
+                # v_anti -- 'vary' 
                 param_fit=[{'name':'tau', 'value':15., 'min':13., 'max':80., 'vary':'vary'},
                            {'name':'maxi', 'value':value_maxi, 'min':1., 'max':40., 'vary':True},
                            {'name':'dir_target', 'value':dir_target, 'min':None, 'max':None, 'vary':False},
-                           {'name':'v_anti', 'value':value_anti, 'min':-40., 'max':40., 'vary':'vary'},
+                           {'name':'v_anti', 'value':value_anti, 'min':-40., 'max':40., 'vary':True},
                            {'name':'latence', 'value':value_latence, 'min':TargetOn-t_0+75, 'max':max_latence, 'vary':True},
                            {'name':'start_anti', 'value':TargetOn-t_0-100, 'min':StimulusOf-t_0-200, 'max':TargetOn-t_0+75, 'vary':'vary'}]
 
@@ -777,8 +944,7 @@ class ANEMO(object):
             if equation == 'fct_position' :
 
                 data_x = Test.crash_None('data_x', data_x)
-                if px_per_deg is None :
-                    px_per_deg = Test.test_value('px_per_deg', self.param_exp, value=None)
+                px_per_deg = Test.test_value('px_per_deg', self.param_exp, print_crash="px_per_deg is not defined in param_exp")
 
                 param_fit.extend(({'name':'px_per_deg', 'value':px_per_deg, 'min':None, 'max':None, 'vary':False},
                                   {'name':'t_0', 'value':t_0, 'min':None, 'max':None, 'vary':False},
@@ -826,9 +992,10 @@ class ANEMO(object):
                      param_fit=None, inde_vars=None,
                      step_fit=2, do_whitening=False,
                      TargetOn=None, StimulusOf=None, saccades=None,
-                     dir_target=None, px_per_deg=None,
+                     dir_target=None,
                      value_latence=None, value_maxi=15.,
                      value_anti=0., before_sacc=5, after_sacc=15, **opt) :
+
             '''
             Returns the result of the fit of a trial
 
@@ -873,11 +1040,13 @@ class ANEMO(object):
                         optional not obligatory :
                             value_latence : int
                                 value that takes the parameter latence to begin the fit
-                                by default = TargetOn-t_0+100
+                                if None oor nan by default = TargetOn-t_0+100
                             value_maxi: float
                                 value that takes the parameter maxi to begin the fit
+                                if None oor nan by default = 15.
                             value_anti: float
                                 value that takes the parameter v_anti to begin the fit
+                                if None oor nan by default = 0.
                             before_sacc: int
                                 time to remove before saccades
                                     it is advisable to put 5
@@ -891,15 +1060,6 @@ class ANEMO(object):
                              data_x : ndarray
                                 x position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module
 
-                    if equation == 'fct_position' :
-
-                        optional not obligatory :
-                            px_per_deg : float
-                                number of px per degree for the experiment
-                                    screen_width_deg = 2. * np.arctan((screen_width_cm/2) / viewing_Distance_cm) * 180/np.pi
-                                    px_per_deg = screen_width_px / screen_width_deg
-                                if None : goes looking for it in param_exp
-
             optional not obligatory :
 
                 trackertime : ndarray
@@ -909,7 +1069,7 @@ class ANEMO(object):
                     number of steps for the fit
                 do_whitening : bool
                     if True return the whitened fit
-                time_sup: int
+                time_sup : int
                     time that will be deleted to perform the fit (for data that is less good at the end of the test)
                 param_fit : dic
                     fit parameter dictionary, each parameter is a dict containing :
@@ -923,7 +1083,7 @@ class ANEMO(object):
 
             Returns
             -------
-            result_deg : lmfit.model.ModelResult
+            result : lmfit.model.ModelResult
             '''
 
             from lmfit import  Model, Parameters
@@ -962,7 +1122,7 @@ class ANEMO(object):
                 opt = {'TargetOn' : TargetOn, 'StimulusOf' : StimulusOf,
                         'value_latence' : value_latence, 'value_maxi' : value_maxi, 'value_anti' : value_anti,
                         'saccades' : saccades, 'before_sacc' : before_sacc, 'after_sacc' : after_sacc,
-                        'dir_target' : dir_target, 'px_per_deg' : px_per_deg}
+                        'dir_target' : dir_target}
 
             if param_fit is None :
                 param_fit = ANEMO.Fit.generation_param_fit(self, equation=equation, trackertime=trackertime, data_x=data_x, **opt)[0]
@@ -1011,7 +1171,7 @@ class ANEMO(object):
                     plot=None, file_fig=None,
                     param_fit=None, inde_vars=None, step_fit=2,
                     do_whitening=False, time_sup=280, before_sacc=5, after_sacc=15, 
-                    list_events=None, stop_search_misac=None,
+                    stop_search_misac=None,
                     fig_width=12, t_label=20, t_text=14) :
 
             '''
@@ -1070,7 +1230,7 @@ class ANEMO(object):
                 number of steps for the fit
             do_whitening : bool
                 if True return the whitened fit
-            time_sup: int
+            time_sup : int
                 time that will be deleted to perform the fit (for data that is less good at the end of the test)
 
             before_sacc: int
@@ -1083,9 +1243,7 @@ class ANEMO(object):
                 time to delete after saccades
                     it is advisable to put : 15
 
-            list_events : list
-                list of the names of the events of the trial
-                by default : ['StimulusOn\n', 'StimulusOff\n', 'TargetOn\n', 'TargetOff\n']
+
 
             stop_search_misac : int
                 stop search of micro_saccade
@@ -1159,7 +1317,7 @@ class ANEMO(object):
                     print('block, trial = ', block, trial)
 
                     trial_data = trial + N_trials*block
-                    arg = ANEMO.arg(self, data[trial_data], trial=trial, block=block, list_events=list_events)
+                    arg = ANEMO.arg(self, data[trial_data], trial=trial, block=block)
                     opt = opt_base.copy()
                     opt.update(arg)
 
@@ -1356,15 +1514,77 @@ class ANEMO(object):
 
             return param
 
-    ######################################################################################
 
 
     class Plot(object) :
+        """ docstring for the Plot class. """
 
         def __init__(self, param_exp=None) :
+
+            '''
+            Parameters
+            ----------
+            param_exp : dict
+                dictionary containing the parameters of the experiment :
+
+                'px_per_deg': float
+                        number of px per degree for the experiment
+                            screen_width_deg = 2. * np.arctan((screen_width_cm/2) / viewing_Distance_cm) * 180/np.pi
+                            px_per_deg = screen_width_px / screen_width_deg
+
+
+                'dir_target' : list
+                        list of lists for each block containing the direction of the target for each trial,
+                        dir_target = param_exp['dir_target'][block][trial]
+                            the direction of the target must be equal to -1 for left or 1 for right
+                or 'p': ndarray
+                        ndarray containing for each trial of each block the direction of the target, its probability of direction and the switches of this probability
+                        dir_target = param_exp['p'][trial, block, 0]
+                            the direction of the target must be equal to 0 for left or 1 for right
+                        proba = param_exp['p'][trial, block, 1]
+                        swich = param_exp['p'][trial, block, 2]
+
+                'N_trials': int
+                    number of trials per block
+
+                'N_blocks': int
+                    number of blocks
+
+                'observer': str
+                    subject name
+
+                'list_events' : list
+                    list of the names of the events of the trial : ['onset fixation', 'end fixation', 'start pursuit', 'end pursuit']
+                    by default : ['StimulusOn\n', 'StimulusOff\n', 'TargetOn\n', 'TargetOff\n']
+
+                optional not obligatory, just to display the target in Plot.plot_data for show='position' :
+
+                    'V_X_deg': float
+                        target velocity in deg/s
+                    'stim_tau': float
+                        presentation time of the target
+                    'RashBass': int
+                        the time the target has to arrive at the center of the screen in ms (to move the target back to t=0 of its velocity * latency = RashBass)
+            '''
+
             ANEMO.__init__(self, param_exp)
 
         def deco (self, ax, StimulusOn=None, StimulusOf=None, TargetOn=None, TargetOff=None, saccades=None, t_label=20, **opt) :
+
+            '''
+            Parameters
+            ----------
+            ax : AxesSubplot
+                ax sur lequel le figure doit être afficher
+
+            StimulusOn : int
+                temps ou le point de fixation apparait
+
+            TargetOff : int
+                temps ou la cible à suivre disparait
+
+            '''
+
 
             try :
 
@@ -1400,7 +1620,7 @@ class ANEMO(object):
             import easydict
             return easydict.EasyDict(kwargs)
 
-        ######################################################################################
+
         def plot_equation(self, equation='fct_velocity', fig_width=15, t_titre=35, t_label=20):
 
             '''
@@ -1431,9 +1651,7 @@ class ANEMO(object):
                 figure
             '''
 
-
             import matplotlib.pyplot as plt
-
 
             fig, ax = plt.subplots(1, 1, figsize=(fig_width, (fig_width*(1/2)/1.6180)))
 
@@ -1578,9 +1796,10 @@ class ANEMO(object):
             return fig, ax
 
         def plot_data(self, data, show='velocity', trials=0, block=0,
-                        N_trials=None, list_events=None,
+                        N_trials=None,
                         fig_width=15, t_titre=35, t_label=20,
                         stop_search_misac=None, name_trial_show=False, before_sacc=5, after_sacc=15):
+
             '''
             Returns the data figure
 
@@ -1601,10 +1820,6 @@ class ANEMO(object):
             N_trials : int
                 number of trials per block
                 if None went searched in param_exp
-
-            list_events : list
-                list of the names of the events of the trial
-                by default : ['StimulusOn\n', 'StimulusOff\n', 'TargetOn\n', 'TargetOff\n']
 
             before_sacc: int
                 time to remove before saccades
@@ -1666,7 +1881,7 @@ class ANEMO(object):
                 if name_trial_show is True :
                     print('block, trial = ', block, t)
                 trial_data = t + N_trials*block
-                arg = ANEMO.arg(self, data[trial_data], list_events=list_events, trial=t, block=block)
+                arg = ANEMO.arg(self, data[trial_data], trial=t, block=block)
 
                 opt = opt_base.copy()
                 opt.update(arg)
@@ -1729,23 +1944,32 @@ class ANEMO(object):
                         ax.set_ylabel('%s\nDistance (°)'%(t+1), fontsize=t_label)
                     else :
                         ax.set_ylabel('Distance (°)', fontsize=t_label)
-                    #------------------------------------------------
-                    # TARGET
-                    #------------------------------------------------
-                    Target_trial = []
-                    for tps in trackertime_s :
-                        if tps < TargetOn_s :
-                            pos_target = 0
-                        elif tps == TargetOn_s :
-                            # the target at t = 0 retreats from its velocity * latency = RashBass (here set in ms)
-                            pos_target = pos_target -(arg.dir_target * ((arg.V_X/1000)*arg.RashBass)) / arg.px_per_deg
-                        elif (tps > TargetOn_s and tps <= (TargetOn_s+arg.stim_tau*1000)) :
-                            pos_target = pos_target + (arg.dir_target*(arg.V_X/1000)) / arg.px_per_deg
-                        else :
-                            pos_target = pos_target
-                        Target_trial.append(pos_target)
-                    ax.plot(trackertime_s, Target_trial, color='r', linewidth=lw)
-                    #------------------------------------------------
+                    
+                    try :
+                        #------------------------------------------------
+                        # TARGET
+                        #------------------------------------------------
+                        V_X = Test.test_value('V_X_deg', self.param_exp, print_crash="V_X_deg is not defined in param_exp")
+                        RashBass = Test.test_value('RashBass', self.param_exp, print_crash="RashBass is not defined in param_exp")
+                        stim_tau = Test.test_value('stim_tau', self.param_exp, print_crash="stim_tau is not defined in param_exp")
+
+                        Target_trial = []
+                        for tps in trackertime_s :
+                            if tps < TargetOn_s :
+                                pos_target = 0
+                            elif tps == TargetOn_s :
+                                # the target at t = 0 retreats from its velocity * latency = RashBass (here set in ms)
+                                pos_target = pos_target -(arg.dir_target * ((V_X/1000)*RashBass))
+                            elif (tps > TargetOn_s and tps <= (TargetOn_s + stim_tau*1000)) :
+                                pos_target = pos_target + (arg.dir_target*(V_X/1000))
+                            else :
+                                pos_target = pos_target
+                            Target_trial.append(pos_target)
+                        ax.plot(trackertime_s, Target_trial, color='r', linewidth=lw)                   
+                        #------------------------------------------------
+
+                    except :
+                        pass
 
                 if show=='saccade' :
                     y=0
@@ -1783,7 +2007,7 @@ class ANEMO(object):
 
         def plot_fit(self, data, equation='fct_velocity', trials=0, block=0, N_trials=None,
                         fig_width=15, t_titre=35, t_label=20,
-                        list_events=None, report=None, before_sacc=5, after_sacc=15,
+                        report=None, before_sacc=5, after_sacc=15,
                         step_fit=2, do_whitening=False, time_sup=280, param_fit=None, inde_vars=None,
                         stop_search_misac=None):
 
@@ -1809,11 +2033,6 @@ class ANEMO(object):
                 number of trials per block
                 if None went searched in param_exp
 
-
-            list_events : list
-                list of the names of the events of the trial
-                by default : ['StimulusOn\n', 'StimulusOff\n', 'TargetOn\n', 'TargetOff\n']
-
             stop_search_misac : int
                 stop search of micro_saccade
                 if None: stops searching at the end of fixation + 100ms
@@ -1826,7 +2045,7 @@ class ANEMO(object):
             do_whitening : bool
                 if true the fit perform on filtered data with a whitening filter
 
-            time_sup: int
+            time_sup : int
                 time that will be deleted to perform the fit (for data that is less good at the end of the test)
             param_fit : dict
                 dictionary containing the parameters of the fit
@@ -1890,7 +2109,7 @@ class ANEMO(object):
             for t in trials :
 
                 trial_data = t + N_trials*block
-                arg = ANEMO.arg(self, data[trial_data], list_events=list_events, trial=t, block=block)
+                arg = ANEMO.arg(self, data[trial_data], trial=t, block=block)
 
                 opt = opt_base.copy()
                 opt.update(arg)
@@ -1956,7 +2175,7 @@ class ANEMO(object):
                                                         px_per_deg=arg.px_per_deg, before_sacc=before_sacc, after_sacc=after_sacc, do_whitening=False)
 
                     if report is not None :
-                        results.append(result_deg.fit_report())
+                        results.append(f.fit_report())
 
                     ax.plot(trackertime_s[:int(start_anti)],              result_fit[:int(start_anti)],              c='k', linewidth=lw)
                     ax.plot(trackertime_s[int(start_anti):int(latence)],  result_fit[int(start_anti):int(latence)],  c='r', linewidth=lw)
@@ -2005,8 +2224,7 @@ class ANEMO(object):
                         ax.plot(trackertime_s[int(latence):], np.ones(len(trackertime_s[int(latence):]))*y[int(latence)+400], '--k', linewidth=1, alpha=0.5)
 
                     #-----------------------------------------------------------------------------
-                    if x == int((len(trials)-1)/2) :
-                        ax.set_ylabel(ylabel, fontsize=t_label)
+                    ax.set_ylabel(ylabel, fontsize=t_label)
 
                     if x!= (len(trials)-1) :
                         ax.set_xticklabels([])
@@ -2105,7 +2323,7 @@ class ANEMO(object):
                 return fig, axs, results
 
         def plot_Full_data(self, data, show='velocity', N_blocks=None,
-                        N_trials=None, list_events=None,
+                        N_trials=None,
                         fig_width=12, t_titre=20, t_label=14,
                         stop_search_misac=None, file_fig=None) :
 
@@ -2128,10 +2346,6 @@ class ANEMO(object):
             N_trials : int
                 number of trials per block
                 if None went searched in param_exp
-
-            list_events : list
-                list of the names of the events of the trial
-                by default : ['StimulusOn\n', 'StimulusOff\n', 'TargetOn\n', 'TargetOff\n']
 
             stop_search_misac : int
                 stop search of micro_saccade
@@ -2162,7 +2376,7 @@ class ANEMO(object):
 
             for block in range(N_blocks) :
                 fig, axs = ANEMO.Plot.plot_data(self, data, show=show, trials=list(np.arange(N_trials)), block=block,
-                                    N_trials=N_trials, list_events=list_events,
+                                    N_trials=N_trials,
                                     fig_width=fig_width, t_titre=t_titre, t_label=t_label,
                                     stop_search_misac=stop_search_misac, name_trial_show=True)
 
@@ -2170,97 +2384,8 @@ class ANEMO(object):
                 plt.savefig(file_fig+'_%s.pdf'%(block+1))
                 plt.close()
 
-        ######################################################################################
-
-        '''
-        Parameters
-        ----------
-        ax : AxesSubplot
-            ax sur lequel le figure doit être afficher
 
 
-        data : list
-            données edf enregistré par l'eyetracker transformé par la fonction read_edf du module edfreader
-        data_x : ndarray
-            position x pour un essaie enregistré par l'eyetracker transformé par la fonction read_edf du module edfreader
-        data_y : ndarray
-            position y pour un essaie enregistré par l'eyetracker transformé par la fonction read_edf du module edfreader
-        velocity : ndarray
-            vitesse de l'œil en deg/sec
-
-        trials : int ou  list
-            numéro des essais que l'on veux afficher
-        block : int
-            numéro du block
-        N_trials : int
-            nombre de trial par block
-        list_events : list
-            liste des noms des évenements dans le fichier asc ['onset fixation', 'end fixation', 'début poursuite', 'end poursuite']
-
-
-        time_sup : int
-            temps qui vas être supprimer pour effectuer le fit (pour les données qui sont moins bonne a la end de l'essai)
-        stop_search_misac : int
-            stop recherche de micro_saccade, si None alors arrête la recherche à la fin de la fixation +100ms
-
-
-        saccades : list
-            liste des saccades edf pour un essaie enregistré par l'eyetracker transformé par la fonction read_edf du module edfreader
-        StimulusOn : int
-            temps ou le point de fixation apparait
-        StimulusOf : int
-            temps ou le point de fixation disparait
-        TargetOn : int
-            temps ou la cible à suivre apparait
-        TargetOff : int
-            temps ou la cible à suivre disparait
-        trackertime : ndarray
-            temps du tracker
-        start : int
-            temps 0 sur la figure
-
-
-
-        param_fit : dic
-            dictionnaire des parametre du fit, chaque parametre est une liste [value fit, min, max]
-        step_fit : nombre de step pour le fit
-
-        V_X : float
-            vitesse de la cible en pixel/s
-        RashBass : int
-            temps que met la cible a arriver au centre de l'écran en ms (pour reculer la cible à t=0 de sa vitesse * latence=RashBass)
-        stim_tau : float
-        screen_width_px : int
-            widht ecran en pixel
-        screen_height_px : int
-            height écran en pixel
-
-
-        report : NoneType or bool
-            si != None renvoie le rapport fit
-
-        plot : str
-            si 'fonction' n'affiche que la fonction exponentiel
-            si 'Fitvelocity' affiche la vitesse œil + fit
-        plot : str
-            si 'fonction' n'affiche que la fonction exponentiel
-            si 'velocity' n'affiche que la vitesse de l'œil
-            si 'Fitvelocity' affiche la vitesse œil + fit
-        fig_width : int
-            taille figure
-        t_titre : int
-            taille titre de la figur
-        t_label : int
-            taille x et y label
-
-
-        Returns
-        -------
-        fig : matplotlib.figure.Figure
-            figure
-        ax : AxesSubplot
-            figure
-        '''
 
 
 
