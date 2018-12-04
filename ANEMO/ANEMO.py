@@ -6,7 +6,7 @@ import numpy as np
 ''' Revoir les docstring'''
 
 N_freq = 1301
-    
+
 
 def whitening_filt(N_freq, white_f_0, white_alpha, white_steepness):
 
@@ -15,14 +15,14 @@ def whitening_filt(N_freq, white_f_0, white_alpha, white_steepness):
 
         then we return a 1/f spectrum based on the assumption that the structure of signals
         is self-similar and thus that the Fourier spectrum scales a priori in 1/f.
-        
+
     """
 
     freq = np.fft.fftfreq(N_freq, d=1.)
     K = np.abs(freq)**(white_alpha)
     K *= np.exp(-(np.abs(freq)/white_f_0)**white_steepness)
     K /= np.mean(K)
-    
+
     return freq, K
 
 
@@ -30,7 +30,7 @@ def whitening(position, white_f_0=.4, white_alpha=.5, white_steepness=4):
 
     """
     Returns the whitened image
-    
+
     /!\ position must not contain Nan
 
     """
@@ -39,7 +39,7 @@ def whitening(position, white_f_0=.4, white_alpha=.5, white_steepness=4):
         N_freq = position.shape[0]
     except AttributeError :
         N_freq = len(position)
-    freq, K = whitening_filt(N_freq=N_freq, white_f_0=white_f_0, white_alpha=white_alpha, white_steepness=white_steepness)        
+    freq, K = whitening_filt(N_freq=N_freq, white_f_0=white_f_0, white_alpha=white_alpha, white_steepness=white_steepness)
     f_position = np.fft.fft(position)
     return np.real(np.fft.ifft(f_position*K))
 
@@ -251,7 +251,7 @@ class ANEMO(object):
                     "t_0": data_trial['trackertime'][0],
                     })
 
-        kwargs["px_per_deg"] = Test.test_value('px_per_deg', self.param_exp, print_crash="px_per_deg is not defined in param_exp") 
+        kwargs["px_per_deg"] = Test.test_value('px_per_deg', self.param_exp, print_crash="px_per_deg is not defined in param_exp")
 
         kwargs["dir_target"] = dir_target
         if dir_target is None :
@@ -283,7 +283,7 @@ class ANEMO(object):
             velocity of the eye in deg/sec
         '''
 
-        px_per_deg = Test.test_value('px_per_deg', self.param_exp, print_crash="px_per_deg is not defined in param_exp") 
+        px_per_deg = Test.test_value('px_per_deg', self.param_exp, print_crash="px_per_deg is not defined in param_exp")
 
         gradient_x = np.gradient(data_x)
         gradient_deg = gradient_x * 1/px_per_deg * 1000 # gradient in deg/sec
@@ -659,7 +659,7 @@ class ANEMO(object):
             data_x : ndarray
                 position x of the eye during the trial
             saccades : ndarray the same size as data_x
-                List of saccades perform during the trial 
+                List of saccades perform during the trial
                 for i in range(len(saccade)) :
                     saccades[i] -> onset, saccades[i+1] -> end, saccades[i+2] -> time sacc
 
@@ -697,7 +697,7 @@ class ANEMO(object):
             ms = 1000
             v_anti = (v_anti/ms)
             maxi = maxi /ms
-            
+
             speed = ANEMO.Equation.fct_velocity(x=x, dir_target=dir_target, start_anti=start_anti, v_anti=v_anti, latence=latence, tau=tau, maxi=maxi, do_whitening=False)
             pos = np.cumsum(speed)
 
@@ -707,12 +707,12 @@ class ANEMO(object):
                                         # saccades[i] -> onset, saccades[i+1] -> end, saccades[i+2] -> time sacc
                 #if sacc[0]-t_0 < len(pos) :
 
-                if int(sacc[1]-t_0)+int(after_sacc)+1 <= len(pos) :
+                if do_whitening is True:
+                    a = pos[int(sacc[0]-t_0)-int(before_sacc)-1]
+                else :
+                    a = np.nan
 
-                    if do_whitening is True:
-                        a = pos[int(sacc[0]-t_0)-int(before_sacc)-1]
-                    else :
-                        a = np.nan
+                if int(sacc[1]-t_0)+int(after_sacc)+1 <= len(pos) :
 
                     pos[int(sacc[0]-t_0)-int(before_sacc):int(sacc[1]-t_0)+int(after_sacc)] = a
                     if sacc[0]-t_0 >= int(latence-1) :
@@ -764,17 +764,17 @@ class ANEMO(object):
             T1 = t1
             T2 = t1+t2
             TR = T2+tr
-            
+
             rho = (tau/T1) * np.log((1+np.exp(T1/tau))/2)
             rhoT = int(np.round(T1*rho))
-            
+
             r = (tau/T2) * np.log((np.exp(T1/tau) + np.exp(T2/tau)) /2)
             rT = int(np.round(T2*r))
             Umax1 = (1/tau) * x1 / ((2*rho-1)*T1 - tau*(2-np.exp(-(rho*T1)/tau) - np.exp((1-rho)*T1/tau)))
             Umax2 = (1/tau) * (x2-x1) / ((2*r-1)*T2-T1)
 
             xx = []
-            
+
             for t in time :
                 if t < 0 :
                     xx.append(x_0)
@@ -841,7 +841,7 @@ class ANEMO(object):
 
 
         def generation_param_fit(self, equation='fct_velocity',
-                trackertime=None,TargetOn=None, StimulusOf=None, saccades=None, dir_target=None, 
+                trackertime=None,TargetOn=None, StimulusOf=None, saccades=None, dir_target=None,
                 value_latence=None, value_maxi=None, value_anti=None,
                 before_sacc=5, after_sacc=15,  data_x=None, **opt) :
 
@@ -930,7 +930,7 @@ class ANEMO(object):
                     value_latence = TargetOn-t_0+100
                 #----------------------------------------------
 
-                # v_anti -- 'vary' 
+                # v_anti -- 'vary'
                 param_fit=[{'name':'tau', 'value':15., 'min':13., 'max':80., 'vary':'vary'},
                            {'name':'maxi', 'value':value_maxi, 'min':1., 'max':40., 'vary':True},
                            {'name':'dir_target', 'value':dir_target, 'min':None, 'max':None, 'vary':False},
@@ -1006,7 +1006,7 @@ class ANEMO(object):
                 if 'fct_position' : does a data fit with the function 'fct_position'
                 if 'fct_saccades' : does a data fit with the function 'fct_saccades'
                 if function : does a data fit with the function
-                
+
 
             data_trial : ndarray
                 if 'fct_velocity' = velocity data for a trial in deg/sec
@@ -1170,7 +1170,7 @@ class ANEMO(object):
                     N_blocks=None, N_trials=None, list_param_enre=None,
                     plot=None, file_fig=None,
                     param_fit=None, inde_vars=None, step_fit=2,
-                    do_whitening=False, time_sup=280, before_sacc=5, after_sacc=15, 
+                    do_whitening=False, time_sup=280, before_sacc=5, after_sacc=15,
                     stop_search_misac=None,
                     fig_width=12, t_label=20, t_text=14) :
 
@@ -1187,7 +1187,7 @@ class ANEMO(object):
                 if 'fct_position' : does a data fit with the function 'fct_position'
                 if 'fct_saccades' : does a data fit with the function 'fct_saccades'
                 if function : does a data fit with the function
-                
+
 
 
             fitted_data : bool
@@ -1483,7 +1483,7 @@ class ANEMO(object):
                                 px = 0
                                 for name in list_param_enre :
                                     if name in f.values.keys() :
-                                        ax1.text(minx+(maxx-minx)/50, (maxy+(maxy-miny)/5)-px, "%s: %0.3f"%(name, f.values[name]) , color='k', 
+                                        ax1.text(minx+(maxx-minx)/50, (maxy+(maxy-miny)/5)-px, "%s: %0.3f"%(name, f.values[name]) , color='k',
                                                         ha='left', va='center', fontsize=t_label/1.8) #, alpha=0.8)
                                         px = px + ((maxy+(maxy-miny)/5)-(miny-(maxy-miny)/5))/(len(list_param_enre)-1)
                                 #-----------------------------------------------------------------------------
@@ -1728,7 +1728,7 @@ class ANEMO(object):
                 ax.axvspan(StimulusOn, StimulusOf, color='k', alpha=0.2)
                 ax.axvspan(StimulusOf, TargetOn, color='r', alpha=0.2)
                 ax.axvspan(TargetOn, TargetOff, color='k', alpha=0.15)
-                
+
                 ax.text(StimulusOf+(TargetOn-StimulusOf)/2, 31*scale, "GAP", color='k', fontsize=t_label*1.5, ha='center', va='center', alpha=0.5)
                 ax.text((StimulusOf-750)/2, 31*scale, "FIXATION", color='k', fontsize=t_label*1.5, ha='center', va='center', alpha=0.5)
                 ax.text((750-TargetOn)/2, 31*scale, "PURSUIT", color='k', fontsize=t_label*1.5, ha='center', va='center', alpha=0.5)
@@ -1741,16 +1741,16 @@ class ANEMO(object):
 
                 T0,  t1,  t2,  tr = 0, 15, 12, 1
                 x_0, x1, x2, tau = 0, 2, 1, 13
-                
+
                 fit = ANEMO.Equation.fct_saccade(time, x_0, tau, x1, x2, T0, t1, t2, tr,do_whitening=False)
 
                 ax.plot(time, fit, color='R')
-                
+
                 minx, maxx = min(time[0], T0 + time[0]), max(time[-1], T0+t1+t2+tr + time[0])# time[0], time[-1]
                 miny, maxy = min(fit), max(fit)
                 #-----------------------------------------------------------------------------
                 kwarg = {'fontsize':t_label/1.5, 'va':'center'}
-                
+
                 # T0 -------------------------------------------------------------------------
                 ax.axvspan(T0 + time[0], T0+t1 + time[0], color='r', alpha=0.2)
                 ax.text(T0+time[0]+(maxx-minx)/100, maxy+(maxy-miny)/6, 'T0', color='r', alpha=0.5, **kwarg)
@@ -1944,7 +1944,7 @@ class ANEMO(object):
                         ax.set_ylabel('%s\nDistance (°)'%(t+1), fontsize=t_label)
                     else :
                         ax.set_ylabel('Distance (°)', fontsize=t_label)
-                    
+
                     try :
                         #------------------------------------------------
                         # TARGET
@@ -1965,7 +1965,7 @@ class ANEMO(object):
                             else :
                                 pos_target = pos_target
                             Target_trial.append(pos_target)
-                        ax.plot(trackertime_s, Target_trial, color='r', linewidth=lw)                   
+                        ax.plot(trackertime_s, Target_trial, color='r', linewidth=lw)
                         #------------------------------------------------
 
                     except :
@@ -2070,7 +2070,7 @@ class ANEMO(object):
             t_label : int
                 size x and y label
 
- 
+
             Returns
             -------
             fig : matplotlib.figure.Figure
@@ -2125,7 +2125,7 @@ class ANEMO(object):
 
                 if equation in ['fct_position', 'fct_saccade'] :
                     Title, ylabel, scale = 'Position Fit', 'Distance (°)', 1/2
-                    data_1 = data_x 
+                    data_1 = data_x
 
                 if equation in ['fct_velocity', 'fct_position'] :
 
@@ -2265,17 +2265,17 @@ class ANEMO(object):
 
                         ax1.plot(time, data_sacc, color='k', alpha=0.4)
                         ax1.plot(time, fit, color='r')
-                        
+
                         minx, maxx = min(time[0], T0 + time[0]), max(time[-1], T0+t1+t2+tr + time[0])# time[0], time[-1]
                         miny, maxy = min(data_sacc), max(data_sacc)
                         #-----------------------------------------------------------------------------
                         name = ['T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2', 'tau']
                         px = 0
                         for n in name :
-                            ax1.text(maxx+(maxx-minx)/10, (maxy+(maxy-miny)/5)-px, "%s: %0.3f"%(n, f.values[n]) , color='k', 
+                            ax1.text(maxx+(maxx-minx)/10, (maxy+(maxy-miny)/5)-px, "%s: %0.3f"%(n, f.values[n]) , color='k',
                                             ha='right', va='center', fontsize=t_label/1.3, alpha=0.8)
                             px = px + ((maxy+(maxy-miny)/5)-(miny-(maxy-miny)/5))/(len(name)-1)
-                        
+
                         # T0 -------------------------------------------------------------------------
                         ax1.axvspan(T0 + time[0], T0+t1 + time[0], color='r', alpha=0.2)
                         # T1 -------------------------------------------------------------------------
