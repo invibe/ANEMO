@@ -266,6 +266,46 @@ class ANEMO(object):
         import easydict
         return easydict.EasyDict(kwargs)
 
+    def data_deg(self, data, StimulusOf, t_0, saccades, before_sacc, after_sacc, **opt) :
+
+        '''
+        Return the position of the eye in deg
+
+        Parameters
+        ----------
+        data : ndarray
+            position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module
+        StimulusOf : int
+            time when the stimulus disappears
+        t_0 : int
+            time 0 of the trial
+        saccades : list
+            list of edf saccades for the trial recorded by the eyetracker transformed by the function read_edf of the module edfreader
+        before_sacc: int
+            time to delete before saccades
+        after_sacc: int
+            time to delete after saccades
+
+        Returns
+        -------
+        data_deg : ndarray
+            position of the eye in deg
+        '''
+
+        px_per_deg = Test.test_value('px_per_deg', self.param_exp, print_crash="px_per_deg is not defined in param_exp")
+
+        t_data_0 = StimulusOf-t_0
+        for s in range(len(saccades)):
+            for x_data in np.arange((saccades[s][0]-t_0-before_sacc), (saccades[s][1]-t_0+after_sacc)) :
+                if x_data == StimulusOf-t_0 :
+                    if (saccades[s][0]-t_0-before_sacc)-t_data_0 <= (saccades[s][1]-t_0+after_sacc)-t_data_0 :
+                        t_data_0 = saccades[s][0]-t_0-before_sacc-1
+                    else :
+                        t_data_0 = saccades[s][1]-t_0+after_sacc+1
+        data_deg = (data - (data[t_data_0]))/px_per_deg
+
+        return data_deg
+
 
     def velocity_deg(self, data_x) :
 
@@ -1339,7 +1379,8 @@ class ANEMO(object):
                         data_1 = velocity_NAN
                         data_trial = np.copy(data_1)
                     else :
-                        data_x = (arg.data_x - (arg.data_x[arg.StimulusOf-arg.t_0]))/arg.px_per_deg
+
+                        data_x = ANEMO.data_deg(self, data=arg.data_x, **opt) # (arg.data_x - (arg.data_x[arg.StimulusOf-arg.t_0]))/arg.px_per_deg
                         data_1 = data_x
                         data_trial = np.copy(data_1)
 
@@ -1932,8 +1973,8 @@ class ANEMO(object):
                     if x==0 :
                         ax.set_title('Eye Position', fontsize=t_titre, x=0.5, y=1.05)
 
-                    data_x = (arg.data_x - (arg.data_x[arg.StimulusOf-arg.t_0])) / arg.px_per_deg
-                    data_y = (arg.data_y - (arg.data_y[arg.StimulusOf-arg.t_0])) / arg.px_per_deg
+                    data_x = ANEMO.data_deg(self, data=arg.data_x, **opt) #(arg.data_x - (arg.data_x[arg.StimulusOf-arg.t_0])) / arg.px_per_deg
+                    data_y = ANEMO.data_deg(self, data=arg.data_y, **opt) #(arg.data_y - (arg.data_y[arg.StimulusOf-arg.t_0])) / arg.px_per_deg
                     ax.plot(trackertime_s, data_x, color='k', linewidth=lw)
                     ax.plot(trackertime_s, data_y, color='c', linewidth=lw)
 
@@ -2121,7 +2162,7 @@ class ANEMO(object):
                 TargetOff_s = arg.TargetOff - start
                 trackertime_s = arg.trackertime - start
 
-                data_x = (arg.data_x - (arg.data_x[arg.StimulusOf-arg.t_0])) / arg.px_per_deg
+                data_x = ANEMO.data_deg(self, data=arg.data_x, **opt) #(arg.data_x - (arg.data_x[arg.StimulusOf-arg.t_0])) / arg.px_per_deg
 
                 if equation in ['fct_position', 'fct_saccade'] :
                     Title, ylabel, scale = 'Position Fit', 'Distance (°)', 1/2
