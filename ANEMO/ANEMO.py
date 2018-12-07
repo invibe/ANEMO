@@ -149,56 +149,62 @@ class Test(object):
 
 
 class ANEMO(object):
-    """ docstring for the ANEMO class. """
+    """
+    ANEMO allows you to perform Fits on data of Smooth Pursuite Eyes Movements.
+    You could use the functions 'velocity', 'position' and 'saccades' already present, but also your own functions.
+    It must be initialized with the parameters of the experiment :
+
+    Parameters
+    ----------
+    param_exp : dict
+        dictionary containing the parameters of the experiment :
+
+        'px_per_deg': float
+            number of px per degree for the experiment
+                screen_width_deg = 2. * np.arctan((screen_width_cm/2) / viewing_Distance_cm) * 180/np.pi
+                px_per_deg = screen_width_px / screen_width_deg
+
+
+        'dir_target' : list
+            list of lists for each block containing the direction of the target for each trial,
+            dir_target = param_exp['dir_target'][block][trial]
+                the direction of the target must be equal to -1 for left or 1 for right
+        or 'p': ndarray
+            ndarray containing for each trial of each block the direction of the target,
+                its probability of direction and the switches of this probability
+            dir_target = param_exp['p'][trial, block, 0]
+                the direction of the target must be equal to 0 for left or 1 for right
+            proba = param_exp['p'][trial, block, 1]
+            swich = param_exp['p'][trial, block, 2]
+
+        'N_trials': int
+            number of trials per block
+
+        'N_blocks': int
+            number of blocks
+
+        'observer': str
+            subject name
+
+        'list_events' : list
+            list of the names of the events of the trial :
+                ['onset fixation', 'end fixation', 'start pursuit', 'end pursuit']
+            by default : ['StimulusOn\\n', 'StimulusOff\\n', 'TargetOn\\n', 'TargetOff\\n']
+
+        -------------------------------------------------------------------------------------------
+        optional not obligatory, just to display the target in Plot.plot_data for show='position' :
+
+            'V_X_deg': float
+                target velocity in deg/s
+            'stim_tau': float
+                presentation time of the target
+            'RashBass': int
+                the time the target has to arrive at the center of the screen in ms
+                    (to move the target back to t=0 of its velocity * latency = RashBass)
+        -------------------------------------------------------------------------------------------
+    """
 
     def __init__(self, param_exp=None) :
-
-        '''
-        Parameters
-        ----------
-        param_exp : dict
-            dictionary containing the parameters of the experiment :
-
-            'px_per_deg': float
-                    number of px per degree for the experiment
-                        screen_width_deg = 2. * np.arctan((screen_width_cm/2) / viewing_Distance_cm) * 180/np.pi
-                        px_per_deg = screen_width_px / screen_width_deg
-
-
-            'dir_target' : list
-                    list of lists for each block containing the direction of the target for each trial,
-                    dir_target = param_exp['dir_target'][block][trial]
-                        the direction of the target must be equal to -1 for left or 1 for right
-            or 'p': ndarray
-                    ndarray containing for each trial of each block the direction of the target, its probability of direction and the switches of this probability
-                    dir_target = param_exp['p'][trial, block, 0]
-                        the direction of the target must be equal to 0 for left or 1 for right
-                    proba = param_exp['p'][trial, block, 1]
-                    swich = param_exp['p'][trial, block, 2]
-
-            'N_trials': int
-                number of trials per block
-
-            'N_blocks': int
-                number of blocks
-
-            'observer': str
-                subject name
-
-            'list_events' : list
-                list of the names of the events of the trial : ['onset fixation', 'end fixation', 'start pursuit', 'end pursuit']
-                by default : ['StimulusOn\n', 'StimulusOff\n', 'TargetOn\n', 'TargetOff\n']
-
-            optional not obligatory, just to display the target in Plot.plot_data for show='position' :
-
-                'V_X_deg': float
-                    target velocity in deg/s
-                'stim_tau': float
-                    presentation time of the target
-                'RashBass': int
-                    the time the target has to arrive at the center of the screen in ms (to move the target back to t=0 of its velocity * latency = RashBass)
-        '''
-
         self.param_exp = Test.crash_None('param_exp', param_exp)
 
 
@@ -836,7 +842,12 @@ class ANEMO(object):
 
 
     class Fit(object) :
-        """ docstring for the Fit class. """
+        """
+        Fit allows you to perform Fits on Smooth Pursuite Eyes Movements data.
+        You could use the functions 'velocity', 'position' and 'saccades' already present, but also your own functions.
+        It must be initialized with the parameters of the experiment
+        (see ANEMO .__ doc__ for more precisions on the parameters)
+        """
 
         def __init__(self, param_exp=None) :
 
@@ -1023,6 +1034,9 @@ class ANEMO(object):
                            {'name':'x2', 'value':1., 'min':-5., 'max':5., 'vary':'vary'}]
 
                 inde_vars={'x':np.arange(len(data_x))}
+
+            if equation not in ['fct_velocity', 'fct_position', 'fct_saccade'] :
+                param_fit, inde_vars = None, None
 
             return param_fit, inde_vars
 
@@ -1228,8 +1242,6 @@ class ANEMO(object):
                 if 'fct_saccades' : does a data fit with the function 'fct_saccades'
                 if function : does a data fit with the function
 
-
-
             fitted_data : bool
                 if 'velocity' = fit the velocity data for a trial in deg/sec
                 if 'position' = fit the position data for a trial in deg
@@ -1314,7 +1326,7 @@ class ANEMO(object):
 
             if plot is not None :
                 import matplotlib.pyplot as plt
-                if equation=='fct_saccade' :
+                if equation=='fct_saccade' or fitted_data=='saccade' :
                     import matplotlib.gridspec as gridspec
 
             if equation in ['fct_velocity', 'fct_position'] :
@@ -1558,7 +1570,12 @@ class ANEMO(object):
 
 
     class Plot(object) :
-        """ docstring for the Plot class. """
+        """
+        Plot allows to display the data as well as their Fits.
+        You could use the functions 'velocity', 'position' and 'saccades' already present, but also your own functions.
+        It must be initialized with the parameters of the experiment
+        (see ANEMO .__ doc__ for more precisions on the parameters)
+        """
 
         def __init__(self, param_exp=None) :
 
@@ -2046,7 +2063,8 @@ class ANEMO(object):
 
             return fig, axs
 
-        def plot_fit(self, data, equation='fct_velocity', trials=0, block=0, N_trials=None,
+        def plot_fit(self, data, equation='fct_velocity', fitted_data='velocity',
+                        trials=0, block=0, N_trials=None,
                         fig_width=15, t_titre=35, t_label=20,
                         report=None, before_sacc=5, after_sacc=15,
                         step_fit=2, do_whitening=False, time_sup=280, param_fit=None, inde_vars=None,
@@ -2065,6 +2083,11 @@ class ANEMO(object):
                 if 'fct_position' : does a data fit with the function 'fct_position'
                 if 'fct_saccades' : does a data fit with the function 'fct_saccades'
                 if function : does a data fit with the function
+
+            fitted_data : bool
+                if 'velocity' = fit the velocity data for a trial in deg/sec
+                if 'position' = fit the position data for a trial in deg
+                if 'saccade' = fit the position data for sacades in trial in deg
 
             trials : int or list
                 number or list of trials to display
@@ -2122,23 +2145,30 @@ class ANEMO(object):
                 list of the reports of the fit for each trial
             '''
 
-            if fig_width < 15 :
-                lw = 1
-            else :
-                lw = 2
+            if fig_width < 15 : lw = 1
+            else : lw = 2
+
 
             if N_trials is None :
                 N_trials = Test.test_value('N_trials', self.param_exp)
 
+            if type(trials) is not list : trials = [trials]
+
             opt_base = {'stop_search_misac':stop_search_misac,'equation':equation,'time_sup':time_sup,
                         'param_fit':param_fit, 'inde_vars':inde_vars, 'step_fit':step_fit, 'do_whitening':do_whitening,
-                        'before_sacc':before_sacc, 'after_sacc':after_sacc,'t_label':t_label,}
+                        'before_sacc':before_sacc, 'after_sacc':after_sacc,'t_label':t_label}
+
+            if equation=='fct_velocity' :
+                fitted_data = 'velocity'
+            if equation=='fct_position' :
+                fitted_data = 'position'
+            if equation=='fct_saccade' :
+                fitted_data = 'saccade'
+
 
             import matplotlib.pyplot as plt
 
-            if type(trials) is not list : trials = [trials]
-
-            if equation=='fct_saccade' :
+            if equation=='fct_saccade' or fitted_data=='saccade' :
                 import matplotlib.gridspec as gridspec
                 fig = plt.figure(figsize=(fig_width, (fig_width*(len(trials))/1.6180)))
                 axs = gridspec.GridSpec(len(trials), 1, hspace=0.4)
@@ -2151,24 +2181,20 @@ class ANEMO(object):
 
                 trial_data = t + N_trials*block
                 arg = ANEMO.arg(self, data[trial_data], trial=t, block=block)
-
                 opt = opt_base.copy()
                 opt.update(arg)
 
                 start = arg.TargetOn
-                StimulusOn_s = arg.StimulusOn - start
-                StimulusOf_s = arg.StimulusOf - start
                 TargetOn_s = arg.TargetOn - start
-                TargetOff_s = arg.TargetOff - start
                 trackertime_s = arg.trackertime - start
 
                 data_x = ANEMO.data_deg(self, data=arg.data_x, **opt) #(arg.data_x - (arg.data_x[arg.StimulusOf-arg.t_0])) / arg.px_per_deg
 
-                if equation in ['fct_position', 'fct_saccade'] :
+                if fitted_data in ['position', 'saccade'] :
                     Title, ylabel, scale = 'Position Fit', 'Distance (°)', 1/2
                     data_1 = data_x
 
-                if equation in ['fct_velocity', 'fct_position'] :
+                if fitted_data != 'saccade' : #in ['velocity', 'position'] :
 
                     if len(trials)==1:
                         ax = axs
@@ -2178,8 +2204,7 @@ class ANEMO(object):
                     velocity_NAN = ANEMO.velocity_NAN(self, **opt)[0]
                     old_latence, old_max, old_anti = ANEMO.classical_method.Full(velocity_NAN, arg.TargetOn-arg.t_0)
 
-                    if equation=='fct_velocity' :
-
+                    if fitted_data=='velocity' :
                         Title, ylabel, scale = 'Velocity Fit', 'Velocity (°/s)', 1
                         data_1 = velocity_NAN
 
@@ -2188,91 +2213,102 @@ class ANEMO(object):
                     #-------------------------------------------------
                     f = ANEMO.Fit.Fit_trial(self, data_trial=data_1, value_latence=old_latence, value_max=old_max, value_anti=old_anti, **opt)
                     #-------------------------------------------------
-
-                    onset  = arg.TargetOn - arg.t_0 # TargetOn - temps_0
-                    start_anti = f.values['start_anti']
-                    v_anti = f.values['v_anti']
-                    latence = f.values['latence']
-                    tau = f.values['tau']
-                    maxi = f.values['maxi']
-
-                    if equation=='fct_velocity' :
-                        result_fit = ANEMO.Equation.fct_velocity (x=np.arange(len(trackertime_s)), dir_target=arg.dir_target,
-                                                                    start_anti=start_anti, v_anti=v_anti, latence=latence,
-                                                                    tau=tau, maxi=maxi, do_whitening=False)
-
-                    if equation=='fct_position' :
-
-                        sacc, i = np.zeros(len(arg.trackertime), dtype=int), 0
-                        for s in range(len(arg.saccades)):
-                            sacc[i] = arg.saccades[s][0] # onset sacc
-                            sacc[i+1] = arg.saccades[s][1] # end sacc
-                            sacc[i+2] = arg.saccades[s][2] # time sacc
-                            i = i+3
-
-                        result_fit = ANEMO.Equation.fct_position(x=np.arange(len(trackertime_s)), data_x=arg.data_x, saccades=sacc,
-                                                        nb_sacc=len(arg.saccades), dir_target=arg.dir_target, start_anti=start_anti,
-                                                        v_anti=v_anti, latence=latence, tau=tau, maxi=maxi, t_0=arg.t_0,
-                                                        px_per_deg=arg.px_per_deg, before_sacc=before_sacc, after_sacc=after_sacc, do_whitening=False)
-
                     if report is not None :
                         results.append(f.fit_report())
 
-                    ax.plot(trackertime_s[:int(start_anti)],              result_fit[:int(start_anti)],              c='k', linewidth=lw)
-                    ax.plot(trackertime_s[int(start_anti):int(latence)],  result_fit[int(start_anti):int(latence)],  c='r', linewidth=lw)
-                    ax.plot(trackertime_s[int(latence):int(latence)+250], result_fit[int(latence):int(latence)+250], c='darkred', linewidth=lw)
+                    inde_v = Test.test_None(inde_vars, ANEMO.Fit.generation_param_fit(self, **opt)[1])
+                    rv = f.values
+                    if 'do_whitening' in f.values.keys() :
+                        rv['do_whitening'] = False
+                    rv.update(inde_v)
 
-                    y = {}
-                    for y_pos in [int(start_anti), int(latence), int(latence)+50, int(latence)+250, int(latence)+400] :
-                        if np.isnan(result_fit[y_pos]) :
-                            y[y_pos] = data_1[y_pos]
-                        else :
-                            y[y_pos] = result_fit[y_pos]
-                    #-----------------------------------------------------------------------------
-                    # V_a ------------------------------------------------------------------------
-                    ax.text((trackertime_s[int(start_anti)]+trackertime_s[int(latence)])/2, y[int(start_anti)]-15*scale,
-                            r"A$_a$ = %0.2f °/s$^2$"%(v_anti), color='r', fontsize=t_label/1.5, ha='center')
 
-                    # Start_a --------------------------------------------------------------------
-                    ax.text(trackertime_s[int(start_anti)]-25, -35*scale, "Start anticipation = %0.2f ms"%(start_anti-onset),
-                            color='k', alpha=0.7, fontsize=t_label/1.5, ha='right')
-                    ax.bar(trackertime_s[int(start_anti)], 80*scale, bottom=-40*scale, color='k', width=4, linewidth=0, alpha=0.7)
-
-                    # latence --------------------------------------------------------------------
-                    ax.text(trackertime_s[int(latence)]+25, -35*scale, "Latency = %0.2f ms"%(latence-onset),
-                            color='firebrick', fontsize=t_label/1.5, va='center')
-                    ax.bar(trackertime_s[int(latence)], 80*scale, bottom=-40*scale, color='firebrick', width=4, linewidth=0, alpha=1)
-
-                    # tau ------------------------------------------------------------------------
-                    ax.text(trackertime_s[int(latence)]+70+t_label, y[int(latence)],
-                            r"= %0.2f"%(tau), color='darkred',va='bottom', fontsize=t_label/1.5)
-                    ax.annotate(r'$\tau$', xy=(trackertime_s[int(latence)]+50, y[int(latence)+50]), xycoords='data', fontsize=t_label/1., color='darkred', va='bottom',
-                                xytext=(trackertime_s[int(latence)]+70, y[int(latence)]), textcoords='data', arrowprops=dict(arrowstyle="->", color='darkred'))
-
-                    # Max ------------------------------------------------------------------------
-                    ax.text(TargetOn_s+475, (y[int(latence)]+y[int(latence)+250])/2,
-                            "Steady State = %0.2f °/s"%(maxi), color='k', va='center', fontsize=t_label/1.5)
-                    #-----------------------------------------------------------------------------
 
                     if equation=='fct_velocity' :
+                        eqt = ANEMO.Equation.fct_velocity
+                    elif equation=='fct_position' :
+                        eqt = ANEMO.Equation.fct_position
+                    else :
+                        eqt = equation
+
+                    fit = eqt(**rv)
+
+
+                    if equation in ['fct_velocity', 'fct_position'] :
+
+                        onset  = arg.TargetOn - arg.t_0 # TargetOn - temps_0
+                        start_anti = f.values['start_anti']
+                        v_anti = f.values['v_anti']
+                        latence = f.values['latence']
+                        tau = f.values['tau']
+                        maxi = f.values['maxi']
+
+
+                        ax.plot(trackertime_s[:int(start_anti)],              fit[:int(start_anti)],              c='k', linewidth=lw)
+                        ax.plot(trackertime_s[int(start_anti):int(latence)],  fit[int(start_anti):int(latence)],  c='r', linewidth=lw)
+                        ax.plot(trackertime_s[int(latence):int(latence)+250], fit[int(latence):int(latence)+250], c='darkred', linewidth=lw)
+
+                        y = {}
+                        for y_pos in [int(start_anti), int(latence), int(latence)+50, int(latence)+250, int(latence)+400] :
+                            if np.isnan(fit[y_pos]) :
+                                y[y_pos] = data_1[y_pos]
+                            else :
+                                y[y_pos] = fit[y_pos]
+                        #-----------------------------------------------------------------------------
                         # V_a ------------------------------------------------------------------------
-                        ax.annotate('', xy=(trackertime_s[int(latence)], y[int(latence)]-3), xycoords='data', fontsize=t_label/1.5,
-                                xytext=(trackertime_s[int(start_anti)], y[int(start_anti)]-3), textcoords='data', arrowprops=dict(arrowstyle="->", color='r'))
+                        ax.text((trackertime_s[int(start_anti)]+trackertime_s[int(latence)])/2, y[int(start_anti)]-15*scale,
+                                r"A$_a$ = %0.2f °/s$^2$"%(v_anti), color='r', fontsize=t_label/1.5, ha='center')
+
+                        # Start_a --------------------------------------------------------------------
+                        ax.text(trackertime_s[int(start_anti)]-25, -35*scale, "Start anticipation = %0.2f ms"%(start_anti-onset),
+                                color='k', alpha=0.7, fontsize=t_label/1.5, ha='right')
+                        ax.bar(trackertime_s[int(start_anti)], 80*scale, bottom=-40*scale, color='k', width=4, linewidth=0, alpha=0.7)
+
+                        # latence --------------------------------------------------------------------
+                        ax.text(trackertime_s[int(latence)]+25, -35*scale, "Latency = %0.2f ms"%(latence-onset),
+                                color='firebrick', fontsize=t_label/1.5, va='center')
+                        ax.bar(trackertime_s[int(latence)], 80*scale, bottom=-40*scale, color='firebrick', width=4, linewidth=0, alpha=1)
+
+                        # tau ------------------------------------------------------------------------
+                        ax.text(trackertime_s[int(latence)]+70+t_label, y[int(latence)],
+                                r"= %0.2f"%(tau), color='darkred',va='bottom', fontsize=t_label/1.5)
+                        ax.annotate(r'$\tau$', xy=(trackertime_s[int(latence)]+50, y[int(latence)+50]), xycoords='data', fontsize=t_label/1., color='darkred', va='bottom',
+                                    xytext=(trackertime_s[int(latence)]+70, y[int(latence)]), textcoords='data', arrowprops=dict(arrowstyle="->", color='darkred'))
+
                         # Max ------------------------------------------------------------------------
-                        ax.annotate('', xy=(TargetOn_s+450, y[int(latence)]), xycoords='data', fontsize=t_label/1.5,
-                                    xytext=(TargetOn_s+450, y[int(latence)+250]), textcoords='data', arrowprops=dict(arrowstyle="<->"))
-                        ax.plot(trackertime_s, np.zeros(len(trackertime_s)), '--k', linewidth=1, alpha=0.5)
-                        ax.plot(trackertime_s[int(latence):], np.ones(len(trackertime_s[int(latence):]))*y[int(latence)+400], '--k', linewidth=1, alpha=0.5)
+                        ax.text(TargetOn_s+475, (y[int(latence)]+y[int(latence)+250])/2,
+                                "Steady State = %0.2f °/s"%(maxi), color='k', va='center', fontsize=t_label/1.5)
+                        #-----------------------------------------------------------------------------
 
-                    #-----------------------------------------------------------------------------
+                        if equation=='fct_velocity' :
+                            # V_a ------------------------------------------------------------------------
+                            ax.annotate('', xy=(trackertime_s[int(latence)], y[int(latence)]-3), xycoords='data', fontsize=t_label/1.5,
+                                    xytext=(trackertime_s[int(start_anti)], y[int(start_anti)]-3), textcoords='data', arrowprops=dict(arrowstyle="->", color='r'))
+                            # Max ------------------------------------------------------------------------
+                            ax.annotate('', xy=(TargetOn_s+450, y[int(latence)]), xycoords='data', fontsize=t_label/1.5,
+                                        xytext=(TargetOn_s+450, y[int(latence)+250]), textcoords='data', arrowprops=dict(arrowstyle="<->"))
+                            ax.plot(trackertime_s, np.zeros(len(trackertime_s)), '--k', linewidth=1, alpha=0.5)
+                            ax.plot(trackertime_s[int(latence):], np.ones(len(trackertime_s[int(latence):]))*y[int(latence)+400], '--k', linewidth=1, alpha=0.5)
+                        #-----------------------------------------------------------------------------
+
+
+                    else :
+                        if time_sup is None :
+                            ax.plot(trackertime_s, fit, color='r', linewidth=2)
+                        else :
+                            ax.plot(trackertime_s[:-time_sup], fit[:-time_sup], color='r', linewidth=2)
+
+                        x = 0
+                        for name in f.values.keys() :
+                            ax.text((trackertime_s[0]+10), 35*scale+x, "%s: %0.3f"%(name, f.values[name]) , color='k', fontsize=t_label/1.5, va='center', ha='left')
+                            x = x - 5*scale
+
                     ax.set_ylabel(ylabel, fontsize=t_label)
-
                     if x!= (len(trials)-1) :
                         ax.set_xticklabels([])
-
                     #-----------------------------------------------------------------------------
 
-                if equation=='fct_saccade' :
+                if fitted_data=='saccade' :
                     axs0 = gridspec.GridSpecFromSubplotSpec(2, len(arg.saccades), subplot_spec=axs[x], hspace=0.45, wspace=0.2)
                     ax = plt.Subplot(fig, axs0[0,:])
                     ax.set_ylabel(ylabel, fontsize=t_label)
@@ -2297,64 +2333,87 @@ class ANEMO(object):
 
                         if report is not None :
                             results.append(f.fit_report())
-                        T0,  t1,  t2,  tr = f.values['T0'], f.values['t1'], f.values['t2'], f.values['tr']
-                        x_0, x1, x2, tau = f.values['x_0'], f.values['x1'], f.values['x2'], f.values['tau']
 
+                        if equation=='fct_saccade' :
+                            eqt = ANEMO.Equation.fct_saccade
+                        else :
+                            eqt = equation
 
-                        fit = ANEMO.Equation.fct_saccade(range(len(data_sacc)), x_0, tau, x1, x2, T0, t1, t2, tr,do_whitening=False)
+                        rv = f.values
+                        if 'do_whitening' in f.values.keys() :
+                            rv['do_whitening'] = False
+
+                        fit = eqt(range(len(data_sacc)), **rv)
+
                         ax.plot(time, fit, color='r')
-
-                        ax1.plot(time, data_sacc, color='k', alpha=0.4)
                         ax1.plot(time, fit, color='r')
 
-                        minx, maxx = min(time[0], T0 + time[0]), max(time[-1], T0+t1+t2+tr + time[0])# time[0], time[-1]
-                        miny, maxy = min(data_sacc), max(data_sacc)
-                        #-----------------------------------------------------------------------------
-                        name = ['T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2', 'tau']
-                        px = 0
-                        for n in name :
-                            ax1.text(maxx+(maxx-minx)/10, (maxy+(maxy-miny)/5)-px, "%s: %0.3f"%(n, f.values[n]) , color='k',
-                                            ha='right', va='center', fontsize=t_label/1.3, alpha=0.8)
-                            px = px + ((maxy+(maxy-miny)/5)-(miny-(maxy-miny)/5))/(len(name)-1)
+                        if equation=='fct_saccade' :
+                            T0,  t1,  t2,  tr = f.values['T0'], f.values['t1'], f.values['t2'], f.values['tr']
+                            x_0, x1, x2, tau = f.values['x_0'], f.values['x1'], f.values['x2'], f.values['tau']
 
-                        # T0 -------------------------------------------------------------------------
-                        ax1.axvspan(T0 + time[0], T0+t1 + time[0], color='r', alpha=0.2)
-                        # T1 -------------------------------------------------------------------------
-                        ax1.axvspan(T0+t1 + time[0], T0+t1+t2 + time[0], color='k', alpha=0.2)
-                        # T2 -------------------------------------------------------------------------
-                        ax1.axvspan(T0+t1+t2 + time[0], T0+t1+t2+tr + time[0], color='r', alpha=0.2)
-                        # x_0 -------------------------------------------------------------------------
-                        ax1.hlines(x_0, minx, maxx, color='k', lw=1, linestyles='--', alpha=0.3)
-                        # x1 -------------------------------------------------------------------------
-                        ax1.hlines(x1+x_0, minx, maxx, color='k', lw=1, linestyles='--', alpha=0.5)
-                        # x2 -------------------------------------------------------------------------
-                        ax1.hlines(x2+x_0, minx, maxx, color='r', lw=1, linestyles='--', alpha=0.5)
+                            minx, maxx = min(time[0], T0 + time[0]), max(time[-1], T0+t1+t2+tr + time[0])# time[0], time[-1]
+                            miny, maxy = min(data_sacc), max(data_sacc)
+                            #-----------------------------------------------------------------------------
+                            name = ['T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2', 'tau']
+                            px = 0
+                            for n in name :
+                                ax1.text(maxx+(maxx-minx)/10, (maxy+(maxy-miny)/5)-px, "%s: %0.3f"%(n, f.values[n]) , color='k',
+                                                ha='right', va='center', fontsize=t_label/1.3, alpha=0.8)
+                                px = px + ((maxy+(maxy-miny)/5)-(miny-(maxy-miny)/5))/(len(name)-1)
 
-                        #-----------------------------------------------------------------------------
+                            # T0 -------------------------------------------------------------------------
+                            ax1.axvspan(T0 + time[0], T0+t1 + time[0], color='r', alpha=0.2)
+                            # T1 -------------------------------------------------------------------------
+                            ax1.axvspan(T0+t1 + time[0], T0+t1+t2 + time[0], color='k', alpha=0.2)
+                            # T2 -------------------------------------------------------------------------
+                            ax1.axvspan(T0+t1+t2 + time[0], T0+t1+t2+tr + time[0], color='r', alpha=0.2)
+                            # x_0 -------------------------------------------------------------------------
+                            ax1.hlines(x_0, minx, maxx, color='k', lw=1, linestyles='--', alpha=0.3)
+                            # x1 -------------------------------------------------------------------------
+                            ax1.hlines(x1+x_0, minx, maxx, color='k', lw=1, linestyles='--', alpha=0.5)
+                            # x2 -------------------------------------------------------------------------
+                            ax1.hlines(x2+x_0, minx, maxx, color='r', lw=1, linestyles='--', alpha=0.5)
+
+                            #-----------------------------------------------------------------------------
+                            ax1.axis([minx-(maxx-minx)/100, maxx+(maxx-minx)/8, miny-(maxy-miny)/3, maxy+(maxy-miny)/3])
+
                         ax1.set_title('Saccade %s'%(s+1), fontsize=t_label, x=0.5, y=1.05)
-                        ax1.axis([minx-(maxx-minx)/100, maxx+(maxx-minx)/8, miny-(maxy-miny)/3, maxy+(maxy-miny)/3])
                         #-----------------------------------------------------------------------------
                         ax1.set_xlabel('Time (ms)', fontsize=t_label)
                         if y==0 :
                             ax1.set_ylabel('Distance (°)', fontsize=t_label)
                         ax1.tick_params(labelsize=t_label/2 , bottom=True, left=True)
                         #-----------------------------------------------------------------------------
+                        ax1.plot(time, data_sacc, color='k', alpha=0.4)
                         fig.add_subplot(ax1)
 
-                        y=y+1
+                    else :
+                        minx, maxx = time[0], time[-1]
+                        miny, maxy = min(data_sacc), max(data_sacc)
+                        px = 0
+                        for name in f.values.keys() :
+                            ax1.text(maxx+(maxx-minx)/10, (maxy+(maxy-miny)/5)-px, "%s: %0.3f"%(n, f.values[n]) , color='k',
+                                                ha='right', va='center', fontsize=t_label/1.3, alpha=0.8)
+                            px = px + ((maxy+(maxy-miny)/5)-(miny-(maxy-miny)/5))/(len(f.values.keys())-1)
+
+                    y=y+1
 
                 ax.plot(trackertime_s, data_1, color='k', alpha=0.4)
                 ax = ANEMO.Plot.deco(self, ax, **opt)
-                ax.axis([-750, 750, -39.5*scale, 39.5*scale])
+                if equation in ['fct_velocity', 'fct_position', 'fct_saccade'] :
+                    ax.axis([-750, 750, -39.5*scale, 39.5*scale])
+                else :
+                    ax.axis([trackertime_s[0], trackertime_s[-1], -39.5*scale, 39.5*scale])
                 if x==0 :
                     ax.set_title(Title, fontsize=t_titre, x=0.5, y=1.05)
 
                 x=x+1
 
-            if equation in ['fct_velocity', 'fct_position'] :
+            if fitted_data in ['velocity', 'position'] :
                 plt.tight_layout() # to remove the margin too large
                 plt.subplots_adjust(hspace=0) # to remove space between figures
-            if equation =='fct_saccade' :
+            if fitted_data =='saccade' :
                 axs.tight_layout(fig) # to remove the margin too large
 
 
