@@ -39,6 +39,7 @@ def whitening(position, white_f_0=.4, white_alpha=.5, white_steepness=4):
         N_freq = position.shape[0]
     except AttributeError :
         N_freq = len(position)
+
     freq, K = whitening_filt(N_freq=N_freq, white_f_0=white_f_0, white_alpha=white_alpha, white_steepness=white_steepness)
     f_position = np.fft.fft(position)
     return np.real(np.fft.ifft(f_position*K))
@@ -1162,15 +1163,18 @@ class ANEMO(object):
                 if equation == 'fct_position' :
                     data_x = data_x[:-time_sup]
 
-
             if do_whitening:
                 for x in range(len(data_trial)) :
                     if np.isnan(data_trial[x]) :
-                        data_trial[x] = data_trial[x-1]
+                        if x == 0:
+                            data_trial[x] = 0
+                        else :
+                            data_trial[x] = data_trial[x-1]
 
                 data_trial = whitening(data_trial)
                 if equation in ['fct_position'] :
                     data_x = whitening(data_x)
+
 
             if param_fit is None or inde_vars is None :
                 opt = {'TargetOn' : TargetOn, 'StimulusOf' : StimulusOf,
