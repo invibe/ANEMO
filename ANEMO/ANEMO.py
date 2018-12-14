@@ -755,7 +755,10 @@ class ANEMO(object):
                 #if sacc[0]-t_0 < len(pos) :
 
                 if do_whitening is True:
-                    a = pos[int(sacc[0]-t_0)-int(before_sacc)-1]
+                    if int(sacc[0]-t_0)-int(before_sacc)-1 < len(pos) :
+                        a = pos[int(sacc[0]-t_0)-int(before_sacc)-1]
+                    else :
+                        a = pos[-1]
                 else :
                     a = np.nan
 
