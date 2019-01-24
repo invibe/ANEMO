@@ -1503,61 +1503,62 @@ class ANEMO(object):
 
                         for s in range(len(arg.saccades)):
                             data_sacc = data_1[arg.saccades[s][0]-arg.t_0-before_sacc:arg.saccades[s][1]-arg.t_0+after_sacc]
-                            #-------------------------------------------------
-                            # FIT
-                            #-------------------------------------------------
-                            f = ANEMO.Fit.Fit_trial(self, data_sacc, equation=equation, **opt)
-                            #-------------------------------------------------
+                            if len(data_sacc) > 0 :
+                                #-------------------------------------------------
+                                # FIT
+                                #-------------------------------------------------
+                                f = ANEMO.Fit.Fit_trial(self, data_sacc, equation=equation, **opt)
+                                #-------------------------------------------------
 
-                            for name in list_param_enre :
-                                if name in f.values.keys() :
-                                    result_fit[name][trial].append(f.values[name])
-                            if 'fit' in list_param_enre :
-                                result_fit['fit'][trial].append(f.best_fit)
-
-                            if plot is not None :
-                                ax1 = plt.Subplot(fig, ax0[s])
-                                time = trackertime_s[arg.saccades[s][0]-arg.t_0-before_sacc:arg.saccades[s][1]-arg.t_0+after_sacc]
-
-                                opt['data_x'] = data_sacc
-                                inde_v = Test.test_None(inde_vars, ANEMO.Fit.generation_param_fit(self, equation=equation, **opt)[1])
-                                rv = f.values
-                                if 'do_whitening' in f.values.keys() :
-                                    rv['do_whitening'] = False
-                                rv.update(inde_v)
-
-                                if equation=='fct_saccade' :
-                                    eqt = ANEMO.Equation.fct_saccade
-                                else :
-                                    eqt = equation
-
-                                #-----------------------------------------------------------------------------
-                                fit = eqt(**rv)
-
-                                ax1.plot(time, data_sacc, color='k', alpha=0.4)
-                                ax1.plot(time, fit, color='r', alpha=0.6)
-
-                                minx, maxx = time[0], time[-1]
-                                miny, maxy = min(data_sacc), max(data_sacc)
-                                #-----------------------------------------------------------------------------
-                                px = 0
                                 for name in list_param_enre :
                                     if name in f.values.keys() :
-                                        ax1.text(minx+(maxx-minx)/50, (maxy+(maxy-miny)/5)-px, "%s: %0.3f"%(name, f.values[name]) , color='k',
-                                                        ha='left', va='center', fontsize=t_label/1.8) #, alpha=0.8)
-                                        px = px + ((maxy+(maxy-miny)/5)-(miny-(maxy-miny)/5))/(len(list_param_enre)-1)
-                                #-----------------------------------------------------------------------------
-                                ax1.set_title('Saccade %s'%(s+1), fontsize=t_label/1.5, x=0.5, y=1.01)
-                                ax1.axis([minx-(maxx-minx)/30, maxx+(maxx-minx)/30, miny-(maxy-miny)/3, maxy+(maxy-miny)/3])
-                                #-----------------------------------------------------------------------------
-                                ax1.set_xlabel('Time (ms)', fontsize=t_label/2)
-                                if y==0 :
-                                    ax1.set_ylabel('%s\nDistance (°)'%(trial+1), fontsize=t_label)
-                                ax1.tick_params(labelsize=t_label/2.5 , bottom=True, left=True)
-                                #-----------------------------------------------------------------------------
-                                fig.add_subplot(ax1)
+                                        result_fit[name][trial].append(f.values[name])
+                                if 'fit' in list_param_enre :
+                                    result_fit['fit'][trial].append(f.best_fit)
 
-                                y=y+1
+                                if plot is not None :
+                                    ax1 = plt.Subplot(fig, ax0[s])
+                                    time = trackertime_s[arg.saccades[s][0]-arg.t_0-before_sacc:arg.saccades[s][1]-arg.t_0+after_sacc]
+
+                                    opt['data_x'] = data_sacc
+                                    inde_v = Test.test_None(inde_vars, ANEMO.Fit.generation_param_fit(self, equation=equation, **opt)[1])
+                                    rv = f.values
+                                    if 'do_whitening' in f.values.keys() :
+                                        rv['do_whitening'] = False
+                                    rv.update(inde_v)
+
+                                    if equation=='fct_saccade' :
+                                        eqt = ANEMO.Equation.fct_saccade
+                                    else :
+                                        eqt = equation
+
+                                    #-----------------------------------------------------------------------------
+                                    fit = eqt(**rv)
+
+                                    ax1.plot(time, data_sacc, color='k', alpha=0.4)
+                                    ax1.plot(time, fit, color='r', alpha=0.6)
+
+                                    minx, maxx = time[0], time[-1]
+                                    miny, maxy = min(data_sacc), max(data_sacc)
+                                    #-----------------------------------------------------------------------------
+                                    px = 0
+                                    for name in list_param_enre :
+                                        if name in f.values.keys() :
+                                            ax1.text(minx+(maxx-minx)/50, (maxy+(maxy-miny)/5)-px, "%s: %0.3f"%(name, f.values[name]) , color='k',
+                                                            ha='left', va='center', fontsize=t_label/1.8) #, alpha=0.8)
+                                            px = px + ((maxy+(maxy-miny)/5)-(miny-(maxy-miny)/5))/(len(list_param_enre)-1)
+                                    #-----------------------------------------------------------------------------
+                                    ax1.set_title('Saccade %s'%(s+1), fontsize=t_label/1.5, x=0.5, y=1.01)
+                                    ax1.axis([minx-(maxx-minx)/30, maxx+(maxx-minx)/30, miny-(maxy-miny)/3, maxy+(maxy-miny)/3])
+                                    #-----------------------------------------------------------------------------
+                                    ax1.set_xlabel('Time (ms)', fontsize=t_label/2)
+                                    if y==0 :
+                                        ax1.set_ylabel('%s\nDistance (°)'%(trial+1), fontsize=t_label)
+                                    ax1.tick_params(labelsize=t_label/2.5 , bottom=True, left=True)
+                                    #-----------------------------------------------------------------------------
+                                    fig.add_subplot(ax1)
+
+                                    y=y+1
 
                 for name in list_param_enre :
                     param[name].append(result_fit[name])
@@ -2492,14 +2493,14 @@ class ANEMO(object):
                 plt.close()
 
 
-        def show_fit(self, ax, trial, block, title, c, out, data, param_fit,
-                    equation='fct_velocity', fitted_data='velocity',
-                    N_blocks=None, N_trials=None, list_param_enre=None,
-                    plot=None, file_fig=None,
-                    inde_vars=None, step_fit=2,
-                    do_whitening=False, time_sup=280, before_sacc=5, after_sacc=15,
-                    stop_search_misac=None,
-                    fig_width=15, t_label=20, t_text=14) :
+        def fig_show_fit(self, ax, trial, block, title, c, data, param_fit, out=None,
+                     equation='fct_velocity', fitted_data='velocity',
+                     N_blocks=None, N_trials=None, list_param_enre=None,
+                     plot=None, file_fig=None,
+                     inde_vars=None, step_fit=2,
+                     do_whitening=False, time_sup=280, before_sacc=5, after_sacc=15,
+                     stop_search_misac=None,
+                     fig_width=15, t_label=20, t_text=14) :
 
             '''
             Return the parameters of the fit present in list_param_enre
@@ -2762,17 +2763,14 @@ class ANEMO(object):
                 fig.add_subplot(ax)
 
                 y = 0
-                if param_fit is None :
-                    result_fit = {}
-                    for name in list_param_enre :
-                        result_fit[name] = []
+                result_fit = {}
+                for name in list_param_enre :
+                    result_fit[name] = []
 
                 for s in range(len(arg.saccades)):
 
-                    if len(arg.saccades)==1:
-                        ax1 = axs0[1]
-                    else :
-                        ax1 = plt.Subplot(fig, axs0[1,s])
+                    if len(arg.saccades)==1: ax1 = axs0[1]
+                    else : ax1 = plt.Subplot(fig, axs0[1,s])
 
                     data_sacc = data_1[arg.saccades[s][0]-arg.t_0-before_sacc:arg.saccades[s][1]-arg.t_0+after_sacc]
                     time = trackertime_s[arg.saccades[s][0]-arg.t_0-before_sacc:arg.saccades[s][1]-arg.t_0+after_sacc]
@@ -2816,7 +2814,12 @@ class ANEMO(object):
                     fit = eqt(**rv)
 
                     ax.plot(time, fit, color=c, linewidth=2)
-                    ax1.plot(time, fit, color=c, linewidth=2, alpha=0.6)
+                    start_sacc = (arg.saccades[s][0])-start
+                    end_sacc = (arg.saccades[s][1])-start
+                    if start_sacc > TargetOn_s-700 :
+                        if end_sacc < TargetOff_s+10 :
+                            ax.text(start_sacc+(end_sacc-start_sacc)/2, -15, s+1, color=c, ha='center', fontsize=t_text)
+                    ax1.plot(time, fit, color=c, linewidth=2)
                     ax1.plot(time, data_sacc, color='k', alpha=0.4)
 
                     minx, maxx = time[0], time[-1]
@@ -2825,12 +2828,15 @@ class ANEMO(object):
                     px = 0
                     for name in list_param :
                         if name in param_f.keys() :
-                            ax1.text(minx+(maxx-minx)/50, (maxy+(maxy-miny)/5)-px, "%s: %0.2f"%(name, param_f[name]), color=c,
-                                            ha='left', va='center', fontsize=t_text) #, alpha=0.8)
-                            px = px + ((maxy+(maxy-miny)/t_text)-(miny-(maxy-miny)/t_text))/(len(list_param)-1)
+                            ax1.text(maxx+(maxx-minx)/5+(3*(maxx-minx)/t_text)*len(arg.saccades), (maxy+(maxy-miny)/5)-px, "%s: %0.2f"%(name, param_f[name]), color=c,
+                                            ha='right', va='center', fontsize=t_text) #, alpha=0.8)
+                            #ax1.text(minx+(maxx-minx)/50, (maxy+(maxy-miny)/5)-px, "%s: %0.2f"%(name, param_f[name]), color=c,
+                            #                ha='left', va='center', fontsize=t_text, zorder=3) #, alpha=0.8)
+                            px = px + (maxy-miny)/(t_text/1.7)
+
                     #-----------------------------------------------------------------------------
                     ax1.set_title('Saccade %s'%(s+1), fontsize=t_label/1.5, x=0.5, y=1.01, color=c)
-                    ax1.axis([minx-(maxx-minx)/30, maxx+(maxx-minx)/30, miny-(maxy-miny)/3, maxy+(maxy-miny)/3])
+                    ax1.axis([minx-(maxx-minx)/30, maxx+(maxx-minx)/3+(3*(maxx-minx)/t_text)*len(arg.saccades), miny-(maxy-miny)/3, maxy+(maxy-miny)/3])
                     #-----------------------------------------------------------------------------
                     ax1.set_xlabel('Time (ms)', fontsize=t_label/2, color=c)
 
@@ -2842,19 +2848,167 @@ class ANEMO(object):
 
                     y=y+1
 
-
             ax.plot(trackertime_s, data_1, color='k', alpha=0.4)
             ax.axis([TargetOn_s-700, TargetOff_s+10, -39.5*scale, 39.5*scale])
             ax = ANEMO.Plot.deco(self, ax, **opt)
             ax.set_xlabel('Time (ms)', fontsize=t_label, color=c)
             ax.set_title('block %s trial %s%s'%(block, trial, title), fontsize=t_label, color=c)
 
-            from IPython.display import display,clear_output
-            with out:
-                clear_output(wait=True)
-                display(ax.figure)
+            if out is not None :
+                from IPython.display import display,clear_output
+                with out:
+                    clear_output(wait=True)
+                    display(ax.figure)
 
             return result_fit
+
+        def show_fit(self, data, list_fct, Full_param_fit, fct1='fct_velocity',
+                     N_blocks=None, N_trials=None, list_param_enre=None,
+                     inde_vars=None, step_fit=2,
+                     do_whitening=False, time_sup=280, before_sacc=5, after_sacc=15,
+                     stop_search_misac=None,
+                     fig_width=15, t_label=20, t_text=14) :
+
+            if N_blocks is None :
+                N_blocks = Test.test_value('N_blocks', self.param_exp, crash=None)
+                N_blocks = Test.test_None(N_blocks, 1)
+            if N_trials is None :
+                N_trials = Test.test_value('N_trials', self.param_exp, crash=None)
+                N_trials = Test.test_None(N_trials, int(len(data)/N_blocks))
+            
+            list_param_enre = {}
+            list_param_enre['fct_velocity']=['start_anti', 'v_anti', 'latence', 'tau', 'maxi']
+            list_param_enre['fct_position']=['start_anti', 'v_anti', 'latence', 'tau', 'maxi']
+            list_param_enre['fct_saccade']=['T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2', 'tau']
+
+            import matplotlib.pyplot as plt
+            import ipywidgets as widgets
+            from IPython.display import display,clear_output
+
+            list_ok, list_bad = {}, {}
+            for fct in list_fct.keys() :
+                list_ok[fct], list_bad[fct] = [], []
+                for block in range(N_blocks) :
+                    list_ok[fct].append([])
+                    list_bad[fct].append([])
+
+            trial, block = 0, 0
+
+            if fct1 in list_fct.keys() : fct=fct1
+            else : fct= list(list_fct.keys())[0]
+
+            param_fit = Full_param_fit[fct]
+            fitted_data = list_fct[fct]
+
+            plt.ioff()
+            fig, ax = plt.subplots(1, 1, figsize=(12, (12*(1/2)/1.6180)))
+
+            h = '%spx'%((fig.get_figheight()+1)*fig.get_dpi())
+            w = '%spx'%((fig.get_figwidth()+1)*fig.get_dpi())
+
+            out = widgets.Output(layout=widgets.Layout(grid_area='out'))
+
+            button = {}
+            for b, style in zip(['Previews', 'Next', 'OK', 'Bad'], ['', '', 'success', 'danger']) :
+                button[b] = widgets.Button(description=b, button_style=style,
+                                          layout=widgets.Layout(grid_area=b, margin='auto 0%', width='90%'))
+
+            _fct_fit = widgets.Dropdown(value=fct, options=list_fct.keys(),
+                                        description='fct_fit', disabled=False,
+                                        layout=widgets.Layout(grid_area='fct_fit', margin='auto 0%', width='90%'))
+
+            _trial = widgets.IntSlider(value=trial, min=0, max=N_trials-1, step=1, description='Trial', readout=True,
+                                         layout=widgets.Layout(grid_area='trial', margin='auto 0%', width='90%'))
+
+            _block = widgets.Dropdown(value='%s'%block, options=['0', '1', '2'], description='Block', disabled=False,
+                                         layout=widgets.Layout(grid_area='block', margin='auto 0%', width='90%'))
+
+            grid = widgets.GridBox(children=[button['OK'], button['Bad'], _fct_fit,
+                                             button['Previews'], _trial, _block, out, button['Next']],
+                                   layout=widgets.Layout(grid_template_columns='10% 10% 50% 10% 10% 10%',
+                                                         grid_template_areas=''' "OK Bad . fct_fit fct_fit ."
+                                                                                "out out out out out out"
+                                                                               "Previews . trial block . Next" '''))
+
+            display(grid)
+
+            def fig(title, c, out) :
+                nonlocal trial, block, ax, fct, fitted_data, param_fit
+                param_f = ANEMO.Plot.fig_show_fit(self, ax, trial, block, title, c, out=out, data=data,
+                                        param_fit=param_fit, equation=fct, fitted_data=fitted_data,
+                                        list_param_enre=list_param_enre[fct])
+
+            def check_fct(b) :
+                nonlocal fct, fitted_data, param_fit
+                fct = _fct_fit.value
+                fitted_data = list_fct[fct]
+                param_fit = Full_param_fit[fct]
+                c, title = check_list()
+                fig(title, c, out)
+
+            def check_list() :
+                nonlocal trial, block, fct, list_bad, list_ok
+                if trial in list_bad[fct][block] : c='darkred' ; title=' -- Bad'
+                elif trial in list_ok[fct][block] : c='darkgreen' ; title=' -- OK'
+                else : c='k' ; title=''
+                return c, title
+
+            def check_trial(b) :
+                nonlocal trial
+                trial =  _trial.value
+                c, title = check_list()
+                fig(title, c, out)
+
+            def check_block(b) :
+                nonlocal block
+                block = int(_block.value)
+                c, title = check_list()
+                fig(title, c, out)
+
+            def Next(b):
+                nonlocal trial, block
+                trial = trial+1
+                if trial >= N_trials : trial = 0 ; block = block+1
+                if block >= N_blocks : trial = N_trials-1 ; block = N_blocks-1
+                _trial.value, _block.value = trial, '%s'%block
+
+            def Previews(b):
+                nonlocal trial, block
+                trial = trial-1
+                if trial < 0 : trial = N_trials-1 ; block = block-1
+                if block < 0 : trial = 0 ; block = 0
+                _trial.value, _block.value = trial, '%s'%block
+
+            def Bad(b):
+                nonlocal trial, block, list_bad, list_ok
+                if trial not in list_bad[fct][block] :
+                    list_bad[fct][block].append(trial) ; list_bad[fct][block].sort()
+                if trial in list_ok[fct][block] :
+                    del list_ok[fct][block][list_ok[fct][block].index(trial)] ; list_ok[fct][block].sort()
+                fig(' -- Bad', 'r', out)
+
+            def no_Bad(b):
+                nonlocal trial, block, list_bad, list_ok
+                if trial not in list_ok[fct][block] :
+                    list_ok[fct][block].append(trial) ; list_ok[fct][block].sort()
+                if trial in list_bad[fct][block] :
+                    del list_bad[fct][block][list_bad[fct][block].index(trial)] ; list_bad[fct][block].sort()
+                fig(' -- OK', 'g', out)
+
+            button['Previews'].on_click(Previews)
+            button['Bad'].on_click(Bad)
+            button['OK'].on_click(no_Bad)
+            button['Next'].on_click(Next)
+
+            _trial.observe(check_trial, names='value')
+            _block.observe(check_block, names='value')
+            _fct_fit.observe(check_fct, names='value')
+
+            check_trial(None)
+            return list_bad, list_ok
+
+
+
 
 
 
