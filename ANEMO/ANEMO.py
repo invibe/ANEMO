@@ -260,7 +260,20 @@ class ANEMO(object):
         import easydict
         return easydict.EasyDict(kwargs)
 
-    def data_deg(self, data, StimulusOf, t_0, saccades, before_sacc, after_sacc, **opt) :
+
+    def filter_data(self, data, cutoff=30, sample_rate=1000) :
+        from scipy import signal
+        # filtering of data
+        nyq_rate = sample_rate / 2 # The Nyquist rate of the signal.
+        Wn = cutoff/nyq_rate # the critical frequencies -- cutoff of filtre
+        N = 2 # The order of the filter.
+        b, a = signal.butter(N, Wn, 'lowpass') # Butterworth digital and analog filter design.
+        filt_data = signal.filtfilt(b, a, data) # Apply a digital filter forward and backward to a signal.
+
+        return filt_data
+
+
+    def data_deg(self, data, StimulusOf, t_0, saccades, before_sacc, after_sacc, filt=False, cutoff=30, sample_rate=1000, **opt) :
 
         '''
         Return the position of the eye in deg
@@ -288,6 +301,9 @@ class ANEMO(object):
 
         px_per_deg = Test.test_value('px_per_deg', self.param_exp, print_crash="px_per_deg is not defined in param_exp")
 
+        if filt in ['position', 'velocity-position'] :
+            data = ANEMO.filter_data(self, data, cutoff, sample_rate)
+
         t_data_0 = StimulusOf-t_0
         for s in range(len(saccades)):
             for x_data in np.arange((saccades[s][0]-t_0-before_sacc), (saccades[s][1]-t_0+after_sacc)) :
@@ -301,7 +317,7 @@ class ANEMO(object):
         return data_deg
 
 
-    def velocity_deg(self, data_x) :
+    def velocity_deg(self, data_x, filt=False, cutoff=30, sample_rate=1000) :
 
         '''
         Return the velocity of the eye in deg/sec
@@ -317,12 +333,20 @@ class ANEMO(object):
             velocity of the eye in deg/sec
         '''
 
+
         px_per_deg = Test.test_value('px_per_deg', self.param_exp, print_crash="px_per_deg is not defined in param_exp")
+
+        if filt in ['position', 'velocity-position'] :
+            data_x = ANEMO.filter_data(self, data_x, cutoff=cutoff, sample_rate=sample_rate)
 
         gradient_x = np.gradient(data_x)
         gradient_deg = gradient_x * 1/px_per_deg * 1000 # gradient in deg/sec
 
+        if filt in ['velocity', 'velocity-position'] :
+            gradient_deg = ANEMO.filter_data(self, gradient_deg, cutoff=cutoff, sample_rate=sample_rate)
+
         return gradient_deg
+
 
     def detec_misac (self, velocity_x, velocity_y, t_0=0, VFAC=5, mindur=5, maxdur=100, minsep=30):
 
@@ -432,7 +456,8 @@ class ANEMO(object):
 
         return velocity
 
-    def velocity_NAN(self, data_x, data_y, saccades, trackertime, TargetOn, before_sacc=5, after_sacc=15, stop_search_misac=None, **opt) :
+    def velocity_NAN(self, data_x, data_y, saccades, trackertime, TargetOn, before_sacc=5, after_sacc=15, stop_search_misac=None,
+                     filt=False, cutoff=30, sample_rate=1000, **opt) :
 
         '''
         returns velocity of the eye in deg / sec without the saccades
@@ -465,13 +490,15 @@ class ANEMO(object):
 
         stop_search_misac = Test.test_None(stop_search_misac, value=TargetOn-trackertime[0]+100)
 
-
-        velocity = ANEMO.velocity_deg(self, data_x=data_x)
-        velocity_y = ANEMO.velocity_deg(self, data_x=data_y)
+        velocity = ANEMO.velocity_deg(self, data_x=data_x, filt=False)
+        velocity_y = ANEMO.velocity_deg(self, data_x=data_y, filt=False)
 
         new_saccades = saccades.copy()
         misac = ANEMO.detec_misac(self, velocity_x=velocity[:stop_search_misac], velocity_y=velocity_y[:stop_search_misac], t_0=trackertime[0])
         new_saccades.extend(misac)
+
+        if filt != False :
+            velocity = ANEMO.velocity_deg(self, data_x=data_x, filt=filt, cutoff=cutoff, sample_rate=sample_rate)
 
         velocity_NAN = ANEMO.supp_sacc(self, velocity=velocity, saccades=new_saccades, trackertime=trackertime, before_sacc=before_sacc, after_sacc=after_sacc)
 
@@ -1178,7 +1205,8 @@ class ANEMO(object):
                     param_fit=None, inde_vars=None, step_fit=2,
                     do_whitening=False, time_sup=280, before_sacc=5, after_sacc=15,
                     stop_search_misac=None,
-                    fig_width=12, t_label=20, t_text=14) :
+                    fig_width=12, t_label=20, t_text=14,
+                    filt=False, cutoff=30, sample_rate=1000) :
 
             '''
             Return the parameters of the fit present in list_param_enre
@@ -1302,7 +1330,8 @@ class ANEMO(object):
                         'before_sacc':before_sacc, 'after_sacc':after_sacc,
                         't_label':t_label, 't_text':t_text, 'fig_width':fig_width,
                         'list_param_enre':list_param_enre,
-                        'N_blocks':N_blocks, 'N_trials':N_trials, 'show_target':show_target}
+                        'N_blocks':N_blocks, 'N_trials':N_trials, 'show_target':show_target,
+                        'filt':filt, 'cutoff':cutoff, 'sample_rate':sample_rate}
 
             param = {}
             if 'observer' in self.param_exp.keys() : param['observer'] = self.param_exp['observer']
@@ -1524,7 +1553,8 @@ class ANEMO(object):
                          list_param_enre=None, param_fit=None, inde_vars=None,
                          step_fit=2, do_whitening=False, time_sup=280, before_sacc=5, after_sacc=15,
                          stop_search_misac=None,  report=None,
-                         fig_width=15, t_label=20, t_text=14,  **opt) :
+                         fig_width=15, t_label=20, t_text=14,
+                         filt=False, cutoff=30, sample_rate=1000, **opt) :
 
             '''
             Return the parameters of the fit present in list_param_enre
@@ -1661,7 +1691,7 @@ class ANEMO(object):
                         'param_fit':param_fit, 'inde_vars':inde_vars,
                         'step_fit':step_fit, 'do_whitening':do_whitening,
                         'before_sacc':before_sacc, 'after_sacc':after_sacc,
-                        't_label':t_label}
+                        't_label':t_label, 'filt':filt, 'cutoff':cutoff, 'sample_rate':sample_rate}
 
             if show_data!='saccade' : show_pos_sacc=True
             if show_pos_sacc is not True : show_target=False
@@ -2170,7 +2200,8 @@ class ANEMO(object):
         def plot_data(self, data, show='velocity', trials=0, block=0,
                         show_num_trial=False, N_trials=None, N_blocks=None,
                         fig_width=15, t_titre=35, t_label=20, t_text=14,
-                        stop_search_misac=None, before_sacc=5, after_sacc=15):
+                        stop_search_misac=None, before_sacc=5, after_sacc=15,
+                        filt=False, cutoff=30, sample_rate=1000):
 
             '''
             Returns the data figure
@@ -2274,7 +2305,8 @@ class ANEMO(object):
                                              write_step_trial=write_step_trial,
                                              before_sacc=before_sacc, after_sacc=after_sacc,
                                              stop_search_misac=stop_search_misac,
-                                             fig_width=fig_width, t_label=t_label, t_text=t_text)
+                                             fig_width=fig_width, t_label=t_label, t_text=t_text,
+                                             filt=filt, cutoff=cutoff, sample_rate=sample_rate)
 
                 x=x+1
 
@@ -2292,7 +2324,7 @@ class ANEMO(object):
                         report=None, before_sacc=5, after_sacc=15,
                         list_param_enre=None,
                         step_fit=2, do_whitening=False, time_sup=280, param_fit=None, inde_vars=None,
-                        stop_search_misac=None):
+                        stop_search_misac=None, filt=False, cutoff=30, sample_rate=1000):
 
             '''
             Returns figure of data fits
@@ -2422,7 +2454,8 @@ class ANEMO(object):
                                  list_param_enre=list_param_enre, param_fit=param_fit, inde_vars=inde_vars,
                                  step_fit=step_fit, do_whitening=do_whitening, time_sup=time_sup, before_sacc=before_sacc, after_sacc=after_sacc,
                                  stop_search_misac=stop_search_misac,  report=report,
-                                 fig_width=fig_width, t_label=t_label, t_text=t_text)
+                                 fig_width=fig_width, t_label=t_label, t_text=t_text,
+                                 filt=filt, cutoff=cutoff, sample_rate=sample_rate)
 
                 if report is not None :
                     ax, result = ANEMO.Plot.generate_fig(self, **param_fct)
@@ -2508,7 +2541,8 @@ class ANEMO(object):
                      inde_vars=None, step_fit=2,
                      do_whitening=False, time_sup=280, before_sacc=5, after_sacc=15,
                      stop_search_misac=None,
-                     fig_width=15, t_label=20, t_text=14) :
+                     fig_width=15, t_label=20, t_text=14,
+                     filt=False, cutoff=30, sample_rate=1000) :
 
             '''
             Return the parameters of the fit present in list_param_enre
@@ -2679,7 +2713,7 @@ class ANEMO(object):
                 title = 'block %s trial %s%s'%(block, trial, ss_title)
                 param_f = ANEMO.Plot.generate_fig(self, ax=ax, trial=trial, block=block, title=title, c=c, out=out, data=data,
                                         param_fit=param_fit, equation=fct, show_data=show_data,
-                                        list_param_enre=list_param_enre[fct], show=show)
+                                        list_param_enre=list_param_enre[fct], show=show, filt=filt, cutoff=cutoff, sample_rate=sample_rate)
 
 
             def check_list() :
