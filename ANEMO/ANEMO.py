@@ -3,11 +3,8 @@
 
 import numpy as np
 
-''' Revoir les docstring'''
 
 N_freq = 1301
-
-
 def whitening_filt(N_freq, white_f_0, white_alpha, white_steepness):
 
     """
@@ -19,7 +16,8 @@ def whitening_filt(N_freq, white_f_0, white_alpha, white_steepness):
     """
 
     freq = np.fft.fftfreq(N_freq, d=1.)
-    K = np.abs(freq)**(white_alpha)
+
+    K  = np.abs(freq)**(white_alpha)
     K *= np.exp(-(np.abs(freq)/white_f_0)**white_steepness)
     K /= np.mean(K)
 
@@ -35,11 +33,12 @@ def whitening(position, white_f_0=.4, white_alpha=.5, white_steepness=4):
 
     """
 
-    try : N_freq = position.shape[0]
+    try :                   N_freq = position.shape[0]
     except AttributeError : N_freq = len(position)
 
     freq, K = whitening_filt(N_freq=N_freq, white_f_0=white_f_0, white_alpha=white_alpha, white_steepness=white_steepness)
     f_position = np.fft.fft(position)
+
     return np.real(np.fft.ifft(f_position*K))
 
 
@@ -69,9 +68,13 @@ class Test(object):
         or Raise
         '''
 
-        if not print_crash : print_crash = "%s is not defined"%name
-        if value is None : raise ValueError(print_crash)
-        else : return value
+        if not print_crash :
+            print_crash = "%s is not defined"%name
+
+        if value is None :
+            raise ValueError(print_crash)
+        else :
+            return value
 
     def test_value(name, dic, value=None, crash=True, print_crash=None) :
 
@@ -100,6 +103,7 @@ class Test(object):
         '''
 
         new_value = name
+
         try:
             new_value = dic[name]
             return new_value
@@ -109,7 +113,8 @@ class Test(object):
             return new_value
 
         finally :
-            if crash is True : Test.crash_None(name, new_value, print_crash)
+            if crash is True :
+                Test.crash_None(name, new_value, print_crash)
 
     def test_None(var, value) :
 
@@ -139,7 +144,8 @@ class Test(object):
             None_or_nan = True
             return value
 
-        if None_or_nan is False : return var
+        if None_or_nan is False :
+            return var
 
 
 class ANEMO(object):
@@ -230,22 +236,24 @@ class ANEMO(object):
             dictionary of the parameters of the trial
         '''
 
+        import easydict
+
         list_events = Test.test_value('list_events', self.param_exp, value=['StimulusOn\n', 'StimulusOff\n', 'TargetOn\n', 'TargetOff\n'])
         kwargs = {}
 
         for events in range(len(data_trial['events']['msg'])) :
             if data_trial['events']['msg'][events][1] == list_events[0] : kwargs["StimulusOn"] = data_trial['events']['msg'][events][0]
             if data_trial['events']['msg'][events][1] == list_events[1] : kwargs["StimulusOf"] = data_trial['events']['msg'][events][0]
-            if data_trial['events']['msg'][events][1] == list_events[2] : kwargs["TargetOn"] = data_trial['events']['msg'][events][0]
-            if data_trial['events']['msg'][events][1] == list_events[3] : kwargs["TargetOff"] = data_trial['events']['msg'][events][0]
+            if data_trial['events']['msg'][events][1] == list_events[2] : kwargs["TargetOn"]   = data_trial['events']['msg'][events][0]
+            if data_trial['events']['msg'][events][1] == list_events[3] : kwargs["TargetOff"]  = data_trial['events']['msg'][events][0]
 
         kwargs.update({
-                    "data_x": data_trial['x'],
-                    "data_y": data_trial['y'],
-                    "trackertime":data_trial['trackertime'],
-                    "saccades":data_trial['events']['Esac'],
-                    "t_0": data_trial['trackertime'][0],
-                    })
+                       "data_x"      : data_trial['x'],
+                       "data_y"      : data_trial['y'],
+                       "trackertime" : data_trial['trackertime'],
+                       "saccades"    : data_trial['events']['Esac'],
+                       "t_0"         : data_trial['trackertime'][0],
+                       })
 
         kwargs["px_per_deg"] = Test.test_value('px_per_deg', self.param_exp, print_crash="px_per_deg is not defined in param_exp")
 
@@ -257,7 +265,6 @@ class ANEMO(object):
                 try : kwargs["dir_target"] = (self.param_exp['p'][trial, block, 0]*2)-1
                 except : pass
 
-        import easydict
         return easydict.EasyDict(kwargs)
 
 
@@ -284,9 +291,10 @@ class ANEMO(object):
 
         from scipy import signal
 
-        nyq_rate = sample_rate / 2 # The Nyquist rate of the signal.
+        nyq_rate = sample_rate/2 # The Nyquist rate of the signal.
         Wn = cutoff/nyq_rate
-        N = 2 # The order of the filter.
+        N = 2                      # The order of the filter.
+
         b, a = signal.butter(N, Wn, 'lowpass') # Butterworth digital and analog filter design.
         filt_data = signal.filtfilt(b, a, data) # Apply a digital filter forward and backward to a signal.
 
@@ -345,6 +353,7 @@ class ANEMO(object):
                         t_data_0 = saccades[s][0]-t_0-before_sacc-1
                     else :
                         t_data_0 = saccades[s][1]-t_0+after_sacc+1
+
         data_deg = (data - (data[t_data_0]))/px_per_deg
 
         return data_deg
@@ -507,7 +516,7 @@ class ANEMO(object):
                      filt=False, cutoff=30, sample_rate=1000, **opt) :
 
         '''
-        returns velocity of the eye in deg / sec without the saccades
+        Returns velocity of the eye in deg / sec without the saccades
 
         Parameters
         ----------
@@ -551,7 +560,7 @@ class ANEMO(object):
 
         stop_search_misac = Test.test_None(stop_search_misac, value=TargetOn-trackertime[0]+100)
 
-        velocity = ANEMO.velocity_deg(self, data_x=data_x, filt=False)
+        velocity   = ANEMO.velocity_deg(self, data_x=data_x, filt=False)
         velocity_y = ANEMO.velocity_deg(self, data_x=data_y, filt=False)
 
         new_saccades = saccades.copy()
@@ -576,7 +585,7 @@ class ANEMO(object):
         def latence(velocity_NAN, w1=300, w2=50, off=50, crit=0.17) :
 
             '''
-            return the latency of the pursuit during a smooth pursuit calculated in a 'classic' way
+            Return the latency of the pursuit during a smooth pursuit calculated in a 'classic' way
 
             Parameters
             ----------
@@ -602,6 +611,7 @@ class ANEMO(object):
 
             time = np.arange(len(velocity_NAN))
             tps = time
+
             a = None
             for t in range(len(time)-(w1+off+w2)-300) :
                 slope1, intercept1, r_, p_value, std_err = stats.linregress(tps[t:t+w1], velocity_NAN[t:t+w1])
@@ -626,7 +636,7 @@ class ANEMO(object):
         def maximum(velocity_NAN, TargetOn_0):
 
             '''
-            return the maximum velocity of the pursuit during a smooth pursuit calculated in a 'classic' way
+            Return the maximum velocity of the pursuit during a smooth pursuit calculated in a 'classic' way
 
             Parameters
             ----------
@@ -647,7 +657,7 @@ class ANEMO(object):
         def anticipation(velocity_NAN, TargetOn_0) :
 
             '''
-            return the anticipation of the pursuit during a smooth pursuit calculated in a 'classic' way
+            Return the anticipation of the pursuit during a smooth pursuit calculated in a 'classic' way
 
             Parameters
             ----------
@@ -702,8 +712,8 @@ class ANEMO(object):
             '''
 
 
-            latence = ANEMO.classical_method.latence(velocity_NAN, w1, w2, off, crit)
-            maximum = ANEMO.classical_method.maximum(velocity_NAN, TargetOn_0)
+            latence      = ANEMO.classical_method.latence(velocity_NAN, w1, w2, off, crit)
+            maximum      = ANEMO.classical_method.maximum(velocity_NAN, TargetOn_0)
             anticipation = ANEMO.classical_method.anticipation(velocity_NAN, TargetOn_0)
 
             return latence, maximum, anticipation/0.1
@@ -722,6 +732,7 @@ class ANEMO(object):
             ----------
             x : ndarray
                 time of the function
+
             dir_target : int
                 direction of the target -1 ou 1
             start_anti : int
@@ -743,16 +754,18 @@ class ANEMO(object):
                 velocity of the eye in deg/sec
             '''
 
-            v_anti = v_anti/1000 # pour passer de sec à ms
-            time = x # np.arange(len(x))
+            v_anti = v_anti/1000 # to switch from sec to ms
+            time = x
             vitesse = []
             y = 0
 
             for t in range(len(time)):
 
                 if start_anti >= latence :
-                    if time[t] < latence : vitesse.append(0)
-                    else : vitesse.append(dir_target*maxi*(1-np.exp(-1/tau*(time[t]-latence))))
+                    if time[t] < latence :
+                        vitesse.append(0)
+                    else :
+                        vitesse.append(dir_target*maxi*(1-np.exp(-1/tau*(time[t]-latence))))
                 else :
                     if time[t] < start_anti :
                         vitesse.append(0)
@@ -815,34 +828,31 @@ class ANEMO(object):
             '''
 
             ms = 1000
-            v_anti = (v_anti/ms)
-            maxi = maxi /ms
+            v_anti = v_anti/ms
+            maxi   = maxi/ms
 
             speed = ANEMO.Equation.fct_velocity(x=x, dir_target=dir_target, start_anti=start_anti, v_anti=v_anti, latence=latence, tau=tau, maxi=maxi, do_whitening=False)
             pos = np.cumsum(speed)
 
             i=0
             for s in range(nb_sacc) :
-                sacc = saccades[i:i+3] # obligation d'avoir les variable indé a la même taille :/
+                sacc = saccades[i:i+3] # obligation to have the independent variable at the same size :/
                                         # saccades[i] -> onset, saccades[i+1] -> end, saccades[i+2] -> time sacc
-                #if sacc[0]-t_0 < len(pos) :
 
                 if do_whitening is True:
                     if int(sacc[0]-t_0)-int(before_sacc)-1 < len(pos) : a = pos[int(sacc[0]-t_0)-int(before_sacc)-1]
-                    else : a = pos[-1]
-                else :
-                    a = np.nan
+                    else :                                              a = pos[-1]
+                else :                                                  a = np.nan
 
                 if int(sacc[1]-t_0)+int(after_sacc)+1 <= len(pos) :
-
                     pos[int(sacc[0]-t_0)-int(before_sacc):int(sacc[1]-t_0)+int(after_sacc)] = a
                     if sacc[0]-t_0 >= int(latence-1) :
                         pos[int(sacc[1]-t_0)+int(after_sacc):] += ((data_x[int(sacc[1]-t_0)+int(after_sacc)]-data_x[int(sacc[0]-t_0)-int(before_sacc)-1])/px_per_deg) - np.mean(speed[int(sacc[0]-t_0):int(sacc[1]-t_0)]) * sacc[2]
-
                 else :
                     pos[int(sacc[0]-t_0)-int(before_sacc):] = a
 
                 i = i+3
+
             if do_whitening is True: pos = whitening(pos)
 
             return pos
@@ -856,6 +866,7 @@ class ANEMO(object):
             ----------
             x : ndarray
                 time of the function
+
             x_0 : float
                 initial position of the beginning of the saccade in deg
             tau : float
@@ -891,18 +902,19 @@ class ANEMO(object):
 
             r = (tau/T2) * np.log((np.exp(T1/tau) + np.exp(T2/tau)) /2)
             rT = int(np.round(T2*r))
-            Umax1 = (1/tau) * x1 / ((2*rho-1)*T1 - tau*(2-np.exp(-(rho*T1)/tau) - np.exp((1-rho)*T1/tau)))
-            Umax2 = (1/tau) * (x2-x1) / ((2*r-1)*T2-T1)
+
+            Umax1 = (1/tau) *    x1   / ((2*rho-1)*T1 - tau*(2-np.exp(-(rho*T1)/tau) - np.exp((1-rho)*T1/tau)))
+            Umax2 = (1/tau) * (x2-x1) / ((2*r-1) * T2-T1)
 
             xx = []
 
             for t in time :
-                if t < 0 : xx.append(x_0)
-                elif t < rhoT : xx.append((x_0 +      Umax1*tau * ((t)    - tau*(1-np.exp(-t/tau)))))
-                elif t < T1 : xx.append(x_0 + (x1 + Umax1*tau * ((T1-t) + tau*(1-np.exp((T1-t)/tau)))))
-                elif t < rT : xx.append(x_0 + (x1 + Umax2*tau * ((t-T1) - tau*(1-np.exp(-(t-T1)/tau)))))
-                elif t < TR : xx.append(x_0 + (x2 + Umax2*tau * ((T2-t) + tau*(1-np.exp((T2-t)/tau)))))
-                else : xx.append(xx[-1])
+                if t < 0 :      xx.append( x_0)
+                elif t < rhoT : xx.append(x_0 +       Umax1*tau * ((t)    - tau*(1-np.exp(-t/tau))))
+                elif t < T1 :   xx.append(x_0 + (x1 + Umax1*tau * ((T1-t) + tau*(1-np.exp((T1-t)/tau)))))
+                elif t < rT :   xx.append(x_0 + (x1 + Umax2*tau * ((t-T1) - tau*(1-np.exp(-(t-T1)/tau)))))
+                elif t < TR :   xx.append(x_0 + (x2 + Umax2*tau * ((T2-t) + tau*(1-np.exp((T2-t)/tau)))))
+                else :          xx.append(xx[-1])
 
             if do_whitening: xx = whitening(xx)
 
@@ -1021,9 +1033,9 @@ class ANEMO(object):
 
             if equation in ['fct_velocity', 'fct_position'] :
 
-                TargetOn = Test.crash_None('TargetOn', TargetOn)
-                StimulusOf = Test.crash_None('StimulusOf', StimulusOf)
-                saccades = Test.crash_None('saccades', saccades)
+                TargetOn    = Test.crash_None('TargetOn', TargetOn)
+                StimulusOf  = Test.crash_None('StimulusOf', StimulusOf)
+                saccades    = Test.crash_None('saccades', saccades)
 
                 trackertime = Test.crash_None('trackertime', trackertime)
                 t_0 = trackertime[0]
@@ -1031,46 +1043,45 @@ class ANEMO(object):
                 if dir_target is None : dir_target = Test.test_value('dir_target', self.param_exp, value=None)
 
                 value_latence = Test.test_None(value_latence, value=TargetOn-t_0+100)
-                value_anti = Test.test_None(value_anti, value=0.)
-                value_maxi = Test.test_None(value_maxi, value=15.)
+                value_anti    = Test.test_None(value_anti, value=0.)
+                value_maxi    = Test.test_None(value_maxi, value=15.)
 
+                #----------------------------------------------
                 max_latence = []
                 for s in range(len(saccades)) :
                     if (saccades[s][0]-t_0) >= (TargetOn-t_0+100) : max_latence.append((saccades[s][0]-t_0))
-                if max_latence==[] : max_latence.append(len(trackertime))
+                if max_latence == [] :                              max_latence.append(len(trackertime))
                 max_latence = max_latence[0]
 
-                #----------------------------------------------
                 if value_latence >= max_latence-50 : value_latence = max_latence-150
-                if value_latence > 250 : value_latence = TargetOn-t_0+100
+                if value_latence > 250 :             value_latence = TargetOn-t_0+100
                 #----------------------------------------------
 
-                # v_anti -- 'vary'
-                param_fit=[{'name':'tau', 'value':15., 'min':13., 'max':80., 'vary':'vary'},
-                           {'name':'maxi', 'value':value_maxi, 'min':1., 'max':40., 'vary':True},
-                           {'name':'dir_target', 'value':dir_target, 'min':None, 'max':None, 'vary':False},
-                           {'name':'v_anti', 'value':value_anti, 'min':-40., 'max':40., 'vary':True},
-                           {'name':'latence', 'value':value_latence, 'min':TargetOn-t_0+75, 'max':max_latence, 'vary':True},
+                param_fit=[{'name':'tau',        'value':15.,              'min':13.,                'max':80.,             'vary':'vary'},
+                           {'name':'maxi',       'value':value_maxi,       'min':1.,                 'max':40.,             'vary':True  },
+                           {'name':'dir_target', 'value':dir_target,       'min':None,               'max':None,            'vary':False },
+                           {'name':'v_anti',     'value':value_anti,       'min':-40.,               'max':40.,             'vary':True  },
+                           {'name':'latence',    'value':value_latence,    'min':TargetOn-t_0+75,    'max':max_latence,     'vary':True  },
                            {'name':'start_anti', 'value':TargetOn-t_0-100, 'min':StimulusOf-t_0-200, 'max':TargetOn-t_0+75, 'vary':'vary'}]
 
-
                 inde_vars={'x':np.arange(len(trackertime))}
+
 
             if equation == 'fct_position' :
 
                 data_x = Test.crash_None('data_x', data_x)
                 px_per_deg = Test.test_value('px_per_deg', self.param_exp, print_crash="px_per_deg is not defined in param_exp")
 
-                param_fit.extend(({'name':'px_per_deg', 'value':px_per_deg, 'min':None, 'max':None, 'vary':False},
-                                  {'name':'t_0', 'value':t_0, 'min':None, 'max':None, 'vary':False},
-                                  {'name':'before_sacc', 'value':before_sacc, 'min':None, 'max':None, 'vary':False},
-                                  {'name':'after_sacc', 'value':after_sacc, 'min':None, 'max':None, 'vary':False},
-                                  {'name':'nb_sacc', 'value':len(saccades), 'min':None, 'max':None, 'vary':False}))
+                param_fit.extend(({'name':'px_per_deg',  'value':px_per_deg,    'min':None, 'max':None, 'vary':False},
+                                  {'name':'t_0',         'value':t_0,           'min':None, 'max':None, 'vary':False},
+                                  {'name':'before_sacc', 'value':before_sacc,   'min':None, 'max':None, 'vary':False},
+                                  {'name':'after_sacc',  'value':after_sacc,    'min':None, 'max':None, 'vary':False},
+                                  {'name':'nb_sacc',     'value':len(saccades), 'min':None, 'max':None, 'vary':False}))
 
                 sacc = np.zeros(len(trackertime))
                 i=0
                 for s in range(len(saccades)):
-                    sacc[i] = saccades[s][0] # onset sacc
+                    sacc[i]   = saccades[s][0] # onset sacc
                     sacc[i+1] = saccades[s][1] # end sacc
                     sacc[i+2] = saccades[s][2] # time sacc
                     i = i+3
@@ -1085,15 +1096,16 @@ class ANEMO(object):
                 else : max_t1, max_t2 = len(data_x)-10., len(data_x)-10.
 
                 param_fit=[{'name':'x_0', 'value':data_x[0], 'min':data_x[0]-0.1, 'max':data_x[0]+0.1, 'vary':'vary'},
-                           {'name':'tau', 'value':13., 'min':5., 'max':40., 'vary':True},
-                           {'name':'T0', 'value':0., 'min':-15, 'max':10, 'vary':True},
-                           {'name':'t1', 'value':15., 'min':10., 'max':max_t1, 'vary':True},
-                           {'name':'t2', 'value':12., 'min':10., 'max':max_t2, 'vary':'vary'},
-                           {'name':'tr', 'value':1., 'min':0., 'max':15., 'vary':'vary'},
-                           {'name':'x1', 'value':2., 'min':-5., 'max':5., 'vary':True},
-                           {'name':'x2', 'value':1., 'min':-5., 'max':5., 'vary':'vary'}]
+                           {'name':'tau', 'value':13.,       'min':5.,            'max':40.,           'vary':True  },
+                           {'name':'T0',  'value':0.,        'min':-15,           'max':10,            'vary':True  },
+                           {'name':'t1',  'value':15.,       'min':10.,           'max':max_t1,        'vary':True  },
+                           {'name':'t2',  'value':12.,       'min':10.,           'max':max_t2,        'vary':'vary'},
+                           {'name':'tr',  'value':1.,        'min':0.,            'max':15.,           'vary':'vary'},
+                           {'name':'x1',  'value':2.,        'min':-5.,           'max':5.,            'vary':True  },
+                           {'name':'x2',  'value':1.,        'min':-5.,           'max':5.,            'vary':'vary'}]
 
                 inde_vars={'x':np.arange(len(data_x))}
+
 
             if equation not in ['fct_velocity', 'fct_position', 'fct_saccade'] : param_fit, inde_vars = None, None
 
@@ -1203,10 +1215,10 @@ class ANEMO(object):
             trackertime = Test.test_None(trackertime, value=np.arange(len(data_trial)))
             #-----------------------------------------------------------------------------
 
-            if step_fit == 1 : vary = True
+            if   step_fit == 1 : vary = True
             elif step_fit == 2 : vary = False
 
-            if equation == 'fct_saccade' : time_sup, data_x = None, data_trial
+            if equation == 'fct_saccade' : time_sup = None ; data_x = data_trial
 
             if time_sup is not None :
                 data_trial = data_trial[:-time_sup]
@@ -1216,47 +1228,52 @@ class ANEMO(object):
             if do_whitening:
                 for x in range(len(data_trial)) :
                     if np.isnan(data_trial[x]) :
-                        if x == 0: data_trial[x] = 0
-                        else : data_trial[x] = data_trial[x-1]
+                        if x == 0 : data_trial[x] = 0
+                        else :      data_trial[x] = data_trial[x-1]
 
                 data_trial = whitening(data_trial)
                 if equation in ['fct_position'] : data_x = whitening(data_x)
 
 
             if param_fit is None or inde_vars is None :
-                opt = {'dir_target' : dir_target,
-                       'TargetOn' : TargetOn, 'StimulusOf' : StimulusOf, 'saccades' : saccades,
-                       'value_latence' : value_latence, 'value_maxi' : value_maxi, 'value_anti' : value_anti,
-                       'before_sacc' : before_sacc, 'after_sacc' : after_sacc}
+                opt = {'dir_target':dir_target,
+                       'TargetOn':TargetOn,           'StimulusOf':StimulusOf, 'saccades':saccades,
+                       'value_latence':value_latence, 'value_maxi':value_maxi, 'value_anti':value_anti,
+                       'before_sacc':before_sacc,     'after_sacc':after_sacc}
 
             if param_fit is None : param_fit = ANEMO.Fit.generation_param_fit(self, equation=equation, trackertime=trackertime, data_x=data_x, **opt)[0]
-
             if inde_vars is None : inde_vars = ANEMO.Fit.generation_param_fit(self, equation=equation, trackertime=trackertime, data_x=data_x, **opt)[1]
 
-            if equation == 'fct_velocity' : equation = ANEMO.Equation.fct_velocity
+            if equation == 'fct_velocity' :  equation = ANEMO.Equation.fct_velocity
             elif equation == 'fct_position': equation = ANEMO.Equation.fct_position
-            elif equation == 'fct_saccade': equation = ANEMO.Equation.fct_saccade
+            elif equation == 'fct_saccade':  equation = ANEMO.Equation.fct_saccade
 
             params = Parameters()
             model = Model(equation, independent_vars=inde_vars.keys())
 
             for num_par in range(len(param_fit)) :
                 if param_fit[num_par]['vary'] == 'vary' : var = vary
-                else : var = param_fit[num_par]['vary']
-                params.add(param_fit[num_par]['name'], value=param_fit[num_par]['value'],
-                           min=param_fit[num_par]['min'], max=param_fit[num_par]['max'],
+                else :                                    var = param_fit[num_par]['vary']
+                params.add(param_fit[num_par]['name'],
+                           value=param_fit[num_par]['value'],
+                           min=param_fit[num_par]['min'],
+                           max=param_fit[num_par]['max'],
                            vary=var)
 
             params.add('do_whitening', value=do_whitening, vary=False)
 
             if step_fit == 1 :
+
                 result_deg = model.fit(data_trial, params, nan_policy='omit', **inde_vars)
+
             elif step_fit == 2 :
+
                 out = model.fit(data_trial, params, nan_policy='omit', **inde_vars)
 
                 # make the other parameters vary now
                 for num_par in range(len(param_fit)) :
-                    if param_fit[num_par]['vary'] == 'vary' : out.params[param_fit[num_par]['name']].set(vary=True)
+                    if param_fit[num_par]['vary'] == 'vary' :
+                        out.params[param_fit[num_par]['name']].set(vary=True)
 
                 result_deg = model.fit(data_trial, out.params, method='nelder', nan_policy='omit', **inde_vars)
 
@@ -1376,18 +1393,17 @@ class ANEMO(object):
                 N_trials = Test.test_None(N_trials, int(len(data)/N_blocks))
             #------------------------------------------------------------------------------
 
-            if equation=='fct_velocity' : fitted_data = 'velocity'
-            if equation=='fct_position' : fitted_data = 'position'
-            if equation=='fct_saccade' : fitted_data = 'saccade'
+            if equation == 'fct_velocity' : fitted_data = 'velocity'
+            if equation == 'fct_position' : fitted_data = 'position'
+            if equation == 'fct_saccade' :  fitted_data = 'saccade'
 
 
             if plot is not None :
                 import matplotlib.pyplot as plt
-                if fitted_data=='saccade' : import matplotlib.gridspec as gridspec
+                if fitted_data == 'saccade' : import matplotlib.gridspec as gridspec
 
             if equation in ['fct_velocity', 'fct_position'] :
-                list_param_enre = Test.test_None(list_param_enre, value=['fit', 'start_anti', 'v_anti', 'latence', 'tau', 'maxi',
-                                                                'old_anti', 'old_max', 'old_latence'])
+                list_param_enre = Test.test_None(list_param_enre, value=['fit', 'start_anti', 'v_anti', 'latence', 'tau', 'maxi', 'old_anti', 'old_max', 'old_latence'])
 
             if equation == 'fct_saccade' :
                 list_param_enre = Test.test_None(list_param_enre, value=['fit', 'T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2', 'tau'])
@@ -1396,13 +1412,13 @@ class ANEMO(object):
                 print('Warning list_param_enre is None, no parameter will be returned !!!')
                 list_param_enre = []
 
-            opt_base = {'N_blocks':N_blocks, 'N_trials':N_trials,
-                        'time_sup':time_sup, 'step_fit':step_fit, 'do_whitening':do_whitening,
-                        'list_param_enre':list_param_enre, 'param_fit':param_fit, 'inde_vars':inde_vars,
-                        'before_sacc':before_sacc, 'after_sacc':after_sacc, 'stop_search_misac':stop_search_misac,
-                        'filt':filt, 'cutoff':cutoff, 'sample_rate':sample_rate,
+            opt_base = {'N_blocks':N_blocks,               'N_trials':N_trials,
+                        'time_sup':time_sup,               'step_fit':step_fit,       'do_whitening':do_whitening,
+                        'list_param_enre':list_param_enre, 'param_fit':param_fit,     'inde_vars':inde_vars,
+                        'before_sacc':before_sacc,         'after_sacc':after_sacc,   'stop_search_misac':stop_search_misac,
+                        'filt':filt, 'cutoff':cutoff,      'sample_rate':sample_rate,
                         'show_target':show_target,
-                        'fig_width':fig_width, 't_label':t_label, 't_text':t_text}
+                        'fig_width':fig_width,             't_label':t_label,         't_text':t_text}
 
             param = {}
             if 'observer' in self.param_exp.keys() : param['observer'] = self.param_exp['observer']
@@ -1435,7 +1451,7 @@ class ANEMO(object):
                         data_1 = velocity_NAN
                         data_trial = np.copy(data_1)
                     else :
-                        data_x = ANEMO.data_deg(self, data=arg.data_x, **opt) # (arg.data_x - (arg.data_x[arg.StimulusOf-arg.t_0]))/arg.px_per_deg
+                        data_x = ANEMO.data_deg(self, data=arg.data_x, **opt)
                         data_1 = data_x
                         data_trial = np.copy(data_1)
 
@@ -1443,6 +1459,7 @@ class ANEMO(object):
                     if fitted_data != 'saccade' :
 
                         old_latence, old_max, old_anti = ANEMO.classical_method.Full(velocity_NAN, arg.TargetOn-arg.t_0)
+
                         #-------------------------------------------------
                         # FIT
                         #-------------------------------------------------
@@ -1453,13 +1470,14 @@ class ANEMO(object):
                         for name in list_param_enre :
                             if name in f.values.keys() :
                                 if name in ['start_anti', 'latence'] : val = f.values[name] - onset
-                                else : val = f.values[name]
+                                else :                                 val = f.values[name]
                                 param[name][block].append(val)
 
-                        if 'fit' in list_param_enre : param['fit'][block].append(f.best_fit)
-                        if 'old_anti' in list_param_enre : param['old_anti'][block].append(old_anti)
-                        if 'old_max' in list_param_enre : param['old_max'][block].append(old_max)
+                        if 'fit' in list_param_enre :         param['fit'][block].append(f.best_fit)
+                        if 'old_anti' in list_param_enre :    param['old_anti'][block].append(old_anti)
+                        if 'old_max' in list_param_enre :     param['old_max'][block].append(old_max)
                         if 'old_latence' in list_param_enre : param['old_latence'][block].append(old_latence-onset)
+
 
                     if fitted_data == 'saccade' :
 
@@ -1475,19 +1493,20 @@ class ANEMO(object):
                                 #-------------------------------------------------
 
                                 for name in list_param_enre :
-                                    if name in f.values.keys() : param[name][block][trial].append(f.values[name]) #result_fit[name][trial].append(f.values[name])
-                                if 'fit' in list_param_enre : param['fit'][block][trial].append(f.best_fit) #result_fit['fit'][trial].append(f.best_fit)
+                                    if name in f.values.keys() : param[name][block][trial].append(f.values[name])
+                                if 'fit' in list_param_enre :    param['fit'][block][trial].append(f.best_fit)
+
 
                     if plot is not None :
 
                         if N_trials==1: ax1 = axs
-                        else : ax1 = axs[trial]
+                        else :          ax1 = axs[trial]
 
                         if fitted_data == 'saccade' : ax = gridspec.GridSpecFromSubplotSpec(1, len(arg.saccades), subplot_spec=ax1, hspace=0.25, wspace=0.15)
-                        else : ax = ax1 ; ax.cla() # to put ax figure to zero
+                        else :                        ax = ax1 ; ax.cla() # to put ax figure to zero
 
-                        if trial==0 : write_step_trial=True
-                        else : write_step_trial=False
+                        if trial==0 : write_step_trial = True
+                        else :        write_step_trial = False
 
                         ax = ANEMO.Plot.generate_fig(self, ax=ax, data=data, trial=trial, block=block, fig=fig,
                                                      show_data=fitted_data, equation=equation,
@@ -1498,7 +1517,7 @@ class ANEMO(object):
 
                 if plot is not None :
                     if equation=='fct_saccade' : axs.tight_layout(fig) # to remove too much margin
-                    else : plt.tight_layout() # to remove too much margin
+                    else :                       plt.tight_layout() # to remove too much margin
                     plt.subplots_adjust(hspace=0) # to remove space between figures
                     file_fig = Test.test_None(file_fig, 'Fit')
                     plt.savefig(file_fig+'_%s.pdf'%(block+1))
@@ -1601,35 +1620,28 @@ class ANEMO(object):
 
                 StimulusOn = Test.crash_None('StimulusOn', StimulusOn)
                 StimulusOf = Test.crash_None('StimulusOf', StimulusOf)
-                TargetOn = Test.crash_None('TargetOn', TargetOn)
-                TargetOff = Test.crash_None('TargetOff', TargetOff)
-                saccades = Test.crash_None('saccades', saccades)
+                TargetOn   = Test.crash_None('TargetOn', TargetOn)
+                TargetOff  = Test.crash_None('TargetOff', TargetOff)
+                saccades   = Test.crash_None('saccades', saccades)
 
                 start = TargetOn
                 StimOn_s = StimulusOn - start
                 StimOf_s = StimulusOf - start
-                TarOn_s = TargetOn - start
-                TarOff_s = TargetOff - start
+                TarOn_s  = TargetOn   - start
+                TarOff_s = TargetOff  - start
 
                 ax.axvspan(StimOn_s, StimOf_s, color='k', alpha=0.2)
-                ax.axvspan(StimOf_s, TarOn_s, color='r', alpha=0.2)
-                ax.axvspan(TarOn_s, TarOff_s, color='k', alpha=0.15)
+                ax.axvspan(StimOf_s, TarOn_s,  color='r', alpha=0.2)
+                ax.axvspan(TarOn_s,  TarOff_s, color='k', alpha=0.15)
 
-                # Saccade
-                for s in range(len(saccades)) :
-                    ax.axvspan(saccades[s][0]-start, saccades[s][1]-start, color='k', alpha=0.15)
-                #-----------------------------------------------------------------------------
+                for s in range(len(saccades)) : ax.axvspan(saccades[s][0]-start, saccades[s][1]-start, color='k', alpha=0.15)
+
             finally :
-                #-----------------------------------------------------------------------------
                 ax.set_xlabel('Time (ms)', fontsize=t_label)
                 ax.tick_params(labelsize=t_label/2 , bottom=True, left=True)
-                #-----------------------------------------------------------------------------
 
             return ax
 
-
-            import easydict
-            return easydict.EasyDict(kwargs)
 
         def generate_fig(self, ax, data, trial, block,
                          show='data', show_data='velocity', equation='fct_velocity',
@@ -1671,7 +1683,6 @@ class ANEMO(object):
                 if 'fct_position' : does a data fit with the function 'fct_position'
                 if 'fct_saccades' : does a data fit with the function 'fct_saccades'
                 if function : does a data fit with the function
-
 
             N_blocks : int
                 number of blocks
@@ -1778,9 +1789,9 @@ class ANEMO(object):
                 N_trials = Test.test_None(N_trials, int(len(data)/N_blocks))
             #------------------------------------------------------------------------------
 
-            if equation=='fct_velocity' : show_data = 'velocity'
-            if equation=='fct_position' : show_data = 'position'
-            if equation=='fct_saccade' : show_data = 'saccade'
+            if equation == 'fct_velocity' : show_data = 'velocity'
+            if equation == 'fct_position' : show_data = 'position'
+            if equation == 'fct_saccade' :  show_data = 'saccade'
 
             import matplotlib.pyplot as plt
             if show_data=='saccade' : import matplotlib.gridspec as gridspec
@@ -1789,9 +1800,9 @@ class ANEMO(object):
 
             if show=='fit' :
 
-                if equation=='fct_velocity' : eqt = ANEMO.Equation.fct_velocity
-                elif equation=='fct_position' : eqt = ANEMO.Equation.fct_position
-                elif equation=='fct_saccade' : eqt = ANEMO.Equation.fct_saccade
+                if   equation == 'fct_velocity' : eqt = ANEMO.Equation.fct_velocity
+                elif equation == 'fct_position' : eqt = ANEMO.Equation.fct_position
+                elif equation == 'fct_saccade' :  eqt = ANEMO.Equation.fct_saccade
                 else : eqt = equation
 
                 if equation in ['fct_velocity', 'fct_position'] :
@@ -1808,15 +1819,15 @@ class ANEMO(object):
 
                 param = {}
                 if 'observer' in self.param_exp.keys() : param['observer'] = self.param_exp['observer']
-                for name in list_param_enre : param[name] = []
+                for name in list_param_enre :            param[name] = []
 
-            opt_base = {'time_sup':time_sup, 'step_fit':step_fit, 'do_whitening':do_whitening,
-                        'param_fit':param_fit, 'inde_vars':inde_vars,
-                        'before_sacc':before_sacc, 'after_sacc':after_sacc, 'stop_search_misac':stop_search_misac,
-                        'filt':filt, 'cutoff':cutoff, 'sample_rate':sample_rate,
+            opt_base = {'time_sup':time_sup,          'step_fit':step_fit,     'do_whitening':do_whitening,
+                        'param_fit':param_fit,        'inde_vars':inde_vars,
+                        'before_sacc':before_sacc,    'after_sacc':after_sacc, 'stop_search_misac':stop_search_misac,
+                        'filt':filt,                  'cutoff':cutoff,         'sample_rate':sample_rate,
                         't_label':t_label}
 
-            if show_data!='saccade' : show_pos_sacc=True
+            if show_data != 'saccade' : show_pos_sacc=True
             if show_pos_sacc is not True : show_target=False
 
             trial_data = trial + N_trials*block
@@ -1841,8 +1852,8 @@ class ANEMO(object):
 
 
             start = arg.TargetOn
-            time_s = arg.trackertime - start
-            TarOn_s = arg.TargetOn - start
+            time_s   = arg.trackertime - start
+            TarOn_s  = arg.TargetOn - start
             TarOff_s = arg.TargetOff - start
             StimOf_s = arg.StimulusOf - start
 
@@ -1880,18 +1891,18 @@ class ANEMO(object):
 
                     if show_data=='velocity' :
                         for tps in time_s :
-                            if tps < TarOn_s : V_target = 0
-                            elif (tps >= TarOn_s and tps <= (TarOn_s + stim_tau*1000)) : V_target = arg.dir_target *V_X
-                            else : V_target = 0
+                            if tps < TarOn_s :                                           V_target = 0
+                            elif (tps >= TarOn_s and tps <= (TarOn_s + stim_tau*1000)) : V_target = arg.dir_target * V_X
+                            else :                                                       V_target = 0
                             Target_trial.append(V_target)
 
                     else :
                         RashBass = Test.test_value('RashBass', self.param_exp, print_crash="RashBass is not defined in param_exp")
                         for tps in time_s :
-                            if tps < TarOn_s : pos_target = 0
-                            elif tps == TarOn_s : pos_target = pos_target -(arg.dir_target * ((V_X/1000)*RashBass))
+                            if tps < TarOn_s :                                          pos_target = 0
+                            elif tps == TarOn_s :                                       pos_target = pos_target -(arg.dir_target * ((V_X/1000)*RashBass))
                             elif (tps > TarOn_s and tps <= (TarOn_s + stim_tau*1000)) : pos_target = pos_target + (arg.dir_target*(V_X/1000))
-                            else : pos_target = pos_target
+                            else :                                                      pos_target = pos_target
                             Target_trial.append(pos_target)
 
                     ax.plot(time_s, Target_trial, color='r', linewidth=lw, alpha=0.4)
@@ -1908,9 +1919,9 @@ class ANEMO(object):
                 ax.set_title(title, fontsize=t_label, color=c)
 
                 if write_step_trial is True :
-                    ax.text(StimOf_s+(TarOn_s-StimOf_s)/2, 31*scale, "GAP", color='k', size=t_label*.75, ha='center', va='center', alpha=0.5)
+                    ax.text(StimOf_s+(TarOn_s-StimOf_s)/2,            31*scale, "GAP",      color='k', size=t_label*.75, ha='center', va='center', alpha=0.5)
                     ax.text((TarOn_s-700)+(StimOf_s-(TarOn_s-700))/2, 31*scale, "FIXATION", color='k', size=t_label*.75, ha='center', va='center', alpha=0.5)
-                    ax.text(TarOn_s+(TarOff_s-TarOn_s)/2, 31*scale, "PURSUIT", color='k', size=t_label*.75, ha='center', va='center', alpha=0.5)
+                    ax.text(TarOn_s+(TarOff_s-TarOn_s)/2,             31*scale, "PURSUIT",  color='k', size=t_label*.75, ha='center', va='center', alpha=0.5)
 
             if report is not None : result = []
 
@@ -1931,13 +1942,13 @@ class ANEMO(object):
                     for name in list_param_enre :
                         if name in f.values.keys() :
                             if name in ['start_anti', 'latence'] : val = f.values[name] - onset
-                            else : val = f.values[name]
+                            else :                                 val = f.values[name]
                             result_fit[name], param_f[name] = val, val
                     if report is not None : result = f.fit_report()
 
-                    if 'fit' in list_param_enre : result_fit['fit'] = f.best_fit
-                    if 'old_anti' in list_param_enre : result_fit['old_anti'] = old_anti
-                    if 'old_max' in list_param_enre : result_fit['old_max'] = old_max
+                    if 'fit' in list_param_enre :         result_fit['fit'] = f.best_fit
+                    if 'old_anti' in list_param_enre :    result_fit['old_anti'] = old_anti
+                    if 'old_max' in list_param_enre :     result_fit['old_max'] = old_max
                     if 'old_latence' in list_param_enre : result_fit['old_latence'] = old_latence-onset
                     #-------------------------------------------------
                     rv = f.values
@@ -1947,18 +1958,20 @@ class ANEMO(object):
                     for name in list_param :
                         param_f[name] = param_fit[name][block][trial]
                         if name in ['start_anti', 'latence'] : rv[name] = param_fit[name][block][trial] + onset
-                        else : rv[name] = param_fit[name][block][trial]
-                    rv['do_whitening'], rv['dir_target'] = False, arg.dir_target
+                        else :                                 rv[name] = param_fit[name][block][trial]
+                    rv['do_whitening'] = False
+                    rv['dir_target'] = arg.dir_target
 
                     if equation=='fct_position' :
-                        rv['nb_sacc'] = len(arg.saccades)
-                        rv['t_0'] = arg.t_0
-                        rv['px_per_deg'] = arg.px_per_deg
-                        rv['before_sacc'], rv['after_sacc'] = before_sacc, after_sacc
+                        rv['t_0']         = arg.t_0
+                        rv['px_per_deg']  = arg.px_per_deg
+                        rv['nb_sacc']     = len(arg.saccades)
+                        rv['before_sacc'] = before_sacc
+                        rv['after_sacc']  = after_sacc
 
                     for name in list_param_enre :
                         if name in param_fit.keys() : result_fit[name] = param_fit[name][block][trial]
-                        else : result_fit[name] = None # mettre un warning
+                        else :                        result_fit[name] = None # TODO mettre un warning
 
                 #-----------------------------------------------------------------------------
                 inde_v = Test.test_None(inde_vars, ANEMO.Fit.generation_param_fit(self, equation=equation, **opt)[1])
@@ -1971,8 +1984,8 @@ class ANEMO(object):
 
                 if plot_detail is None or equation not in ['fct_velocity', 'fct_position'] :
 
-                    if time_sup is None : ax.plot(time_s, fit, color=c, linewidth=lw)
-                    else : ax.plot(time_s[:-time_sup], fit[:-time_sup], color=c, linewidth=lw)
+                    if time_sup is None : ax.plot(time_s,             fit,             color=c, linewidth=lw)
+                    else :                ax.plot(time_s[:-time_sup], fit[:-time_sup], color=c, linewidth=lw)
                     #-----------------------------------------------------------------------------
                     if arg.dir_target < 0 : list_param.reverse()
                     x = 0
@@ -1981,45 +1994,48 @@ class ANEMO(object):
                             ax.text((TarOff_s-10), -arg.dir_target*35*scale+(-arg.dir_target*x),
                                     "%s: %0.3f"%(name, param_f[name]) , color=c, size=t_text, va='center', ha='right')
                             x = x - 5*scale
-                    if 'latence' in param_f.keys() : ax.bar(param_f['latence'], 80, bottom=-40, color=c, width=3, linewidth=0)
-                    if 'start_anti' in param_f.keys() : ax.bar(param_f['start_anti'], 80, bottom=-40, color=c, width=3, linewidth=0)
+                    if 'latence' in param_f.keys() :    ax.bar(param_f['latence'],    80, bottom=-40, color=c, width=3, lw=0)
+                    if 'start_anti' in param_f.keys() : ax.bar(param_f['start_anti'], 80, bottom=-40, color=c, width=3, lw=0)
 
                 else :
 
-                    ax.plot(time_s[:int(rv['start_anti'])],                    fit[:int(rv['start_anti'])],                    c='k', linewidth=lw)
-                    ax.plot(time_s[int(rv['start_anti']):int(rv['latence'])],  fit[int(rv['start_anti']):int(rv['latence'])],  c='r', linewidth=lw)
-                    ax.plot(time_s[int(rv['latence']):int(rv['latence'])+250], fit[int(rv['latence']):int(rv['latence'])+250], c='darkred', linewidth=lw)
+                    ax.plot(time_s[:int(rv['start_anti'])],                    fit[:int(rv['start_anti'])],                    c='k',       lw=lw)
+                    ax.plot(time_s[int(rv['start_anti']):int(rv['latence'])],  fit[int(rv['start_anti']):int(rv['latence'])],  c='r',       lw=lw)
+                    ax.plot(time_s[int(rv['latence']):int(rv['latence'])+250], fit[int(rv['latence']):int(rv['latence'])+250], c='darkred', lw=lw)
 
                     #-----------------------------------------------------------------------------
                     y = {}
                     for y_pos in [int(rv['start_anti']), int(rv['latence']), int(rv['latence'])+50, int(rv['latence'])+250, int(rv['latence'])+400] :
                         if np.isnan(fit[y_pos]) : y[y_pos] = data_1[y_pos]
-                        else : y[y_pos] = fit[y_pos]
+                        else :                    y[y_pos] = fit[y_pos]
 
                     # V_a ------------------------------------------------------------------------
                     ax.text((time_s[int(rv['start_anti'])]+time_s[int(rv['latence'])])/2, y[int(rv['start_anti'])]-15*scale, r"A$_a$ = %0.2f °/s$^2$"%(rv['v_anti']), color='r', size=t_label/1.5, ha='center')
 
                     # Start_a --------------------------------------------------------------------
                     ax.text(time_s[int(rv['start_anti'])]-25, -35*scale, "Start anticipation = %0.2f ms"%(rv['start_anti']-onset), color='k', alpha=0.7, size=t_label/1.5, ha='right')
-                    ax.bar(time_s[int(rv['start_anti'])], 80*scale, bottom=-40*scale, color='k', width=4, lw=0, alpha=0.7)
+                    ax.bar( time_s[int(rv['start_anti'])], 80*scale, bottom=-40*scale, width=4, lw=0, color='k', alpha=0.7)
 
                     # latence --------------------------------------------------------------------
                     ax.text(time_s[int(rv['latence'])]+25, -35*scale, "Latency = %0.2f ms"%(rv['latence']-onset), color='firebrick', size=t_label/1.5, va='center')
-                    ax.bar(time_s[int(rv['latence'])], 80*scale, bottom=-40*scale, color='firebrick', width=4, lw=0, alpha=1)
+                    ax.bar( time_s[int(rv['latence'])], 80*scale, bottom=-40*scale, width=4, lw=0, color='firebrick', alpha=1)
 
                     # tau ------------------------------------------------------------------------
-                    ax.text(time_s[int(rv['latence'])]+70+t_label, y[int(rv['latence'])], r"= %0.2f"%(rv['tau']), color='darkred',va='bottom', size=t_label/1.5)
-                    ax.annotate(r'$\tau$', xy=(time_s[int(rv['latence'])]+50, y[int(rv['latence'])+50]), xycoords='data', size=t_label/1., color='darkred', va='bottom', xytext=(time_s[int(rv['latence'])]+70, y[int(rv['latence'])]), textcoords='data', arrowprops=dict(arrowstyle="->", color='darkred'))
+                    ax.text(time_s[int(rv['latence'])]+70+t_label, y[int(rv['latence'])], r"= %0.2f"%(rv['tau']), color='darkred', size=t_label/1.5, va='bottom')
+                    ax.annotate(r'$\tau$', xy=(time_s[int(rv['latence'])]+50, y[int(rv['latence'])+50]), xycoords='data', size=t_label/1., color='darkred', va='bottom',
+                                xytext=(time_s[int(rv['latence'])]+70, y[int(rv['latence'])]), textcoords='data', arrowprops=dict(arrowstyle="->", color='darkred'))
 
                     # Max ------------------------------------------------------------------------
-                    ax.text(TarOn_s+475, (y[int(rv['latence'])]+y[int(rv['latence'])+250])/2, "Steady State = %0.2f °/s"%(rv['maxi']), color='k', va='center', size=t_label/1.5)
+                    ax.text(TarOn_s+475, (y[int(rv['latence'])]+y[int(rv['latence'])+250])/2, "Steady State = %0.2f °/s"%(rv['maxi']), color='k', size=t_label/1.5, va='center')
                     #-----------------------------------------------------------------------------
 
                     if equation=='fct_velocity' :
                         # V_a ------------------------------------------------------------------------
-                        ax.annotate('', xy=(time_s[int(rv['latence'])], y[int(rv['latence'])]-3), xycoords='data', size=t_label/1.5, xytext=(time_s[int(rv['start_anti'])], y[int(rv['start_anti'])]-3), textcoords='data', arrowprops=dict(arrowstyle="->", color='r'))
+                        ax.annotate('', xy=(time_s[int(rv['latence'])], y[int(rv['latence'])]-3), xycoords='data', size=t_label/1.5,
+                                    xytext=(time_s[int(rv['start_anti'])], y[int(rv['start_anti'])]-3), textcoords='data', arrowprops=dict(arrowstyle="->", color='r'))
                         # Max ------------------------------------------------------------------------
-                        ax.annotate('', xy=(TarOn_s+450, y[int(rv['latence'])]), xycoords='data', size=t_label/1.5, xytext=(TarOn_s+450, y[int(rv['latence'])+250]), textcoords='data', arrowprops=dict(arrowstyle="<->"))
+                        ax.annotate('', xy=(TarOn_s+450, y[int(rv['latence'])]), xycoords='data', size=t_label/1.5,
+                                    xytext=(TarOn_s+450, y[int(rv['latence'])+250]), textcoords='data', arrowprops=dict(arrowstyle="<->"))
                         ax.plot(time_s, np.zeros(len(time_s)), '--k', lw=1, alpha=0.5)
                         ax.plot(time_s[int(rv['latence']):], np.ones(len(time_s[int(rv['latence']):]))*y[int(rv['latence'])+400], '--k', lw=1, alpha=0.5)
                     #-----------------------------------------------------------------------------
@@ -2034,10 +2050,10 @@ class ANEMO(object):
 
                     if len(arg.saccades)==1:
                         if show_pos_sacc is True : ax1 = axs0[1]
-                        else : ax1 = axs0
+                        else :                     ax1 = axs0
                     else :
                         if show_pos_sacc is True : ax1 = plt.Subplot(fig, axs0[1,s])
-                        else : ax1 = plt.Subplot(fig, axs0[s])
+                        else :                     ax1 = plt.Subplot(fig, axs0[s])
                     fig.add_subplot(ax1)
 
                     #-----------------------------------------------------------------------------
@@ -2052,7 +2068,7 @@ class ANEMO(object):
                     ax1.set_xlabel('Time (ms)', fontsize=t_label/2, color=c)
                     if s==0 :
                         if show_num_trial is True : ax1.set_ylabel('%s\nDistance (°)'%(trial+1), fontsize=t_label/2, color=c)
-                        else : ax1.set_ylabel('Distance (°)', fontsize=t_label/2, color=c)
+                        else :                      ax1.set_ylabel('Distance (°)', fontsize=t_label/2, color=c)
                     ax1.tick_params(labelsize=t_label/2.5 , bottom=True, left=True)
 
                     minx, maxx, miny, maxy = time[0], time[-1], min(data_sacc), max(data_sacc)
@@ -2076,8 +2092,8 @@ class ANEMO(object):
 
                             for name in list_param_enre :
                                 if name in f.values.keys() : result_fit[name].append(f.values[name])
-                            if 'fit' in list_param_enre : result_fit['fit'].append(f.best_fit)
-                            if report is not None : result.append(f.fit_report())
+                            if 'fit' in list_param_enre :    result_fit['fit'].append(f.best_fit)
+                            if report is not None :          result.append(f.fit_report())
                             #-------------------------------------------------
                             param_f = f.values
 
@@ -2086,7 +2102,7 @@ class ANEMO(object):
                             for name in list_param : param_f[name] = param_fit[name][block][trial][s]
                             for name in list_param_enre :
                                 if name in param_fit.keys() : result_fit[name].append(param_fit[name][block][trial][s])
-                                else : result_fit[name].append(None)
+                                else :                        result_fit[name].append(None)
                             param_f['do_whitening'] = False
 
 
@@ -2191,8 +2207,8 @@ class ANEMO(object):
 
                 time = np.arange(-750, 750, 1)
                 StimulusOn, StimulusOf = -750, -300
-                TargetOn, TargetOff = 0, 750
-                start_anti, latence = 650, 850
+                TargetOn, TargetOff    = 0, 750
+                start_anti, latence    = 650, 850
                 #-----------------------------------------------------------------------------
 
                 if equation=='fct_velocity' :
@@ -2218,9 +2234,9 @@ class ANEMO(object):
                 ax.set_xlabel('Time (ms)', fontsize=t_label)
                 #-----------------------------------------------------------------------------
 
-                ax.plot(time[latence+250:],        result_fit[latence+250:],        c='k', lw=lw)
-                ax.plot(time[:start_anti],         result_fit[:start_anti],         c='k', lw=lw)
-                ax.plot(time[start_anti:latence],  result_fit[start_anti:latence],  c='r', lw=lw)
+                ax.plot(time[latence+250:],        result_fit[latence+250:],        c='k',       lw=lw)
+                ax.plot(time[:start_anti],         result_fit[:start_anti],         c='k',       lw=lw)
+                ax.plot(time[start_anti:latence],  result_fit[start_anti:latence],  c='r',       lw=lw)
                 ax.plot(time[latence:latence+250], result_fit[latence:latence+250], c='darkred', lw=lw)
 
                 # V_a ------------------------------------------------------------------------
@@ -2251,12 +2267,12 @@ class ANEMO(object):
 
                 # COSMETIQUE -----------------------------------------------------------------
                 ax.axvspan(StimulusOn, StimulusOf, color='k', alpha=0.2)
-                ax.axvspan(StimulusOf, TargetOn, color='r', alpha=0.2)
-                ax.axvspan(TargetOn, TargetOff, color='k', alpha=0.15)
+                ax.axvspan(StimulusOf, TargetOn,   color='r', alpha=0.2)
+                ax.axvspan(TargetOn,   TargetOff,  color='k', alpha=0.15)
 
-                ax.text(StimulusOf+(TargetOn-StimulusOf)/2, 31*scale, "GAP", color='k', size=t_label*1.5, ha='center', va='center', alpha=0.5)
-                ax.text((StimulusOf-750)/2, 31*scale, "FIXATION", color='k', size=t_label*1.5, ha='center', va='center', alpha=0.5)
-                ax.text((750-TargetOn)/2, 31*scale, "PURSUIT", color='k', size=t_label*1.5, ha='center', va='center', alpha=0.5)
+                ax.text(StimulusOf+(TargetOn-StimulusOf)/2, 31*scale, "GAP",      color='k', size=t_label*1.5, ha='center', va='center', alpha=0.5)
+                ax.text((StimulusOf-750)/2,                 31*scale, "FIXATION", color='k', size=t_label*1.5, ha='center', va='center', alpha=0.5)
+                ax.text((750-TargetOn)/2,                   31*scale, "PURSUIT",  color='k', size=t_label*1.5, ha='center', va='center', alpha=0.5)
                 #-----------------------------------------------------------------------------
 
             elif equation=='fct_saccade' :
@@ -2441,7 +2457,7 @@ class ANEMO(object):
                 if x==0 :
                     write_step_trial = True
                     if show=='velocity' : title = 'Eye Movement'
-                    else : title = 'Eye Position'
+                    else :                title = 'Eye Position'
 
                 ax = ANEMO.Plot.generate_fig(self, ax=ax, data=data, trial=t, block=block,
                                              show='data', show_data=show, equation=None,
@@ -2581,9 +2597,9 @@ class ANEMO(object):
                         'before_sacc':before_sacc, 'after_sacc':after_sacc, 'stop_search_misac':stop_search_misac,
                         't_label':t_label}
 
-            if equation=='fct_velocity' : fitted_data, eqt = 'velocity', ANEMO.Equation.fct_velocity
+            if   equation=='fct_velocity' : fitted_data, eqt = 'velocity', ANEMO.Equation.fct_velocity
             elif equation=='fct_position' : fitted_data, eqt = 'position', ANEMO.Equation.fct_position
-            elif equation=='fct_saccade' : fitted_data, eqt = 'saccade', ANEMO.Equation.fct_saccade
+            elif equation=='fct_saccade' :  fitted_data, eqt = 'saccade',  ANEMO.Equation.fct_saccade
             else : eqt = equation
 
             import matplotlib.pyplot as plt
@@ -2609,14 +2625,14 @@ class ANEMO(object):
 
                 else :
                     if len(trials)==1: ax = axs
-                    else : ax = axs[x]
+                    else :             ax = axs[x]
                     if x!= (len(trials)-1) : ax.set_xticklabels([])
 
                 title, write_step_trial = '', False
                 if x==0 :
                     write_step_trial = True
                     if fitted_data=='velocity' : title = 'Velocity Fit'
-                    else : title = 'Position Fit'
+                    else :                       title = 'Position Fit'
 
                 param_fct = dict(ax=ax, data=data, trial=t, block=block, fig=fig,
                                  title=title, N_blocks=N_blocks, N_trials=N_trials,
@@ -2746,7 +2762,7 @@ class ANEMO(object):
                      list_param_enre=None, inde_vars=None,
                      time_sup=280, step_fit=2, do_whitening=False,
                      before_sacc=5, after_sacc=15, stop_search_misac=None,
-                     filt=False, cutoff=30, sample_rate=1000,
+                     sample_rate=1000,
                      show_target=False,
                      fig_width=15, t_label=20, t_text=14) :
 
@@ -2801,16 +2817,8 @@ class ANEMO(object):
                 stop search of micro_saccade
                 if None : stops searching at the end of fixation + 100ms
 
-            filt : str
-                to filter the data can be:
-                    - 'position' to filter the position,
-                    - 'velocity-position' to filter the position then the speed
-                if NONE the data will not be filtered
-            must be defined if filt is not None :
-                cutoff : int
-                    the critical frequencies for cutoff of filter
-                sample_rate : int
-                    sampling rate of the recording for the filtre
+            sample_rate : int
+                sampling rate of the recording for the filtre
 
             show_target : bool
                 if true : show the target on the plot
@@ -2843,10 +2851,11 @@ class ANEMO(object):
 
             if list_data_fitfct is None :
                 list_data_fitfct = {'velocity':'fct_velocity', 'position':'fct_position', 'saccade':'fct_saccade'}
+
             list_param_enre = {}
-            list_param_enre['fct_velocity']=['start_anti', 'v_anti', 'latence', 'tau', 'maxi']
-            list_param_enre['fct_position']=['start_anti', 'v_anti', 'latence', 'tau', 'maxi']
-            list_param_enre['fct_saccade']=['T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2', 'tau']
+            list_param_enre['fct_velocity'] = ['start_anti', 'v_anti', 'latence', 'tau', 'maxi']
+            list_param_enre['fct_position'] = ['start_anti', 'v_anti', 'latence', 'tau', 'maxi']
+            list_param_enre['fct_saccade'] =  ['T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2', 'tau']
 
             Full_list = {}
             for s in ['data', 'fit'] :
@@ -2863,12 +2872,13 @@ class ANEMO(object):
             trial, block = 0, 0
 
             if show_data in list_data_fitfct.keys() : show_data=show_data
-            else : show_data= list(list_data_fitfct.keys())[0]
+            else :                                    show_data= list(list_data_fitfct.keys())[0]
 
             show = 'data'
             fct = list_data_fitfct[show_data]
             param_fit = Full_param_fit[fct]
-
+            filt = None
+            cutoff = 30
 
             plt.ioff()
             fig, ax = plt.subplots(1, 1, figsize=(12, (12*(1/2)/1.6180)))
@@ -2880,33 +2890,26 @@ class ANEMO(object):
 
             button = {}
             for b, style in zip(['Previews', 'Next', 'OK', 'Bad'], ['', '', 'success', 'danger']) :
-                button[b] = widgets.Button(description=b, button_style=style,
-                                          layout=widgets.Layout(grid_area=b, width='90%'))
+                button[b] = widgets.Button(description=b, button_style=style, layout=widgets.Layout(grid_area=b, width='90%'))
 
-            _show = widgets.Dropdown(value='data', options=['data', 'fit'], description='show', disabled=False,
-                                        layout=widgets.Layout(grid_area='show', width='90%'))
+            _filt   = widgets.Dropdown( value='None',          options=['None', 'position', 'velocity', 'velocity-position'], description='filter low-pass', disabled=False, layout=widgets.Layout(grid_area='filter',  width='90%' ))
+            _show   = widgets.Dropdown( value='data',          options=['data', 'fit'],                                       description='show',            disabled=False, layout=widgets.Layout(grid_area='show',    width='90%' ))
+            _data   = widgets.Dropdown( value=show_data,       options=list_data_fitfct.keys(),                               description='Data',            disabled=False, layout=widgets.Layout(grid_area='data',    width='90%' ))
+            _block  = widgets.Dropdown( value=option_block[0], options=option_block,                                          description='Block',           disabled=False, layout=widgets.Layout(grid_area='block',   width='90%' ))
+            _trial  = widgets.IntSlider(value=trial, min=0, max=N_trials-1, step=1,                                           description='Trial',           readout=True,   layout=widgets.Layout(grid_area='trial',   width='110%'))
+            _cutoff = widgets.IntText(value=30, step=5,                                                                       description='cutoff',          readout=True,   layout=widgets.Layout(grid_area='cutoff',  width='90%' ))
 
-            _data = widgets.Dropdown(value=show_data, options=list_data_fitfct.keys(),
-                                        description='Data', disabled=False,
-                                        layout=widgets.Layout(grid_area='data', width='90%'))
-
-            _trial = widgets.IntSlider(value=trial, min=0, max=N_trials-1, step=1, description='Trial', readout=True,
-                                         layout=widgets.Layout(grid_area='trial', width='110%'))
-
-            _block = widgets.Dropdown(value=option_block[0], options=option_block, description='Block', disabled=False,
-                                         layout=widgets.Layout(grid_area='block', width='90%'))
-
-            grid = widgets.GridBox(children=[_show, _data,  _trial, _block, out,
-                                             button['Previews'],  button['Next'], button['OK'], button['Bad']],
+            grid = widgets.GridBox(children=[_show, _data,  _trial, _block, _filt, _cutoff, out, button['Previews'],  button['Next'], button['OK'], button['Bad']],
                                    layout=widgets.Layout(grid_template_columns='20% 20% 20% 5% 5% 20% 10%',
-                                                         grid_template_areas=''' "show data  trial trial trial block ."
-                                                                                "out out out out out out out"
-                                                                               " . Previews Next OK  Bad . ." '''))
+                                                         grid_template_areas=''' "show   data     trial trial trial block .  "
+                                                                                 "filter cutoff   .     .     .     .     .  "
+                                                                                 "out    out      out   out   out   out   out"
+                                                                                 ".      Previews Next  OK    Bad   .     .  " '''))
 
             display(grid)
 
             def fig(ss_title, c, out) :
-                nonlocal trial, block, ax, fct, show_data, param_fit, show
+                nonlocal trial, block, ax, fct, show_data, param_fit, show, filt, cutoff
                 title = 'block %s trial %s%s'%(block, trial, ss_title)
 
                 param_f = ANEMO.Plot.generate_fig(self, ax=ax, data=data, trial=trial, block=block,
@@ -2920,15 +2923,35 @@ class ANEMO(object):
                                                   title=title, c=c, out=out,
                                                   fig_width=fig_width, t_label=t_label, t_text=t_text)
 
-
+            #-----------------------------------
             def check_list() :
                 nonlocal trial, block, show_data, show, Full_list
-                if Full_list[show][show_data][block][trial]=='Bad' : c='darkred' ; ss_title=' -- Bad'
+                if Full_list[show][show_data][block][trial]=='Bad' :   c='darkred' ;   ss_title=' -- Bad'
                 elif Full_list[show][show_data][block][trial]=='OK' :  c='darkgreen' ; ss_title=' -- OK'
-                else : c='k' ; ss_title=''
+                else :                                                 c='k' ;         ss_title=''
                 return c, ss_title
 
+            #-----------------------------------
+            def check_filt(b) :
+                nonlocal filt
+                filt = _filt.value
+                c, ss_title = check_list()
+                fig(ss_title, c, out)
 
+            def check_cutoff(b) :
+                nonlocal cutoff
+                if _cutoff.value < 1 : _cutoff.value = 1
+                if _cutoff.value > ((sample_rate)/2-1) : _cutoff.value = ((sample_rate)/2-1)
+                cutoff = _cutoff.value
+                c, ss_title = check_list()
+                fig(ss_title, c, out)
+
+
+            def check_show(b) :
+                nonlocal show
+                show = _show.value
+                c, ss_title = check_list()
+                fig(ss_title, c, out)
 
             def check_data(b) :
                 nonlocal fct, show_data, param_fit
@@ -2938,9 +2961,9 @@ class ANEMO(object):
                 c, ss_title = check_list()
                 fig(ss_title, c, out)
 
-            def check_show(b) :
-                nonlocal show
-                show = _show.value
+            def check_block(b) :
+                nonlocal block
+                block = int(_block.value)
                 c, ss_title = check_list()
                 fig(ss_title, c, out)
 
@@ -2950,16 +2973,11 @@ class ANEMO(object):
                 c, ss_title = check_list()
                 fig(ss_title, c, out)
 
-            def check_block(b) :
-                nonlocal block
-                block = int(_block.value)
-                c, ss_title = check_list()
-                fig(ss_title, c, out)
-
+            #-----------------------------------
             def Next(b):
                 nonlocal trial, block
                 trial = trial+1
-                if trial >= N_trials : trial = 0 ; block = block+1
+                if trial >= N_trials : trial = 0 ;          block = block+1
                 if block >= N_blocks : trial = N_trials-1 ; block = N_blocks-1
                 _trial.value, _block.value = trial, '%s'%block
 
@@ -2967,9 +2985,10 @@ class ANEMO(object):
                 nonlocal trial, block
                 trial = trial-1
                 if trial < 0 : trial = N_trials-1 ; block = block-1
-                if block < 0 : trial = 0 ; block = 0
+                if block < 0 : trial = 0 ;          block = 0
                 _trial.value, _block.value = trial, '%s'%block
 
+            #-----------------------------------
             def Bad(b):
                 nonlocal show_data, trial, block, Full_list, show
                 Full_list[show][show_data][block][trial] = 'Bad'
@@ -2980,15 +2999,18 @@ class ANEMO(object):
                 Full_list[show][show_data][block][trial] = 'OK'
                 fig(' -- OK', 'g', out)
 
+            #-----------------------------------
             button['Previews'].on_click(Previews)
+            button['Next'].on_click(Next)
             button['Bad'].on_click(Bad)
             button['OK'].on_click(no_Bad)
-            button['Next'].on_click(Next)
 
-            _trial.observe(check_trial, names='value')
-            _block.observe(check_block, names='value')
-            _data.observe(check_data, names='value')
-            _show.observe(check_show, names='value')
+            _show.observe(  check_show,  names='value')
+            _data.observe(  check_data,  names='value')
+            _filt.observe(  check_filt,  names='value')
+            _cutoff.observe(check_cutoff,  names='value')
+            _block.observe( check_block, names='value')
+            _trial.observe( check_trial, names='value')
 
             check_trial(None)
             return Full_list
