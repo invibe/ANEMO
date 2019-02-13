@@ -205,7 +205,7 @@ class ANEMO(object):
     def arg(self, data_trial, dir_target=None, trial=None, block=None):
 
         '''
-        generates a dictionary of the parameters of the trial
+        Generates a dictionary of the parameters of the trial
 
         Parameters
         ----------
@@ -262,10 +262,30 @@ class ANEMO(object):
 
 
     def filter_data(self, data, cutoff=30, sample_rate=1000) :
+
+        '''
+        Return the filtering of data
+
+        Parameters
+        ----------
+        data : ndarray
+            position or velocity for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module
+
+        cutoff : int
+            the critical frequencies for cutoff of filter
+        sample_rate : int
+            sampling rate of the recording
+
+        Returns
+        -------
+        filt_data : ndarray
+            Filtered position or filtered velocity of the eye
+        '''
+
         from scipy import signal
-        # filtering of data
+
         nyq_rate = sample_rate / 2 # The Nyquist rate of the signal.
-        Wn = cutoff/nyq_rate # the critical frequencies -- cutoff of filtre
+        Wn = cutoff/nyq_rate
         N = 2 # The order of the filter.
         b, a = signal.butter(N, Wn, 'lowpass') # Butterworth digital and analog filter design.
         filt_data = signal.filtfilt(b, a, data) # Apply a digital filter forward and backward to a signal.
@@ -282,16 +302,29 @@ class ANEMO(object):
         ----------
         data : ndarray
             position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module
+
         StimulusOf : int
             time when the stimulus disappears
         t_0 : int
             time 0 of the trial
+
         saccades : list
             list of edf saccades for the trial recorded by the eyetracker transformed by the function read_edf of the module edfreader
-        before_sacc: int
+        before_sacc : int
             time to delete before saccades
-        after_sacc: int
+        after_sacc : int
             time to delete after saccades
+
+        filt : str
+            to filter the data can be:
+                - 'position' to filter the position,
+                - 'velocity-position' to filter the position then the speed
+            if NONE the data will not be filtered
+        must be defined if filt is not None :
+            cutoff : int
+                the critical frequencies for cutoff of filter
+            sample_rate : int
+                sampling rate of the recording for the filtre
 
         Returns
         -------
@@ -327,6 +360,18 @@ class ANEMO(object):
         data_x : ndarray
             x position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module
 
+        filt : str
+            to filter the data can be:
+                - 'position' to filter the position,
+                - 'velocity' to filter the speed,
+                - 'velocity-position' to filter the position then the speed
+            if NONE the data will not be filtered
+        must be defined if filt is not None :
+            cutoff : int
+                the critical frequencies for cutoff of filter
+            sample_rate : int
+                sampling rate of the recording for the filtre
+
         Returns
         -------
         gradient_deg : ndarray
@@ -348,7 +393,7 @@ class ANEMO(object):
         return gradient_deg
 
 
-    def detec_misac (self, velocity_x, velocity_y, t_0=0, VFAC=5, mindur=5, maxdur=100, minsep=30):
+    def detec_misac(self, velocity_x, velocity_y, t_0=0, VFAC=5, mindur=5, maxdur=100, minsep=30):
 
         '''
         Detection of micro-saccades not detected by eyelink in the data
@@ -362,6 +407,7 @@ class ANEMO(object):
 
         t_0 : int
             time 0 of the trial
+
         VFAC : int
             relative velocity threshold
         mindur : int
@@ -375,7 +421,6 @@ class ANEMO(object):
         -------
         misaccades : list
             list of lists, each containing [start micro-saccade, end micro-saccade]
-
         '''
 
         msdx = np.sqrt((np.nanmedian(velocity_x**2))-((np.nanmedian(velocity_x))**2))
@@ -423,7 +468,7 @@ class ANEMO(object):
     def supp_sacc(self, velocity, saccades, trackertime, before_sacc, after_sacc) :
 
         '''
-        Eliminates saccades detected by eyelink data
+        Eliminates saccades detected
 
         Parameters
         ----------
@@ -431,11 +476,12 @@ class ANEMO(object):
             velocity of the eye in deg/sec
         saccades : list
             list of edf saccades for the trial recorded by the eyetracker transformed by the function read_edf of the module edfreader
+
         trackertime : ndarray
             the time of the tracker
-        before_sacc: int
+        before_sacc : int
             time to delete before saccades
-        after_sacc: int
+        after_sacc : int
             time to delete after saccades
 
         Returns
@@ -456,7 +502,8 @@ class ANEMO(object):
 
         return velocity
 
-    def velocity_NAN(self, data_x, data_y, saccades, trackertime, TargetOn, before_sacc=5, after_sacc=15, stop_search_misac=None,
+    def velocity_NAN(self, data_x, data_y, saccades, trackertime, TargetOn,
+                     before_sacc=5, after_sacc=15, stop_search_misac=None,
                      filt=False, cutoff=30, sample_rate=1000, **opt) :
 
         '''
@@ -468,19 +515,33 @@ class ANEMO(object):
             x position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module
         data_y : ndarray
             y position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module
+
         saccades : list
             list of edf saccades for the trial recorded by the eyetracker transformed by the function read_edf of the module edfreader
         trackertime : ndarray
             the time of the tracker
         TargetOn : int
             time when the target to follow appears
-        before_sacc: int
+
+        before_sacc : int
             time to delete before saccades
-        after_sacc: int
+        after_sacc : int
             time to delete after saccades
         stop_search_misac : int
             stop search of micro_saccade
-            if None: stops searching at the end of fixation + 100ms
+            if None : stops searching at the end of fixation + 100ms
+
+        filt : str
+            to filter the data can be:
+                - 'position' to filter the position,
+                - 'velocity' to filter the speed,
+                - 'velocity-position' to filter the position then the speed
+            if NONE the data will not be filtered
+        must be defined if filt is not None :
+            cutoff : int
+                the critical frequencies for cutoff of filter
+            sample_rate : int
+                sampling rate of the recording for the filtre
 
         Returns
         -------
@@ -521,6 +582,7 @@ class ANEMO(object):
             ----------
             velocity_NAN : nparray
                 velocity of the eye in deg/sec without the saccades
+
             w1 : int
                 size of the window 1 in ms
             w2 : int
@@ -570,6 +632,7 @@ class ANEMO(object):
             ----------
             velocity_NAN : nparray
                 velocity of the eye in deg/sec without the saccades
+
             TargetOn_0 : int
                 time since the beginning of the trial when the target to follow appears
 
@@ -590,6 +653,7 @@ class ANEMO(object):
             ----------
             velocity_NAN : nparray
                 velocity of the eye in deg/sec without the saccades
+
             TargetOn_0 : int
                 time since the beginning of the trial when the target to follow appears
 
@@ -604,7 +668,7 @@ class ANEMO(object):
         def Full(velocity_NAN, TargetOn_0, w1=300, w2=50, off=50, crit=0.17):
 
             '''
-            return :
+            Return :
                     - the latency of the pursuit,
                     - the maximum velocity of the pursuit, and
                     - the anticipation of the pursuit,
@@ -614,6 +678,7 @@ class ANEMO(object):
             ----------
             velocity_NAN : nparray
                 velocity of the eye in deg/sec without the saccades
+
             TargetOn_0 : int
                 time since the beginning of the trial when the target to follow appears
 
@@ -630,7 +695,10 @@ class ANEMO(object):
             -------
             latency : int
                 the latency in ms
-
+            maximum : int
+                the maximum velocity in deg/s
+            anticipation : int
+                the anticipation in deg/s
             '''
 
 
@@ -645,7 +713,7 @@ class ANEMO(object):
     class Equation(object):
         """ Function used to perform the Fits """
 
-        def fct_velocity (x, dir_target, start_anti, v_anti, latence, tau, maxi, do_whitening) :
+        def fct_velocity(x, dir_target, start_anti, v_anti, latence, tau, maxi, do_whitening) :
 
             '''
             Function reproducing the velocity of the eye during the smooth pursuit of a moving target
@@ -733,9 +801,9 @@ class ANEMO(object):
                 time 0 of the trial
             px_per_deg : float
                 number of px per degree for the experiment
-            before_sacc: int
+            before_sacc : int
                 time to delete before saccades
-            after_sacc: int
+            after_sacc : int
                 time to delete after saccades
             do_whitening : bool
                 if True return the whitened position
@@ -892,10 +960,10 @@ class ANEMO(object):
             ANEMO.__init__(self, param_exp)
 
 
-        def generation_param_fit(self, equation='fct_velocity',
-                trackertime=None,TargetOn=None, StimulusOf=None, saccades=None, dir_target=None,
-                value_latence=None, value_maxi=None, value_anti=None,
-                before_sacc=5, after_sacc=15,  data_x=None, **opt) :
+        def generation_param_fit(self, equation='fct_velocity', data_x=None, dir_target=None,
+                                 trackertime=None, TargetOn=None, StimulusOf=None, saccades=None,
+                                 value_latence=None, value_maxi=None, value_anti=None,
+                                 before_sacc=5, after_sacc=15, **opt) :
 
             '''
             Generates the parameters and independent variables of the fit
@@ -903,9 +971,9 @@ class ANEMO(object):
             Parameters
             ----------
             equation : str
-                si 'fct_velocity' generates the parameters for a velocity fit
-                si 'fct_position' generates the parameters for a fit position
-                si 'fct_saccades' generates the parameters for a fit saccades
+                if 'fct_velocity' generates the parameters for a velocity fit
+                if 'fct_position' generates the parameters for a fit position
+                if 'fct_saccades' generates the parameters for a fit saccades
 
             if equation in ['fct_velocity', 'fct_position'] :
 
@@ -926,15 +994,15 @@ class ANEMO(object):
                     value_latence : int
                         value that takes the parameter latence to begin the fit
                         if None oor nan by default = TargetOn-t_0+100
-                    value_maxi: float
+                    value_maxi : float
                         value that takes the parameter maxi to begin the fit
                         if None oor nan by default = 15.
-                    value_anti: float
+                    value_anti : float
                         value that takes the parameter v_anti to begin the fit
                         if None oor nan by default = 0.
-                    before_sacc: int
+                    before_sacc : int
                         time to remove before saccades
-                    after_sacc: int
+                    after_sacc : int
                         time to delete after saccades
 
             if equation in ['fct_position', 'fct_saccades'] :
@@ -1032,33 +1100,29 @@ class ANEMO(object):
             return param_fit, inde_vars
 
 
-        def Fit_trial(self, data_trial, equation='fct_velocity',
-                     trackertime=None, data_x=None, time_sup=280,
-                     param_fit=None, inde_vars=None,
-                     step_fit=2, do_whitening=False,
-                     TargetOn=None, StimulusOf=None, saccades=None,
-                     dir_target=None,
-                     value_latence=None, value_maxi=15.,
-                     value_anti=0., before_sacc=5, after_sacc=15, **opt) :
+        def Fit_trial(self, data_trial, equation='fct_velocity', data_x=None, dir_target=None,
+                      trackertime=None, TargetOn=None, StimulusOf=None, saccades=None,
+                      time_sup=280, step_fit=2, do_whitening=False,
+                      param_fit=None, inde_vars=None,
+                      value_latence=None, value_maxi=15., value_anti=0.,
+                      before_sacc=5, after_sacc=15, **opt) :
 
             '''
             Returns the result of the fit of a trial
 
             Parameters
             ----------
+            data_trial : ndarray
+                if equation='fct_velocity' = velocity data for a trial in deg/sec
+                if equation='fct_position' = position data for a trial in deg
+                if equation='fct_saccades' = position data for a trial in deg
+                if equation=function : velocity or position for a trial
+
             equation : str or function
                 if 'fct_velocity' : does a data fit with the function 'fct_velocity'
                 if 'fct_position' : does a data fit with the function 'fct_position'
                 if 'fct_saccades' : does a data fit with the function 'fct_saccades'
                 if function : does a data fit with the function
-
-
-            data_trial : ndarray
-                if 'fct_velocity' = velocity data for a trial in deg/sec
-                if 'fct_position' = position data for a trial in deg
-                if 'fct_saccades' = position data for a trial in deg
-                if function : velocity or position for a trial
-
 
             OBLIGATORY :
                 if équation = 'fct_position' :
@@ -1086,16 +1150,16 @@ class ANEMO(object):
                             value_latence : int
                                 value that takes the parameter latence to begin the fit
                                 if None oor nan by default = TargetOn-t_0+100
-                            value_maxi: float
+                            value_maxi : float
                                 value that takes the parameter maxi to begin the fit
                                 if None oor nan by default = 15.
-                            value_anti: float
+                            value_anti : float
                                 value that takes the parameter v_anti to begin the fit
                                 if None oor nan by default = 0.
-                            before_sacc: int
+                            before_sacc : int
                                 time to remove before saccades
                                     it is advisable to put 5
-                            after_sacc: int
+                            after_sacc : int
                                 time to delete after saccades
                                     it is advisable to put 15
 
@@ -1160,10 +1224,10 @@ class ANEMO(object):
 
 
             if param_fit is None or inde_vars is None :
-                opt = {'TargetOn' : TargetOn, 'StimulusOf' : StimulusOf,
-                        'value_latence' : value_latence, 'value_maxi' : value_maxi, 'value_anti' : value_anti,
-                        'saccades' : saccades, 'before_sacc' : before_sacc, 'after_sacc' : after_sacc,
-                        'dir_target' : dir_target}
+                opt = {'dir_target' : dir_target,
+                       'TargetOn' : TargetOn, 'StimulusOf' : StimulusOf, 'saccades' : saccades,
+                       'value_latence' : value_latence, 'value_maxi' : value_maxi, 'value_anti' : value_anti,
+                       'before_sacc' : before_sacc, 'after_sacc' : after_sacc}
 
             if param_fit is None : param_fit = ANEMO.Fit.generation_param_fit(self, equation=equation, trackertime=trackertime, data_x=data_x, **opt)[0]
 
@@ -1200,13 +1264,13 @@ class ANEMO(object):
 
 
         def Fit_full(self, data, equation='fct_velocity', fitted_data='velocity',
-                    N_blocks=None, N_trials=None, list_param_enre=None,
-                    plot=None, file_fig=None, show_target=False,
-                    param_fit=None, inde_vars=None, step_fit=2,
-                    do_whitening=False, time_sup=280, before_sacc=5, after_sacc=15,
-                    stop_search_misac=None,
-                    fig_width=12, t_label=20, t_text=14,
-                    filt=False, cutoff=30, sample_rate=1000) :
+                     N_blocks=None, N_trials=None,
+                     time_sup=280, step_fit=2, do_whitening=False,
+                     list_param_enre=None, param_fit=None, inde_vars=None,
+                     before_sacc=5, after_sacc=15, stop_search_misac=None,
+                     filt=False, cutoff=30, sample_rate=1000,
+                     plot=None, file_fig=None, show_target=False,
+                     fig_width=12, t_label=20, t_text=14) :
 
             '''
             Return the parameters of the fit present in list_param_enre
@@ -1234,18 +1298,18 @@ class ANEMO(object):
                 number of trials per block
                 if None went searched in param_exp
 
+            time_sup : int
+                time that will be deleted to perform the fit (for data that is less good at the end of the test)
+            step_fit : int
+                number of steps for the fit
+            do_whitening : bool
+                if True return the whitened fit
+
             list_param_enre : list
                 list of fit parameters to record
                 if None :
                     if equation in ['fct_velocity', 'fct_position'] : ['fit', 'start_anti', 'v_anti', 'latence', 'tau', 'maxi', 'saccades', 'old_anti', 'old_max', 'old_latence']
                     if equation is 'fct_saccades' : ['fit', 'T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2', 'tau']
-
-            plot : bool
-                if true : save the figure in file_fig
-            file_fig : str
-                name of file figure reccorded
-                if None file_fig is 'Fit'
-
             param_fit : dic
                 fit parameter dictionary, each parameter is a dict containing :
                     'name': name of the variable,
@@ -1258,29 +1322,37 @@ class ANEMO(object):
                 independent variable dictionary of fit
                 if None : Generate by generation_param_fit
 
-            step_fit : int
-                number of steps for the fit
-            do_whitening : bool
-                if True return the whitened fit
-            time_sup : int
-                time that will be deleted to perform the fit (for data that is less good at the end of the test)
-
-            before_sacc: int
+            before_sacc : int
                 time to remove before saccades
                     it is advisable to put :
                         5 for 'fct_velocity' and 'fct_position'
                         0 for 'fct_saccade'
-
-            after_sacc: int
+            after_sacc : int
                 time to delete after saccades
                     it is advisable to put : 15
-
-
-
             stop_search_misac : int
                 stop search of micro_saccade
-                if None: stops searching at the end of fixation + 100ms
+                if None : stops searching at the end of fixation + 100ms
 
+            filt : str
+                to filter the data can be:
+                    - 'position' to filter the position,
+                    - 'velocity' to filter the speed,
+                    - 'velocity-position' to filter the position then the speed
+                if NONE the data will not be filtered
+            must be defined if filt is not None :
+                cutoff : int
+                    the critical frequencies for cutoff of filter
+                sample_rate : int
+                    sampling rate of the recording for the filtre
+
+            plot : bool
+                if true : save the figure in file_fig
+            file_fig : str
+                name of file figure reccorded
+                if None file_fig is 'Fit'
+            show_target : bool
+                if true : show the target on the plot
 
             fig_width : int
                 figure size
@@ -1324,14 +1396,13 @@ class ANEMO(object):
                 print('Warning list_param_enre is None, no parameter will be returned !!!')
                 list_param_enre = []
 
-            opt_base = {'stop_search_misac':stop_search_misac, 'time_sup':time_sup,
-                        'param_fit':param_fit, 'inde_vars':inde_vars,
-                        'step_fit':step_fit, 'do_whitening':do_whitening,
-                        'before_sacc':before_sacc, 'after_sacc':after_sacc,
-                        't_label':t_label, 't_text':t_text, 'fig_width':fig_width,
-                        'list_param_enre':list_param_enre,
-                        'N_blocks':N_blocks, 'N_trials':N_trials, 'show_target':show_target,
-                        'filt':filt, 'cutoff':cutoff, 'sample_rate':sample_rate}
+            opt_base = {'N_blocks':N_blocks, 'N_trials':N_trials,
+                        'time_sup':time_sup, 'step_fit':step_fit, 'do_whitening':do_whitening,
+                        'list_param_enre':list_param_enre, 'param_fit':param_fit, 'inde_vars':inde_vars,
+                        'before_sacc':before_sacc, 'after_sacc':after_sacc, 'stop_search_misac':stop_search_misac,
+                        'filt':filt, 'cutoff':cutoff, 'sample_rate':sample_rate,
+                        'show_target':show_target,
+                        'fig_width':fig_width, 't_label':t_label, 't_text':t_text}
 
             param = {}
             if 'observer' in self.param_exp.keys() : param['observer'] = self.param_exp['observer']
@@ -1375,7 +1446,7 @@ class ANEMO(object):
                         #-------------------------------------------------
                         # FIT
                         #-------------------------------------------------
-                        f = ANEMO.Fit.Fit_trial(self, data_trial, equation=equation, value_latence=old_latence, value_max=old_max, value_anti=old_anti, **opt)
+                        f = ANEMO.Fit.Fit_trial(self, data_trial, equation=equation, value_latence=old_latence, value_maxi=old_max, value_anti=old_anti, **opt)
                         #-------------------------------------------------
 
                         onset  = arg.TargetOn - arg.t_0
@@ -1497,19 +1568,34 @@ class ANEMO(object):
         def deco (self, ax, StimulusOn=None, StimulusOf=None, TargetOn=None, TargetOff=None, saccades=None, t_label=20, **opt) :
 
             '''
+            Allows to display the fixation, the gap and the pursuit on a figure
+
             Parameters
             ----------
             ax : AxesSubplot
-                ax sur lequel le figure doit être afficher
+                ax on which deco should be displayed
 
             StimulusOn : int
-                temps ou le point de fixation apparait
-
+                time when the stimulus appears
+            StimulusOf : int
+                time when the stimulus disappears
+            TargetOn : int
+                time when the target to follow appears
             TargetOff : int
-                temps ou la cible à suivre disparait
+                time when the target to follow disappears
+            saccades : list
+                list of edf saccades for the trial recorded by the eyetracker transformed by the function read_edf of the module edfreader
 
+            t_label : int
+                size x and y label
+
+            Returns
+            -------
+            fig : matplotlib.figure.Figure
+                figure
+            ax : AxesSubplot
+                figure
             '''
-
 
             try :
 
@@ -1545,35 +1631,47 @@ class ANEMO(object):
             import easydict
             return easydict.EasyDict(kwargs)
 
-        def generate_fig(self, ax, data, trial, block, fig=None, out=None,
-                         title='', c='k', N_blocks=None, N_trials=None,
+        def generate_fig(self, ax, data, trial, block,
                          show='data', show_data='velocity', equation='fct_velocity',
-                         show_target=False, show_num_trial=None, show_pos_sacc=True,
-                         write_step_trial=True, plot_detail=None,
+                         N_blocks=None, N_trials=None,
+                         time_sup=280, step_fit=2, do_whitening=False,
                          list_param_enre=None, param_fit=None, inde_vars=None,
-                         step_fit=2, do_whitening=False, time_sup=280, before_sacc=5, after_sacc=15,
-                         stop_search_misac=None,  report=None,
-                         fig_width=15, t_label=20, t_text=14,
-                         filt=False, cutoff=30, sample_rate=1000, **opt) :
+                         before_sacc=5, after_sacc=15, stop_search_misac=None,
+                         filt=False, cutoff=30, sample_rate=1000,
+                         show_pos_sacc=True, plot_detail=None,
+                         show_target=False, show_num_trial=None, write_step_trial=True,
+                         title='', c='k', fig=None, out=None, report=None,
+                         fig_width=15, t_label=20, t_text=14, **opt) :
 
             '''
             Return the parameters of the fit present in list_param_enre
 
             Parameters
             ----------
+            ax : AxesSubplot
+                axis on which the figure is to be displayed
+
             data : list
                 edf data for the trials recorded by the eyetracker transformed by the read_edf function of the edfreader module
 
+            trial : int
+                number of the trial in the block
+            block : int
+                block number
+
+            show : str
+                if 'data' = show a data
+                if 'fit' = show a data fit with the function defined with equation parameter
+            show_data : str
+                if 'velocity' = show the velocity data for a trial in deg/sec
+                if 'position' = show the position data for a trial in deg
+                if 'saccade' = show the position data for sacades in trial in deg
             equation : str or function
                 if 'fct_velocity' : does a data fit with the function 'fct_velocity'
                 if 'fct_position' : does a data fit with the function 'fct_position'
                 if 'fct_saccades' : does a data fit with the function 'fct_saccades'
                 if function : does a data fit with the function
 
-            fitted_data : bool
-                if 'velocity' = fit the velocity data for a trial in deg/sec
-                if 'position' = fit the position data for a trial in deg
-                if 'saccade' = fit the position data for sacades in trial in deg
 
             N_blocks : int
                 number of blocks
@@ -1582,18 +1680,18 @@ class ANEMO(object):
                 number of trials per block
                 if None went searched in param_exp
 
+            time_sup : int
+                time that will be deleted to perform the fit (for data that is less good at the end of the test)
+            step_fit : int
+                number of steps for the fit
+            do_whitening : bool
+                if True return the whitened fit
+
             list_param_enre : list
                 list of fit parameters to record
                 if None :
                     if equation in ['fct_velocity', 'fct_position'] : ['fit', 'start_anti', 'v_anti', 'latence', 'tau', 'maxi', 'saccades', 'old_anti', 'old_max', 'old_latence']
                     if equation is 'fct_saccades' : ['fit', 'T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2', 'tau']
-
-            plot : bool
-                if true : save the figure in file_fig
-            file_fig : str
-                name of file figure reccorded
-                if None file_fig is 'Fit'
-
             param_fit : dic
                 fit parameter dictionary, each parameter is a dict containing :
                     'name': name of the variable,
@@ -1606,29 +1704,52 @@ class ANEMO(object):
                 independent variable dictionary of fit
                 if None : Generate by generation_param_fit
 
-            step_fit : int
-                number of steps for the fit
-            do_whitening : bool
-                if True return the whitened fit
-            time_sup : int
-                time that will be deleted to perform the fit (for data that is less good at the end of the test)
-
-            before_sacc: int
+            before_sacc : int
                 time to remove before saccades
                     it is advisable to put :
                         5 for 'fct_velocity' and 'fct_position'
                         0 for 'fct_saccade'
-
-            after_sacc: int
+            after_sacc : int
                 time to delete after saccades
                     it is advisable to put : 15
-
-
-
             stop_search_misac : int
                 stop search of micro_saccade
-                if None: stops searching at the end of fixation + 100ms
+                if None : stops searching at the end of fixation + 100ms
 
+            filt : str
+                to filter the data can be:
+                    - 'position' to filter the position,
+                    - 'velocity' to filter the speed,
+                    - 'velocity-position' to filter the position then the speed
+                if NONE the data will not be filtered
+            must be defined if filt is not None :
+                cutoff : int
+                    the critical frequencies for cutoff of filter
+                sample_rate : int
+                    sampling rate of the recording for the filtre
+
+            show_pos_sacc : bool
+                if True : show in a first figure the location of saccades during the pousuite
+            plot_detail : bool
+                if True : show the fit parameters on the data
+
+            show_target : bool
+                if true : show the target on the plot
+            show_num_trial : bool
+                if True : the num is written of the trial in y_label
+            write_step_trial : bool
+                if True : write the steps of the trial on the figure
+
+            title : str
+                title of the figure
+            c : str
+                text color and fit
+            fig :  matplotlib.figure.Figure
+                figure on which the function should be displayed
+                if NONE: a figure is created
+            out : for the function show_fig
+            report : bool
+                if True : return the report of the fit for each trial
 
             fig_width : int
                 figure size
@@ -1639,8 +1760,10 @@ class ANEMO(object):
 
             Returns
             -------
-            param : dict
-                each parameter are ordered : [block][trial]
+            ax : AxesSubplot
+                figure
+            result : dict
+                if report is True
             '''
 
             if fig_width < 15 : lw = 1
@@ -1687,11 +1810,11 @@ class ANEMO(object):
                 if 'observer' in self.param_exp.keys() : param['observer'] = self.param_exp['observer']
                 for name in list_param_enre : param[name] = []
 
-            opt_base = {'stop_search_misac':stop_search_misac, 'time_sup':time_sup,
+            opt_base = {'time_sup':time_sup, 'step_fit':step_fit, 'do_whitening':do_whitening,
                         'param_fit':param_fit, 'inde_vars':inde_vars,
-                        'step_fit':step_fit, 'do_whitening':do_whitening,
-                        'before_sacc':before_sacc, 'after_sacc':after_sacc,
-                        't_label':t_label, 'filt':filt, 'cutoff':cutoff, 'sample_rate':sample_rate}
+                        'before_sacc':before_sacc, 'after_sacc':after_sacc, 'stop_search_misac':stop_search_misac,
+                        'filt':filt, 'cutoff':cutoff, 'sample_rate':sample_rate,
+                        't_label':t_label}
 
             if show_data!='saccade' : show_pos_sacc=True
             if show_pos_sacc is not True : show_target=False
@@ -1804,7 +1927,7 @@ class ANEMO(object):
                     #-------------------------------------------------
                     old_latence, old_max, old_anti = ANEMO.classical_method.Full(velocity_NAN, arg.TargetOn-arg.t_0)
 
-                    f = ANEMO.Fit.Fit_trial(self, data_trial, equation=equation, value_latence=old_latence, value_max=old_max, value_anti=old_anti, **opt)
+                    f = ANEMO.Fit.Fit_trial(self, data_trial, equation=equation, value_latence=old_latence, value_maxi=old_max, value_anti=old_anti, **opt)
                     for name in list_param_enre :
                         if name in f.values.keys() :
                             if name in ['start_anti', 'latence'] : val = f.values[name] - onset
@@ -2077,7 +2200,7 @@ class ANEMO(object):
                     ax.set_ylabel('Velocity (°/s)', fontsize=t_label)
 
                     scale = 1
-                    result_fit = ANEMO.Equation.fct_velocity (x=np.arange(len(time)), start_anti=start_anti, latence=latence,
+                    result_fit = ANEMO.Equation.fct_velocity(x=np.arange(len(time)), start_anti=start_anti, latence=latence,
                                                               v_anti=-20, tau=15., maxi=15., dir_target=-1, do_whitening=False)
 
                 if equation=='fct_position' :
@@ -2197,20 +2320,22 @@ class ANEMO(object):
             plt.tight_layout() # to remove the margin too large
             return fig, ax
 
+
         def plot_data(self, data, show='velocity', trials=0, block=0,
-                        show_num_trial=False, N_trials=None, N_blocks=None,
-                        fig_width=15, t_titre=35, t_label=20, t_text=14,
-                        stop_search_misac=None, before_sacc=5, after_sacc=15,
-                        filt=False, cutoff=30, sample_rate=1000):
+                      N_blocks=None, N_trials=None,
+                      before_sacc=5, after_sacc=15, stop_search_misac=None,
+                      filt=False, cutoff=30, sample_rate=1000,
+                      show_pos_sacc=True, show_target=False, show_num_trial=False,
+                      fig_width=15, t_titre=35, t_label=20, t_text=14):
 
             '''
             Returns the data figure
 
             Parameters
             ----------
-
             data : list
                 edf data for the trials recorded by the eyetracker transformed by the read_edf function of the edfreader module
+
             show : str
                 if 'velocity' show the velocity of the eye
                 if 'position' show the position of the eye
@@ -2220,23 +2345,42 @@ class ANEMO(object):
                 number or list of trials to display
             block : int
                 number of the block in which it finds the trials to display
+
+            N_blocks : int
+                number of blocks
+                if None went searched in param_exp
             N_trials : int
                 number of trials per block
                 if None went searched in param_exp
 
-            before_sacc: int
+            before_sacc : int
                 time to remove before saccades
                     it is advisable to put :
                         5 for 'fct_velocity' and 'fct_position'
                         0 for 'fct_saccade'
-
-            after_sacc: int
+            after_sacc : int
                 time to delete after saccades
                     it is advisable to put : 15
-
             stop_search_misac : int
                 stop search of micro_saccade
-                if None: stops searching at the end of fixation + 100ms
+                if None : stops searching at the end of fixation + 100ms
+
+            filt : str
+                to filter the data can be:
+                    - 'position' to filter the position,
+                    - 'velocity' to filter the speed,
+                    - 'velocity-position' to filter the position then the speed
+                if NONE the data will not be filtered
+            must be defined if filt is not None :
+                cutoff : int
+                    the critical frequencies for cutoff of filter
+                sample_rate : int
+                    sampling rate of the recording for the filtre
+
+            show_pos_sacc : bool
+                if True: shows in a first figure the location of saccades during the pousuite
+            show_target : bool
+                if true : show the target on the plot
             show_num_trial : bool
                 if True the num is written of the trial in y_label
 
@@ -2246,13 +2390,15 @@ class ANEMO(object):
                 size of the title of the figure
             t_label : int
                 size x and y label
+            t_text : int
+                size of the text of the figure
 
             Returns
             -------
             fig : matplotlib.figure.Figure
                 figure
             ax : AxesSubplot
-            figure
+                figure
             '''
 
             if fig_width < 15 : lw = 1
@@ -2273,7 +2419,7 @@ class ANEMO(object):
 
             if N_trials is None : N_trials = Test.test_value('N_trials', self.param_exp)
 
-            opt_base = {'t_label':t_label, 'stop_search_misac':stop_search_misac, 'before_sacc':before_sacc, 'after_sacc':after_sacc}
+            opt_base = {'before_sacc':before_sacc, 'after_sacc':after_sacc, 'stop_search_misac':stop_search_misac, 't_label':t_label}
 
             x = 0
             for t in trials :
@@ -2297,16 +2443,15 @@ class ANEMO(object):
                     if show=='velocity' : title = 'Eye Movement'
                     else : title = 'Eye Position'
 
-
-                ax = ANEMO.Plot.generate_fig(self, ax=ax, data=data, trial=t, block=block, fig=fig,
-                                             title=title, N_blocks=N_blocks, N_trials=N_trials,
+                ax = ANEMO.Plot.generate_fig(self, ax=ax, data=data, trial=t, block=block,
                                              show='data', show_data=show, equation=None,
-                                             show_target=True, show_num_trial=show_num_trial,
-                                             write_step_trial=write_step_trial,
-                                             before_sacc=before_sacc, after_sacc=after_sacc,
-                                             stop_search_misac=stop_search_misac,
-                                             fig_width=fig_width, t_label=t_label, t_text=t_text,
-                                             filt=filt, cutoff=cutoff, sample_rate=sample_rate)
+                                             N_blocks=N_blocks, N_trials=N_trials,
+                                             before_sacc=before_sacc, after_sacc=after_sacc, stop_search_misac=stop_search_misac,
+                                             filt=filt, cutoff=cutoff, sample_rate=sample_rate,
+                                             show_pos_sacc=show_pos_sacc,
+                                             show_target=show_target, show_num_trial=show_num_trial, write_step_trial=write_step_trial,
+                                             title=title, fig=fig,
+                                             fig_width=fig_width, t_label=t_label, t_text=t_text)
 
                 x=x+1
 
@@ -2318,13 +2463,16 @@ class ANEMO(object):
 
             return fig, axs
 
-        def plot_fit(self, data, equation='fct_velocity', fitted_data='velocity',
-                        trials=0, block=0, N_trials=None, N_blocks=None, show_num_trial=False,
-                        fig_width=15, t_titre=35, t_label=20,  t_text=14,
-                        report=None, before_sacc=5, after_sacc=15,
-                        list_param_enre=None,
-                        step_fit=2, do_whitening=False, time_sup=280, param_fit=None, inde_vars=None,
-                        stop_search_misac=None, filt=False, cutoff=30, sample_rate=1000):
+
+        def plot_fit(self, data, trials=0, block=0,
+                     fitted_data='velocity', equation='fct_velocity',
+                     N_blocks=None, N_trials=None,
+                     time_sup=280, step_fit=2, do_whitening=False,
+                     list_param_enre=None, param_fit=None, inde_vars=None,
+                     before_sacc=5, after_sacc=15, stop_search_misac=None,
+                     filt=False, cutoff=30, sample_rate=1000,
+                     show_target=False, show_num_trial=False, report=None,
+                     fig_width=15, t_titre=35, t_label=20,  t_text=14):
 
             '''
             Returns figure of data fits
@@ -2334,54 +2482,75 @@ class ANEMO(object):
             data : list
                 edf data for the trials recorded by the eyetracker transformed by the read_edf function of the edfreader module
 
+            trials : int or list
+                number or list of trials to display
+            block : int
+                number of the block in which it finds the trials to display
+
+            fitted_data : bool
+                if 'velocity' = fit the velocity data for a trial in deg/sec
+                if 'position' = fit the position data for a trial in deg
+                if 'saccade' = fit the position data for sacades in trial in deg
             equation : str or function
                 if 'fct_velocity' : does a data fit with the function 'fct_velocity'
                 if 'fct_position' : does a data fit with the function 'fct_position'
                 if 'fct_saccades' : does a data fit with the function 'fct_saccades'
                 if function : does a data fit with the function
 
-            fitted_data : bool
-                if 'velocity' = fit the velocity data for a trial in deg/sec
-                if 'position' = fit the position data for a trial in deg
-                if 'saccade' = fit the position data for sacades in trial in deg
-
-            trials : int or list
-                number or list of trials to display
-            block : int
-                number of the block in which it finds the trials to display
+            N_blocks : int
+                number of blocks
+                if None went searched in param_exp
             N_trials : int
                 number of trials per block
                 if None went searched in param_exp
 
-            stop_search_misac : int
-                stop search of micro_saccade
-                if None: stops searching at the end of fixation + 100ms
-
-
-            report : bool
-                if true return the report of the fit for each trial
+            time_sup : int
+                time that will be deleted to perform the fit (for data that is less good at the end of the test)
             step_fit : int
                 number of steps for the fit
             do_whitening : bool
-                if true the fit perform on filtered data with a whitening filter
+                if True return the whitened fit
 
-            time_sup : int
-                time that will be deleted to perform the fit (for data that is less good at the end of the test)
+            list_param_enre : list
+                list of fit parameters to record
+                if None :
+                    if equation in ['fct_velocity', 'fct_position'] : ['fit', 'start_anti', 'v_anti', 'latence', 'tau', 'maxi', 'saccades', 'old_anti', 'old_max', 'old_latence']
+                    if equation is 'fct_saccades' : ['fit', 'T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2', 'tau']
             param_fit : dict
                 dictionary containing the parameters of the fit
             inde_vars : dict
                 dictionary containing the independent variables of the fit
 
-            before_sacc: int
+            before_sacc : int
                 time to remove before saccades
                     it is advisable to put :
                         5 for 'fct_velocity' and 'fct_position'
                         0 for 'fct_saccade'
-
-            after_sacc: int
+            after_sacc : int
                 time to delete after saccades
                     it is advisable to put : 15
+            stop_search_misac : int
+                stop search of micro_saccade
+                if None : stops searching at the end of fixation + 100ms
 
+            filt : str
+                to filter the data can be:
+                    - 'position' to filter the position,
+                    - 'velocity' to filter the speed,
+                    - 'velocity-position' to filter the position then the speed
+                if NONE the data will not be filtered
+            must be defined if filt is not None :
+                cutoff : int
+                    the critical frequencies for cutoff of filter
+                sample_rate : int
+                    sampling rate of the recording for the filtre
+
+            show_target : bool
+                if true : show the target on the plot
+            show_num_trial : bool
+                if True the num is written of the trial in y_label
+            report : bool
+                if true return the report of the fit for each trial
 
             fig_width : int
                 figure size
@@ -2389,7 +2558,8 @@ class ANEMO(object):
                 size of the title of the figure
             t_label : int
                 size x and y label
-
+            t_text : int
+                size of the text of the figure
 
             Returns
             -------
@@ -2405,9 +2575,11 @@ class ANEMO(object):
 
             if type(trials) is not list : trials = [trials]
 
-            opt_base = {'stop_search_misac':stop_search_misac,'equation':equation,'time_sup':time_sup,
-                        'param_fit':param_fit, 'inde_vars':inde_vars, 'step_fit':step_fit, 'do_whitening':do_whitening,
-                        'before_sacc':before_sacc, 'after_sacc':after_sacc,'t_label':t_label}
+            opt_base = {'equation':equation,
+                        'time_sup':time_sup, 'step_fit':step_fit, 'do_whitening':do_whitening,
+                        'param_fit':param_fit, 'inde_vars':inde_vars,
+                        'before_sacc':before_sacc, 'after_sacc':after_sacc, 'stop_search_misac':stop_search_misac,
+                        't_label':t_label}
 
             if equation=='fct_velocity' : fitted_data, eqt = 'velocity', ANEMO.Equation.fct_velocity
             elif equation=='fct_position' : fitted_data, eqt = 'position', ANEMO.Equation.fct_position
@@ -2449,7 +2621,7 @@ class ANEMO(object):
                 param_fct = dict(ax=ax, data=data, trial=t, block=block, fig=fig,
                                  title=title, N_blocks=N_blocks, N_trials=N_trials,
                                  show='fit', show_data=fitted_data, equation=equation,
-                                 show_num_trial=show_num_trial, show_pos_sacc=True,
+                                 show_target=show_target, show_num_trial=show_num_trial, show_pos_sacc=True,
                                  write_step_trial=write_step_trial, plot_detail=True,
                                  list_param_enre=list_param_enre, param_fit=param_fit, inde_vars=inde_vars,
                                  step_fit=step_fit, do_whitening=do_whitening, time_sup=time_sup, before_sacc=before_sacc, after_sacc=after_sacc,
@@ -2474,19 +2646,22 @@ class ANEMO(object):
             if report is None : return fig, axs
             else : return fig, axs, results
 
-        def plot_Full_data(self, data, show='velocity', N_blocks=None,
-                        N_trials=None,
-                        fig_width=12, t_titre=20, t_label=14,
-                        stop_search_misac=None, file_fig=None) :
+
+        def plot_Full_data(self, data, show='velocity',
+                           N_blocks=None, N_trials=None,
+                           before_sacc=5, after_sacc=15, stop_search_misac=None,
+                           filt=False, cutoff=30, sample_rate=1000,
+                           file_fig=None, show_pos_sacc=True, show_target=False,
+                           fig_width=12, t_titre=20, t_label=14, t_text=10) :
 
             '''
             Save the full data figure
 
             Parameters
             ----------
-
             data : list
                 edf data for the trials recorded by the eyetracker transformed by the read_edf function of the edfreader module
+
             show : str
                 if 'velocity' show velocity of the eye
                 if 'position' show the position of the eye
@@ -2499,9 +2674,37 @@ class ANEMO(object):
                 number of trials per block
                 if None went searched in param_exp
 
+            before_sacc : int
+                time to remove before saccades
+                    it is advisable to put :
+                        5 for 'fct_velocity' and 'fct_position'
+                        0 for 'fct_saccade'
+            after_sacc: int
+                time to delete after saccades
+                    it is advisable to put : 15
             stop_search_misac : int
                 stop search of micro_saccade
-                if None: stops searching at the end of fixation + 100ms
+                if None : stops searching at the end of fixation + 100ms
+
+            filt : str
+                to filter the data can be:
+                    - 'position' to filter the position,
+                    - 'velocity' to filter the speed,
+                    - 'velocity-position' to filter the position then the speed
+                if NONE the data will not be filtered
+            must be defined if filt is not None :
+                cutoff : int
+                    the critical frequencies for cutoff of filter
+                sample_rate : int
+                    sampling rate of the recording for the filtre
+
+            file_fig : str
+                name of file figure reccorded
+                if None file_fig is show
+            show_pos_sacc : bool
+                if True: shows in a first figure the location of saccades during the pousuite
+            show_target : bool
+                if true : show the target on the plot
 
             fig_width : int
                 figure size
@@ -2509,10 +2712,8 @@ class ANEMO(object):
                 size of the title of the figure
             t_label : int
                 size x and y label
-
-            file_fig : str
-                name of file figure reccorded
-                if None file_fig is show
+            t_text : int
+                size of the text of the figure
 
             Returns
             -------
@@ -2525,24 +2726,29 @@ class ANEMO(object):
             if N_trials is None : N_trials = Test.test_value('N_trials', self.param_exp)
 
             for block in range(N_blocks) :
-                fig, axs = ANEMO.Plot.plot_data(self, data, show=show, trials=list(np.arange(N_trials)), block=block,
-                                    N_trials=N_trials,
-                                    fig_width=fig_width, t_titre=t_titre, t_label=t_label,
-                                    stop_search_misac=stop_search_misac, show_num_trial=True)
+                fig, axs = ANEMO.Plot.plot_data(self, data, trials=list(np.arange(N_trials)), block=block,
+                                                show=show,
+                                                N_blocks=N_blocks, N_trials=N_trials,
+                                                before_sacc=before_sacc, after_sacc=after_sacc, stop_search_misac=stop_search_misac,
+                                                filt=filt, cutoff=cutoff, sample_rate=sample_rate,
+                                                show_pos_sacc=show_pos_sacc,
+                                                show_target=show_target, show_num_trial=True,
+                                                fig_width=fig_width, t_titre=t_titre, t_label=t_label, t_text=t_text)
 
                 file_fig = Test.test_None(file_fig, show)
                 plt.savefig(file_fig+'_%s.pdf'%(block+1))
                 plt.close()
 
 
-
-        def show_fig(self, data, list_data_fitfct, Full_param_fit, show_data='velocity',
-                     N_blocks=None, N_trials=None, list_param_enre=None,
-                     inde_vars=None, step_fit=2,
-                     do_whitening=False, time_sup=280, before_sacc=5, after_sacc=15,
-                     stop_search_misac=None,
-                     fig_width=15, t_label=20, t_text=14,
-                     filt=False, cutoff=30, sample_rate=1000) :
+        def show_fig(self, data, list_data_fitfct, Full_param_fit,
+                     show_data='velocity',
+                     N_blocks=None, N_trials=None,
+                     list_param_enre=None, inde_vars=None,
+                     time_sup=280, step_fit=2, do_whitening=False,
+                     before_sacc=5, after_sacc=15, stop_search_misac=None,
+                     filt=False, cutoff=30, sample_rate=1000,
+                     show_target=False,
+                     fig_width=15, t_label=20, t_text=14) :
 
             '''
             Return the parameters of the fit present in list_param_enre
@@ -2552,16 +2758,17 @@ class ANEMO(object):
             data : list
                 edf data for the trials recorded by the eyetracker transformed by the read_edf function of the edfreader module
 
-            equation : str or function
-                if 'fct_velocity' : does a data fit with the function 'fct_velocity'
-                if 'fct_position' : does a data fit with the function 'fct_position'
-                if 'fct_saccades' : does a data fit with the function 'fct_saccades'
-                if function : does a data fit with the function
+            list_data_fitfct : dict
+                dictionary of correspondence between the data and the fit
+                if None : list_data_fitfct = {'velocity':'fct_velocity', 'position':'fct_position', 'saccade':'fct_saccade'}
+            Full_param_fit : dict
+                dictionary containing all the parameters of fit
+                if None: fit is for each figure
 
-            fitted_data : bool
-                if 'velocity' = fit the velocity data for a trial in deg/sec
-                if 'position' = fit the position data for a trial in deg
-                if 'saccade' = fit the position data for sacades in trial in deg
+            show_data : str
+                if 'velocity' = show the velocity data for a trial in deg/sec
+                if 'position' = show the position data for a trial in deg
+                if 'saccade' = show the position data for sacades in trial in deg
 
             N_blocks : int
                 number of blocks
@@ -2575,48 +2782,38 @@ class ANEMO(object):
                 if None :
                     if equation in ['fct_velocity', 'fct_position'] : ['fit', 'start_anti', 'v_anti', 'latence', 'tau', 'maxi', 'saccades', 'old_anti', 'old_max', 'old_latence']
                     if equation is 'fct_saccades' : ['fit', 'T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2', 'tau']
-
-            plot : bool
-                if true : save the figure in file_fig
-            file_fig : str
-                name of file figure reccorded
-                if None file_fig is 'Fit'
-
-            param_fit : dic
-                fit parameter dictionary, each parameter is a dict containing :
-                    'name': name of the variable,
-                    'value': initial value,
-                    'min': minimum value,
-                    'max': maximum value,
-                    'vary': True if varies during fit, 'vary' if only varies for step 2, False if not varies during fit
-                if None : Generate by generation_param_fit
             inde_vars : dic
                 independent variable dictionary of fit
                 if None : Generate by generation_param_fit
 
+            time_sup : int
+                time that will be deleted to perform the fit (for data that is less good at the end of the test)
             step_fit : int
                 number of steps for the fit
             do_whitening : bool
                 if True return the whitened fit
-            time_sup : int
-                time that will be deleted to perform the fit (for data that is less good at the end of the test)
 
-            before_sacc: int
-                time to remove before saccades
-                    it is advisable to put :
-                        5 for 'fct_velocity' and 'fct_position'
-                        0 for 'fct_saccade'
-
-            after_sacc: int
+            before_sacc : int
+                time to delete before saccades
+            after_sacc : int
                 time to delete after saccades
-                    it is advisable to put : 15
-
-
-
             stop_search_misac : int
                 stop search of micro_saccade
-                if None: stops searching at the end of fixation + 100ms
+                if None : stops searching at the end of fixation + 100ms
 
+            filt : str
+                to filter the data can be:
+                    - 'position' to filter the position,
+                    - 'velocity-position' to filter the position then the speed
+                if NONE the data will not be filtered
+            must be defined if filt is not None :
+                cutoff : int
+                    the critical frequencies for cutoff of filter
+                sample_rate : int
+                    sampling rate of the recording for the filtre
+
+            show_target : bool
+                if true : show the target on the plot
 
             fig_width : int
                 figure size
@@ -2627,8 +2824,8 @@ class ANEMO(object):
 
             Returns
             -------
-            param : dict
-                each parameter are ordered : [block][trial]
+            Full_list : dict
+                dictionary containing all good and bad trials
             '''
 
 
@@ -2711,9 +2908,17 @@ class ANEMO(object):
             def fig(ss_title, c, out) :
                 nonlocal trial, block, ax, fct, show_data, param_fit, show
                 title = 'block %s trial %s%s'%(block, trial, ss_title)
-                param_f = ANEMO.Plot.generate_fig(self, ax=ax, trial=trial, block=block, title=title, c=c, out=out, data=data,
-                                        param_fit=param_fit, equation=fct, show_data=show_data,
-                                        list_param_enre=list_param_enre[fct], show=show, filt=filt, cutoff=cutoff, sample_rate=sample_rate)
+
+                param_f = ANEMO.Plot.generate_fig(self, ax=ax, data=data, trial=trial, block=block,
+                                                  show=show, show_data=show_data, equation=fct,
+                                                  N_blocks=N_blocks, N_trials=N_trials,
+                                                  time_sup=time_sup, step_fit=step_fit, do_whitening=do_whitening,
+                                                  list_param_enre=list_param_enre[fct], param_fit=param_fit, inde_vars=inde_vars,
+                                                  before_sacc=before_sacc, after_sacc=after_sacc, stop_search_misac=stop_search_misac,
+                                                  filt=filt, cutoff=cutoff, sample_rate=sample_rate,
+                                                  show_target=show_target,
+                                                  title=title, c=c, out=out,
+                                                  fig_width=fig_width, t_label=t_label, t_text=t_text)
 
 
             def check_list() :
