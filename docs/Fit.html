@@ -1,0 +1,394 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Fit &#8212; ANEMO 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Plot" href="Plot.html" />
+    <link rel="prev" title="Equation" href="Equation.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="ANEMO_doc.html">ANEMO</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="classical_method.html">classical_method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Equation.html">Equation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Fit</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#generation-param-fit">generation_param_fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fit-trial">Fit_trial</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fit-full">Fit_full</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Plot.html">Plot</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="Equation.html" title="Previous document">Equation</a>
+        </li>
+        <li>
+          <a href="Plot.html" title="Next document">Plot</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-ANEMO.ANEMO.ANEMO.Fit">
+<span id="fit"></span><h1>Fit<a class="headerlink" href="#module-ANEMO.ANEMO.ANEMO.Fit" title="Permalink to this headline">¶</a></h1>
+<p>Fit allows you to perform Fits on Smooth Pursuite Eyes Movements data.
+You could use the functions ‘velocity’, ‘position’ and ‘saccades’ already present, but also your own functions.
+It must be initialized with the parameters of the experiment
+(see <a class="reference internal" href="ANEMO_doc.html"><span class="doc">ANEMO.__ doc__</span></a>) for more precisions on the parameters)</p>
+<div class="section" id="generation-param-fit">
+<h2>generation_param_fit<a class="headerlink" href="#generation-param-fit" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ANEMO.ANEMO.ANEMO.Fit.generation_param_fit">
+<code class="descclassname">ANEMO.ANEMO.ANEMO.Fit.</code><code class="descname">generation_param_fit</code><span class="sig-paren">(</span><em>self</em>, <em>equation='fct_velocity'</em>, <em>data_x=None</em>, <em>dir_target=None</em>, <em>trackertime=None</em>, <em>TargetOn=None</em>, <em>StimulusOf=None</em>, <em>saccades=None</em>, <em>value_latence=None</em>, <em>value_maxi=None</em>, <em>value_anti=None</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>**opt</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Fit.generation_param_fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates the parameters and independent variables of the fit</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first">
+<li><p class="first"><strong>equation</strong> (<em>str, optional(default=’fct_velocity’)</em>) –</p>
+<p>name of the equation for the fit</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="s1">&#39;fct_velocity&#39;</span> <span class="p">:</span> <span class="n">generates</span> <span class="n">the</span> <span class="n">parameters</span> <span class="k">for</span> <span class="n">a</span> <span class="n">velocity</span> <span class="n">fit</span>
+<span class="k">if</span> <span class="s1">&#39;fct_position&#39;</span> <span class="p">:</span> <span class="n">generates</span> <span class="n">the</span> <span class="n">parameters</span> <span class="k">for</span> <span class="n">a</span> <span class="n">fit</span> <span class="n">position</span>
+<span class="k">if</span> <span class="s1">&#39;fct_saccades&#39;</span> <span class="p">:</span> <span class="n">generates</span> <span class="n">the</span> <span class="n">parameters</span> <span class="k">for</span> <span class="n">a</span> <span class="n">fit</span> <span class="n">saccades</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>dir_target</strong> (<em>int, optional(default=None)</em>) – the direction of the target, if None went searched in param_exp,
+option obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_velocity',</span> <span class="pre">'fct_position']</span></code></p>
+</li>
+<li><p class="first"><strong>trackertime</strong> (<em>ndarray, optional(default=None)</em>) – the time of the tracker,
+option obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_velocity',</span> <span class="pre">'fct_position']</span></code></p>
+</li>
+<li><p class="first"><strong>TargetOn</strong> (<em>int, optional(default=None)</em>) – time when the target to follow appears,
+option obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_velocity',</span> <span class="pre">'fct_position']</span></code></p>
+</li>
+<li><p class="first"><strong>StimulusOf</strong> (<em>int, optional(default=None)</em>) – time when the stimulus disappears,
+option obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_velocity',</span> <span class="pre">'fct_position']</span></code></p>
+</li>
+<li><p class="first"><strong>saccades</strong> (<em>list, optional(default=None)</em>) – list of edf saccades for the trial recorded by the eyetracker transformed by the function read_edf of the module edfreader,
+option obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_velocity',</span> <span class="pre">'fct_position']</span></code></p>
+</li>
+<li><p class="first"><strong>value_latence</strong> (<em>int, optional(default=None)</em>) – value that takes the parameter latence to begin the fit, if None or nan by default = <code class="docutils literal notranslate"><span class="pre">TargetOn-t_0+100</span></code>,
+optional not obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_velocity',</span> <span class="pre">'fct_position']</span></code></p>
+</li>
+<li><p class="first"><strong>value_maxi</strong> (<em>float, optional(default=None)</em>) – value that takes the parameter maxi to begin the fit, if None or nan by default = <code class="docutils literal notranslate"><span class="pre">15.</span></code>,
+optional not obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_velocity',</span> <span class="pre">'fct_position']</span></code></p>
+</li>
+<li><p class="first"><strong>value_anti</strong> (<em>float, optional(default=None)</em>) – value that takes the parameter v_anti to begin the fit, if None or nan by default = <code class="docutils literal notranslate"><span class="pre">0.</span></code>,
+optional not obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_velocity',</span> <span class="pre">'fct_position']</span></code></p>
+</li>
+<li><p class="first"><strong>before_sacc</strong> (<em>int, optional(default=5)</em>) – time to remove before saccades,
+optional not obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_velocity',</span> <span class="pre">'fct_position']</span></code></p>
+</li>
+<li><p class="first"><strong>after_sacc</strong> (<em>int, optional(default=15)</em>) – time to delete after saccades,
+optional not obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_velocity',</span> <span class="pre">'fct_position']</span></code></p>
+</li>
+<li><p class="first"><strong>data_x</strong> (<em>ndarray, optional(default=None)</em>) – x position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module,
+option obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_position',</span> <span class="pre">'fct_saccades']</span></code></p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>param_fit</strong> (<em>dict</em>) – dictionary containing the parameters of the fit</li>
+<li><strong>inde_vars</strong> (<em>dict</em>) – dictionary containing the independent variables of the fit</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="fit-trial">
+<h2>Fit_trial<a class="headerlink" href="#fit-trial" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ANEMO.ANEMO.ANEMO.Fit.Fit_trial">
+<code class="descclassname">ANEMO.ANEMO.ANEMO.Fit.</code><code class="descname">Fit_trial</code><span class="sig-paren">(</span><em>self</em>, <em>data_trial</em>, <em>equation='fct_velocity'</em>, <em>data_x=None</em>, <em>dir_target=None</em>, <em>trackertime=None</em>, <em>TargetOn=None</em>, <em>StimulusOf=None</em>, <em>saccades=None</em>, <em>time_sup=280</em>, <em>step_fit=2</em>, <em>do_whitening=False</em>, <em>param_fit=None</em>, <em>inde_vars=None</em>, <em>value_latence=None</em>, <em>value_maxi=15.0</em>, <em>value_anti=0.0</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>**opt</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Fit.Fit_trial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the result of the fit of a trial</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last">
+<li><p class="first"><strong>data_trial</strong> (<em>ndarray</em>) –</p>
+<p>data for a trial :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_velocity&#39;</span> <span class="p">:</span> <span class="n">velocity</span> <span class="n">data</span> <span class="k">for</span> <span class="n">a</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">deg</span><span class="o">/</span><span class="n">sec</span>
+<span class="k">if</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_position&#39;</span> <span class="p">:</span> <span class="n">position</span> <span class="n">data</span> <span class="k">for</span> <span class="n">a</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">deg</span>
+<span class="k">if</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_saccades&#39;</span> <span class="p">:</span> <span class="n">position</span> <span class="n">data</span> <span class="k">for</span> <span class="n">a</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">deg</span>
+<span class="k">if</span> <span class="n">equation</span><span class="o">=</span><span class="n">function</span> <span class="p">:</span> <span class="n">velocity</span> <span class="ow">or</span> <span class="n">position</span> <span class="k">for</span> <span class="n">a</span> <span class="n">trial</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>equation</strong> (<em>str, optional(default=’fct_velocity’)</em>) –</p>
+<p>function or name of the equation for the fit</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="s1">&#39;fct_velocity&#39;</span> <span class="p">:</span> <span class="n">does</span> <span class="n">a</span> <span class="n">data</span> <span class="n">fit</span> <span class="k">with</span> <span class="n">the</span> <span class="n">function</span> <span class="s1">&#39;fct_velocity&#39;</span>
+<span class="k">if</span> <span class="s1">&#39;fct_position&#39;</span> <span class="p">:</span> <span class="n">does</span> <span class="n">a</span> <span class="n">data</span> <span class="n">fit</span> <span class="k">with</span> <span class="n">the</span> <span class="n">function</span> <span class="s1">&#39;fct_position&#39;</span>
+<span class="k">if</span> <span class="s1">&#39;fct_saccades&#39;</span> <span class="p">:</span> <span class="n">does</span> <span class="n">a</span> <span class="n">data</span> <span class="n">fit</span> <span class="k">with</span> <span class="n">the</span> <span class="n">function</span> <span class="s1">&#39;fct_saccades&#39;</span>
+<span class="k">if</span> <span class="n">function</span> <span class="p">:</span> <span class="n">does</span> <span class="n">a</span> <span class="n">data</span> <span class="n">fit</span> <span class="k">with</span> <span class="n">the</span> <span class="n">function</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>data_x</strong> (<em>ndarray, optional(default=None)</em>) – x position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module</p>
+</li>
+<li><p class="first"><strong>dir_target</strong> (<em>int, optional(default=None)</em>) – the direction of the target, if None went searched in param_exp</p>
+</li>
+<li><p class="first"><strong>trackertime</strong> (<em>ndarray, optional(default=None)</em>) – the time of the tracker, if None = <code class="docutils literal notranslate"><span class="pre">np.arrange((len(data_trial))</span></code></p>
+</li>
+<li><p class="first"><strong>TargetOn</strong> (<em>int, optional(default=None)</em>) – time when the target to follow appears</p>
+</li>
+<li><p class="first"><strong>StimulusOf</strong> (<em>int, optional(default=None)</em>) – time when the stimulus disappears</p>
+</li>
+<li><p class="first"><strong>saccades</strong> (<em>list, optional(default=None)</em>) – list of edf saccades for the trial recorded by the eyetracker transformed by the function read_edf of the module edfreader</p>
+</li>
+<li><p class="first"><strong>time_sup</strong> (<em>int, optional(default=280)</em>) – time that will be deleted to perform the fit (for data that is less good at the end of the test)</p>
+</li>
+<li><p class="first"><strong>step_fit</strong> (<em>int, optional(default=2)</em>) – number of steps for the fit</p>
+</li>
+<li><p class="first"><strong>do_whitening</strong> (<em>bool, optional(default=False)</em>) – if True return the whitened fit</p>
+</li>
+<li><p class="first"><strong>param_fit</strong> (<em>dic, optional(default=None)</em>) –</p>
+<p>fit parameter dictionary, each parameter is a dict containing :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">variable</span><span class="p">,</span>
+<span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">initial</span> <span class="n">value</span><span class="p">,</span>
+<span class="s1">&#39;min&#39;</span><span class="p">:</span> <span class="n">minimum</span> <span class="n">value</span><span class="p">,</span>
+<span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="n">maximum</span> <span class="n">value</span><span class="p">,</span>
+<span class="s1">&#39;vary&#39;</span><span class="p">:</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">varies</span> <span class="n">during</span> <span class="n">fit</span><span class="p">,</span> <span class="s1">&#39;vary&#39;</span> <span class="k">if</span> <span class="n">only</span> <span class="n">varies</span> <span class="k">for</span> <span class="n">step</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">False</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">varies</span> <span class="n">during</span> <span class="n">fit</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>inde_vars</strong> (<em>dic, optional(default=None)</em>) – independent variable dictionary of fit</p>
+</li>
+<li><p class="first"><strong>value_latence</strong> (<em>int, optional(default=None)</em>) – value that takes the parameter latence to begin the fit
+if None or nan by default = TargetOn-t_0+100</p>
+</li>
+<li><p class="first"><strong>value_maxi</strong> (<em>float, optional(default=15)</em>) – value that takes the parameter maxi to begin the fit
+if None or nan by default = 15.</p>
+</li>
+<li><p class="first"><strong>value_anti</strong> (<em>float, optional(default=0.)</em>) – value that takes the parameter v_anti to begin the fit
+if None or nan by default = 0.</p>
+</li>
+<li><p class="first"><strong>before_sacc</strong> (<em>int, optional(default=5)</em>) – time to remove before saccades, it is advisable to put 5</p>
+</li>
+<li><p class="first"><strong>after_sacc</strong> (<em>int, optional(default=15)</em>) – time to delete after saccades, it is advisable to put 15</p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<dl class="last docutils">
+<dt>if equation is ‘fct_position’ :</dt>
+<dd>data_x must be definite</dd>
+<dt>if no param_fit or no inde_vars :</dt>
+<dd><dl class="first last docutils">
+<dt>if equation in [‘fct_position’, ‘fct_saccades’] :</dt>
+<dd>data_x must be definite</dd>
+<dt>if equation in [‘fct_velocity’, ‘fct_position’] :</dt>
+<dd>dir_target, trackertime, TargetOn, StimulusOf, and saccades must be definite</dd>
+</dl>
+</dd>
+</dl>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>result</strong> (<em>lmfit.model.ModelResult</em>)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="fit-full">
+<h2>Fit_full<a class="headerlink" href="#fit-full" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ANEMO.ANEMO.ANEMO.Fit.Fit_full">
+<code class="descclassname">ANEMO.ANEMO.ANEMO.Fit.</code><code class="descname">Fit_full</code><span class="sig-paren">(</span><em>self</em>, <em>data</em>, <em>equation='fct_velocity'</em>, <em>fitted_data='velocity'</em>, <em>N_blocks=None</em>, <em>N_trials=None</em>, <em>time_sup=280</em>, <em>step_fit=2</em>, <em>do_whitening=False</em>, <em>list_param_enre=None</em>, <em>param_fit=None</em>, <em>inde_vars=None</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>stop_search_misac=None</em>, <em>filt=False</em>, <em>cutoff=30</em>, <em>sample_rate=1000</em>, <em>plot=None</em>, <em>file_fig=None</em>, <em>show_target=False</em>, <em>fig_width=12</em>, <em>t_label=20</em>, <em>t_text=14</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Fit.Fit_full" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the parameters of the fit present in list_param_enre</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first">
+<li><p class="first"><strong>data</strong> (<em>list</em>) – edf data for the trials recorded by the eyetracker transformed by the read_edf function of the edfreader module</p>
+</li>
+<li><p class="first"><strong>equation</strong> (<em>str or function, optional(default=’fct_velocity’)</em>) –</p>
+<p>function or name of the equation for the fit</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="s1">&#39;fct_velocity&#39;</span> <span class="p">:</span> <span class="n">does</span> <span class="n">a</span> <span class="n">data</span> <span class="n">fit</span> <span class="k">with</span> <span class="n">the</span> <span class="n">function</span> <span class="s1">&#39;fct_velocity&#39;</span>
+<span class="k">if</span> <span class="s1">&#39;fct_position&#39;</span> <span class="p">:</span> <span class="n">does</span> <span class="n">a</span> <span class="n">data</span> <span class="n">fit</span> <span class="k">with</span> <span class="n">the</span> <span class="n">function</span> <span class="s1">&#39;fct_position&#39;</span>
+<span class="k">if</span> <span class="s1">&#39;fct_saccades&#39;</span> <span class="p">:</span> <span class="n">does</span> <span class="n">a</span> <span class="n">data</span> <span class="n">fit</span> <span class="k">with</span> <span class="n">the</span> <span class="n">function</span> <span class="s1">&#39;fct_saccades&#39;</span>
+<span class="k">if</span> <span class="n">function</span> <span class="p">:</span> <span class="n">does</span> <span class="n">a</span> <span class="n">data</span> <span class="n">fit</span> <span class="k">with</span> <span class="n">the</span> <span class="n">function</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>fitted_data</strong> (<em>bool, optional(default=’velocity’)</em>) –</p>
+<p>nature of fitted data</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="s1">&#39;velocity&#39;</span> <span class="p">:</span> <span class="n">fit</span> <span class="n">the</span> <span class="n">velocity</span> <span class="n">data</span> <span class="k">for</span> <span class="n">a</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">deg</span><span class="o">/</span><span class="n">sec</span>
+<span class="k">if</span> <span class="s1">&#39;position&#39;</span> <span class="p">:</span> <span class="n">fit</span> <span class="n">the</span> <span class="n">position</span> <span class="n">data</span> <span class="k">for</span> <span class="n">a</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">deg</span>
+<span class="k">if</span> <span class="s1">&#39;saccade&#39;</span> <span class="p">:</span> <span class="n">fit</span> <span class="n">the</span> <span class="n">position</span> <span class="n">data</span> <span class="k">for</span> <span class="n">sacades</span> <span class="ow">in</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">deg</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>N_blocks</strong> (<em>int, optional(default=None)</em>) – number of blocks,
+if None went searched in param_exp</p>
+</li>
+<li><p class="first"><strong>N_trials</strong> (<em>int, optional(default=None)</em>) – number of trials per block,
+if None went searched in param_exp</p>
+</li>
+<li><p class="first"><strong>time_sup</strong> (<em>int, optional(default=280)</em>) – time that will be deleted to perform the fit (for data that is less good at the end of the test)</p>
+</li>
+<li><p class="first"><strong>step_fit</strong> (<em>int, optional(default=2)</em>) – number of steps for the fit</p>
+</li>
+<li><p class="first"><strong>do_whitening</strong> (<em>bool, optional(default=False)</em>) – if True return the whitened fit</p>
+</li>
+<li><p class="first"><strong>list_param_enre</strong> (<em>list, optional(default=None)</em>) – list of fit parameters to record
+if None :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">equation</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fct_velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;fct_position&#39;</span><span class="p">]</span> <span class="p">:</span> <span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;start_anti&#39;</span><span class="p">,</span> <span class="s1">&#39;v_anti&#39;</span><span class="p">,</span> <span class="s1">&#39;latence&#39;</span><span class="p">,</span> <span class="s1">&#39;tau&#39;</span><span class="p">,</span> <span class="s1">&#39;maxi&#39;</span><span class="p">,</span> <span class="s1">&#39;saccades&#39;</span><span class="p">,</span> <span class="s1">&#39;old_anti&#39;</span><span class="p">,</span> <span class="s1">&#39;old_max&#39;</span><span class="p">,</span> <span class="s1">&#39;old_latence&#39;</span><span class="p">]</span>
+<span class="k">if</span> <span class="n">equation</span> <span class="ow">is</span> <span class="s1">&#39;fct_saccades&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;T0&#39;</span><span class="p">,</span> <span class="s1">&#39;t1&#39;</span><span class="p">,</span> <span class="s1">&#39;t2&#39;</span><span class="p">,</span> <span class="s1">&#39;tr&#39;</span><span class="p">,</span> <span class="s1">&#39;x_0&#39;</span><span class="p">,</span> <span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="s1">&#39;tau&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>param_fit</strong> (<em>dic, optional(default=None)</em>) –</p>
+<p>fit parameter dictionary, each parameter is a dict containing :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">variable</span><span class="p">,</span>
+<span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">initial</span> <span class="n">value</span><span class="p">,</span>
+<span class="s1">&#39;min&#39;</span><span class="p">:</span> <span class="n">minimum</span> <span class="n">value</span><span class="p">,</span>
+<span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="n">maximum</span> <span class="n">value</span><span class="p">,</span>
+<span class="s1">&#39;vary&#39;</span><span class="p">:</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">varies</span> <span class="n">during</span> <span class="n">fit</span><span class="p">,</span> <span class="s1">&#39;vary&#39;</span> <span class="k">if</span> <span class="n">only</span> <span class="n">varies</span> <span class="k">for</span> <span class="n">step</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">False</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">varies</span> <span class="n">during</span> <span class="n">fit</span>
+</pre></div>
+</div>
+<p>if None : Generate by generation_param_fit</p>
+</li>
+<li><p class="first"><strong>inde_vars</strong> (<em>dic, optional(default=None)</em>) – independent variable dictionary of fit
+if None : Generate by generation_param_fit</p>
+</li>
+<li><p class="first"><strong>before_sacc</strong> (<em>int, optional(default=5)</em>) – time to remove before saccades, it is advisable to put : 5 for ‘fct_velocity’ and ‘fct_position’, 0 for ‘fct_saccade’</p>
+</li>
+<li><p class="first"><strong>after_sacc</strong> (<em>int, optional(default=15)</em>) – time to delete after saccades, it is advisable to put 15</p>
+</li>
+<li><p class="first"><strong>stop_search_misac</strong> (<em>int, optional(default=None)</em>) – stop search of micro_saccade
+if None : stops searching at the end of fixation + 100ms</p>
+</li>
+<li><p class="first"><strong>filt</strong> (<em>str, optional(default=False)</em>) –</p>
+<p>to filter the data can be :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="s1">&#39;position&#39;</span> <span class="n">to</span> <span class="nb">filter</span> <span class="n">the</span> <span class="n">position</span><span class="p">,</span>
+<span class="o">-</span> <span class="s1">&#39;velocity&#39;</span> <span class="n">to</span> <span class="nb">filter</span> <span class="n">the</span> <span class="n">speed</span><span class="p">,</span>
+<span class="o">-</span> <span class="s1">&#39;velocity-position&#39;</span> <span class="n">to</span> <span class="nb">filter</span> <span class="n">the</span> <span class="n">position</span> <span class="n">then</span> <span class="n">the</span> <span class="n">speed</span>
+</pre></div>
+</div>
+<p>if None the data will not be filtered</p>
+</li>
+<li><p class="first"><strong>cutoff</strong> (<em>int, optional(default=30)</em>) – the critical frequencies for cutoff of filter, must be defined if filt is not None</p>
+</li>
+<li><p class="first"><strong>sample_rate</strong> (<em>int, optional(default=1000)</em>) – sampling rate of the recording for the filtre, must be defined if filt is not None</p>
+</li>
+<li><p class="first"><strong>plot</strong> (<em>bool, optional(default=None)</em>) – if true : save the figure in file_fig</p>
+</li>
+<li><p class="first"><strong>file_fig</strong> (<em>str, optional(default=None)</em>) – name of file figure reccorded
+if None file_fig is ‘Fit’</p>
+</li>
+<li><p class="first"><strong>show_target</strong> (<em>bool, optional(default=False)</em>) – if true : show the target on the plot</p>
+</li>
+<li><p class="first"><strong>fig_width</strong> (<em>int, optional(default=12)</em>) – figure size</p>
+</li>
+<li><p class="first"><strong>t_label</strong> (<em>int, optional(default=20)</em>) – size x and y label</p>
+</li>
+<li><p class="first"><strong>t_text</strong> (<em>int, optional(default=14)</em>) – size of the text of the figure</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>param</strong> (<em>dict</em>) – each parameter are ordered : [block][trial]</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="Equation.html" title="Previous document">Equation</a>
+        </li>
+        <li>
+          <a href="Plot.html" title="Next document">Plot</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      
+      
+      
+      <a href="_sources/Fit.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/invibe/ANEMO" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
