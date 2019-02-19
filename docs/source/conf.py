@@ -111,23 +111,6 @@ html_theme_options = {
     'sidebar_header': '#4D4D4D',
     'sidebar_link': '#7F7F7F',}
 
-'''
-
-    #'link_hover': '#FF0000',
-    #'link': '#820000',
-    'font_size': '10',
-    'code_font_size': '0.9em',
-    'body_text': '#493F3E',
-    'link_hover': '#6D0A00',
-    'link': '#6B0500',
-    'viewcode_target_bg': '#7F7F7F', #'#ffd',
-    'code_bg':  '#ecf0f3',
-    'code_text': '#4D4D4D',
-    'code_hover': '#800080',
-    'code_highlight': '#FFCCCC',
-}
-
-'''
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
