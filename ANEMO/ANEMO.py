@@ -2806,9 +2806,11 @@ class ANEMO(object):
 
             list_param_enre : list, optional(default=None)
                 list of fit parameters to record
-                if None :
+                if None ::
+
                     if equation in ['fct_velocity', 'fct_position'] : ['fit', 'start_anti', 'v_anti', 'latence', 'tau', 'maxi', 'saccades', 'old_anti', 'old_max', 'old_latence']
                     if equation is 'fct_saccades' : ['fit', 'T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2', 'tau']
+
             inde_vars : dic, optional(default=None)
                 independent variable dictionary of fit
                 if None : Generate by generation_param_fit
