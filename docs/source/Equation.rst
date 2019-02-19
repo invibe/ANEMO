@@ -7,25 +7,30 @@ fct_velocity
 ------------
 .. autofunction :: ANEMO.ANEMO.ANEMO.Equation.fct_velocity
 
+.. raw:: html
+
+    <div style="margin-top:10px;">
+      <iframe width="150%" height="700" src="_static/Fct_velocity.html" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+
 fct_position
 ------------
 .. autofunction :: ANEMO.ANEMO.ANEMO.Equation.fct_position
+
+.. raw:: html
+
+    <div style="margin-top:10px;">
+      <iframe width="150%" height="700" src="_static/Fct_position.html" frameborder="0" allowfullscreen></iframe>
+    </div>
+
 
 fct_saccade
 -----------
 .. autofunction :: ANEMO.ANEMO.ANEMO.Equation.fct_saccade
 
-DEMO
-----
-Fct_velocity_
+.. raw:: html
 
-Fct_position_
-
-Fct_saccade_
-
-.. _Fct_velocity: Fct_velocity.html
-.. _Fct_position: Fct_position.html
-.. _Fct_saccade: Fct_saccade.html
-
-
-
+    <div style="margin-top:10px;">
+      <iframe width="150%" height="700" src="_static/Fct_saccade.html" frameborder="0" allowfullscreen></iframe>
+    </div>
