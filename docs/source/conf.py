@@ -52,6 +52,9 @@ extensions = [
     'sphinx.ext.autosectionlabel'
 ]
 
+def setup(app):
+    app.add_stylesheet('custom.css')
+
 napoleon_use_param=False
 napoleon_use_rtype=False
 
@@ -99,16 +102,20 @@ html_theme_options = {
     'github_user': 'invibe',
     'github_repo': 'ANEMO',
     'github_banner': True,
-    'font_family': 'Latin Modern Sans', #'Latin Modern Sans Quotation',
-    'fixed_sidebar':True,
+    'font_family': 'Open Sans', #'Latin Modern Sans', #'Latin Modern Sans Quotation',
+    'fixed_sidebar': True,
     'github_button': False,
     'show_relbars': True,
+    'page_width': 'auto',
+    'sidebar_width': '300px',
     'link_hover': '#FF0000',
     'link': '#6B0500',
     'code_text': '#550D09',
     'code_bg': '#FFFFFF',
     'sidebar_header': '#4D4D4D',
-    'sidebar_link': '#7F7F7F',}
+    'sidebar_link': '#7F7F7F',
+    'page_width': '700px',
+    }
 
 
 # Add any paths that contain custom static files (such as style sheets) here,
