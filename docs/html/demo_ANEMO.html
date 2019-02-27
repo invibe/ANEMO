@@ -1,0 +1,1406 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>The parameters of the experiment &#8212; ANEMO 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ANEMO" href="ANEMO_doc.html" />
+    <link rel="prev" title="Tutorial" href="Tutorial.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ANEMO</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=invibe&repo=ANEMO&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="Tutorial.html">Tutorial</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">The parameters of the experiment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#obligatory">obligatory</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#N_trials">N_trials</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#N_blocks">N_blocks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#&nbsp;dir_target">&nbsp;dir_target</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#px_per_deg">px_per_deg</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Optional">Optional</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#observer">observer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list_events">list_events</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#V_X_deg">V_X_deg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#stim_tau">stim_tau</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#RashBass">RashBass</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Retrieving-the-data">Retrieving the data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Data">Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#velocity">velocity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#position">position</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#saccade">saccade</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Equation">Equation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#velocity">velocity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#position">position</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#saccade">saccade</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Fit">Fit</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#velocity">velocity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#position">position</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#saccade">saccade</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Full">Full</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Retrieving-the-parameters">Retrieving the parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ANEMO_doc.html">ANEMO</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="Tutorial.html">Tutorial</a><ul>
+      <li>Previous: <a href="Tutorial.html" title="previous chapter">Tutorial</a></li>
+      <li>Next: <a href="ANEMO_doc.html" title="next chapter">ANEMO</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="Tutorial.html" title="Previous document">Tutorial</a>
+        </li>
+        <li>
+          <a href="ANEMO_doc.html" title="Next document">ANEMO</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 5ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<p>ANEMO allows you to perform Fits on data of Smooth Pursuite Eyes Movements. You could use the functions ‘velocity’, ‘position’ and ‘saccades’ already present, but also your own functions. It must be initialized with the parameters of the experiment :</p>
+<div class="section" id="The-parameters-of-the-experiment">
+<h1>The parameters of the experiment<a class="headerlink" href="#The-parameters-of-the-experiment" title="Permalink to this headline">¶</a></h1>
+<p><strong>param_exp</strong> is dictionary containing the parameters of the experiment</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pickle</span>
+
+<span class="n">expfile</span> <span class="o">=</span> <span class="s1">&#39;data/enregistrement_AM_2017-10-23_100057.pkl&#39;</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">expfile</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fichier</span> <span class="p">:</span>
+    <span class="n">param_exp</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fichier</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;latin1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="obligatory">
+<h2>obligatory<a class="headerlink" href="#obligatory" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="N_trials">
+<h3>N_trials<a class="headerlink" href="#N_trials" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">param_exp['N_trials']</span></code> (int) - number of trials per block</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;N_trials&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>200
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="N_blocks">
+<h3>N_blocks<a class="headerlink" href="#N_blocks" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">param_exp['N_blocks']</span></code> (int) - number of blocks</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;N_blocks&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>3
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="&nbsp;dir_target">
+<h3>&nbsp;dir_target<a class="headerlink" href="# dir_target" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">param_exp['dir_target']</span></code> (list(list(int))) - list of lists for each block containing the direction of the target for each trial</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#the direction of the target is to -1 for left 1 for right</span>
+<span class="n">dir_target</span> <span class="o">=</span> <span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;dir_target&#39;</span><span class="p">][</span><span class="n">block</span><span class="p">][</span><span class="n">trial</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>or <code class="docutils literal notranslate"><span class="pre">param_exp[‘p’]</span></code> (ndarray) - ndarray containing for each trial of each block the direction of the target, its probability of direction and the switches of this probability:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># the direction of the target is to 0 for left 1 for right</span>
+<span class="n">dir_target</span> <span class="o">=</span> <span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">][</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">proba</span> <span class="o">=</span> <span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">][</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">switch</span> <span class="o">=</span> <span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">][</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;N_blocks&#39;</span><span class="p">])</span> <span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Block </span><span class="si">%s</span><span class="s1"> :&#39;</span><span class="o">%</span><span class="k">block</span>, end=&#39; &#39;)
+    <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;N_trials&#39;</span><span class="p">])</span> <span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">][</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;  &#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Block 0 : 0.0  1.0  1.0  0.0  1.0  0.0  0.0  1.0  0.0  0.0  1.0  1.0  0.0  1.0  1.0  1.0  0.0  1.0  1.0  0.0  1.0  1.0  0.0  0.0  0.0  1.0  1.0  1.0  1.0  0.0  1.0  1.0  1.0  1.0  0.0  0.0  0.0  0.0  1.0  1.0  1.0  1.0  0.0  0.0  1.0  1.0  1.0  1.0  0.0  1.0  1.0  1.0  1.0  0.0  0.0  0.0  0.0  0.0  0.0  1.0  0.0  0.0  0.0  0.0  1.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  1.0  0.0  0.0  1.0  1.0  0.0  1.0  1.0  0.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  0.0  1.0  1.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  1.0  0.0  0.0  0.0  1.0  1.0  0.0  0.0  0.0  1.0  0.0  0.0  1.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  1.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  1.0  0.0  0.0  1.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  0.0  1.0  0.0  0.0  1.0  0.0  0.0  0.0  0.0  1.0  0.0  1.0  1.0
+Block 1 : 1.0  0.0  1.0  1.0  0.0  1.0  0.0  0.0  1.0  0.0  0.0  1.0  0.0  0.0  0.0  0.0  0.0  1.0  0.0  1.0  0.0  0.0  0.0  1.0  0.0  0.0  0.0  1.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  1.0  0.0  1.0  1.0  1.0  1.0  0.0  1.0  1.0  1.0  0.0  1.0  1.0  0.0  1.0  1.0  0.0  1.0  1.0  1.0  0.0  0.0  1.0  0.0  1.0  0.0  1.0  1.0  1.0  1.0  0.0  0.0  1.0  0.0  0.0  1.0  0.0  0.0  0.0  1.0  1.0  1.0  0.0  1.0  0.0  0.0  1.0  1.0  0.0  1.0  0.0  1.0  1.0  0.0  0.0  1.0  1.0  1.0
+Block 2 : 1.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  1.0  0.0  1.0  1.0  1.0  1.0  0.0  0.0  0.0  1.0  1.0  1.0  1.0  0.0  1.0  1.0  1.0  0.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  0.0  1.0  0.0  0.0  1.0  1.0  1.0  0.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  0.0  0.0  1.0  1.0  1.0  0.0  0.0  1.0  0.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  0.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  0.0  1.0  1.0  1.0  1.0  1.0  0.0  1.0  0.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  0.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  0.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  0.0  1.0  1.0  1.0  1.0  1.0  1.0  0.0  1.0  0.0  0.0  1.0  0.0  0.0  1.0  0.0  1.0  0.0  1.0  0.0  1.0  0.0  1.0  1.0  0.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="px_per_deg">
+<h3>px_per_deg<a class="headerlink" href="#px_per_deg" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">param_exp['px_per_deg']</span></code> (float) - number of px per degree for the experiment</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;px_per_deg&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>36.51807384230632
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Optional">
+<h2>Optional<a class="headerlink" href="#Optional" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="observer">
+<h3>observer<a class="headerlink" href="#observer" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">param_exp['observer']</span></code> (str, optional) - subject name</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;observer&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>&#39;AM&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="list_events">
+<h3>list_events<a class="headerlink" href="#list_events" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">param_exp['list_events']</span></code> (list, optional) - list of the names of the events of the trial</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">&#39;onset fixation&#39;</span><span class="p">,</span> <span class="s1">&#39;end fixation&#39;</span><span class="p">,</span> <span class="s1">&#39;start pursuit&#39;</span><span class="p">,</span> <span class="s1">&#39;end pursuit&#39;</span><span class="p">]</span>
+
+<span class="n">by</span> <span class="n">default</span> <span class="p">:</span>
+    <span class="p">[</span><span class="s1">&#39;StimulusOn</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;StimulusOff</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;TargetOn</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;TargetOff</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="V_X_deg">
+<h3>V_X_deg<a class="headerlink" href="#V_X_deg" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">param_exp['V_X_deg']</span></code> (float, optional) - target velocity in deg/s</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;V_X_deg&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>15
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="stim_tau">
+<h3>stim_tau<a class="headerlink" href="#stim_tau" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">param_exp['stim_tau']</span></code> (float, optional) - presentation time of the target</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;stim_tau&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>0.75
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="RashBass">
+<h3>RashBass<a class="headerlink" href="#RashBass" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">param_exp['RashBass']</span></code> (int, optional) - the time the target has to arrive at the center of the screen in ms, to move the target back to t=0 of its <code class="docutils literal notranslate"><span class="pre">RashBass</span> <span class="pre">=</span> <span class="pre">velocity*latency</span></code></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;RashBass&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>100
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Retrieving-the-data">
+<h1>Retrieving the data<a class="headerlink" href="#Retrieving-the-data" title="Permalink to this headline">¶</a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">ANEMO</span> <span class="k">import</span> <span class="n">read_edf</span>
+</pre></div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">read_edf(filename,</span> <span class="pre">start,</span> <span class="pre">stop=None,</span> <span class="pre">missing=0.0,</span> <span class="pre">debug=False)</span></code></p>
+<p>Does not actually read EDFs directly, but the ASC files that are produced by edf2asc (SR Research). Information on saccades, fixations and blinks is read from the EDF, therefore based on SR Research algorithms.</p>
+<p>Returns a list with dicts for every trial. A trial dict contains the following keys:</p>
+<ul class="simple">
+<li><strong>x</strong> - numpy array of x positions</li>
+<li><strong>y</strong> - numpy array of y positions</li>
+<li><strong>size</strong> - numpy array of pupil size</li>
+<li><strong>time</strong> - numpy array of timestamps, t=0 at trialstart</li>
+<li><strong>trackertime</strong> - numpy array of timestamps, according to EDF</li>
+<li><strong>events</strong> - dict with the following keys:<ul>
+<li><strong>Sfix</strong> - list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[starttime]</span></code></li>
+<li><strong>Ssac</strong> - list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[starttime]</span></code></li>
+<li><strong>Sblk</strong> - list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[starttime]</span></code></li>
+<li><strong>Efix</strong> - list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[starttime,</span> <span class="pre">endtime,</span> <span class="pre">duration,</span> <span class="pre">endx,</span> <span class="pre">endy]</span></code></li>
+<li><strong>Esac</strong> - list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[starttime,</span> <span class="pre">endtime,</span> <span class="pre">duration,</span> <span class="pre">startx,</span> <span class="pre">starty,</span> <span class="pre">endx,</span> <span class="pre">endy]</span></code></li>
+<li><strong>Eblk</strong> - list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[starttime,</span> <span class="pre">endtime,</span> <span class="pre">duration]</span></code></li>
+<li><strong>msg</strong> - list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[time,</span> <span class="pre">message]</span></code></li>
+</ul>
+</li>
+</ul>
+<p><strong>NOTE :</strong> timing is in EDF time!</p>
+<p><strong>arguments :</strong> - filename - path to the file that has to be read - start - trial start string</p>
+<p><strong>keyword arguments:</strong> - stop - trial ending string (default = None) - missing - value to be used for missing data (default = 0.0) - debug - Boolean indicating if DEBUG mode should be on or off; if DEBUG mode is on, information on what the script currently is doing will be printed to the console (default = False)</p>
+<p><strong>returns :</strong> - data - a list with a dict for every trial (see above)</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">datafile</span> <span class="o">=</span> <span class="s1">&#39;data/enregistrement_AM_2017-10-23_100057.asc&#39;</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">read_edf</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="s1">&#39;TRIALID&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Data">
+<h1>Data<a class="headerlink" href="#Data" title="Permalink to this headline">¶</a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">ANEMO</span> <span class="k">import</span> <span class="n">ANEMO</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Plot</span> <span class="o">=</span> <span class="n">ANEMO</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="n">param_exp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># number of the block and trial that you want to display</span>
+<span class="n">block</span><span class="p">,</span> <span class="n">trial</span>  <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># display the first ten trials</span>
+<span class="n">data1</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="velocity">
+<h2>velocity<a class="headerlink" href="#velocity" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1"># Raw Data</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_data</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="s1">&#39;velocity&#39;</span><span class="p">,</span>
+                          <span class="n">trials</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span>
+                          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Eye Movement raw data&#39;</span><span class="p">)</span>
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1"># Data filtered</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<span class="c1"># on the position</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_data</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="s1">&#39;velocity&#39;</span><span class="p">,</span>
+                          <span class="n">trials</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span>
+                          <span class="n">filt</span><span class="o">=</span><span class="s1">&#39;position&#39;</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Eye Movement Filter on position&#39;</span><span class="p">)</span>
+
+<span class="c1"># on the velocity</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_data</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="s1">&#39;velocity&#39;</span><span class="p">,</span>
+                          <span class="n">trials</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span>
+                          <span class="n">filt</span><span class="o">=</span><span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Eye Movement Filter on velocity&#39;</span><span class="p">)</span>
+
+<span class="c1"># on the position and the velocity</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_data</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="s1">&#39;velocity&#39;</span><span class="p">,</span>
+                          <span class="n">trials</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span>
+                          <span class="n">filt</span><span class="o">=</span><span class="s1">&#39;velocity-position&#39;</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Eye Movement Filter on position and velocity&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_ANEMO_33_0.png" src="_images/demo_ANEMO_33_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_ANEMO_33_1.png" src="_images/demo_ANEMO_33_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_ANEMO_33_2.png" src="_images/demo_ANEMO_33_2.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_ANEMO_33_3.png" src="_images/demo_ANEMO_33_3.png" />
+</div>
+</div>
+</div>
+<div class="section" id="position">
+<h2>position<a class="headerlink" href="#position" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Raw Data</span>
+<span class="c1">#----------------------------------------------------------------------</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_data</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="s1">&#39;position&#39;</span><span class="p">,</span>
+                          <span class="n">trials</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span>
+                          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Eye Position raw data&#39;</span><span class="p">)</span>
+
+<span class="c1"># Data filtered on the position</span>
+<span class="c1">#----------------------------------------------------------------------</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_data</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="s1">&#39;position&#39;</span><span class="p">,</span>
+                          <span class="n">trials</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span>
+                          <span class="n">filt</span><span class="o">=</span><span class="s1">&#39;position&#39;</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Eye Position Filter on position&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_ANEMO_35_0.png" src="_images/demo_ANEMO_35_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_ANEMO_35_1.png" src="_images/demo_ANEMO_35_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="saccade">
+<h2>saccade<a class="headerlink" href="#saccade" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Raw Data</span>
+<span class="c1">#----------------------------------------------------------------------</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_data</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="s1">&#39;saccade&#39;</span><span class="p">,</span>
+                          <span class="n">trials</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span>
+                          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Eye Position raw data&#39;</span><span class="p">)</span>
+
+<span class="c1"># Data filtered on the position</span>
+<span class="c1">#----------------------------------------------------------------------</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_data</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="s1">&#39;saccade&#39;</span><span class="p">,</span>
+                          <span class="n">trials</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span>
+                          <span class="n">filt</span><span class="o">=</span><span class="s1">&#39;position&#39;</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Eye Position Filter on position&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_ANEMO_37_0.png" src="_images/demo_ANEMO_37_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_ANEMO_37_1.png" src="_images/demo_ANEMO_37_1.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Equation">
+<h1>Equation<a class="headerlink" href="#Equation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="velocity">
+<h2>velocity<a class="headerlink" href="#velocity" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_equation</span><span class="p">(</span><span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_velocity&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_ANEMO_40_0.png" src="_images/demo_ANEMO_40_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="position">
+<h2>position<a class="headerlink" href="#position" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_equation</span><span class="p">(</span><span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_position&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_ANEMO_42_0.png" src="_images/demo_ANEMO_42_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="saccade">
+<h2>saccade<a class="headerlink" href="#saccade" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_equation</span><span class="p">(</span><span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_saccade&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_ANEMO_44_0.png" src="_images/demo_ANEMO_44_0.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Fit">
+<h1>Fit<a class="headerlink" href="#Fit" title="Permalink to this headline">¶</a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Fit</span> <span class="o">=</span> <span class="n">ANEMO</span><span class="o">.</span><span class="n">Fit</span><span class="p">(</span><span class="n">param_exp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="velocity">
+<h2>velocity<a class="headerlink" href="#velocity" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1">#------------------------------------------------------------------------------</span>
+<span class="c1"># Raw Data</span>
+<span class="c1">#------------------------------------------------------------------------------</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_velocity&#39;</span><span class="p">,</span>
+                         <span class="n">trials</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span>
+                         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Velocity Fit raw data&#39;</span><span class="p">)</span>
+
+<span class="c1">#------------------------------------------------------------------------------</span>
+<span class="c1"># Data filtered</span>
+<span class="c1">#------------------------------------------------------------------------------</span>
+
+<span class="c1"># on the position</span>
+<span class="c1">#------------------------------------------------------------------------------</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_velocity&#39;</span><span class="p">,</span>
+                         <span class="n">trials</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span>
+                         <span class="n">filt</span><span class="o">=</span><span class="s1">&#39;position&#39;</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Velocity Fit Filter on position&#39;</span><span class="p">)</span>
+
+<span class="c1"># on the velocity</span>
+<span class="c1">#------------------------------------------------------------------------------</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_velocity&#39;</span><span class="p">,</span>
+                         <span class="n">trials</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span>
+                         <span class="n">filt</span><span class="o">=</span><span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Velocity Fit Filter on velocity&#39;</span><span class="p">)</span>
+
+<span class="c1"># on the position and the velocity</span>
+<span class="c1">#------------------------------------------------------------------------------</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_velocity&#39;</span><span class="p">,</span>
+                         <span class="n">trials</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span>
+                         <span class="n">filt</span><span class="o">=</span><span class="s1">&#39;velocity-position&#39;</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Velocity Fit Filter on position and velocity&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_ANEMO_48_0.png" src="_images/demo_ANEMO_48_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_ANEMO_48_1.png" src="_images/demo_ANEMO_48_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_ANEMO_48_2.png" src="_images/demo_ANEMO_48_2.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_ANEMO_48_3.png" src="_images/demo_ANEMO_48_3.png" />
+</div>
+</div>
+</div>
+<div class="section" id="position">
+<h2>position<a class="headerlink" href="#position" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Raw Data</span>
+<span class="c1">#---------------------------------------------------------------------</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_position&#39;</span><span class="p">,</span>
+                         <span class="n">trials</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span>
+                         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Position Fit raw data&#39;</span><span class="p">)</span>
+
+<span class="c1"># Data filtered on the position</span>
+<span class="c1">#---------------------------------------------------------------------</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_position&#39;</span><span class="p">,</span>
+                         <span class="n">trials</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span>
+                         <span class="n">filt</span><span class="o">=</span><span class="s1">&#39;position&#39;</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Position Fit Filter on position&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">KeyboardInterrupt</span>                         Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-24-e2acf4ecc1c9&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-intense-fg ansi-bold">     10</span>                          trials<span class="ansi-blue-fg">=</span>trial<span class="ansi-blue-fg">,</span> block<span class="ansi-blue-fg">=</span>block<span class="ansi-blue-fg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">     11</span>                          filt<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;position&#39;</span><span class="ansi-blue-fg">,</span> cutoff<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">30</span><span class="ansi-blue-fg">,</span> sample_rate<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">1000</span><span class="ansi-blue-fg">,</span>
+<span class="ansi-green-fg">---&gt; 12</span><span class="ansi-red-fg">                          title=&#39;Position Fit Filter on position&#39;)
+</span>
+<span class="ansi-green-fg">/usr/local/lib/python3.5/dist-packages/ANEMO-0.0.1-py3.5.egg/ANEMO/ANEMO.py</span> in <span class="ansi-cyan-fg">plot_fit</span><span class="ansi-blue-fg">(self, data, trials, block, fitted_data, equation, N_blocks, N_trials, time_sup, step_fit, do_whitening, list_param_enre, param_fit, inde_vars, before_sacc, after_sacc, stop_search_misac, filt, cutoff, sample_rate, show_target, show_num_trial, report, title, fig_width, t_titre, t_label, t_text)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2706</span>                     results<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span>result<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2707</span>                 <span class="ansi-green-fg">else</span> <span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">-&gt; 2708</span><span class="ansi-red-fg">                     </span>ax <span class="ansi-blue-fg">=</span> ANEMO<span class="ansi-blue-fg">.</span>Plot<span class="ansi-blue-fg">.</span>generate_fig<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>param_fct<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2709</span>                 x<span class="ansi-blue-fg">=</span>x<span class="ansi-blue-fg">+</span><span class="ansi-cyan-fg">1</span>
+<span class="ansi-green-intense-fg ansi-bold">   2710</span>
+
+<span class="ansi-green-fg">/usr/local/lib/python3.5/dist-packages/ANEMO-0.0.1-py3.5.egg/ANEMO/ANEMO.py</span> in <span class="ansi-cyan-fg">generate_fig</span><span class="ansi-blue-fg">(self, ax, data, trial, block, show, show_data, equation, N_blocks, N_trials, time_sup, step_fit, do_whitening, list_param_enre, param_fit, inde_vars, before_sacc, after_sacc, stop_search_misac, filt, cutoff, sample_rate, show_pos_sacc, plot_detail, show_target, show_num_trial, write_step_trial, title, c, fig, out, report, fig_width, t_label, t_text, **opt)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1976</span>                     old_latence<span class="ansi-blue-fg">,</span> old_max<span class="ansi-blue-fg">,</span> old_anti <span class="ansi-blue-fg">=</span> ANEMO<span class="ansi-blue-fg">.</span>classical_method<span class="ansi-blue-fg">.</span>Full<span class="ansi-blue-fg">(</span>velocity_NAN<span class="ansi-blue-fg">,</span> arg<span class="ansi-blue-fg">.</span>TargetOn<span class="ansi-blue-fg">-</span>arg<span class="ansi-blue-fg">.</span>t_0<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1977</span>
+<span class="ansi-green-fg">-&gt; 1978</span><span class="ansi-red-fg">                     </span>f <span class="ansi-blue-fg">=</span> ANEMO<span class="ansi-blue-fg">.</span>Fit<span class="ansi-blue-fg">.</span>Fit_trial<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> data_trial<span class="ansi-blue-fg">,</span> equation<span class="ansi-blue-fg">=</span>equation<span class="ansi-blue-fg">,</span> value_latence<span class="ansi-blue-fg">=</span>old_latence<span class="ansi-blue-fg">,</span> value_maxi<span class="ansi-blue-fg">=</span>old_max<span class="ansi-blue-fg">,</span> value_anti<span class="ansi-blue-fg">=</span>old_anti<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>opt<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1979</span>                     <span class="ansi-green-fg">for</span> name <span class="ansi-green-fg">in</span> list_param_enre <span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">   1980</span>                         <span class="ansi-green-fg">if</span> name <span class="ansi-green-fg">in</span> f<span class="ansi-blue-fg">.</span>values<span class="ansi-blue-fg">.</span>keys<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">/usr/local/lib/python3.5/dist-packages/ANEMO-0.0.1-py3.5.egg/ANEMO/ANEMO.py</span> in <span class="ansi-cyan-fg">Fit_trial</span><span class="ansi-blue-fg">(self, data_trial, equation, data_x, dir_target, trackertime, TargetOn, StimulusOf, saccades, time_sup, step_fit, do_whitening, param_fit, inde_vars, value_latence, value_maxi, value_anti, before_sacc, after_sacc, **opt)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1285</span>                         out<span class="ansi-blue-fg">.</span>params<span class="ansi-blue-fg">[</span>param_fit<span class="ansi-blue-fg">[</span>num_par<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;name&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">.</span>set<span class="ansi-blue-fg">(</span>vary<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">True</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1286</span>
+<span class="ansi-green-fg">-&gt; 1287</span><span class="ansi-red-fg">                 </span>result_deg <span class="ansi-blue-fg">=</span> model<span class="ansi-blue-fg">.</span>fit<span class="ansi-blue-fg">(</span>data_trial<span class="ansi-blue-fg">,</span> out<span class="ansi-blue-fg">.</span>params<span class="ansi-blue-fg">,</span> method<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;nelder&#39;</span><span class="ansi-blue-fg">,</span> nan_policy<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;omit&#39;</span><span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>inde_vars<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1288</span>
+<span class="ansi-green-intense-fg ansi-bold">   1289</span>             <span class="ansi-green-fg">return</span> result_deg
+
+<span class="ansi-green-fg">/home/drone/.local/lib/python3.5/site-packages/lmfit/model.py</span> in <span class="ansi-cyan-fg">fit</span><span class="ansi-blue-fg">(self, data, params, weights, method, iter_cb, scale_covar, verbose, fit_kws, nan_policy, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    871</span>                              scale_covar<span class="ansi-blue-fg">=</span>scale_covar<span class="ansi-blue-fg">,</span> fcn_kws<span class="ansi-blue-fg">=</span>kwargs<span class="ansi-blue-fg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    872</span>                              nan_policy=self.nan_policy, **fit_kws)
+<span class="ansi-green-fg">--&gt; 873</span><span class="ansi-red-fg">         </span>output<span class="ansi-blue-fg">.</span>fit<span class="ansi-blue-fg">(</span>data<span class="ansi-blue-fg">=</span>data<span class="ansi-blue-fg">,</span> weights<span class="ansi-blue-fg">=</span>weights<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    874</span>         output<span class="ansi-blue-fg">.</span>components <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>components
+<span class="ansi-green-intense-fg ansi-bold">    875</span>         <span class="ansi-green-fg">return</span> output
+
+<span class="ansi-green-fg">/home/drone/.local/lib/python3.5/site-packages/lmfit/model.py</span> in <span class="ansi-cyan-fg">fit</span><span class="ansi-blue-fg">(self, data, params, weights, method, nan_policy, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1215</span>         self<span class="ansi-blue-fg">.</span>userkws<span class="ansi-blue-fg">.</span>update<span class="ansi-blue-fg">(</span>kwargs<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1216</span>         self<span class="ansi-blue-fg">.</span>init_fit <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>model<span class="ansi-blue-fg">.</span>eval<span class="ansi-blue-fg">(</span>params<span class="ansi-blue-fg">=</span>self<span class="ansi-blue-fg">.</span>params<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>self<span class="ansi-blue-fg">.</span>userkws<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">-&gt; 1217</span><span class="ansi-red-fg">         </span>_ret <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>minimize<span class="ansi-blue-fg">(</span>method<span class="ansi-blue-fg">=</span>self<span class="ansi-blue-fg">.</span>method<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1218</span>
+<span class="ansi-green-intense-fg ansi-bold">   1219</span>         <span class="ansi-green-fg">for</span> attr <span class="ansi-green-fg">in</span> dir<span class="ansi-blue-fg">(</span>_ret<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">/home/drone/.local/lib/python3.5/site-packages/lmfit/minimizer.py</span> in <span class="ansi-cyan-fg">minimize</span><span class="ansi-blue-fg">(self, method, params, **kws)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1806</span>                         val.lower().startswith(user_method)):
+<span class="ansi-green-intense-fg ansi-bold">   1807</span>                     kwargs<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;method&#39;</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">=</span> val
+<span class="ansi-green-fg">-&gt; 1808</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">return</span> function<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1809</span>
+<span class="ansi-green-intense-fg ansi-bold">   1810</span>
+
+<span class="ansi-green-fg">/home/drone/.local/lib/python3.5/site-packages/lmfit/minimizer.py</span> in <span class="ansi-cyan-fg">scalar_minimize</span><span class="ansi-blue-fg">(self, method, params, **kws)</span>
+<span class="ansi-green-intense-fg ansi-bold">    784</span>         <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    785</span>             <span class="ansi-green-fg">try</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 786</span><span class="ansi-red-fg">                 </span>ret <span class="ansi-blue-fg">=</span> scipy_minimize<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>penalty<span class="ansi-blue-fg">,</span> variables<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>fmin_kws<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    787</span>             <span class="ansi-green-fg">except</span> AbortFitException<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    788</span>                 <span class="ansi-green-fg">pass</span>
+
+<span class="ansi-green-fg">/usr/local/lib/python3.5/dist-packages/scipy/optimize/_minimize.py</span> in <span class="ansi-cyan-fg">minimize</span><span class="ansi-blue-fg">(fun, x0, args, method, jac, hess, hessp, bounds, constraints, tol, callback, options)</span>
+<span class="ansi-green-intense-fg ansi-bold">    587</span>                       callback=callback, **options)
+<span class="ansi-green-intense-fg ansi-bold">    588</span>     <span class="ansi-green-fg">elif</span> meth <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;nelder-mead&#39;</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 589</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">return</span> _minimize_neldermead<span class="ansi-blue-fg">(</span>fun<span class="ansi-blue-fg">,</span> x0<span class="ansi-blue-fg">,</span> args<span class="ansi-blue-fg">,</span> callback<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>options<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    590</span>     <span class="ansi-green-fg">elif</span> meth <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;powell&#39;</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    591</span>         <span class="ansi-green-fg">return</span> _minimize_powell<span class="ansi-blue-fg">(</span>fun<span class="ansi-blue-fg">,</span> x0<span class="ansi-blue-fg">,</span> args<span class="ansi-blue-fg">,</span> callback<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>options<span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">/usr/local/lib/python3.5/dist-packages/scipy/optimize/optimize.py</span> in <span class="ansi-cyan-fg">_minimize_neldermead</span><span class="ansi-blue-fg">(func, x0, args, callback, maxiter, maxfev, disp, return_all, initial_simplex, xatol, fatol, adaptive, **unknown_options)</span>
+<span class="ansi-green-intense-fg ansi-bold">    573</span>         xbar <span class="ansi-blue-fg">=</span> numpy<span class="ansi-blue-fg">.</span>add<span class="ansi-blue-fg">.</span>reduce<span class="ansi-blue-fg">(</span>sim<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">-</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span> <span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">/</span> N
+<span class="ansi-green-intense-fg ansi-bold">    574</span>         xr <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">1</span> <span class="ansi-blue-fg">+</span> rho<span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">*</span> xbar <span class="ansi-blue-fg">-</span> rho <span class="ansi-blue-fg">*</span> sim<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">-</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span>
+<span class="ansi-green-fg">--&gt; 575</span><span class="ansi-red-fg">         </span>fxr <span class="ansi-blue-fg">=</span> func<span class="ansi-blue-fg">(</span>xr<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    576</span>         doshrink <span class="ansi-blue-fg">=</span> <span class="ansi-cyan-fg">0</span>
+<span class="ansi-green-intense-fg ansi-bold">    577</span>
+
+<span class="ansi-green-fg">/usr/local/lib/python3.5/dist-packages/scipy/optimize/optimize.py</span> in <span class="ansi-cyan-fg">function_wrapper</span><span class="ansi-blue-fg">(*wrapper_args)</span>
+<span class="ansi-green-intense-fg ansi-bold">    298</span>     <span class="ansi-green-fg">def</span> function_wrapper<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">*</span>wrapper_args<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    299</span>         ncalls<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">+=</span> <span class="ansi-cyan-fg">1</span>
+<span class="ansi-green-fg">--&gt; 300</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">return</span> function<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">*</span><span class="ansi-blue-fg">(</span>wrapper_args <span class="ansi-blue-fg">+</span> args<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    301</span>
+<span class="ansi-green-intense-fg ansi-bold">    302</span>     <span class="ansi-green-fg">return</span> ncalls<span class="ansi-blue-fg">,</span> function_wrapper
+
+<span class="ansi-green-fg">/home/drone/.local/lib/python3.5/site-packages/lmfit/minimizer.py</span> in <span class="ansi-cyan-fg">penalty</span><span class="ansi-blue-fg">(self, fvars)</span>
+<span class="ansi-green-intense-fg ansi-bold">    570</span>             apply_bounds_transformation <span class="ansi-blue-fg">=</span> <span class="ansi-green-fg">True</span>
+<span class="ansi-green-intense-fg ansi-bold">    571</span>
+<span class="ansi-green-fg">--&gt; 572</span><span class="ansi-red-fg">         </span>r <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>__residual<span class="ansi-blue-fg">(</span>fvars<span class="ansi-blue-fg">,</span> apply_bounds_transformation<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    573</span>         <span class="ansi-green-fg">if</span> isinstance<span class="ansi-blue-fg">(</span>r<span class="ansi-blue-fg">,</span> ndarray<span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">and</span> r<span class="ansi-blue-fg">.</span>size <span class="ansi-blue-fg">&gt;</span> <span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    574</span>             r <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>reduce_fcn<span class="ansi-blue-fg">(</span>r<span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">/home/drone/.local/lib/python3.5/site-packages/lmfit/minimizer.py</span> in <span class="ansi-cyan-fg">__residual</span><span class="ansi-blue-fg">(self, fvars, apply_bounds_transformation)</span>
+<span class="ansi-green-intense-fg ansi-bold">    502</span>         self<span class="ansi-blue-fg">.</span>result<span class="ansi-blue-fg">.</span>nfev <span class="ansi-blue-fg">+=</span> <span class="ansi-cyan-fg">1</span>
+<span class="ansi-green-intense-fg ansi-bold">    503</span>
+<span class="ansi-green-fg">--&gt; 504</span><span class="ansi-red-fg">         </span>out <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>userfcn<span class="ansi-blue-fg">(</span>params<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">*</span>self<span class="ansi-blue-fg">.</span>userargs<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>self<span class="ansi-blue-fg">.</span>userkws<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    505</span>
+<span class="ansi-green-intense-fg ansi-bold">    506</span>         <span class="ansi-green-fg">if</span> callable<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>iter_cb<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">/home/drone/.local/lib/python3.5/site-packages/lmfit/model.py</span> in <span class="ansi-cyan-fg">_residual</span><span class="ansi-blue-fg">(self, params, data, weights, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    622</span>
+<span class="ansi-green-intense-fg ansi-bold">    623</span>         &#34;&#34;&#34;
+<span class="ansi-green-fg">--&gt; 624</span><span class="ansi-red-fg">         </span>diff <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>eval<span class="ansi-blue-fg">(</span>params<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">-</span> data
+<span class="ansi-green-intense-fg ansi-bold">    625</span>
+<span class="ansi-green-intense-fg ansi-bold">    626</span>         <span class="ansi-green-fg">if</span> diff<span class="ansi-blue-fg">.</span>dtype <span class="ansi-blue-fg">==</span> np<span class="ansi-blue-fg">.</span>complex<span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">/home/drone/.local/lib/python3.5/site-packages/lmfit/model.py</span> in <span class="ansi-cyan-fg">eval</span><span class="ansi-blue-fg">(self, params, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    702</span>
+<span class="ansi-green-intense-fg ansi-bold">    703</span>         &#34;&#34;&#34;
+<span class="ansi-green-fg">--&gt; 704</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>func<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">**</span>self<span class="ansi-blue-fg">.</span>make_funcargs<span class="ansi-blue-fg">(</span>params<span class="ansi-blue-fg">,</span> kwargs<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    705</span>
+<span class="ansi-green-intense-fg ansi-bold">    706</span>     <span class="ansi-blue-fg">@</span>property
+
+<span class="ansi-green-fg">/usr/local/lib/python3.5/dist-packages/ANEMO-0.0.1-py3.5.egg/ANEMO/ANEMO.py</span> in <span class="ansi-cyan-fg">fct_position</span><span class="ansi-blue-fg">(x, data_x, saccades, nb_sacc, dir_target, start_anti, v_anti, latence, tau, maxi, t_0, px_per_deg, before_sacc, after_sacc, do_whitening)</span>
+<span class="ansi-green-intense-fg ansi-bold">    840</span>             maxi   <span class="ansi-blue-fg">=</span> maxi<span class="ansi-blue-fg">/</span>ms
+<span class="ansi-green-intense-fg ansi-bold">    841</span>
+<span class="ansi-green-fg">--&gt; 842</span><span class="ansi-red-fg">             </span>speed <span class="ansi-blue-fg">=</span> ANEMO<span class="ansi-blue-fg">.</span>Equation<span class="ansi-blue-fg">.</span>fct_velocity<span class="ansi-blue-fg">(</span>x<span class="ansi-blue-fg">=</span>x<span class="ansi-blue-fg">,</span> dir_target<span class="ansi-blue-fg">=</span>dir_target<span class="ansi-blue-fg">,</span> start_anti<span class="ansi-blue-fg">=</span>start_anti<span class="ansi-blue-fg">,</span> v_anti<span class="ansi-blue-fg">=</span>v_anti<span class="ansi-blue-fg">,</span> latence<span class="ansi-blue-fg">=</span>latence<span class="ansi-blue-fg">,</span> tau<span class="ansi-blue-fg">=</span>tau<span class="ansi-blue-fg">,</span> maxi<span class="ansi-blue-fg">=</span>maxi<span class="ansi-blue-fg">,</span> do_whitening<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">False</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    843</span>             pos <span class="ansi-blue-fg">=</span> np<span class="ansi-blue-fg">.</span>cumsum<span class="ansi-blue-fg">(</span>speed<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    844</span>
+
+<span class="ansi-green-fg">/usr/local/lib/python3.5/dist-packages/ANEMO-0.0.1-py3.5.egg/ANEMO/ANEMO.py</span> in <span class="ansi-cyan-fg">fct_velocity</span><span class="ansi-blue-fg">(x, dir_target, start_anti, v_anti, latence, tau, maxi, do_whitening)</span>
+<span class="ansi-green-intense-fg ansi-bold">    776</span>                         vitesse<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    777</span>                     <span class="ansi-green-fg">else</span> <span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 778</span><span class="ansi-red-fg">                         </span><span class="ansi-green-fg">if</span> time<span class="ansi-blue-fg">[</span>t<span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">&lt;</span> latence <span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    779</span>                             vitesse<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">(</span>time<span class="ansi-blue-fg">[</span>t<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">-</span>start_anti<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">*</span>v_anti<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    780</span>                             y <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">(</span>time<span class="ansi-blue-fg">[</span>t<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">-</span>start_anti<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">*</span>v_anti
+
+<span class="ansi-red-fg">KeyboardInterrupt</span>:
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_ANEMO_50_1.png" src="_images/demo_ANEMO_50_1.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_ANEMO_50_2.png" src="_images/demo_ANEMO_50_2.png" />
+</div>
+</div>
+</div>
+<div class="section" id="saccade">
+<h2>saccade<a class="headerlink" href="#saccade" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Raw Data</span>
+<span class="c1">#---------------------------------------------------------------------</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_saccade&#39;</span><span class="p">,</span>
+                         <span class="n">trials</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span>
+                         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Position Fit raw data&#39;</span><span class="p">)</span>
+
+<span class="c1"># Data filtered on the position</span>
+<span class="c1">#---------------------------------------------------------------------</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_saccade&#39;</span><span class="p">,</span>
+                         <span class="n">trials</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span>
+                         <span class="n">filt</span><span class="o">=</span><span class="s1">&#39;position&#39;</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Position Fit Filter on position&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Full">
+<h1>Full<a class="headerlink" href="#Full" title="Permalink to this headline">¶</a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># data divided into two blocks of 5 trials each</span>
+<span class="n">N_blocks</span><span class="p">,</span> <span class="n">N_trials</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">def</span> <span class="nf">Full</span><span class="p">(</span><span class="n">data_show</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Plot Full Data</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="mi">14</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">Plot</span><span class="o">.</span><span class="n">plot_Full_data</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data1</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">data_show</span><span class="p">,</span>
+                        <span class="n">N_blocks</span><span class="o">=</span><span class="n">N_blocks</span><span class="p">,</span> <span class="n">N_trials</span><span class="o">=</span><span class="n">N_trials</span><span class="p">,</span>
+                        <span class="n">file_fig</span><span class="o">=</span><span class="s1">&#39;_static/result/</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="k">data_show</span>)
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">figure data saved in _static/result/</span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span><span class="k">data_show</span>,
+          <span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="mi">50</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Plot Full Fit</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="mi">13</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">param</span> <span class="o">=</span> <span class="n">Fit</span><span class="o">.</span><span class="n">Fit_full</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data1</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="k">data_show</span>,
+                         <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                         <span class="n">N_blocks</span><span class="o">=</span><span class="n">N_blocks</span><span class="p">,</span> <span class="n">N_trials</span><span class="o">=</span><span class="n">N_trials</span><span class="p">,</span>
+                         <span class="n">filt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                         <span class="n">file_fig</span><span class="o">=</span><span class="s1">&#39;_static/result/Fit_</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="k">data_show</span>)
+
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">figure fit saved in _static/result/Fit_</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="k">data_show</span>)
+
+    <span class="c1"># saves the fit parameters</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;_static/result/param_Fit_</span><span class="si">%s</span><span class="s1">_AM.pkl&#39;</span><span class="o">%</span><span class="k">data_show</span>, &#39;wb&#39;) as fichier:
+        <span class="n">f</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">Pickler</span><span class="p">(</span><span class="n">fichier</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;param fit saved in _static/result/param_Fit_</span><span class="si">%s</span><span class="s1">_AM</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span><span class="k">data_show</span>,
+          <span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="mi">50</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Full</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Plot Full Data
+--------------
+
+block, trial =  0 0
+block, trial =  0 1
+block, trial =  1 0
+block, trial =  1 1
+
+figure data saved in _static/result/velocity
+--------------------------------------------------
+
+
+Plot Full Fit
+-------------
+
+block, trial =  0 0
+block, trial =  0 1
+block, trial =  1 0
+block, trial =  1 1
+
+figure fit saved in _static/result/Fit_velocity
+param fit saved in _static/result/param_Fit_velocity_AM
+--------------------------------------------------
+
+</pre></div></div>
+</div>
+ce qui donne :
+
+<iframe src="_static/result/velocity_2.pdf" width=auto height=auto></iframe><div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Full</span><span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">)</span>
+<span class="n">Full</span><span class="p">(</span><span class="s1">&#39;saccade&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Retrieving-the-parameters">
+<h1>Retrieving the parameters<a class="headerlink" href="#Retrieving-the-parameters" title="Permalink to this headline">¶</a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">def</span> <span class="nf">Retrieving_param</span><span class="p">(</span><span class="n">data_show</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;result/param_Fit_</span><span class="si">%s</span><span class="s1">_AM.pkl&#39;</span><span class="o">%</span><span class="k">data_show</span>, &#39;rb&#39;) as fichier :
+        <span class="n">param</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fichier</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;latin1&#39;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Param recorded</span><span class="se">\n</span><span class="s1">---------------</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">For the first trial</span><span class="se">\n</span><span class="s1">---------------</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">param</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;fit&#39;</span> <span class="ow">and</span> <span class="n">name</span><span class="o">!=</span><span class="s1">&#39;observer&#39;</span> <span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">param</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Retrieving_param</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Param recorded
+---------------
+
+dict_keys([&#39;old_anti&#39;, &#39;latence&#39;, &#39;fit&#39;, &#39;start_anti&#39;, &#39;old_latence&#39;, &#39;tau&#39;, &#39;old_max&#39;, &#39;maxi&#39;, &#39;v_anti&#39;, &#39;observer&#39;])
+
+For the first trial
+---------------
+
+old_anti = -3.286044070072851
+latence = 193.00000193919777
+start_anti = -62.34902432998274
+old_latence = nan
+tau = 72.24178510738794
+old_max = 15.093442067421275
+maxi = 14.658510885873559
+v_anti = -1.811887830063398
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Retrieving_param</span><span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Param recorded
+---------------
+
+dict_keys([&#39;old_anti&#39;, &#39;latence&#39;, &#39;fit&#39;, &#39;start_anti&#39;, &#39;old_latence&#39;, &#39;tau&#39;, &#39;old_max&#39;, &#39;maxi&#39;, &#39;v_anti&#39;, &#39;observer&#39;])
+
+For the first trial
+---------------
+
+old_anti = -3.286044070072851
+latence = 214.999999998543
+start_anti = -500.9999998929315
+old_latence = nan
+tau = 79.9999999838089
+old_max = 15.093442067421275
+maxi = 13.589068743210039
+v_anti = -0.8644675853667181
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Retrieving_param</span><span class="p">(</span><span class="s1">&#39;saccade&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Param recorded
+---------------
+
+dict_keys([&#39;observer&#39;, &#39;x1&#39;, &#39;T0&#39;, &#39;tau&#39;, &#39;t2&#39;, &#39;x_0&#39;, &#39;tr&#39;, &#39;fit&#39;, &#39;x2&#39;, &#39;t1&#39;])
+
+For the first trial
+---------------
+
+x1 = [0.5511798880079333, -3.8108508303072934, -2.4743874061130833, -1.5283121111871951]
+T0 = [1.1802896405148928, 8.192986532151906, 6.250646971678023, 3.546714860064135]
+tau = [14.362669972043989, 27.15075127566345, 17.65312776832085, 5.494692034910924]
+t2 = [11.070420107104905, 12.992243992733844, 10.012578595149208, 10.034011617461523]
+x_0 = [-0.12880606816552265, -0.22160360416736463, -4.014450505605895, -10.217275704455709]
+tr = [4.389951441838846, 0.0038193190626487072, 1.1785212663955997, 2.8482170174241124]
+x2 = [0.26429867842356636, -2.4104404690906653, -1.5019277523822971, -0.9723104486959242]
+t1 = [13.80368384554161, 19.34646634699066, 17.55825313325032, 17.57105648565289]
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="Tutorial.html" title="Previous document">Tutorial</a>
+        </li>
+        <li>
+          <a href="ANEMO_doc.html" title="Next document">ANEMO</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      
+      
+      
+      <a href="_sources/demo_ANEMO.ipynb.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/invibe/ANEMO" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

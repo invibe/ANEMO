@@ -18,7 +18,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Equation" href="Equation.html" />
-    <link rel="prev" title="ANEMO" href="ANEMO_doc.html" />
+    <link rel="prev" title="read_edf" href="read_edf.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -30,9 +30,27 @@
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h3><a href="index.html">Table of Contents</a></h3>
+<h1 class="logo"><a href="index.html">ANEMO</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=invibe&repo=ANEMO&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="ANEMO_doc.html">ANEMO</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="read_edf.html">read_edf</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">classical_method</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#latence">latence</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#maximum">maximum</a></li>
@@ -47,6 +65,37 @@
 </li>
 </ul>
 
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="ANEMO_doc.html">ANEMO</a><ul>
+      <li>Previous: <a href="read_edf.html" title="previous chapter">read_edf</a></li>
+      <li>Next: <a href="Equation.html" title="next chapter">Equation</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="documentwrapper">
@@ -57,7 +106,7 @@
     <ul>
         <li>
           &larr;
-          <a href="ANEMO_doc.html" title="Previous document">ANEMO</a>
+          <a href="read_edf.html" title="Previous document">read_edf</a>
         </li>
         <li>
           <a href="Equation.html" title="Next document">Equation</a>
@@ -92,10 +141,10 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>velocity_NAN</strong> (<em>ndarray</em>) – velocity of the eye in deg/sec without the saccades</li>
-<li><strong>w1</strong> (<em>int, optional(default=300)</em>) – size of the window 1 in ms</li>
-<li><strong>w2</strong> (<em>int, optional(default=50)</em>) – size of the window 2 in ms</li>
-<li><strong>off</strong> (<em>int, optional(default=50)</em>) – gap between the two windows</li>
-<li><strong>crit</strong> (<em>float, optional(default=0.17)</em>) – difference criterion between the two linregress detecting if the pursuit begins</li>
+<li><strong>w1</strong> (<em>int, optional(default 300)</em>) – size of the window 1 in ms</li>
+<li><strong>w2</strong> (<em>int, optional(default 50)</em>) – size of the window 2 in ms</li>
+<li><strong>off</strong> (<em>int, optional(default 50)</em>) – gap between the two windows</li>
+<li><strong>crit</strong> (<em>float, optional(default 0.17)</em>) – difference criterion between the two linregress detecting if the pursuit begins</li>
 </ul>
 </td>
 </tr>
@@ -176,10 +225,10 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>velocity_NAN</strong> (<em>ndarray</em>) – velocity of the eye in deg/sec without the saccades</li>
 <li><strong>TargetOn_0</strong> (<em>int</em>) – time since the beginning of the trial when the target to follow appears</li>
-<li><strong>w1</strong> (<em>int, optional(default=300)</em>) – size of the window 1 to detect latency in ms</li>
-<li><strong>w2</strong> (<em>int, optional(default=50)</em>) – size of the window 2 to detect latency in ms</li>
-<li><strong>off</strong> (<em>int, optional(default=50)</em>) – gap between the two windows to detect latency</li>
-<li><strong>crit</strong> (<em>float, optional(default=0.17)</em>) – difference criterion between the two linregress detecting if the pursuit begins to detect latency</li>
+<li><strong>w1</strong> (<em>int, optional(default 300)</em>) – size of the window 1 to detect latency in ms</li>
+<li><strong>w2</strong> (<em>int, optional(default 50)</em>) – size of the window 2 to detect latency in ms</li>
+<li><strong>off</strong> (<em>int, optional(default 50)</em>) – gap between the two windows to detect latency</li>
+<li><strong>crit</strong> (<em>float, optional(default 0.17)</em>) – difference criterion between the two linregress detecting if the pursuit begins to detect latency</li>
 </ul>
 </td>
 </tr>
@@ -206,7 +255,7 @@
     <ul>
         <li>
           &larr;
-          <a href="ANEMO_doc.html" title="Previous document">ANEMO</a>
+          <a href="read_edf.html" title="Previous document">read_edf</a>
         </li>
         <li>
           <a href="Equation.html" title="Next document">Equation</a>

@@ -1,0 +1,201 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Tutorial &#8212; ANEMO 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The parameters of the experiment" href="demo_ANEMO.html" />
+    <link rel="prev" title="Summary" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ANEMO</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=invibe&repo=ANEMO&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html">The parameters of the experiment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#Retrieving-the-data">Retrieving the data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#Data">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#Equation">Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#Fit">Fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#Full">Full</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#Retrieving-the-parameters">Retrieving the parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ANEMO_doc.html">ANEMO</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Summary</a></li>
+      <li>Next: <a href="demo_ANEMO.html" title="next chapter">The parameters of the experiment</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="index.html" title="Previous document">Summary</a>
+        </li>
+        <li>
+          <a href="demo_ANEMO.html" title="Next document">The parameters of the experiment</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="tutorial">
+<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="demo_ANEMO.html">The parameters of the experiment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#obligatory">obligatory</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demo_ANEMO.html#N_trials">N_trials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_ANEMO.html#N_blocks">N_blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_ANEMO.html#&nbsp;dir_target">&nbsp;dir_target</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_ANEMO.html#px_per_deg">px_per_deg</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#Optional">Optional</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demo_ANEMO.html#observer">observer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_ANEMO.html#list_events">list_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_ANEMO.html#V_X_deg">V_X_deg</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_ANEMO.html#stim_tau">stim_tau</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_ANEMO.html#RashBass">RashBass</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="demo_ANEMO.html#Retrieving-the-data">Retrieving the data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_ANEMO.html#Data">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#velocity">velocity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#position">position</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#saccade">saccade</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="demo_ANEMO.html#Equation">Equation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#velocity">velocity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#position">position</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#saccade">saccade</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="demo_ANEMO.html#Fit">Fit</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#velocity">velocity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#position">position</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#saccade">saccade</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="demo_ANEMO.html#Full">Full</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_ANEMO.html#Retrieving-the-parameters">Retrieving the parameters</a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="index.html" title="Previous document">Summary</a>
+        </li>
+        <li>
+          <a href="demo_ANEMO.html" title="Next document">The parameters of the experiment</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      
+      
+      
+      <a href="_sources/Tutorial.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/invibe/ANEMO" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

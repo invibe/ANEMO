@@ -6,6 +6,7 @@ ANEMO
     :members: arg, filter_data, data_deg, velocity_deg, detec_misac, supp_sacc, velocity_NAN
 
 .. toctree::
+   read_edf
    classical_method
    Equation
    Fit

@@ -48,6 +48,8 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
+    'nbsphinx',
+    #'numpydoc',
     'sphinx.ext.napoleon',
     'sphinx.ext.autosectionlabel'
 ]
@@ -80,7 +82,7 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
+exclude_patterns = ['_build', '**.ipynb_checkpoints']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'trac' # None
@@ -102,26 +104,28 @@ html_theme_options = {
     'github_user': 'invibe',
     'github_repo': 'ANEMO',
     'github_banner': True,
-    'font_family': 'Open Sans', #'Latin Modern Sans', #'Latin Modern Sans Quotation',
-    'fixed_sidebar': True,
-    'github_button': False,
+    'github_button': True,
+    'github_type': 'watch',
+    'github_count': False,
     'show_relbars': True,
-    'page_width': 'auto',
+
+    'fixed_sidebar': True,
     'sidebar_width': '300px',
+    'page_width': 'auto',
+    'font_family': 'Open Sans', #'Latin Modern Sans', #'Latin Modern Sans Quotation',
     'link_hover': '#FF0000',
     'link': '#6B0500',
     'code_text': '#550D09',
     'code_bg': '#FFFFFF',
     'sidebar_header': '#4D4D4D',
     'sidebar_link': '#7F7F7F',
-    'page_width': '700px',
     }
 
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ['_static', '../../demo']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -131,7 +135,7 @@ html_static_path = ['_static']
 # default: ``['localtoc.html', 'relations.html', 'sourcelink.html',
 # 'searchbox.html']``.
 #
-html_sidebars = {'**': ['globaltoc.html']}
+#html_sidebars = {'**': ['globaltoc.html','relations.html',  'searchbox.html']}
 html_show_copyright = False
 html_show_sphinx = False
 

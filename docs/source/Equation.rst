@@ -10,7 +10,7 @@ fct_velocity
 .. raw:: html
 
     <div style="margin-top:10px;">
-      <iframe width="150%" height="700" src="_static/Fct_velocity.html" frameborder="0" allowfullscreen></iframe>
+      <iframe width="100%" height="500" src="_static/Fct_velocity.html" frameborder="0" allowfullscreen></iframe>
     </div>
 
 
@@ -21,7 +21,7 @@ fct_position
 .. raw:: html
 
     <div style="margin-top:10px;">
-      <iframe width="150%" height="700" src="_static/Fct_position.html" frameborder="0" allowfullscreen></iframe>
+      <iframe width="100%" height="500" src="_static/Fct_position.html" frameborder="0" allowfullscreen></iframe>
     </div>
 
 
@@ -32,5 +32,5 @@ fct_saccade
 .. raw:: html
 
     <div style="margin-top:10px;">
-      <iframe width="150%" height="700" src="_static/Fct_saccade.html" frameborder="0" allowfullscreen></iframe>
+      <iframe width="100%" height="500" src="_static/Fct_saccade.html" frameborder="0" allowfullscreen></iframe>
     </div>

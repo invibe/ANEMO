@@ -1,0 +1,1015 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Retrieving the data &#8212; ANEMO 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ANEMO" href="ANEMO_doc.html" />
+    <link rel="prev" title="Summary" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ANEMO</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=invibe&repo=ANEMO&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Retrieving the data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#Demo">Demo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Demo-velocity">Demo velocity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Demo-position">Demo position</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Demo-saccade">Demo saccade</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#Retrieving-the-parameters">Retrieving the parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ANEMO_doc.html">ANEMO</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Summary</a></li>
+      <li>Next: <a href="ANEMO_doc.html" title="next chapter">ANEMO</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="index.html" title="Previous document">Summary</a>
+        </li>
+        <li>
+          <a href="ANEMO_doc.html" title="Next document">ANEMO</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 5ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">ANEMO</span> <span class="k">import</span> <span class="n">ANEMO</span>
+<span class="kn">from</span> <span class="nn">ANEMO</span> <span class="k">import</span> <span class="n">read_edf</span>
+
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+</div>
+</div>
+<div class="section" id="Retrieving-the-data">
+<h1>Retrieving the data<a class="headerlink" href="#Retrieving-the-data" title="Permalink to this headline">¶</a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">datafile</span> <span class="o">=</span> <span class="s1">&#39;../demo/data/enregistrement_AM_2017-10-23_100057.asc&#39;</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">read_edf</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="s1">&#39;TRIALID&#39;</span><span class="p">)</span>
+
+<span class="n">expfile</span> <span class="o">=</span> <span class="s1">&#39;data/enregistrement_AM_2017-10-23_100057.pkl&#39;</span>
+<span class="n">exp</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fichier</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;latin1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">Exception</span>                                 Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-2-8a590446c92e&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> datafile <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">&#39;../demo/data/enregistrement_AM_2017-10-23_100057.asc&#39;</span>
+<span class="ansi-green-fg">----&gt; 2</span><span class="ansi-red-fg"> </span>data <span class="ansi-blue-fg">=</span> read_edf<span class="ansi-blue-fg">(</span>datafile<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;TRIALID&#39;</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">      3</span>
+<span class="ansi-green-intense-fg ansi-bold">      4</span> expfile <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">&#39;data/enregistrement_AM_2017-10-23_100057.pkl&#39;</span>
+<span class="ansi-green-intense-fg ansi-bold">      5</span> exp <span class="ansi-blue-fg">=</span> pickle<span class="ansi-blue-fg">.</span>load<span class="ansi-blue-fg">(</span>fichier<span class="ansi-blue-fg">,</span> encoding<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;latin1&#39;</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">/usr/local/lib/python3.5/dist-packages/ANEMO-0.0.1-py3.5.egg/ANEMO/edfreader.py</span> in <span class="ansi-cyan-fg">read_edf</span><span class="ansi-blue-fg">(filename, start, stop, missing, debug)</span>
+<span class="ansi-green-intense-fg ansi-bold">    104</span>         <span class="ansi-red-fg"># raise exception if the file does not exist</span>
+<span class="ansi-green-intense-fg ansi-bold">    105</span>         <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 106</span><span class="ansi-red-fg">                 </span><span class="ansi-green-fg">raise</span> Exception<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;Error in read_edf: file &#39;%s&#39; does not exist&#34;</span> <span class="ansi-blue-fg">%</span> filename<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    107</span>
+<span class="ansi-green-intense-fg ansi-bold">    108</span>         <span class="ansi-red-fg"># read file contents</span>
+
+<span class="ansi-red-fg">Exception</span>: Error in read_edf: file &#39;../demo/data/enregistrement_AM_2017-10-23_100057.asc&#39; does not exist
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;V_X&#39;: 547.7711076345948, &#39;screen_width_px&#39;: 1280, &#39;timeStr&#39;: &#39;2017-10-23_100057&#39;, &#39;seed&#39;: 51, &#39;N_trials&#39;: 200, &#39;stim_tau&#39;: 0.75, &#39;N_blocks&#39;: 3, &#39;dot_size&#39;: 10, &#39;framerate&#39;: 60, &#39;screen&#39;: 0, &#39;age&#39;: &#39;44&#39;, &#39;mode&#39;: &#39;enregistrement&#39;, &#39;RashBass&#39;: 100, &#39;offset&#39;: 0, &#39;screen_height_px&#39;: 1024, &#39;datadir&#39;: &#39;data&#39;, &#39;V_X_deg&#39;: 15, &#39;saccade_px&#39;: 632.832, &#39;p&#39;: array([[[0.        , 0.64752352, 0.        ],
+        [1.        , 0.30908745, 0.        ],
+        [1.        , 0.0330713 , 0.        ]],
+
+       [[1.        , 0.64752352, 0.        ],
+        [0.        , 0.30908745, 0.        ],
+        [0.        , 0.0330713 , 0.        ]],
+
+       [[1.        , 0.64752352, 0.        ],
+        [1.        , 0.30908745, 0.        ],
+        [0.        , 0.0330713 , 0.        ]],
+
+       ...,
+
+       [[0.        , 0.1798759 , 0.        ],
+        [1.        , 0.61318065, 0.        ],
+        [0.        , 0.03527789, 0.        ]],
+
+       [[1.        , 0.1798759 , 0.        ],
+        [1.        , 0.61318065, 0.        ],
+        [0.        , 0.03527789, 0.        ]],
+
+       [[1.        , 0.1798759 , 0.        ],
+        [1.        , 0.61318065, 0.        ],
+        [0.        , 0.03527789, 0.        ]]]), &#39;cachedir&#39;: &#39;data_cache&#39;, &#39;N_frame_stim&#39;: 45, &#39;observer&#39;: &#39;AM&#39;, &#39;px_per_deg&#39;: 36.51807384230632, &#39;T&#39;: 0.75}
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Demo">
+<h1>Demo<a class="headerlink" href="#Demo" title="Permalink to this headline">¶</a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Plot</span> <span class="o">=</span> <span class="n">ANEMO</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+<span class="n">Fit</span> <span class="o">=</span> <span class="n">ANEMO</span><span class="o">.</span><span class="n">Fit</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">ANEMO</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+        Plot allows to display the data as well as their Fits.
+        You could use the functions &#39;velocity&#39;, &#39;position&#39; and &#39;saccades&#39; already present, but also your own functions.
+        It must be initialized with the parameters of the experiment
+        (see ANEMO .__ doc__ for more precisions on the parameters)
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">ANEMO</span><span class="o">.</span><span class="n">Fit</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+        Fit allows you to perform Fits on Smooth Pursuite Eyes Movements data.
+        You could use the functions &#39;velocity&#39;, &#39;position&#39; and &#39;saccades&#39; already present, but also your own functions.
+        It must be initialized with the parameters of the experiment
+        (see ANEMO .__ doc__ for more precisions on the parameters)
+
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># number of the trial and block that you want to display with plot_data and plot_fit</span>
+<span class="n">trial</span><span class="o">=</span><span class="mi">11</span>
+<span class="n">block</span><span class="o">=</span><span class="mi">1</span>
+
+<span class="c1"># for plot_Full_data and Fit_full</span>
+<span class="c1"># display the first ten trials divided into two blocks of 5 trials each</span>
+<span class="n">data1</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
+<span class="n">N_blocks</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">N_trials</span> <span class="o">=</span> <span class="mi">5</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">def</span> <span class="nf">demo</span><span class="p">(</span><span class="n">data_show</span><span class="p">):</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_equation</span><span class="p">(</span><span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="k">data_show</span>)
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_data</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">data_show</span><span class="p">,</span> <span class="n">trials</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="k">data_show</span>, trials=trial, block=block)
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Filtre sur la position :&#39;</span><span class="p">)</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="k">data_show</span>, trials=trial, block=block,
+                            <span class="n">filt</span><span class="o">=</span><span class="s1">&#39;position&#39;</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">data_show</span><span class="o">==</span><span class="s1">&#39;velocity&#39;</span> <span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Filtre sur la vitesse :&#39;</span><span class="p">)</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="k">data_show</span>, trials=trial, block=block,
+                                <span class="n">filt</span><span class="o">=</span><span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Filtre sur la position et la vitesse :&#39;</span><span class="p">)</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">Plot</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="k">data_show</span>, trials=trial, block=block,
+                                <span class="n">filt</span><span class="o">=</span><span class="s1">&#39;velocity-position&#39;</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Plot Full Data</span><span class="se">\n</span><span class="s1">---------------</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">Plot</span><span class="o">.</span><span class="n">plot_Full_data</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data1</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">data_show</span><span class="p">,</span> <span class="n">N_blocks</span><span class="o">=</span><span class="n">N_blocks</span><span class="p">,</span> <span class="n">N_trials</span><span class="o">=</span><span class="n">N_trials</span><span class="p">,</span>
+                    <span class="n">file_fig</span><span class="o">=</span><span class="s1">&#39;result/</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="k">data_show</span>)
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">figure data saved in result/</span><span class="si">%s</span><span class="se">\n</span><span class="s1">------------------------------</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span><span class="k">data_show</span>)
+
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Plot Full Fit</span><span class="se">\n</span><span class="s1">---------------</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">param</span> <span class="o">=</span> <span class="n">Fit</span><span class="o">.</span><span class="n">Fit_full</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data1</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="k">data_show</span>, plot=True,
+                         <span class="n">N_blocks</span><span class="o">=</span><span class="n">N_blocks</span><span class="p">,</span> <span class="n">N_trials</span><span class="o">=</span><span class="n">N_trials</span><span class="p">,</span> <span class="n">file_fig</span><span class="o">=</span><span class="s1">&#39;result/Fit_</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="k">data_show</span>)
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    # pour fitter sur des donnée Filtrée</span>
+<span class="sd">    param = Fit.Fit_full(data=data1, equation=&#39;fct_%s&#39;%data_show, plot=True,</span>
+<span class="sd">                         N_blocks=N_blocks, N_trials=N_trials, file_fig=&#39;result/Fit_filtre_%s&#39;%data_show,</span>
+<span class="sd">                         filt=&#39;velocity-position&#39;, cutoff=30, sample_rate=1000)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">figure fit saved in result/Fit_</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="k">data_show</span>)
+
+    <span class="c1"># saves the fit parameters</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;result/param_Fit_</span><span class="si">%s</span><span class="s1">_AM.pkl&#39;</span><span class="o">%</span><span class="k">data_show</span>, &#39;wb&#39;) as fichier:
+        <span class="n">f</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">Pickler</span><span class="p">(</span><span class="n">fichier</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;param fit saved in result/param_Fit_</span><span class="si">%s</span><span class="s1">_AM</span><span class="se">\n</span><span class="s1">------------------------------</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span><span class="k">data_show</span>)
+</pre></div>
+</div>
+</div>
+<div class="section" id="Demo-velocity">
+<h2>Demo velocity<a class="headerlink" href="#Demo-velocity" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">demo</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_11_0.png" src="_images/demo_11_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_11_1.png" src="_images/demo_11_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_11_2.png" src="_images/demo_11_2.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Filtre sur la position :
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_11_4.png" src="_images/demo_11_4.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Filtre sur la vitesse :
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_11_6.png" src="_images/demo_11_6.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Filtre sur la position et la vitesse :
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_11_8.png" src="_images/demo_11_8.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Plot Full Data
+---------------
+
+block, trial =  0 0
+block, trial =  0 1
+block, trial =  0 2
+block, trial =  0 3
+block, trial =  0 4
+block, trial =  1 0
+block, trial =  1 1
+block, trial =  1 2
+block, trial =  1 3
+block, trial =  1 4
+
+figure data saved in result/velocity
+------------------------------
+
+
+Plot Full Fit
+---------------
+
+block, trial =  0 0
+block, trial =  0 1
+block, trial =  0 2
+block, trial =  0 3
+block, trial =  0 4
+block, trial =  1 0
+block, trial =  1 1
+block, trial =  1 2
+block, trial =  1 3
+block, trial =  1 4
+
+figure fit saved in result/Fit_velocity
+param fit saved in result/param_Fit_velocity_AM
+------------------------------
+
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Demo-position">
+<h2>Demo position<a class="headerlink" href="#Demo-position" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">demo</span><span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_13_0.png" src="_images/demo_13_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_13_1.png" src="_images/demo_13_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_13_2.png" src="_images/demo_13_2.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Filtre sur la position :
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_13_4.png" src="_images/demo_13_4.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Plot Full Data
+---------------
+
+block, trial =  0 0
+block, trial =  0 1
+block, trial =  0 2
+block, trial =  0 3
+block, trial =  0 4
+block, trial =  1 0
+block, trial =  1 1
+block, trial =  1 2
+block, trial =  1 3
+block, trial =  1 4
+
+figure data saved in result/position
+------------------------------
+
+
+Plot Full Fit
+---------------
+
+block, trial =  0 0
+block, trial =  0 1
+block, trial =  0 2
+block, trial =  0 3
+block, trial =  0 4
+block, trial =  1 0
+block, trial =  1 1
+block, trial =  1 2
+block, trial =  1 3
+block, trial =  1 4
+
+figure fit saved in result/Fit_position
+param fit saved in result/param_Fit_position_AM
+------------------------------
+
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Demo-saccade">
+<h2>Demo saccade<a class="headerlink" href="#Demo-saccade" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">demo</span><span class="p">(</span><span class="s1">&#39;saccade&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_15_0.png" src="_images/demo_15_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_15_1.png" src="_images/demo_15_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_15_2.png" src="_images/demo_15_2.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Filtre sur la position :
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_15_4.png" src="_images/demo_15_4.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Plot Full Data
+---------------
+
+block, trial =  0 0
+block, trial =  0 1
+block, trial =  0 2
+block, trial =  0 3
+block, trial =  0 4
+block, trial =  1 0
+block, trial =  1 1
+block, trial =  1 2
+block, trial =  1 3
+block, trial =  1 4
+
+figure data saved in result/saccade
+------------------------------
+
+
+Plot Full Fit
+---------------
+
+block, trial =  0 0
+block, trial =  0 1
+block, trial =  0 2
+block, trial =  0 3
+block, trial =  0 4
+block, trial =  1 0
+block, trial =  1 1
+block, trial =  1 2
+block, trial =  1 3
+block, trial =  1 4
+
+figure fit saved in result/Fit_saccade
+param fit saved in result/param_Fit_saccade_AM
+------------------------------
+
+</pre></div></div>
+</div>
+</div>
+</div>
+<div class="section" id="Retrieving-the-parameters">
+<h1>Retrieving the parameters<a class="headerlink" href="#Retrieving-the-parameters" title="Permalink to this headline">¶</a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">def</span> <span class="nf">Retrieving_param</span><span class="p">(</span><span class="n">data_show</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;result/param_Fit_</span><span class="si">%s</span><span class="s1">_AM.pkl&#39;</span><span class="o">%</span><span class="k">data_show</span>, &#39;rb&#39;) as fichier :
+        <span class="n">param</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fichier</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;latin1&#39;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Param recorded</span><span class="se">\n</span><span class="s1">---------------</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">For the first trial</span><span class="se">\n</span><span class="s1">---------------</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">param</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;fit&#39;</span> <span class="ow">and</span> <span class="n">name</span><span class="o">!=</span><span class="s1">&#39;observer&#39;</span> <span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">param</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Retrieving_param</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Param recorded
+---------------
+
+dict_keys([&#39;old_anti&#39;, &#39;latence&#39;, &#39;fit&#39;, &#39;start_anti&#39;, &#39;old_latence&#39;, &#39;tau&#39;, &#39;old_max&#39;, &#39;maxi&#39;, &#39;v_anti&#39;, &#39;observer&#39;])
+
+For the first trial
+---------------
+
+old_anti = -3.286044070072851
+latence = 193.00000193919777
+start_anti = -62.34902432998274
+old_latence = nan
+tau = 72.24178510738794
+old_max = 15.093442067421275
+maxi = 14.658510885873559
+v_anti = -1.811887830063398
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Retrieving_param</span><span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Param recorded
+---------------
+
+dict_keys([&#39;old_anti&#39;, &#39;latence&#39;, &#39;fit&#39;, &#39;start_anti&#39;, &#39;old_latence&#39;, &#39;tau&#39;, &#39;old_max&#39;, &#39;maxi&#39;, &#39;v_anti&#39;, &#39;observer&#39;])
+
+For the first trial
+---------------
+
+old_anti = -3.286044070072851
+latence = 214.999999998543
+start_anti = -500.9999998929315
+old_latence = nan
+tau = 79.9999999838089
+old_max = 15.093442067421275
+maxi = 13.589068743210039
+v_anti = -0.8644675853667181
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Retrieving_param</span><span class="p">(</span><span class="s1">&#39;saccade&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Param recorded
+---------------
+
+dict_keys([&#39;observer&#39;, &#39;x1&#39;, &#39;T0&#39;, &#39;tau&#39;, &#39;t2&#39;, &#39;x_0&#39;, &#39;tr&#39;, &#39;fit&#39;, &#39;x2&#39;, &#39;t1&#39;])
+
+For the first trial
+---------------
+
+x1 = [0.5511798880079333, -3.8108508303072934, -2.4743874061130833, -1.5283121111871951]
+T0 = [1.1802896405148928, 8.192986532151906, 6.250646971678023, 3.546714860064135]
+tau = [14.362669972043989, 27.15075127566345, 17.65312776832085, 5.494692034910924]
+t2 = [11.070420107104905, 12.992243992733844, 10.012578595149208, 10.034011617461523]
+x_0 = [-0.12880606816552265, -0.22160360416736463, -4.014450505605895, -10.217275704455709]
+tr = [4.389951441838846, 0.0038193190626487072, 1.1785212663955997, 2.8482170174241124]
+x2 = [0.26429867842356636, -2.4104404690906653, -1.5019277523822971, -0.9723104486959242]
+t1 = [13.80368384554161, 19.34646634699066, 17.55825313325032, 17.57105648565289]
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="index.html" title="Previous document">Summary</a>
+        </li>
+        <li>
+          <a href="ANEMO_doc.html" title="Next document">ANEMO</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      
+      
+      
+      <a href="_sources/demo.ipynb.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/invibe/ANEMO" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

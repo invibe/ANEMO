@@ -8,3 +8,26 @@ body,h1,h2,h3,h4,h5,h5,h6,div.body h1, div.body h2, div.body h3, div.body h4, di
 div.body pre, div.body tt, div.body code {
     font-family: 'Source Code Pro', monospace!important;
 }
+
+div.document {
+    width: auto;
+    margin: 30px auto 0 auto;
+    max-width: 1024px;
+}
+
+div.body {
+    padding: 0 0 0 0;
+}
+
+nav#rellinks {
+    margin-right: 100px;
+}
+
+div.sphinxsidebar #searchbox form.search {
+    margin-right: 100px;
+}
+
+iframe[Attributes Style] {
+    width: auto;
+    height: 700px;
+}

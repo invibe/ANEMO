@@ -30,9 +30,27 @@
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h3><a href="index.html">Table of Contents</a></h3>
+<h1 class="logo"><a href="index.html">ANEMO</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=invibe&repo=ANEMO&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="ANEMO_doc.html">ANEMO</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="read_edf.html">read_edf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classical_method.html">classical_method</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Equation.html">Equation</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Fit</a><ul>
@@ -45,6 +63,37 @@
 </ul>
 </li>
 </ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="ANEMO_doc.html">ANEMO</a><ul>
+      <li>Previous: <a href="Equation.html" title="previous chapter">Equation</a></li>
+      <li>Next: <a href="Plot.html" title="next chapter">Plot</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
 
         </div>
       </div>
@@ -86,45 +135,48 @@ It must be initialized with the parameters of the experiment
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first">
-<li><p class="first"><strong>equation</strong> (<em>str, optional(default=’fct_velocity’)</em>) –</p>
-<p>name of the equation for the fit</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="s1">&#39;fct_velocity&#39;</span> <span class="p">:</span> <span class="n">generates</span> <span class="n">the</span> <span class="n">parameters</span> <span class="k">for</span> <span class="n">a</span> <span class="n">velocity</span> <span class="n">fit</span>
-<span class="k">if</span> <span class="s1">&#39;fct_position&#39;</span> <span class="p">:</span> <span class="n">generates</span> <span class="n">the</span> <span class="n">parameters</span> <span class="k">for</span> <span class="n">a</span> <span class="n">fit</span> <span class="n">position</span>
-<span class="k">if</span> <span class="s1">&#39;fct_saccades&#39;</span> <span class="p">:</span> <span class="n">generates</span> <span class="n">the</span> <span class="n">parameters</span> <span class="k">for</span> <span class="n">a</span> <span class="n">fit</span> <span class="n">saccades</span>
-</pre></div>
-</div>
+<li><p class="first"><strong>equation</strong> (<em>str {‘fct_velocity’, ‘fct_position’, ‘fct_saccades’} (default ‘fct_velocity’)</em>) –</p>
+<dl class="docutils">
+<dt>name of the equation for the fit :</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code>: generates the parameters for a fit velocity</li>
+<li><code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code>: generates the parameters for a fit position</li>
+<li><code class="docutils literal notranslate"><span class="pre">'fct_saccades'</span></code>: generates the parameters for a fit saccades</li>
+</ul>
+</dd>
+</dl>
 </li>
-<li><p class="first"><strong>dir_target</strong> (<em>int, optional(default=None)</em>) – the direction of the target, if None went searched in param_exp,
+<li><p class="first"><strong>dir_target</strong> (<em>int, optional(default None)</em>) – the direction of the target, if None went searched in param_exp,
 option obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_velocity',</span> <span class="pre">'fct_position']</span></code></p>
 </li>
-<li><p class="first"><strong>trackertime</strong> (<em>ndarray, optional(default=None)</em>) – the time of the tracker,
+<li><p class="first"><strong>trackertime</strong> (<em>ndarray, optional(default None)</em>) – the time of the tracker,
 option obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_velocity',</span> <span class="pre">'fct_position']</span></code></p>
 </li>
-<li><p class="first"><strong>TargetOn</strong> (<em>int, optional(default=None)</em>) – time when the target to follow appears,
+<li><p class="first"><strong>TargetOn</strong> (<em>int, optional(default None)</em>) – time when the target to follow appears,
 option obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_velocity',</span> <span class="pre">'fct_position']</span></code></p>
 </li>
-<li><p class="first"><strong>StimulusOf</strong> (<em>int, optional(default=None)</em>) – time when the stimulus disappears,
+<li><p class="first"><strong>StimulusOf</strong> (<em>int, optional(default None)</em>) – time when the stimulus disappears,
 option obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_velocity',</span> <span class="pre">'fct_position']</span></code></p>
 </li>
-<li><p class="first"><strong>saccades</strong> (<em>list, optional(default=None)</em>) – list of edf saccades for the trial recorded by the eyetracker transformed by the function read_edf of the module edfreader,
+<li><p class="first"><strong>saccades</strong> (<em>list, optional(default None)</em>) – list of edf saccades for the trial recorded by the eyetracker transformed by the function read_edf of the module edfreader,
 option obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_velocity',</span> <span class="pre">'fct_position']</span></code></p>
 </li>
-<li><p class="first"><strong>value_latence</strong> (<em>int, optional(default=None)</em>) – value that takes the parameter latence to begin the fit, if None or nan by default = <code class="docutils literal notranslate"><span class="pre">TargetOn-t_0+100</span></code>,
+<li><p class="first"><strong>value_latence</strong> (<em>int, optional(default None)</em>) – value that takes the parameter latence to begin the fit, if None or nan by default = <code class="docutils literal notranslate"><span class="pre">TargetOn-t_0+100</span></code>,
 optional not obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_velocity',</span> <span class="pre">'fct_position']</span></code></p>
 </li>
-<li><p class="first"><strong>value_maxi</strong> (<em>float, optional(default=None)</em>) – value that takes the parameter maxi to begin the fit, if None or nan by default = <code class="docutils literal notranslate"><span class="pre">15.</span></code>,
+<li><p class="first"><strong>value_maxi</strong> (<em>float, optional(default None)</em>) – value that takes the parameter maxi to begin the fit, if None or nan by default = <code class="docutils literal notranslate"><span class="pre">15.</span></code>,
 optional not obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_velocity',</span> <span class="pre">'fct_position']</span></code></p>
 </li>
-<li><p class="first"><strong>value_anti</strong> (<em>float, optional(default=None)</em>) – value that takes the parameter v_anti to begin the fit, if None or nan by default = <code class="docutils literal notranslate"><span class="pre">0.</span></code>,
+<li><p class="first"><strong>value_anti</strong> (<em>float, optional(default None)</em>) – value that takes the parameter v_anti to begin the fit, if None or nan by default = <code class="docutils literal notranslate"><span class="pre">0.</span></code>,
 optional not obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_velocity',</span> <span class="pre">'fct_position']</span></code></p>
 </li>
-<li><p class="first"><strong>before_sacc</strong> (<em>int, optional(default=5)</em>) – time to remove before saccades,
+<li><p class="first"><strong>before_sacc</strong> (<em>int, optional(default 5)</em>) – time to remove before saccades,
 optional not obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_velocity',</span> <span class="pre">'fct_position']</span></code></p>
 </li>
-<li><p class="first"><strong>after_sacc</strong> (<em>int, optional(default=15)</em>) – time to delete after saccades,
+<li><p class="first"><strong>after_sacc</strong> (<em>int, optional(default 15)</em>) – time to delete after saccades,
 optional not obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_velocity',</span> <span class="pre">'fct_position']</span></code></p>
 </li>
-<li><p class="first"><strong>data_x</strong> (<em>ndarray, optional(default=None)</em>) – x position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module,
+<li><p class="first"><strong>data_x</strong> (<em>ndarray, optional(default None)</em>) – x position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module,
 option obligatory if equation in <code class="docutils literal notranslate"><span class="pre">['fct_position',</span> <span class="pre">'fct_saccades']</span></code></p>
 </li>
 </ul>
@@ -155,64 +207,67 @@ option obligatory if equation in <code class="docutils literal notranslate"><spa
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last">
 <li><p class="first"><strong>data_trial</strong> (<em>ndarray</em>) –</p>
 <p>data for a trial :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_velocity&#39;</span> <span class="p">:</span> <span class="n">velocity</span> <span class="n">data</span> <span class="k">for</span> <span class="n">a</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">deg</span><span class="o">/</span><span class="n">sec</span>
-<span class="k">if</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_position&#39;</span> <span class="p">:</span> <span class="n">position</span> <span class="n">data</span> <span class="k">for</span> <span class="n">a</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">deg</span>
-<span class="k">if</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_saccades&#39;</span> <span class="p">:</span> <span class="n">position</span> <span class="n">data</span> <span class="k">for</span> <span class="n">a</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">deg</span>
-<span class="k">if</span> <span class="n">equation</span><span class="o">=</span><span class="n">function</span> <span class="p">:</span> <span class="n">velocity</span> <span class="ow">or</span> <span class="n">position</span> <span class="k">for</span> <span class="n">a</span> <span class="n">trial</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_velocity&#39;</span> <span class="p">:</span> <span class="n">velocity</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">deg</span><span class="o">/</span><span class="n">sec</span>
+<span class="k">if</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_position&#39;</span> <span class="p">:</span> <span class="n">position</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">deg</span>
+<span class="k">if</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_saccades&#39;</span> <span class="p">:</span> <span class="n">position</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">deg</span>
+<span class="k">if</span> <span class="n">equation</span><span class="o">=</span><span class="n">function</span> <span class="p">:</span> <span class="n">velocity</span> <span class="ow">or</span> <span class="n">position</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first"><strong>equation</strong> (<em>str, optional(default=’fct_velocity’)</em>) –</p>
+<li><p class="first"><strong>equation</strong> (<em>str, optional(default ‘fct_velocity’)</em>) –</p>
 <p>function or name of the equation for the fit</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="s1">&#39;fct_velocity&#39;</span> <span class="p">:</span> <span class="n">does</span> <span class="n">a</span> <span class="n">data</span> <span class="n">fit</span> <span class="k">with</span> <span class="n">the</span> <span class="n">function</span> <span class="s1">&#39;fct_velocity&#39;</span>
-<span class="k">if</span> <span class="s1">&#39;fct_position&#39;</span> <span class="p">:</span> <span class="n">does</span> <span class="n">a</span> <span class="n">data</span> <span class="n">fit</span> <span class="k">with</span> <span class="n">the</span> <span class="n">function</span> <span class="s1">&#39;fct_position&#39;</span>
-<span class="k">if</span> <span class="s1">&#39;fct_saccades&#39;</span> <span class="p">:</span> <span class="n">does</span> <span class="n">a</span> <span class="n">data</span> <span class="n">fit</span> <span class="k">with</span> <span class="n">the</span> <span class="n">function</span> <span class="s1">&#39;fct_saccades&#39;</span>
-<span class="k">if</span> <span class="n">function</span> <span class="p">:</span> <span class="n">does</span> <span class="n">a</span> <span class="n">data</span> <span class="n">fit</span> <span class="k">with</span> <span class="n">the</span> <span class="n">function</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">does</span> <span class="n">a</span> <span class="n">data</span> <span class="n">fit</span> <span class="p">:</span>
+<span class="k">if</span> <span class="s1">&#39;fct_velocity&#39;</span> <span class="p">:</span> <span class="k">with</span> <span class="n">function</span> <span class="s1">&#39;fct_velocity&#39;</span>
+<span class="k">if</span> <span class="s1">&#39;fct_position&#39;</span> <span class="p">:</span> <span class="k">with</span> <span class="n">function</span> <span class="s1">&#39;fct_position&#39;</span>
+<span class="k">if</span> <span class="s1">&#39;fct_saccades&#39;</span> <span class="p">:</span> <span class="k">with</span> <span class="n">function</span> <span class="s1">&#39;fct_saccades&#39;</span>
+<span class="k">if</span> <span class="n">function</span> <span class="p">:</span> <span class="k">with</span> <span class="n">function</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first"><strong>data_x</strong> (<em>ndarray, optional(default=None)</em>) – x position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module</p>
+<li><p class="first"><strong>data_x</strong> (<em>ndarray, optional(default None)</em>) – x position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module</p>
 </li>
-<li><p class="first"><strong>dir_target</strong> (<em>int, optional(default=None)</em>) – the direction of the target, if None went searched in param_exp</p>
+<li><p class="first"><strong>dir_target</strong> (<em>int, optional(default None)</em>) – the direction of the target, if None went searched in param_exp</p>
 </li>
-<li><p class="first"><strong>trackertime</strong> (<em>ndarray, optional(default=None)</em>) – the time of the tracker, if None = <code class="docutils literal notranslate"><span class="pre">np.arrange((len(data_trial))</span></code></p>
+<li><p class="first"><strong>trackertime</strong> (<em>ndarray, optional(default None)</em>) – the time of the tracker, if None = <code class="docutils literal notranslate"><span class="pre">np.arrange((len(data_trial))</span></code></p>
 </li>
-<li><p class="first"><strong>TargetOn</strong> (<em>int, optional(default=None)</em>) – time when the target to follow appears</p>
+<li><p class="first"><strong>TargetOn</strong> (<em>int, optional(default None)</em>) – time when the target to follow appears</p>
 </li>
-<li><p class="first"><strong>StimulusOf</strong> (<em>int, optional(default=None)</em>) – time when the stimulus disappears</p>
+<li><p class="first"><strong>StimulusOf</strong> (<em>int, optional(default None)</em>) – time when the stimulus disappears</p>
 </li>
-<li><p class="first"><strong>saccades</strong> (<em>list, optional(default=None)</em>) – list of edf saccades for the trial recorded by the eyetracker transformed by the function read_edf of the module edfreader</p>
+<li><p class="first"><strong>saccades</strong> (<em>list, optional(default None)</em>) – list of edf saccades for the trial recorded by the eyetracker transformed by the function read_edf of the module edfreader</p>
 </li>
-<li><p class="first"><strong>time_sup</strong> (<em>int, optional(default=280)</em>) – time that will be deleted to perform the fit (for data that is less good at the end of the test)</p>
+<li><p class="first"><strong>time_sup</strong> (<em>int, optional(default 280)</em>) – time that will be deleted to perform the fit (for data that is less good at the end of the test)</p>
 </li>
-<li><p class="first"><strong>step_fit</strong> (<em>int, optional(default=2)</em>) – number of steps for the fit</p>
+<li><p class="first"><strong>step_fit</strong> (<em>int, optional(default 2)</em>) – number of steps for the fit</p>
 </li>
-<li><p class="first"><strong>do_whitening</strong> (<em>bool, optional(default=False)</em>) – if True return the whitened fit</p>
+<li><p class="first"><strong>do_whitening</strong> (<em>bool, optional(default False)</em>) – if True return the whitened fit</p>
 </li>
-<li><p class="first"><strong>param_fit</strong> (<em>dic, optional(default=None)</em>) –</p>
+<li><p class="first"><strong>param_fit</strong> (<em>dic, optional(default None)</em>) –</p>
 <p>fit parameter dictionary, each parameter is a dict containing :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">variable</span><span class="p">,</span>
 <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">initial</span> <span class="n">value</span><span class="p">,</span>
 <span class="s1">&#39;min&#39;</span><span class="p">:</span> <span class="n">minimum</span> <span class="n">value</span><span class="p">,</span>
 <span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="n">maximum</span> <span class="n">value</span><span class="p">,</span>
-<span class="s1">&#39;vary&#39;</span><span class="p">:</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">varies</span> <span class="n">during</span> <span class="n">fit</span><span class="p">,</span> <span class="s1">&#39;vary&#39;</span> <span class="k">if</span> <span class="n">only</span> <span class="n">varies</span> <span class="k">for</span> <span class="n">step</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">False</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">varies</span> <span class="n">during</span> <span class="n">fit</span>
+<span class="s1">&#39;vary&#39;</span><span class="p">:</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">varies</span> <span class="n">during</span> <span class="n">fit</span><span class="p">,</span>
+        <span class="s1">&#39;vary&#39;</span> <span class="k">if</span> <span class="n">only</span> <span class="n">varies</span> <span class="k">for</span> <span class="n">step</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="kc">False</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">varies</span> <span class="n">during</span> <span class="n">fit</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first"><strong>inde_vars</strong> (<em>dic, optional(default=None)</em>) – independent variable dictionary of fit</p>
+<li><p class="first"><strong>inde_vars</strong> (<em>dic, optional(default None)</em>) – independent variable dictionary of fit</p>
 </li>
-<li><p class="first"><strong>value_latence</strong> (<em>int, optional(default=None)</em>) – value that takes the parameter latence to begin the fit
+<li><p class="first"><strong>value_latence</strong> (<em>int, optional(default None)</em>) – value that takes the parameter latence to begin the fit
 if None or nan by default = TargetOn-t_0+100</p>
 </li>
-<li><p class="first"><strong>value_maxi</strong> (<em>float, optional(default=15)</em>) – value that takes the parameter maxi to begin the fit
+<li><p class="first"><strong>value_maxi</strong> (<em>float, optional(default 15)</em>) – value that takes the parameter maxi to begin the fit
 if None or nan by default = 15.</p>
 </li>
-<li><p class="first"><strong>value_anti</strong> (<em>float, optional(default=0.)</em>) – value that takes the parameter v_anti to begin the fit
+<li><p class="first"><strong>value_anti</strong> (<em>float, optional(default 0.)</em>) – value that takes the parameter v_anti to begin the fit
 if None or nan by default = 0.</p>
 </li>
-<li><p class="first"><strong>before_sacc</strong> (<em>int, optional(default=5)</em>) – time to remove before saccades, it is advisable to put 5</p>
+<li><p class="first"><strong>before_sacc</strong> (<em>int, optional(default 5)</em>) – time to remove before saccades, it is advisable to put 5</p>
 </li>
-<li><p class="first"><strong>after_sacc</strong> (<em>int, optional(default=15)</em>) – time to delete after saccades, it is advisable to put 15</p>
+<li><p class="first"><strong>after_sacc</strong> (<em>int, optional(default 15)</em>) – time to delete after saccades, it is advisable to put 15</p>
 </li>
 </ul>
 </td>
@@ -258,88 +313,98 @@ if None or nan by default = 0.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first">
 <li><p class="first"><strong>data</strong> (<em>list</em>) – edf data for the trials recorded by the eyetracker transformed by the read_edf function of the edfreader module</p>
 </li>
-<li><p class="first"><strong>equation</strong> (<em>str or function, optional(default=’fct_velocity’)</em>) –</p>
+<li><p class="first"><strong>equation</strong> (<em>str, optional(default ‘fct_velocity’)</em>) –</p>
 <p>function or name of the equation for the fit</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="s1">&#39;fct_velocity&#39;</span> <span class="p">:</span> <span class="n">does</span> <span class="n">a</span> <span class="n">data</span> <span class="n">fit</span> <span class="k">with</span> <span class="n">the</span> <span class="n">function</span> <span class="s1">&#39;fct_velocity&#39;</span>
-<span class="k">if</span> <span class="s1">&#39;fct_position&#39;</span> <span class="p">:</span> <span class="n">does</span> <span class="n">a</span> <span class="n">data</span> <span class="n">fit</span> <span class="k">with</span> <span class="n">the</span> <span class="n">function</span> <span class="s1">&#39;fct_position&#39;</span>
-<span class="k">if</span> <span class="s1">&#39;fct_saccades&#39;</span> <span class="p">:</span> <span class="n">does</span> <span class="n">a</span> <span class="n">data</span> <span class="n">fit</span> <span class="k">with</span> <span class="n">the</span> <span class="n">function</span> <span class="s1">&#39;fct_saccades&#39;</span>
-<span class="k">if</span> <span class="n">function</span> <span class="p">:</span> <span class="n">does</span> <span class="n">a</span> <span class="n">data</span> <span class="n">fit</span> <span class="k">with</span> <span class="n">the</span> <span class="n">function</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">does</span> <span class="n">a</span> <span class="n">data</span> <span class="n">fit</span> <span class="p">:</span>
+<span class="k">if</span> <span class="s1">&#39;fct_velocity&#39;</span> <span class="p">:</span> <span class="k">with</span> <span class="n">the</span> <span class="n">function</span> <span class="s1">&#39;fct_velocity&#39;</span>
+<span class="k">if</span> <span class="s1">&#39;fct_position&#39;</span> <span class="p">:</span> <span class="k">with</span> <span class="n">the</span> <span class="n">function</span> <span class="s1">&#39;fct_position&#39;</span>
+<span class="k">if</span> <span class="s1">&#39;fct_saccades&#39;</span> <span class="p">:</span> <span class="k">with</span> <span class="n">the</span> <span class="n">function</span> <span class="s1">&#39;fct_saccades&#39;</span>
+<span class="k">if</span> <span class="n">function</span> <span class="p">:</span> <span class="k">with</span> <span class="n">the</span> <span class="n">function</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first"><strong>fitted_data</strong> (<em>bool, optional(default=’velocity’)</em>) –</p>
+<li><p class="first"><strong>fitted_data</strong> (<em>bool, optional(default ‘velocity’)</em>) –</p>
 <p>nature of fitted data</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="s1">&#39;velocity&#39;</span> <span class="p">:</span> <span class="n">fit</span> <span class="n">the</span> <span class="n">velocity</span> <span class="n">data</span> <span class="k">for</span> <span class="n">a</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">deg</span><span class="o">/</span><span class="n">sec</span>
-<span class="k">if</span> <span class="s1">&#39;position&#39;</span> <span class="p">:</span> <span class="n">fit</span> <span class="n">the</span> <span class="n">position</span> <span class="n">data</span> <span class="k">for</span> <span class="n">a</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">deg</span>
-<span class="k">if</span> <span class="s1">&#39;saccade&#39;</span> <span class="p">:</span> <span class="n">fit</span> <span class="n">the</span> <span class="n">position</span> <span class="n">data</span> <span class="k">for</span> <span class="n">sacades</span> <span class="ow">in</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">deg</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="p">:</span>
+<span class="k">if</span> <span class="s1">&#39;velocity&#39;</span> <span class="p">:</span> <span class="n">velocity</span> <span class="n">data</span> <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">deg</span><span class="o">/</span><span class="n">sec</span>
+<span class="k">if</span> <span class="s1">&#39;position&#39;</span> <span class="p">:</span> <span class="n">position</span> <span class="n">data</span> <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">deg</span>
+<span class="k">if</span> <span class="s1">&#39;saccade&#39;</span> <span class="p">:</span> <span class="n">position</span> <span class="n">data</span> <span class="k">for</span> <span class="n">sacades</span> <span class="ow">in</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">deg</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first"><strong>N_blocks</strong> (<em>int, optional(default=None)</em>) – number of blocks,
+<li><p class="first"><strong>N_blocks</strong> (<em>int, optional(default None)</em>) – number of blocks,
 if None went searched in param_exp</p>
 </li>
-<li><p class="first"><strong>N_trials</strong> (<em>int, optional(default=None)</em>) – number of trials per block,
+<li><p class="first"><strong>N_trials</strong> (<em>int, optional(default None)</em>) – number of trials per block,
 if None went searched in param_exp</p>
 </li>
-<li><p class="first"><strong>time_sup</strong> (<em>int, optional(default=280)</em>) – time that will be deleted to perform the fit (for data that is less good at the end of the test)</p>
+<li><p class="first"><strong>time_sup</strong> (<em>int, optional(default 280)</em>) – time that will be deleted to perform the fit (for data that is less good at the end of the test)</p>
 </li>
-<li><p class="first"><strong>step_fit</strong> (<em>int, optional(default=2)</em>) – number of steps for the fit</p>
+<li><p class="first"><strong>step_fit</strong> (<em>int, optional(default 2)</em>) – number of steps for the fit</p>
 </li>
-<li><p class="first"><strong>do_whitening</strong> (<em>bool, optional(default=False)</em>) – if True return the whitened fit</p>
+<li><p class="first"><strong>do_whitening</strong> (<em>bool, optional(default False)</em>) – if True return the whitened fit</p>
 </li>
-<li><p class="first"><strong>list_param_enre</strong> (<em>list, optional(default=None)</em>) – list of fit parameters to record
+<li><p class="first"><strong>list_param_enre</strong> (<em>list, optional(default None)</em>) – list of fit parameters to record
 if None :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">equation</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fct_velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;fct_position&#39;</span><span class="p">]</span> <span class="p">:</span> <span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;start_anti&#39;</span><span class="p">,</span> <span class="s1">&#39;v_anti&#39;</span><span class="p">,</span> <span class="s1">&#39;latence&#39;</span><span class="p">,</span> <span class="s1">&#39;tau&#39;</span><span class="p">,</span> <span class="s1">&#39;maxi&#39;</span><span class="p">,</span> <span class="s1">&#39;saccades&#39;</span><span class="p">,</span> <span class="s1">&#39;old_anti&#39;</span><span class="p">,</span> <span class="s1">&#39;old_max&#39;</span><span class="p">,</span> <span class="s1">&#39;old_latence&#39;</span><span class="p">]</span>
-<span class="k">if</span> <span class="n">equation</span> <span class="ow">is</span> <span class="s1">&#39;fct_saccades&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;T0&#39;</span><span class="p">,</span> <span class="s1">&#39;t1&#39;</span><span class="p">,</span> <span class="s1">&#39;t2&#39;</span><span class="p">,</span> <span class="s1">&#39;tr&#39;</span><span class="p">,</span> <span class="s1">&#39;x_0&#39;</span><span class="p">,</span> <span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="s1">&#39;tau&#39;</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">equation</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fct_velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;fct_position&#39;</span><span class="p">]</span> <span class="p">:</span>
+    <span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;start_anti&#39;</span><span class="p">,</span> <span class="s1">&#39;v_anti&#39;</span><span class="p">,</span> <span class="s1">&#39;latence&#39;</span><span class="p">,</span> <span class="s1">&#39;tau&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;maxi&#39;</span><span class="p">,</span> <span class="s1">&#39;saccades&#39;</span><span class="p">,</span> <span class="s1">&#39;old_anti&#39;</span><span class="p">,</span> <span class="s1">&#39;old_max&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;old_latence&#39;</span><span class="p">]</span>
+
+<span class="k">if</span> <span class="n">equation</span> <span class="ow">is</span> <span class="s1">&#39;fct_saccades&#39;</span> <span class="p">:</span>
+<span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;T0&#39;</span><span class="p">,</span> <span class="s1">&#39;t1&#39;</span><span class="p">,</span> <span class="s1">&#39;t2&#39;</span><span class="p">,</span> <span class="s1">&#39;tr&#39;</span><span class="p">,</span> <span class="s1">&#39;x_0&#39;</span><span class="p">,</span> <span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="s1">&#39;x2&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;tau&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first"><strong>param_fit</strong> (<em>dic, optional(default=None)</em>) –</p>
+<li><p class="first"><strong>param_fit</strong> (<em>dic, optional(default None)</em>) –</p>
 <p>fit parameter dictionary, each parameter is a dict containing :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">variable</span><span class="p">,</span>
 <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">initial</span> <span class="n">value</span><span class="p">,</span>
 <span class="s1">&#39;min&#39;</span><span class="p">:</span> <span class="n">minimum</span> <span class="n">value</span><span class="p">,</span>
 <span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="n">maximum</span> <span class="n">value</span><span class="p">,</span>
-<span class="s1">&#39;vary&#39;</span><span class="p">:</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">varies</span> <span class="n">during</span> <span class="n">fit</span><span class="p">,</span> <span class="s1">&#39;vary&#39;</span> <span class="k">if</span> <span class="n">only</span> <span class="n">varies</span> <span class="k">for</span> <span class="n">step</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">False</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">varies</span> <span class="n">during</span> <span class="n">fit</span>
+<span class="s1">&#39;vary&#39;</span><span class="p">:</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">varies</span> <span class="n">during</span> <span class="n">fit</span><span class="p">,</span>
+        <span class="s1">&#39;vary&#39;</span> <span class="k">if</span> <span class="n">only</span> <span class="n">varies</span> <span class="k">for</span> <span class="n">step</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="kc">False</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">varies</span> <span class="n">during</span> <span class="n">fit</span>
 </pre></div>
 </div>
 <p>if None : Generate by generation_param_fit</p>
 </li>
-<li><p class="first"><strong>inde_vars</strong> (<em>dic, optional(default=None)</em>) – independent variable dictionary of fit
+<li><p class="first"><strong>inde_vars</strong> (<em>dic, optional(default None)</em>) – independent variable dictionary of fit
 if None : Generate by generation_param_fit</p>
 </li>
-<li><p class="first"><strong>before_sacc</strong> (<em>int, optional(default=5)</em>) – time to remove before saccades, it is advisable to put : 5 for ‘fct_velocity’ and ‘fct_position’, 0 for ‘fct_saccade’</p>
+<li><p class="first"><strong>before_sacc</strong> (<em>int, optional(default 5)</em>) – time to remove before saccades, it is advisable to put : 5 for ‘fct_velocity’ and ‘fct_position’, 0 for ‘fct_saccade’</p>
 </li>
-<li><p class="first"><strong>after_sacc</strong> (<em>int, optional(default=15)</em>) – time to delete after saccades, it is advisable to put 15</p>
+<li><p class="first"><strong>after_sacc</strong> (<em>int, optional(default 15)</em>) – time to delete after saccades, it is advisable to put 15</p>
 </li>
-<li><p class="first"><strong>stop_search_misac</strong> (<em>int, optional(default=None)</em>) – stop search of micro_saccade
+<li><p class="first"><strong>stop_search_misac</strong> (<em>int, optional(default None)</em>) – stop search of micro_saccade
 if None : stops searching at the end of fixation + 100ms</p>
 </li>
-<li><p class="first"><strong>filt</strong> (<em>str, optional(default=False)</em>) –</p>
+<li><p class="first"><strong>filt</strong> (<em>str, optional(default False)</em>) –</p>
 <p>to filter the data can be :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="s1">&#39;position&#39;</span> <span class="n">to</span> <span class="nb">filter</span> <span class="n">the</span> <span class="n">position</span><span class="p">,</span>
-<span class="o">-</span> <span class="s1">&#39;velocity&#39;</span> <span class="n">to</span> <span class="nb">filter</span> <span class="n">the</span> <span class="n">speed</span><span class="p">,</span>
-<span class="o">-</span> <span class="s1">&#39;velocity-position&#39;</span> <span class="n">to</span> <span class="nb">filter</span> <span class="n">the</span> <span class="n">position</span> <span class="n">then</span> <span class="n">the</span> <span class="n">speed</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="nb">filter</span> <span class="n">the</span> <span class="n">position</span><span class="p">,</span>
+<span class="o">-</span> <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="nb">filter</span> <span class="n">the</span> <span class="n">speed</span><span class="p">,</span>
+<span class="o">-</span> <span class="s1">&#39;velocity-position&#39;</span><span class="p">:</span> <span class="nb">filter</span> <span class="n">the</span> <span class="n">position</span> <span class="n">then</span> <span class="n">the</span> <span class="n">speed</span>
 </pre></div>
 </div>
 <p>if None the data will not be filtered</p>
 </li>
-<li><p class="first"><strong>cutoff</strong> (<em>int, optional(default=30)</em>) – the critical frequencies for cutoff of filter, must be defined if filt is not None</p>
+<li><p class="first"><strong>cutoff</strong> (<em>int, optional(default 30)</em>) – the critical frequencies for cutoff of filter, must be defined if filt is not None</p>
 </li>
-<li><p class="first"><strong>sample_rate</strong> (<em>int, optional(default=1000)</em>) – sampling rate of the recording for the filtre, must be defined if filt is not None</p>
+<li><p class="first"><strong>sample_rate</strong> (<em>int, optional(default 1000)</em>) – sampling rate of the recording for the filtre, must be defined if filt is not None</p>
 </li>
-<li><p class="first"><strong>plot</strong> (<em>bool, optional(default=None)</em>) – if true : save the figure in file_fig</p>
+<li><p class="first"><strong>plot</strong> (<em>bool, optional(default None)</em>) – if true : save the figure in file_fig</p>
 </li>
-<li><p class="first"><strong>file_fig</strong> (<em>str, optional(default=None)</em>) – name of file figure reccorded
+<li><p class="first"><strong>file_fig</strong> (<em>str, optional(default None)</em>) – name of file figure reccorded
 if None file_fig is ‘Fit’</p>
 </li>
-<li><p class="first"><strong>show_target</strong> (<em>bool, optional(default=False)</em>) – if true : show the target on the plot</p>
+<li><p class="first"><strong>show_target</strong> (<em>bool, optional(default False)</em>) – if true : show the target on the plot</p>
 </li>
-<li><p class="first"><strong>fig_width</strong> (<em>int, optional(default=12)</em>) – figure size</p>
+<li><p class="first"><strong>fig_width</strong> (<em>int, optional(default 12)</em>) – figure size</p>
 </li>
-<li><p class="first"><strong>t_label</strong> (<em>int, optional(default=20)</em>) – size x and y label</p>
+<li><p class="first"><strong>t_label</strong> (<em>int, optional(default 20)</em>) – size x and y label</p>
 </li>
-<li><p class="first"><strong>t_text</strong> (<em>int, optional(default=14)</em>) – size of the text of the figure</p>
+<li><p class="first"><strong>t_text</strong> (<em>int, optional(default 14)</em>) – size of the text of the figure</p>
 </li>
 </ul>
 </td>

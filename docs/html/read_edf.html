@@ -1,0 +1,222 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>read_edf &#8212; ANEMO 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="classical_method" href="classical_method.html" />
+    <link rel="prev" title="ANEMO" href="ANEMO_doc.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ANEMO</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=invibe&repo=ANEMO&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="ANEMO_doc.html">ANEMO</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">read_edf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classical_method.html">classical_method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Equation.html">Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Fit.html">Fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Plot.html">Plot</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="ANEMO_doc.html">ANEMO</a><ul>
+      <li>Previous: <a href="ANEMO_doc.html" title="previous chapter">ANEMO</a></li>
+      <li>Next: <a href="classical_method.html" title="next chapter">classical_method</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="ANEMO_doc.html" title="Previous document">ANEMO</a>
+        </li>
+        <li>
+          <a href="classical_method.html" title="Next document">classical_method</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="read-edf">
+<h1>read_edf<a class="headerlink" href="#read-edf" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="ANEMO.read_edf">
+<code class="descclassname">ANEMO.</code><code class="descname">read_edf</code><span class="sig-paren">(</span><em>filename</em>, <em>start</em>, <em>stop=None</em>, <em>missing=0.0</em>, <em>debug=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ANEMO/edfreader.html#read_edf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ANEMO.read_edf" title="Permalink to this definition">¶</a></dt>
+<dd><p>This code comes from PyGazeAnalyser available <a class="reference external" href="https://github.com/esdalmaijer/PyGazeAnalyser">here</a>.</p>
+<p>©Edwin Dalmaijer, 2013-2014
+<a class="reference external" href="mailto:edwin&#46;dalmaijer&#37;&#52;&#48;gmail&#46;com">edwin<span>&#46;</span>dalmaijer<span>&#64;</span>gmail<span>&#46;</span>com</a></p>
+<p>Does not actually read EDFs directly, but ASC files that are produced  by edf2asc (SR Research).
+Information on saccades, fixations and blinks is read from the EDF, hence based on SR Research algorithms.</p>
+<p>Returns a list with dicts for every trial. A trial dict contains the
+following keys:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">x</span></code>       -   numpy array of x positions</li>
+<li><code class="docutils literal notranslate"><span class="pre">y</span></code>       -   numpy array of y positions</li>
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code>        -   numpy array of pupil size</li>
+<li><code class="docutils literal notranslate"><span class="pre">time</span></code>        -   numpy array of timestamps, t=0 at trialstart</li>
+<li><code class="docutils literal notranslate"><span class="pre">trackertime</span></code> -   numpy array of timestamps, according to EDF</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal notranslate"><span class="pre">events</span></code>  -   dict with the following keys:</dt>
+<dd><ul class="first last">
+<li><code class="docutils literal notranslate"><span class="pre">Sfix</span></code>    -   list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[starttime]</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">Ssac</span></code>    -   list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[starttime]</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">Sblk</span></code>    -   list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[starttime]</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">Efix</span></code>    -   list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[starttime,</span> <span class="pre">endtime,</span> <span class="pre">duration,</span> <span class="pre">endx,</span> <span class="pre">endy]</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">Esac</span></code>    -   list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[starttime,</span> <span class="pre">endtime,</span> <span class="pre">duration,</span> <span class="pre">startx,</span> <span class="pre">starty,</span> <span class="pre">endx,</span> <span class="pre">endy]</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">Eblk</span></code>    -   list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[starttime,</span> <span class="pre">endtime,</span> <span class="pre">duration]</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">msg</span></code> -   list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[time,</span> <span class="pre">message]</span></code></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">timing is in EDF time!</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> – path to the file that has to be read</li>
+<li><strong>start</strong> (<em>str</em>) – trial start string</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Keyword Arguments:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><ul class="first simple">
+<li><strong>stop</strong> (<em>str</em><em> (</em><em>default None</em><em>)</em>) – trial ending string</li>
+<li><strong>missing</strong> (<em>float</em><em> (</em><em>default 0.0</em><em>)</em>) – value to be used for missing data</li>
+<li><strong>debug</strong> (<em>bool</em><em> (</em><em>default False</em><em>)</em>) – Boolean indicating if DEBUG mode should be on or off;
+if DEBUG mode is on, information on what the script
+currently is doing will be printed to the console</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>data</strong> (<em>list</em>) – a list with a dict for every trial (see above)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="ANEMO_doc.html" title="Previous document">ANEMO</a>
+        </li>
+        <li>
+          <a href="classical_method.html" title="Next document">classical_method</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      
+      
+      
+      <a href="_sources/read_edf.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/invibe/ANEMO" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
