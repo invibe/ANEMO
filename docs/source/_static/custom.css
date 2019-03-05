@@ -14,20 +14,84 @@ div.document {
     margin: 30px auto 0 auto;
     max-width: 1024px;
 }
+div.sphinxsidebar #searchbox form.search {
+    margin-right: 100px;
+}
+nav#rellinks {
+    margin-right: 100px;
+}
+iframe[Attributes Style] {
+    width: auto;
+    height: 700px;
+}
+
 
 div.body {
     padding: 0 0 0 0;
 }
 
-nav#rellinks {
-    margin-right: 100px;
+div.body h1 {
+    font-size: 200%;
 }
 
-div.sphinxsidebar #searchbox form.search {
-    margin-right: 100px;
+div.body h2 {
+    margin: 60px 0px 10px 0px!important;
+    font-weight: bold!important;
+    font-size: 130%;
 }
 
-iframe[Attributes Style] {
-    width: auto;
-    height: 700px;
+
+
+tt.descname, tt.descclassname, code.descname, code.descclassname {
+    font-size: 1.1em;
 }
+code.xref {
+    color: #640000;
+}
+code.xref:hover {
+    color: #FF0000;
+}
+
+
+
+em {
+    font-style: normal;
+    font-size: 0.9em;
+    color: #6F6F6F;
+}
+.sig-paren {
+    font-size: 0.9em;
+}
+
+
+
+div.admonition {
+    margin: 0px 0px;
+    padding: 10px 30px;
+}
+p.admonition-title{
+    color:#C80000;
+    margin: 0px 0px 0px -15px!important;
+    font-size: 1em!important;
+    font-weight: bold!important;
+}
+div.note {
+    background-color: #EEE;
+    border: 1px solid #CCC;
+}
+div.warning {
+    background-color: #FFD9D9; /*#FCC;*/
+    border: 1px solid None; /*#FAA;*/
+}
+
+
+
+table.field-list th {
+    padding: 10px 30px 0px 0px;
+    font-size: 1em;
+    font-weight: bold;
+}
+table.field-list td {
+    padding: 10px 0 0 0;
+}
+

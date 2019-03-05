@@ -85,7 +85,7 @@ language = None
 exclude_patterns = ['_build', '**.ipynb_checkpoints']
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'trac' # None
+pygments_style = 'trac'
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -100,7 +100,7 @@ html_theme = 'alabaster'
 # documentation.
 #
 html_theme_options = {
-    'show_powered_by':False,
+    'show_powered_by': False,
     'github_user': 'invibe',
     'github_repo': 'ANEMO',
     'github_banner': True,
@@ -112,14 +112,16 @@ html_theme_options = {
     'fixed_sidebar': True,
     'sidebar_width': '300px',
     'page_width': 'auto',
-    'font_family': 'Open Sans', #'Latin Modern Sans', #'Latin Modern Sans Quotation',
+    'font_family': 'Open Sans',
     'link_hover': '#FF0000',
-    'link': '#6B0500',
-    'code_text': '#550D09',
-    'code_bg': '#FFFFFF',
+    'link': '#640000',
+    'code_text': '#850000',
+    'code_bg': 'transparent',
     'sidebar_header': '#4D4D4D',
     'sidebar_link': '#7F7F7F',
-    }
+
+    'code_font_size': '15px',
+    'font_size': '15px',}
 
 
 # Add any paths that contain custom static files (such as style sheets) here,

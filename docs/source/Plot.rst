@@ -1,6 +1,5 @@
 Plot
 ====
-
 .. automodule :: ANEMO.ANEMO.ANEMO.Plot
     :members:
 

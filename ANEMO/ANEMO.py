@@ -5,7 +5,7 @@ import numpy as np
 
 
 N_freq = 1301
-def whitening_filt(N_freq, white_f_0, white_alpha, white_steepness):
+def whitening_filt(N_freq, white_f_0, white_alpha, white_steepness) :
 
     """
     Returns the envelope of the whitening filter.
@@ -24,7 +24,7 @@ def whitening_filt(N_freq, white_f_0, white_alpha, white_steepness):
     return freq, K
 
 
-def whitening(position, white_f_0=.4, white_alpha=.5, white_steepness=4):
+def whitening(position, white_f_0=.4, white_alpha=.5, white_steepness=4) :
 
     """
     Returns the whitened image
@@ -43,7 +43,7 @@ def whitening(position, white_f_0=.4, white_alpha=.5, white_steepness=4):
 
 
 
-class Test(object):
+class Test(object) :
     '''function set used in the code to do tests'''
 
     def crash_None(name, value, print_crash=None) :
@@ -57,9 +57,9 @@ class Test(object):
             name of the variable
         value : int, float
             value to test
-        print_crash : str
+        print_crash : str (default None)
             message to return
-            by default: "% s is not defined"% name
+            if ``None``, the message is "%s is not defined"%name
 
         Returns
         -------
@@ -87,13 +87,13 @@ class Test(object):
             name of the variable
         dic : dict
             dictionary to check
-        value : int, float
+        value : int, float (default None)
             new value has given
-        crash : bool
-            if true if the value of name is None then the program stops and returns print_crash
-        print_crash : str
+        crash : bool (default True)
+            if ``True`` if the value of name is ``None`` then the program stops and returns print_crash
+        print_crash : str (default None)
             message to return
-            by default: "% s is not defined"% name
+            if ``None``, the message is "%s is not defined"%name
 
         Returns
         -------
@@ -104,11 +104,11 @@ class Test(object):
 
         new_value = name
 
-        try:
+        try :
             new_value = dic[name]
             return new_value
 
-        except KeyError:
+        except KeyError :
             new_value = value
             return new_value
 
@@ -136,7 +136,7 @@ class Test(object):
         None_or_nan = False
 
         if type(var) in [float, np.float64, np.float32, np.float16] :
-            if np.isnan(var):
+            if np.isnan(var) :
                 None_or_nan = True
                 return value
 
@@ -149,7 +149,7 @@ class Test(object):
 
 
 
-class ANEMO(object):
+class ANEMO(object) :
     """
     ANEMO allows you to perform Fits on data of Smooth Pursuite Eyes Movements.
     You could use the functions 'velocity', 'position' and 'saccades' already present, but also your own functions.
@@ -169,7 +169,7 @@ class ANEMO(object):
                 #the direction of the target is to -1 for left 1 for right
                 dir_target = param_exp['dir_target'][block][trial]
 
-        or **'p'** (ndarray) - ndarray containing for each trial of each block the direction of the target, its probability of direction and the switches of this probability::
+        or **'p'** (ndarray) - ndarray containing for each trial of each block the direction of the target, its probability of direction and the switches of this probability ::
 
                 # the direction of the target is to 0 for left 1 for right
                 dir_target = param_exp['p'][trial, block, 0]
@@ -182,14 +182,14 @@ class ANEMO(object):
 
         **'observer'** (str, optional) - subject name
 
-        **'list_events'** (list, optional) - list of the names of the events of the trial ::
+        **'list_events'** (list(str), optional) - list of the names of the events of the trial ::
 
-                ['onset fixation', 'end fixation',
-                    'start pursuit', 'end pursuit']
+            list_events = ['onset fixation', 'end fixation',
+                           'start pursuit', 'end pursuit']
 
-                by default :
-                    ['StimulusOn\\n', 'StimulusOff\\n',
-                        'TargetOn\\n', 'TargetOff\\n']
+            by default :
+                list_events = ['StimulusOn\\n', 'StimulusOff\\n',
+                               'TargetOn\\n', 'TargetOff\\n']
 
         optional not obligatory, just to display the target in ANEMO.Plot :
 
@@ -205,7 +205,7 @@ class ANEMO(object):
         self.param_exp = Test.crash_None('param_exp', param_exp)
 
 
-    def arg(self, data_trial, dir_target=None, trial=None, block=None):
+    def arg(self, data_trial, dir_target=None, trial=None, block=None) :
 
         '''
         Generates a dictionary of the parameters of the trial
@@ -213,19 +213,27 @@ class ANEMO(object):
         Parameters
         ----------
         data_trial : list
-            edf data for a trial recorded by the eyetracker transformed by the read_edf function of the edfreader module
+            edf data for a trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
 
         dir_target : int, or None (default None)
-            the direction of the target,
-            if None went searched in param_exp, can be : ::
+            the direction of the target \n
+            if ``None`` went searched in ``param_exp`` (see :mod:`~ANEMO.ANEMO.ANEMO`), can be : ::
 
                 - param_exp['dir_target'][block][trial] = 1 or -1
                 - param_exp['p'][trial, block, 0] = 0 or 1
 
-        trial : int, optional(default None)
-            number of the trial in the block, must be defined if dir_target is None
-        block : int, optional(default None)
-            block number, must be defined if dir_target is None
+        trial : int, optional (default None)
+            number of the trial in the block
+        block : int, optional (default None)
+            block number
+
+        Warning
+        -------
+        **some parameters must be defined :**
+
+        - if ``dir_target`` is ``None`` :
+            - **trial**
+            - **block**
 
         Returns
         -------
@@ -273,7 +281,7 @@ class ANEMO(object):
         Parameters
         ----------
         data : ndarray
-            position or velocity for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module
+            position or velocity for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
 
         cutoff : int (default 30)
             the critical frequencies for cutoff of filter
@@ -306,7 +314,7 @@ class ANEMO(object):
         Parameters
         ----------
         data : ndarray
-            position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module
+            position for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
 
         StimulusOf : int
             time when the stimulus disappears
@@ -314,21 +322,21 @@ class ANEMO(object):
             time 0 of the trial
 
         saccades : list
-            list of edf saccades for the trial recorded by the eyetracker transformed by the function read_edf of the module edfreader
+            list of edf saccades for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
         before_sacc : int
             time to delete before saccades
         after_sacc : int
             time to delete after saccades
 
-        filt : str{'position', 'velocity-position'} or None (default None)
+        filt : str {'position', 'velocity-position'} or None (default None)
             to filter the data can be :
-                - ``'position'``: filter the position,
-                - ``'velocity-position'``: filter the position then the speed
-                - ``None``: the data will not be filtered
-        cutoff : int (default 30)
-            the critical frequencies for cutoff of filter, must be defined if filt is not None
-        sample_rate : int (default 1000)
-            sampling rate of the recording for the filtre, must be defined if filt is not None
+                - ``'position'`` : filter the position,
+                - ``'velocity-position'`` : filter the position then the speed
+                - ``None`` : the data will not be filtered
+        cutoff : int, optional (default 30)
+            the critical frequencies for cutoff of filter
+        sample_rate : int, optional (default 1000)
+            sampling rate of the recording for the filtre
 
         Returns
         -------
@@ -342,7 +350,7 @@ class ANEMO(object):
             data = ANEMO.filter_data(self, data, cutoff, sample_rate)
 
         t_data_0 = StimulusOf-t_0
-        for s in range(len(saccades)):
+        for s in range(len(saccades)) :
             for x_data in np.arange((saccades[s][0]-t_0-before_sacc), (saccades[s][1]-t_0+after_sacc)) :
                 if x_data == StimulusOf-t_0 :
                     if (saccades[s][0]-t_0-before_sacc)-t_data_0 <= (saccades[s][1]-t_0+after_sacc)-t_data_0 :
@@ -354,8 +362,8 @@ class ANEMO(object):
 
         return data_deg
 
-###################################################################
-    def velocity_deg(self, data_x, filt=False, cutoff=30, sample_rate=1000) :
+
+    def velocity_deg(self, data_x, filt=None, cutoff=30, sample_rate=1000) :
 
         '''
         Return the velocity of the eye in deg/sec
@@ -363,20 +371,18 @@ class ANEMO(object):
         Parameters
         ----------
         data_x : ndarray
-            x position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module
+            x position for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
 
-        filt : str, optional(default False)
-            to filter the data can be : ::
-
-                - 'position': filter the position,
-                - 'velocity': filter the speed,
-                - 'velocity-position': filter the position then the speed
-
-            if None the data will not be filtered
-        cutoff : int, optional(default 30)
-            the critical frequencies for cutoff of filter, must be defined if filt is not None
-        sample_rate : int, optional(default 1000)
-            sampling rate of the recording for the filtre, must be defined if filt is not None
+        filt : str {'position', 'velocity', 'velocity-position'} or None (default None)
+            to filter the data can be :
+                - ``'position'`` : filter the position,
+                - ``'velocity'`` : filter the speed,
+                - ``'velocity-position'`` : filter the position then the speed
+                - ``None`` : the data will not be filtered
+        cutoff : int, optional (default 30)
+            the critical frequencies for cutoff of filter
+        sample_rate : int, optional (default 1000)
+            sampling rate of the recording for the filtre
 
 
         Returns
@@ -400,7 +406,7 @@ class ANEMO(object):
         return gradient_deg
 
 
-    def detec_misac(self, velocity_x, velocity_y, t_0=0, VFAC=5, mindur=5, maxdur=100, minsep=30):
+    def detec_misac(self, velocity_x, velocity_y, t_0=0, VFAC=5, mindur=5, maxdur=100, minsep=30) :
 
         '''
         Detection of micro-saccades not detected by eyelink in the data
@@ -412,22 +418,22 @@ class ANEMO(object):
         velocity_y : ndarray
             velocity y of the eye in deg/sec
 
-        t_0 : int, optional(default 0)
+        t_0 : int, optional (default 0)
             time 0 of the trial
 
-        VFAC : int, optional(default 5)
+        VFAC : int, optional (default 5)
             relative velocity threshold
-        mindur : int, optional(default 5)
+        mindur : int, optional (default 5)
             minimal saccade duration (ms)
-        maxdur : int, optional(default 100)
+        maxdur : int, optional (default 100)
             maximal saccade duration (ms)
-        minsep : int, optional(default 30)
+        minsep : int, optional (default 30)
             minimal time interval between two detected saccades (ms)
 
         Returns
         -------
-        misaccades : list
-            list of lists, each containing [start micro-saccade, end micro-saccade]
+        misaccades : list(list(int))
+            list of lists, each containing ``[start micro-saccade, end micro-saccade]``
         '''
 
         msdx = np.sqrt((np.nanmedian(velocity_x**2))-((np.nanmedian(velocity_x))**2))
@@ -482,7 +488,7 @@ class ANEMO(object):
         velocity : ndarray
             velocity of the eye in deg/sec
         saccades : list
-            list of edf saccades for the trial recorded by the eyetracker transformed by the function read_edf of the module edfreader
+            list of edf saccades for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
 
         trackertime : ndarray
             the time of the tracker
@@ -511,7 +517,7 @@ class ANEMO(object):
 
     def velocity_NAN(self, data_x, data_y, saccades, trackertime, TargetOn,
                      before_sacc=5, after_sacc=15, stop_search_misac=None,
-                     filt=False, cutoff=30, sample_rate=1000, **opt) :
+                     filt=None, cutoff=30, sample_rate=1000, **opt) :
 
         '''
         Returns velocity of the eye in deg / sec without the saccades
@@ -519,37 +525,34 @@ class ANEMO(object):
         Parameters
         ----------
         data_x : ndarray
-            x position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module
+            x position for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
         data_y : ndarray
-            y position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module
+            y position for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
 
         saccades : list
-            list of edf saccades for the trial recorded by the eyetracker transformed by the function read_edf of the module edfreader
+            list of edf saccades for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
         trackertime : ndarray
             the time of the tracker
         TargetOn : int
             time when the target to follow appears
 
-        before_sacc : int, optional(default 5)
+        before_sacc : int, optional (default 5)
             time to delete before saccades
-        after_sacc : int, optional(default 15)
+        after_sacc : int, optional (default 15)
             time to delete after saccades
-        stop_search_misac : int, optional(default None)
-            stop search of micro_saccade
-            if None : stops searching at the end of fixation + 100ms
+        stop_search_misac : int, optional (default None)
+            stop search of micro_saccade -- if ``None`` stops searching at the ``end of fixation + 100ms``
 
-        filt : str, optional(default False)
-            to filter the data can be : ::
-
-                - 'position': filter the position,
-                - 'velocity': filter the speed,
-                - 'velocity-position': filter the position then the speed
-
-            if None the data will not be filtered
-        cutoff : int, optional(default 30)
-            the critical frequencies for cutoff of filter, must be defined if filt is not None
-        sample_rate : int, optional(default 1000)
-            sampling rate of the recording for the filtre, must be defined if filt is not None
+        filt : str {'position', 'velocity', 'velocity-position'} or None (default None)
+            to filter the data can be :
+                - ``'position'`` : filter the position,
+                - ``'velocity'`` : filter the speed,
+                - ``'velocity-position'`` : filter the position then the speed
+                - ``None`` : the data will not be filtered
+        cutoff : int, optional (default 30)
+            the critical frequencies for cutoff of filter
+        sample_rate : int, optional (default 1000)
+            sampling rate of the recording for the filtre
 
 
         Returns
@@ -560,8 +563,8 @@ class ANEMO(object):
 
         stop_search_misac = Test.test_None(stop_search_misac, value=TargetOn-trackertime[0]+100)
 
-        velocity   = ANEMO.velocity_deg(self, data_x=data_x, filt=False)
-        velocity_y = ANEMO.velocity_deg(self, data_x=data_y, filt=False)
+        velocity   = ANEMO.velocity_deg(self, data_x=data_x, filt=None)
+        velocity_y = ANEMO.velocity_deg(self, data_x=data_y, filt=None)
 
         new_saccades = saccades.copy()
         misac = ANEMO.detec_misac(self, velocity_x=velocity[:stop_search_misac], velocity_y=velocity_y[:stop_search_misac], t_0=trackertime[0])
@@ -576,7 +579,7 @@ class ANEMO(object):
 
 
 
-    class classical_method(object):
+    class classical_method(object) :
         """
         Function used to calculate in a 'classical' way :
 
@@ -595,13 +598,13 @@ class ANEMO(object):
             velocity_NAN : ndarray
                 velocity of the eye in deg/sec without the saccades
 
-            w1 : int, optional(default 300)
+            w1 : int, optional (default 300)
                 size of the window 1 in ms
-            w2 : int, optional(default 50)
+            w2 : int, optional (default 50)
                 size of the window 2 in ms
-            off : int, optional(default 50)
+            off : int, optional (default 50)
                 gap between the two windows
-            crit : float, optional(default 0.17)
+            crit : float, optional (default 0.17)
                 difference criterion between the two linregress detecting if the pursuit begins
 
             Returns
@@ -636,7 +639,7 @@ class ANEMO(object):
 
             return old_latence[0]
 
-        def maximum(velocity_NAN, TargetOn_0):
+        def maximum(velocity_NAN, TargetOn_0) :
 
             '''
             Return the maximum velocity of the pursuit during a smooth pursuit calculated in a 'classic' way
@@ -678,7 +681,7 @@ class ANEMO(object):
 
             return np.nanmean(velocity_NAN[TargetOn_0-50:TargetOn_0+50])
 
-        def Full(velocity_NAN, TargetOn_0, w1=300, w2=50, off=50, crit=0.17):
+        def Full(velocity_NAN, TargetOn_0, w1=300, w2=50, off=50, crit=0.17) :
 
             '''
             Return :
@@ -697,13 +700,13 @@ class ANEMO(object):
             TargetOn_0 : int
                 time since the beginning of the trial when the target to follow appears
 
-            w1 : int, optional(default 300)
+            w1 : int, optional (default 300)
                 size of the window 1 to detect latency in ms
-            w2 : int, optional(default 50)
+            w2 : int, optional (default 50)
                 size of the window 2 to detect latency in ms
-            off : int, optional(default 50)
+            off : int, optional (default 50)
                 gap between the two windows to detect latency
-            crit : float, optional(default 0.17)
+            crit : float, optional (default 0.17)
                 difference criterion between the two linregress detecting if the pursuit begins to detect latency
 
             Returns
@@ -725,7 +728,7 @@ class ANEMO(object):
 
 
 
-    class Equation(object):
+    class Equation(object) :
         """ Function used to perform the Fits """
 
         def fct_velocity(x, dir_target, start_anti, v_anti, latence, tau, maxi, do_whitening) :
@@ -739,7 +742,7 @@ class ANEMO(object):
                 time of the function
 
             dir_target : int
-                direction of the target -1 ou 1
+                direction of the target -1 or 1
             start_anti : int
                 time when anticipation begins
             v_anti : float
@@ -751,7 +754,7 @@ class ANEMO(object):
             maxi : float
                 maximum velocity reached during the pursuit
             do_whitening : bool
-                if True return the whitened velocity
+                if ``True`` return the whitened velocity
 
             Returns
             -------
@@ -764,7 +767,7 @@ class ANEMO(object):
             vitesse = []
             y = 0
 
-            for t in range(len(time)):
+            for t in range(len(time)) :
 
                 if start_anti >= latence :
                     if time[t] < latence :
@@ -781,11 +784,11 @@ class ANEMO(object):
                         else :
                             vitesse.append(dir_target*maxi*(1-np.exp(-1/tau*(time[t]-latence)))+y)
 
-            if do_whitening is True: vitesse = whitening(vitesse)
+            if do_whitening is True : vitesse = whitening(vitesse)
 
             return vitesse
 
-        def fct_position(x, data_x, saccades, nb_sacc, dir_target, start_anti, v_anti, latence, tau, maxi, t_0, px_per_deg, before_sacc, after_sacc, do_whitening):
+        def fct_position(x, data_x, saccades, nb_sacc, dir_target, start_anti, v_anti, latence, tau, maxi, t_0, px_per_deg, before_sacc, after_sacc, do_whitening) :
 
             '''
             Function reproducing the position of the eye during the smooth pursuit of a moving target
@@ -799,15 +802,20 @@ class ANEMO(object):
             saccades : ndarray the same size as data_x
                 List of saccades perform during the trial ::
 
-                    for i in range(len(saccade)) :
-                        saccades[i] -> onset
-                        saccades[i+1] -> end
-                        saccades[i+2] -> time sacc
+                    saccades = np.zeros(len(data_x))
+                    i=0
+                    # sacc is list of edf saccades for the trial recorded
+                    # by the eyetracker transformed by the read_edf function
+                    for s in range(len(sacc)) :
+                        saccades[i]   = sacc[s][0] # onset sacc
+                        saccades[i+1] = sacc[s][1] # end sacc
+                        saccades[i+2] = sacc[s][2] # time sacc
+                        i = i+3
 
             nb_sacc : int
                 number of saccades during the trial
             dir_target : int
-                direction of the target -1 ou 1
+                direction of the target -1 or 1
             start_anti : int
                 time when anticipation begins
             v_anti : float
@@ -827,7 +835,7 @@ class ANEMO(object):
             after_sacc : int
                 time to delete after saccades
             do_whitening : bool
-                if True return the whitened position
+                if ``True`` return the whitened position
 
             Returns
             -------
@@ -842,12 +850,13 @@ class ANEMO(object):
             speed = ANEMO.Equation.fct_velocity(x=x, dir_target=dir_target, start_anti=start_anti, v_anti=v_anti, latence=latence, tau=tau, maxi=maxi, do_whitening=False)
             pos = np.cumsum(speed)
 
+
             i=0
             for s in range(nb_sacc) :
                 sacc = saccades[i:i+3] # obligation to have the independent variable at the same size :/
                                         # saccades[i] -> onset, saccades[i+1] -> end, saccades[i+2] -> time sacc
 
-                if do_whitening is True:
+                if do_whitening is True :
                     if int(sacc[0]-t_0)-int(before_sacc)-1 < len(pos) : a = pos[int(sacc[0]-t_0)-int(before_sacc)-1]
                     else :                                              a = pos[-1]
                 else :                                                  a = np.nan
@@ -861,11 +870,11 @@ class ANEMO(object):
 
                 i = i+3
 
-            if do_whitening is True: pos = whitening(pos)
+            if do_whitening is True : pos = whitening(pos)
 
             return pos
 
-        def fct_saccade(x, x_0, tau, x1, x2, T0, t1, t2, tr, do_whitening):
+        def fct_saccade(x, x_0, tau, x1, x2, T0, t1, t2, tr, do_whitening) :
 
             '''
             Function reproducing the position of the eye during the sacades
@@ -892,7 +901,7 @@ class ANEMO(object):
             tr : float
                 time of the end of the second curvature after t2 in ms
             do_whitening : bool
-                if True return the whitened position
+                if ``True`` return the whitened position
 
             Returns
             -------
@@ -924,7 +933,7 @@ class ANEMO(object):
                 elif t < TR :   xx.append(x_0 + (x2 + Umax2*tau * ((T2-t) + tau*(1-np.exp((T2-t)/tau)))))
                 else :          xx.append(xx[-1])
 
-            if do_whitening: xx = whitening(xx)
+            if do_whitening : xx = whitening(xx)
 
             return xx
 
@@ -935,7 +944,7 @@ class ANEMO(object):
         Fit allows you to perform Fits on Smooth Pursuite Eyes Movements data.
         You could use the functions 'velocity', 'position' and 'saccades' already present, but also your own functions.
         It must be initialized with the parameters of the experiment
-        (see :doc:`ANEMO.__ doc__</ANEMO_doc>`) for more precisions on the parameters)
+        (see :mod:`~ANEMO.ANEMO.ANEMO` for more precisions on the parameters)
         """
 
         def __init__(self, param_exp=None) :
@@ -956,20 +965,20 @@ class ANEMO(object):
                         list of lists for each block containing the direction of the target for each trial,
                         dir_target = param_exp['dir_target'][block][trial]
                             the direction of the target must be equal to -1 for left or 1 for right
-                or 'p': ndarray
+                or 'p' : ndarray
                         ndarray containing for each trial of each block the direction of the target, its probability of direction and the switches of this probability
                         dir_target = param_exp['p'][trial, block, 0]
                             the direction of the target must be equal to 0 for left or 1 for right
                         proba = param_exp['p'][trial, block, 1]
                         swich = param_exp['p'][trial, block, 2]
 
-                'N_trials': int
+                'N_trials' : int
                     number of trials per block
 
-                'N_blocks': int
+                'N_blocks' : int
                     number of blocks
 
-                'observer': str
+                'observer' : str
                     subject name
 
                 'list_events' : list
@@ -992,45 +1001,49 @@ class ANEMO(object):
             ----------
             equation : str {'fct_velocity', 'fct_position', 'fct_saccades'} (default 'fct_velocity')
                 name of the equation for the fit :
-                    - ``'fct_velocity'``: generates the parameters for a fit velocity
-                    - ``'fct_position'``: generates the parameters for a fit position
-                    - ``'fct_saccades'``: generates the parameters for a fit saccades
+                    - ``'fct_velocity'`` : generates the parameters for a fit velocity
+                    - ``'fct_position'`` : generates the parameters for a fit position
+                    - ``'fct_saccades'`` : generates the parameters for a fit saccades
 
-            dir_target : int, optional(default None)
-                the direction of the target, if None went searched in param_exp,
-                option obligatory if equation in ``['fct_velocity', 'fct_position']``
-            trackertime : ndarray, optional(default None)
-                the time of the tracker,
-                option obligatory if equation in ``['fct_velocity', 'fct_position']``
-            TargetOn : int, optional(default None)
-                time when the target to follow appears,
-                option obligatory if equation in ``['fct_velocity', 'fct_position']``
-            StimulusOf : int, optional(default None)
-                time when the stimulus disappears,
-                option obligatory if equation in ``['fct_velocity', 'fct_position']``
-            saccades : list, optional(default None)
-                list of edf saccades for the trial recorded by the eyetracker transformed by the function read_edf of the module edfreader,
-                option obligatory if equation in ``['fct_velocity', 'fct_position']``
+            data_x : ndarray, optional (default None)
+                x position for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
+            dir_target : int, optional (default None)
+                the direction of the target -- if ``None`` went searched in ``param_exp`` (see :mod:`~ANEMO.ANEMO.ANEMO`)
 
-            value_latence : int, optional(default None)
-                value that takes the parameter latence to begin the fit, if None or nan by default = ``TargetOn-t_0+100``,
-                optional not obligatory if equation in ``['fct_velocity', 'fct_position']``
-            value_maxi : float, optional(default None)
-                value that takes the parameter maxi to begin the fit, if None or nan by default = ``15.``,
-                optional not obligatory if equation in ``['fct_velocity', 'fct_position']``
-            value_anti : float, optional(default None)
-                value that takes the parameter v_anti to begin the fit, if None or nan by default = ``0.``,
-                optional not obligatory if equation in ``['fct_velocity', 'fct_position']``
-            before_sacc : int, optional(default 5)
-                time to remove before saccades,
-                optional not obligatory if equation in ``['fct_velocity', 'fct_position']``
-            after_sacc : int, optional(default 15)
-                time to delete after saccades,
-                optional not obligatory if equation in ``['fct_velocity', 'fct_position']``
+            trackertime : ndarray, optional (default None)
+                the time of the tracker
+            TargetOn : int, optional (default None)
+                time when the target to follow appears
+            StimulusOf : int, optional (default None)
+                time when the stimulus disappears
+            saccades : list, optional (default None)
+                list of edf saccades for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
 
-            data_x : ndarray, optional(default None)
-                x position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module,
-                option obligatory if equation in ``['fct_position', 'fct_saccades']``
+            value_latence : int, optional (default None)
+                value that takes the parameter latence to begin the fit -- if ``None`` or ``nan`` by default ``TargetOn-t_0+100``
+            value_maxi : float, optional (default 15)
+                value that takes the parameter maxi to begin the fit -- if ``None`` or ``nan`` by default ``15.``
+            value_anti : float, optional (default 0)
+                value that takes the parameter v_anti to begin the fit -- if ``None`` or ``nan`` by default ``0.``
+
+            before_sacc : int, optional (default 5)
+                time to remove before saccades -- it is advisable to put : ``5`` for ``'fct_velocity'`` and ``'fct_position'``, ``0`` for ``'fct_saccade'``
+            after_sacc : int, optional (default 15)
+                time to delete after saccades -- it is advisable to put ``15``
+
+            Warning
+            -------
+            **some parameters must be defined :**
+
+            - if ``equation`` is ``'fct_velocity'`` or ``'fct_position'`` :
+                - dir_target
+                - trackertime
+                - TargetOn
+                - StimulusOf
+                - saccades
+
+            - if ``equation`` is ``'fct_position'`` or ``'fct_saccades'`` :
+                - data_x
 
             Returns
             -------
@@ -1089,7 +1102,7 @@ class ANEMO(object):
 
                 sacc = np.zeros(len(trackertime))
                 i=0
-                for s in range(len(saccades)):
+                for s in range(len(saccades)) :
                     sacc[i]   = saccades[s][0] # onset sacc
                     sacc[i+1] = saccades[s][1] # end sacc
                     sacc[i+2] = saccades[s][2] # time sacc
@@ -1134,82 +1147,83 @@ class ANEMO(object):
             Parameters
             ----------
             data_trial : ndarray
-                data for a trial : ::
+                data for a trial :
+                    - if ``equation`` is ``'fct_velocity'`` : velocity data in deg/sec
+                    - if ``equation`` is ``'fct_position'`` : position data in deg
+                    - if ``equation`` is ``'fct_saccades'`` : position data in deg
+                    - if ``equation`` is ``function`` : velocity or position
 
-                    if equation='fct_velocity' : velocity data in deg/sec
-                    if equation='fct_position' : position data in deg
-                    if equation='fct_saccades' : position data in deg
-                    if equation=function : velocity or position
+            equation : str {'fct_velocity', 'fct_position', 'fct_saccades'} or function (default 'fct_velocity')
+                function or name of the equation for the fit :
+                    - ``'fct_velocity'`` : does a data fit with function ``'fct_velocity'``
+                    - ``'fct_position'`` : does a data fit with function ``'fct_position'``
+                    - ``'fct_saccades'`` : does a data fit with function ``'fct_saccades'``
+                    - ``function`` : does a data fit with function
 
-            equation : str, optional(default 'fct_velocity')
-                function or name of the equation for the fit ::
+            data_x : ndarray, optional (default None)
+                x position for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
+            dir_target : int, optional (default None)
+                the direction of the target -- if ``None`` went searched in ``param_exp`` (see :mod:`~ANEMO.ANEMO.ANEMO`)
 
-                    does a data fit :
-                    if 'fct_velocity' : with function 'fct_velocity'
-                    if 'fct_position' : with function 'fct_position'
-                    if 'fct_saccades' : with function 'fct_saccades'
-                    if function : with function
-
-            data_x : ndarray, optional(default None)
-                x position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module
-            dir_target : int, optional(default None)
-                the direction of the target, if None went searched in param_exp
-
-            trackertime : ndarray, optional(default None)
-                the time of the tracker, if None = ``np.arrange((len(data_trial))``
-            TargetOn : int, optional(default None)
+            trackertime : ndarray, optional (default None)
+                the time of the tracker, if ``None`` = ``np.arrange((len(data_trial))``
+            TargetOn : int, optional (default None)
                 time when the target to follow appears
-            StimulusOf : int, optional(default None)
+            StimulusOf : int, optional (default None)
                 time when the stimulus disappears
-            saccades : list, optional(default None)
-                list of edf saccades for the trial recorded by the eyetracker transformed by the function read_edf of the module edfreader
+            saccades : list, optional (default None)
+                list of edf saccades for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
 
-            time_sup : int, optional(default 280)
+            time_sup : int, optional (default 280)
                 time that will be deleted to perform the fit (for data that is less good at the end of the test)
-            step_fit : int, optional(default 2)
+            step_fit : int, optional (default 2)
                 number of steps for the fit
-            do_whitening : bool, optional(default False)
-                if True return the whitened fit
+            do_whitening : bool, optional (default False)
+                if ``True`` return the whitened fit
 
-            param_fit : dic, optional(default None)
-                fit parameter dictionary, each parameter is a dict containing : ::
+            param_fit : dic, optional (default None)
+                fit parameter dictionary, each parameter is a dict containing :
+                    - ``'name'`` : name of the variable,
+                    - ``'value'`` : initial value,
+                    - ``'min'`` : minimum value,
+                    - ``'max'`` : maximum value,
+                    - ``'vary'`` :
+                        - ``True`` if varies during fit,
+                        - ``'vary'`` if only varies for step 2,
+                        - ``False`` if not varies during fit
 
-                    'name': name of the variable,
-                    'value': initial value,
-                    'min': minimum value,
-                    'max': maximum value,
-                    'vary': True if varies during fit,
-                            'vary' if only varies for step 2,
-                            False if not varies during fit
+                if ``None`` generate by :func:`~ANEMO.ANEMO.ANEMO.Fit.generation_param_fit`
+            inde_vars : dic, optional (default None)
+                independent variable dictionary of fit -- if ``None`` generate by :func:`~ANEMO.ANEMO.ANEMO.Fit.generation_param_fit`
 
-            inde_vars : dic, optional(default None)
-                independent variable dictionary of fit
+            value_latence : int, optional (default None)
+                value that takes the parameter latence to begin the fit -- if ``None`` or ``nan`` by default ``TargetOn-t_0+100``
+            value_maxi : float, optional (default 15)
+                value that takes the parameter maxi to begin the fit -- if ``None`` or ``nan`` by default ``15.``
+            value_anti : float, optional (default 0)
+                value that takes the parameter v_anti to begin the fit -- if ``None`` or ``nan`` by default ``0.``
 
-            value_latence : int, optional(default None)
-                value that takes the parameter latence to begin the fit
-                if None or nan by default = TargetOn-t_0+100
-            value_maxi : float, optional(default 15)
-                value that takes the parameter maxi to begin the fit
-                if None or nan by default = 15.
-            value_anti : float, optional(default 0.)
-                value that takes the parameter v_anti to begin the fit
-                if None or nan by default = 0.
-
-            before_sacc : int, optional(default 5)
-                time to remove before saccades, it is advisable to put 5
-            after_sacc : int, optional(default 15)
-                time to delete after saccades, it is advisable to put 15
+            before_sacc : int, optional (default 5)
+                time to remove before saccades -- it is advisable to put : ``5`` for ``'fct_velocity'`` and ``'fct_position'``, ``0`` for ``'fct_saccade'``
+            after_sacc : int, optional (default 15)
+                time to delete after saccades -- it is advisable to put ``15``
 
             Warning
             -------
-            if equation is 'fct_position' :
-                data_x must be definite
+            **some parameters must be defined :**
 
-            if no param_fit or no inde_vars :
-                if equation in ['fct_position', 'fct_saccades'] :
-                    data_x must be definite
-                if equation in ['fct_velocity', 'fct_position'] :
-                    dir_target, trackertime, TargetOn, StimulusOf, and saccades must be definite
+            - if ``equation`` is ``'fct_position'`` :
+                - data_x
+
+            - if ``param_fit`` is ``None`` or ``inde_vars`` is ``None`` :
+                - if ``equation`` is ``'fct_position'`` or ``'fct_saccades'`` :
+                    - data_x
+                - if ``equation`` is ``'fct_velocity'`` or ``'fct_position'`` :
+                    - dir_target
+                    - trackertime
+                    - TargetOn
+                    - StimulusOf
+                    - saccades
 
             Returns
             -------
@@ -1234,7 +1248,7 @@ class ANEMO(object):
                 trackertime = trackertime[:-time_sup]
                 if equation == 'fct_position' : data_x = data_x[:-time_sup]
 
-            if do_whitening:
+            if do_whitening :
                 for x in range(len(data_trial)) :
                     if np.isnan(data_trial[x]) :
                         if x == 0 : data_trial[x] = 0
@@ -1254,8 +1268,8 @@ class ANEMO(object):
             if inde_vars is None : inde_vars = ANEMO.Fit.generation_param_fit(self, equation=equation, trackertime=trackertime, data_x=data_x, **opt)[1]
 
             if equation == 'fct_velocity' :  equation = ANEMO.Equation.fct_velocity
-            elif equation == 'fct_position': equation = ANEMO.Equation.fct_position
-            elif equation == 'fct_saccade':  equation = ANEMO.Equation.fct_saccade
+            elif equation == 'fct_position' : equation = ANEMO.Equation.fct_position
+            elif equation == 'fct_saccade' :  equation = ANEMO.Equation.fct_saccade
 
             params = Parameters()
             model = Model(equation, independent_vars=inde_vars.keys())
@@ -1294,7 +1308,7 @@ class ANEMO(object):
                      time_sup=280, step_fit=2, do_whitening=False,
                      list_param_enre=None, param_fit=None, inde_vars=None,
                      before_sacc=5, after_sacc=15, stop_search_misac=None,
-                     filt=False, cutoff=30, sample_rate=1000,
+                     filt=None, cutoff=30, sample_rate=1000,
                      plot=None, file_fig=None, show_target=False,
                      fig_width=12, t_label=20, t_text=14) :
 
@@ -1304,102 +1318,93 @@ class ANEMO(object):
             Parameters
             ----------
             data : list
-                edf data for the trials recorded by the eyetracker transformed by the read_edf function of the edfreader module
+                edf data for the trials recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
 
-            equation : str, optional(default 'fct_velocity')
-                function or name of the equation for the fit ::
+            equation : str {'fct_velocity', 'fct_position', 'fct_saccades'} or function (default 'fct_velocity')
+                function or name of the equation for the fit :
+                    - ``'fct_velocity'`` : does a data fit with function ``'fct_velocity'``
+                    - ``'fct_position'`` : does a data fit with function ``'fct_position'``
+                    - ``'fct_saccades'`` : does a data fit with function ``'fct_saccades'``
+                    - ``function`` : does a data fit with function
 
-                    does a data fit :
-                    if 'fct_velocity' : with the function 'fct_velocity'
-                    if 'fct_position' : with the function 'fct_position'
-                    if 'fct_saccades' : with the function 'fct_saccades'
-                    if function : with the function
+            fitted_data : str {'velocity', 'position', 'saccade'}, optional (default 'velocity')
+                nature of fitted data :
+                    - ``'velocity'`` : fit velocity data for trial in deg/sec
+                    - ``'position'`` : fit position data for trial in deg
+                    - ``'saccade'`` : fit position data for sacades in trial in deg
 
-            fitted_data : bool, optional(default 'velocity')
-                nature of fitted data ::
+            N_blocks : int, optional (default None)
+                number of blocks -- if ``None`` went searched in ``param_exp`` (see :mod:`~ANEMO.ANEMO.ANEMO`)
+            N_trials : int, optional (default None)
+                number of trials per block  --  if ``None`` went searched in ``param_exp`` (see :mod:`~ANEMO.ANEMO.ANEMO`)
 
-                    fit :
-                    if 'velocity' : velocity data for trial in deg/sec
-                    if 'position' : position data for trial in deg
-                    if 'saccade' : position data for sacades in trial in deg
-
-            N_blocks : int, optional(default None)
-                number of blocks,
-                if None went searched in param_exp
-            N_trials : int, optional(default None)
-                number of trials per block,
-                if None went searched in param_exp
-
-            time_sup : int, optional(default 280)
+            time_sup : int, optional (default 280)
                 time that will be deleted to perform the fit (for data that is less good at the end of the test)
-            step_fit : int, optional(default 2)
+            step_fit : int, optional (default 2)
                 number of steps for the fit
-            do_whitening : bool, optional(default False)
-                if True return the whitened fit
+            do_whitening : bool, optional (default False)
+                if ``True`` return the whitened fit
 
-            list_param_enre : list, optional(default None)
-                list of fit parameters to record
-                if None : ::
+            list_param_enre : list, optional (default None)
+                list of fit parameters to record \n
+                if ``None`` :
+                    - if ``equation`` is ``'fct_velocity'`` or ``'fct_position'`` : ::
 
-                    if equation in ['fct_velocity', 'fct_position'] :
-                        ['fit', 'start_anti', 'v_anti', 'latence', 'tau',
-                            'maxi', 'saccades', 'old_anti', 'old_max',
-                            'old_latence']
+                        list_param_enre = ['fit', 'start_anti', 'v_anti',
+                                           'latence', 'tau', 'maxi',
+                                           'saccades', 'old_anti',
+                                           'old_max', 'old_latence']
 
-                    if equation is 'fct_saccades' :
-                    ['fit', 'T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2',
-                        'tau']
+                    - if ``equation`` is ``'fct_saccades'`` : ::
 
-            param_fit : dic, optional(default None)
-                fit parameter dictionary, each parameter is a dict containing : ::
+                        list_param_enre = ['fit', 'T0', 't1', 't2', 'tr',
+                                           'x_0', 'x1', 'x2', 'tau']
 
-                    'name': name of the variable,
-                    'value': initial value,
-                    'min': minimum value,
-                    'max': maximum value,
-                    'vary': True if varies during fit,
-                            'vary' if only varies for step 2,
-                            False if not varies during fit
+            param_fit : dic, optional (default None)
+                fit parameter dictionary, each parameter is a dict containing :
+                    - ``'name'`` : name of the variable,
+                    - ``'value'`` : initial value,
+                    - ``'min'`` : minimum value,
+                    - ``'max'`` : maximum value,
+                    - ``'vary'`` :
+                        - ``True`` if varies during fit,
+                        - ``'vary'`` if only varies for step 2,
+                        - ``False`` if not varies during fit
 
-                if None : Generate by generation_param_fit
-            inde_vars : dic, optional(default None)
-                independent variable dictionary of fit
-                if None : Generate by generation_param_fit
+                if ``None`` generate by :func:`~ANEMO.ANEMO.ANEMO.Fit.generation_param_fit`
+            inde_vars : dic, optional (default None)
+                independent variable dictionary of fit -- if ``None`` generate by :func:`~ANEMO.ANEMO.ANEMO.Fit.generation_param_fit`
 
-            before_sacc : int, optional(default 5)
-                time to remove before saccades, it is advisable to put : 5 for 'fct_velocity' and 'fct_position', 0 for 'fct_saccade'
-            after_sacc : int, optional(default 15)
-                time to delete after saccades, it is advisable to put 15
-            stop_search_misac : int, optional(default None)
-                stop search of micro_saccade
-                if None : stops searching at the end of fixation + 100ms
+            before_sacc : int, optional (default 5)
+                time to remove before saccades -- it is advisable to put : ``5`` for ``'fct_velocity'`` and ``'fct_position'``, ``0`` for ``'fct_saccade'``
+            after_sacc : int, optional (default 15)
+                time to delete after saccades -- it is advisable to put ``15``
+            stop_search_misac : int, optional (default None)
+                stop search of micro_saccade -- if ``None`` stops searching at the ``end of fixation + 100ms``
 
-            filt : str, optional(default False)
-                to filter the data can be : ::
+            filt : str {'position', 'velocity', 'velocity-position'} or None (default None)
+                to filter the data can be :
+                    - ``'position'`` : filter the position,
+                    - ``'velocity'`` : filter the speed,
+                    - ``'velocity-position'`` : filter the position then the speed
+                    - ``None`` : the data will not be filtered
+            cutoff : int, optional (default 30)
+                the critical frequencies for cutoff of filter
+            sample_rate : int, optional (default 1000)
+                sampling rate of the recording for the filtre
 
-                    - 'position': filter the position,
-                    - 'velocity': filter the speed,
-                    - 'velocity-position': filter the position then the speed
+            plot : bool, optional (default None)
+                if ``True`` : save the figure in ``file_fig``
+            file_fig : str, optional (default None)
+                name of file figure reccorded -- if ``None`` file_fig is ``'Fit'``
+            show_target : bool, optional (default False)
+                if ``True`` show the target on the plot
 
-                if None the data will not be filtered
-            cutoff : int, optional(default 30)
-                the critical frequencies for cutoff of filter, must be defined if filt is not None
-            sample_rate : int, optional(default 1000)
-                sampling rate of the recording for the filtre, must be defined if filt is not None
-
-            plot : bool, optional(default None)
-                if true : save the figure in file_fig
-            file_fig : str, optional(default None)
-                name of file figure reccorded
-                if None file_fig is 'Fit'
-            show_target : bool, optional(default False)
-                if true : show the target on the plot
-
-            fig_width : int, optional(default 12)
+            fig_width : int, optional (default 12)
                 figure size
-            t_label : int, optional(default 20)
+            t_label : int, optional (default 20)
                 size x and y label
-            t_text : int, optional(default 14)
+            t_text : int, optional (default 14)
                 size of the text of the figure
 
             Returns
@@ -1507,7 +1512,7 @@ class ANEMO(object):
 
                         for name in list_param_enre : param[name][block].append([])
 
-                        for s in range(len(arg.saccades)):
+                        for s in range(len(arg.saccades)) :
                             data_sacc = data_1[arg.saccades[s][0]-arg.t_0-before_sacc:arg.saccades[s][1]-arg.t_0+after_sacc]
                             if len(data_sacc) > 0 :
                                 #-------------------------------------------------
@@ -1523,8 +1528,8 @@ class ANEMO(object):
 
                     if plot is not None :
 
-                        if N_trials==1: ax1 = axs
-                        else :          ax1 = axs[trial]
+                        if N_trials==1 : ax1 = axs
+                        else :           ax1 = axs[trial]
 
                         if fitted_data == 'saccade' : ax = gridspec.GridSpecFromSubplotSpec(1, len(arg.saccades), subplot_spec=ax1, hspace=0.25, wspace=0.15)
                         else :                        ax = ax1 ; ax.cla() # to put ax figure to zero
@@ -1555,7 +1560,7 @@ class ANEMO(object):
         Plot allows to display the data as well as their Fits.
         You could use the functions 'velocity', 'position' and 'saccades' already present, but also your own functions.
         It must be initialized with the parameters of the experiment
-        (see ANEMO .__ doc__ for more precisions on the parameters)
+        (see :mod:`~ANEMO.ANEMO.ANEMO` for more precisions on the parameters)
         """
 
         def __init__(self, param_exp=None) :
@@ -1566,7 +1571,7 @@ class ANEMO(object):
             param_exp : dict
                 dictionary containing the parameters of the experiment :
 
-                'px_per_deg': float
+                'px_per_deg' : float
                         number of px per degree for the experiment
                             screen_width_deg = 2. * np.arctan((screen_width_cm/2) / viewing_Distance_cm) * 180/np.pi
                             px_per_deg = screen_width_px / screen_width_deg
@@ -1576,20 +1581,20 @@ class ANEMO(object):
                         list of lists for each block containing the direction of the target for each trial,
                         dir_target = param_exp['dir_target'][block][trial]
                             the direction of the target must be equal to -1 for left or 1 for right
-                or 'p': ndarray
+                or 'p' : ndarray
                         ndarray containing for each trial of each block the direction of the target, its probability of direction and the switches of this probability
                         dir_target = param_exp['p'][trial, block, 0]
                             the direction of the target must be equal to 0 for left or 1 for right
                         proba = param_exp['p'][trial, block, 1]
                         swich = param_exp['p'][trial, block, 2]
 
-                'N_trials': int
+                'N_trials' : int
                     number of trials per block
 
-                'N_blocks': int
+                'N_blocks' : int
                     number of blocks
 
-                'observer': str
+                'observer' : str
                     subject name
 
                 'list_events' : list
@@ -1598,11 +1603,11 @@ class ANEMO(object):
 
                 optional not obligatory, just to display the target in ANEMO.Plot :
 
-                    'V_X_deg': float
+                    'V_X_deg' : float
                         target velocity in deg/s
-                    'stim_tau': float
+                    'stim_tau' : float
                         presentation time of the target
-                    'RashBass': int
+                    'RashBass' : int
                         the time the target has to arrive at the center of the screen in ms (to move the target back to t=0 of its velocity * latency = RashBass)
             '''
 
@@ -1618,18 +1623,18 @@ class ANEMO(object):
             ax : AxesSubplot
                 ax on which deco should be displayed
 
-            StimulusOn : int, optional(default None)
+            StimulusOn : int, optional (default None)
                 time when the stimulus appears
-            StimulusOf : int, optional(default None)
+            StimulusOf : int, optional (default None)
                 time when the stimulus disappears
-            TargetOn : int, optional(default None)
+            TargetOn : int, optional (default None)
                 time when the target to follow appears
-            TargetOff : int, optional(default None)
+            TargetOff : int, optional (default None)
                 time when the target to follow disappears
-            saccades : list, optional(default None)
-                list of edf saccades for the trial recorded by the eyetracker transformed by the function read_edf of the module edfreader
+            saccades : list, optional (default None)
+                list of edf saccades for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
 
-            t_label : int, optional(default 20)
+            t_label : int, optional (default 20)
                 size x and y label
 
             Returns
@@ -1673,7 +1678,7 @@ class ANEMO(object):
                          time_sup=280, step_fit=2, do_whitening=False,
                          list_param_enre=None, param_fit=None, inde_vars=None,
                          before_sacc=5, after_sacc=15, stop_search_misac=None,
-                         filt=False, cutoff=30, sample_rate=1000,
+                         filt=None, cutoff=30, sample_rate=1000,
                          show_pos_sacc=True, plot_detail=None,
                          show_target=False, show_num_trial=None, write_step_trial=True,
                          title='', c='k', fig=None, out=None, report=None,
@@ -1688,122 +1693,115 @@ class ANEMO(object):
                 axis on which the figure is to be displayed
 
             data : list
-                edf data for the trials recorded by the eyetracker transformed by the read_edf function of the edfreader module
+                edf data for the trials recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
 
             trial : int
                 number of the trial in the block
             block : int
                 block number
 
-            show : str, optional(default 'data')
-                if 'data' = show a data
-                if 'fit' = show a data fit with the function defined with equation parameter
-            show_data : str, optional(default 'velocity')
-                if 'velocity' = show the velocity data for a trial in deg/sec
-                if 'position' = show the position data for a trial in deg
-                if 'saccade' = show the position data for sacades in trial in deg
+            show : str {'data', 'fit'}, optional (default 'data')
+                - ``'data'`` : show a data
+                - ``'fit'`` : show a data fit with the function defined with equation parameter
+            show_data : str {'velocity', 'position', 'saccade'}, optional (default 'velocity')
+                - ``'velocity'`` : show the velocity data for a trial in deg/sec
+                - ``'position'`` : show the position data for a trial in deg
+                - ``'saccade'`` : show the position data for sacades in trial in deg
 
-            equation : str, optional(default 'fct_velocity')
-                function or name of the equation for the fit ::
+            equation : str {'fct_velocity', 'fct_position', 'fct_saccades'} or function (default 'fct_velocity')
+                function or name of the equation for the fit :
+                    - ``'fct_velocity'`` : does a data fit with function ``'fct_velocity'``
+                    - ``'fct_position'`` : does a data fit with function ``'fct_position'``
+                    - ``'fct_saccades'`` : does a data fit with function ``'fct_saccades'``
+                    - ``function`` : does a data fit with function
 
-                    does a data fit :
-                    if 'fct_velocity' : with function 'fct_velocity'
-                    if 'fct_position' : with function 'fct_position'
-                    if 'fct_saccades' : with function 'fct_saccades'
-                    if function : with function
+            N_blocks : int, optional (default None)
+                number of blocks -- if ``None`` went searched in ``param_exp`` (see :mod:`~ANEMO.ANEMO.ANEMO`)
+            N_trials : int, optional (default None)
+                number of trials per block  --  if ``None`` went searched in ``param_exp`` (see :mod:`~ANEMO.ANEMO.ANEMO`)
 
-            N_blocks : int, optional(default None)
-                number of blocks
-                if None went searched in param_exp
-            N_trials : int, optional(default None)
-                number of trials per block
-                if None went searched in param_exp
-
-            time_sup : int, optional(default 280)
+            time_sup : int, optional (default 280)
                 time that will be deleted to perform the fit (for data that is less good at the end of the test)
-            step_fit : int, optional(default 2)
+            step_fit : int, optional (default 2)
                 number of steps for the fit
-            do_whitening : bool, optional(default False)
-                if True return the whitened fit
+            do_whitening : bool, optional (default False)
+                if ``True`` return the whitened fit
 
-            list_param_enre : list, optional(default None)
-                list of fit parameters to record
-                if None : ::
+            list_param_enre : list, optional (default None)
+                list of fit parameters to record \n
+                if ``None`` :
+                    - if ``equation`` is ``'fct_velocity'`` or ``'fct_position'`` : ::
 
-                    if equation in ['fct_velocity', 'fct_position'] :
-                        ['fit', 'start_anti', 'v_anti', 'latence', 'tau',
-                            'maxi', 'saccades', 'old_anti', 'old_max',
-                            'old_latence']
+                        list_param_enre = ['fit', 'start_anti', 'v_anti',
+                                           'latence', 'tau', 'maxi',
+                                           'saccades', 'old_anti',
+                                           'old_max', 'old_latence']
 
-                    if equation is 'fct_saccades' :
-                    ['fit', 'T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2',
-                        'tau']
+                    - if ``equation`` is ``'fct_saccades'`` : ::
 
-            param_fit : dic, optional(default None)
+                        list_param_enre = ['fit', 'T0', 't1', 't2', 'tr',
+                                           'x_0', 'x1', 'x2', 'tau']
+
+            param_fit : dic, optional (default None)
                 fit parameter dictionary, each parameter is a dict containing : ::
+                    - ``'name'`` : name of the variable,
+                    - ``'value'`` : initial value,
+                    - ``'min'`` : minimum value,
+                    - ``'max'`` : maximum value,
+                    - ``'vary'`` :
+                        - ``True`` if varies during fit,
+                        - ``'vary'`` if only varies for step 2,
+                        - ``False`` if not varies during fit
 
-                    'name': name of the variable,
-                    'value': initial value,
-                    'min': minimum value,
-                    'max': maximum value,
-                    'vary': True if varies during fit,
-                            'vary' if only varies for step 2,
-                            False if not varies during fit
+                if ``None`` generate by :func:`~ANEMO.ANEMO.ANEMO.Fit.generation_param_fit`
+            inde_vars : dic, optional (default None)
+                independent variable dictionary of fit -- if ``None`` generate by :func:`~ANEMO.ANEMO.ANEMO.Fit.generation_param_fit`
 
-                if None : Generate by generation_param_fit
-            inde_vars : dic
-                independent variable dictionary of fit
-                if None : Generate by generation_param_fit
+            before_sacc : int, optional (default 5)
+                time to remove before saccades -- it is advisable to put : ``5`` for ``'fct_velocity'`` and ``'fct_position'``, ``0`` for ``'fct_saccade'``
+            after_sacc : int, optional (default 15)
+                time to delete after saccades -- it is advisable to put ``15``
+            stop_search_misac : int, optional (default None)
+                stop search of micro_saccade -- if ``None`` stops searching at the ``end of fixation + 100ms``
 
-            before_sacc : int, optional(default 5)
-                time to remove before saccades, it is advisable to put : 5 for 'fct_velocity' and 'fct_position', 0 for 'fct_saccade'
-            after_sacc : int, optional(default 15)
-                time to delete after saccades, it is advisable to put 15
-            stop_search_misac : int, optional(default None)
-                stop search of micro_saccade
-                if None : stops searching at the end of fixation + 100ms
+            filt : str {'position', 'velocity', 'velocity-position'} or None (default None)
+                to filter the data can be :
+                    - ``'position'`` : filter the position,
+                    - ``'velocity'`` : filter the speed,
+                    - ``'velocity-position'`` : filter the position then the speed
+                    - ``None`` : the data will not be filtered
+            cutoff : int, optional (default 30)
+                the critical frequencies for cutoff of filter
+            sample_rate : int, optional (default 1000)
+                sampling rate of the recording for the filtre
 
-            filt : str, optional(default False)
-                to filter the data can be : ::
+            show_pos_sacc : bool, optional (default True)
+                if ``True`` shows in a first figure the location of saccades during the pousuite
+            plot_detail : bool, optional (default None)
+                if ``True`` show the fit parameters on the data
 
-                    - 'position': filter the position,
-                    - 'velocity': filter the speed,
-                    - 'velocity-position': filter the position then the speed
+            show_target : bool, optional (default False)
+                if ``True`` show the target on the plot
+            show_num_trial : bool, optional (default None)
+                if ``True`` the num is written of the trial in y_label
+            write_step_trial : bool, optional (default True)
+                if ``True`` : write the steps of the trial on the figure
 
-                if None the data will not be filtered
-            cutoff : int, optional(default 30)
-                the critical frequencies for cutoff of filter, must be defined if filt is not None
-            sample_rate : int, optional(default 1000)
-                sampling rate of the recording for the filtre, must be defined if filt is not None
-
-            show_pos_sacc : bool, optional(default True)
-                if True : show in a first figure the location of saccades during the pousuite
-            plot_detail : bool, optional(default None)
-                if True : show the fit parameters on the data
-
-            show_target : bool, optional(default False)
-                if true : show the target on the plot
-            show_num_trial : bool, optional(default None)
-                if True : the num is written of the trial in y_label
-            write_step_trial : bool, optional(default True)
-                if True : write the steps of the trial on the figure
-
-            title : str, optional(default '')
+            title : str, optional (default '')
                 title of the figure
-            c : str, optional(default 'k')
+            c : str, optional (default 'k')
                 text color and fit
-            fig :  matplotlib.figure.Figure, optional(default None)
-                figure on which the function should be displayed
-                if None: a figure is created
-            out : for the function show_fig, optional(default None)
-            report : bool, optional(default None)
-                if True : return the report of the fit for each trial
+            fig :  matplotlib.figure.Figure, optional (default None)
+                figure on which the function should be displayed -- if ``None`` a figure is created
+            out : for the function show_fig, optional (default None)
+            report : bool, optional (default None)
+                if ``True`` return the report of the fit for each trial
 
-            fig_width : int, optional(default 15)
+            fig_width : int, optional (default 15)
                 figure size
-            t_label : int, optional(default 20)
+            t_label : int, optional (default 20)
                 size x and y label
-            t_text : int, optional(default 14)
+            t_text : int, optional (default 14)
                 size of the text of the figure
 
             Returns
@@ -1876,7 +1874,7 @@ class ANEMO(object):
                 if show_data=='saccade' :
                     fig, axs = plt.subplots(1, 1, figsize=(fig_width, (fig_width)/1.6180))
                     axs.set_xticks([]) ; axs.set_yticks([])
-                    for loc, spine in axs.spines.items(): spine.set_visible(False)
+                    for loc, spine in axs.spines.items() : spine.set_visible(False)
                     axs0 = gridspec.GridSpecFromSubplotSpec(2, len(arg.saccades), subplot_spec=axs, hspace=0.25, wspace=0.15)
                     ax = plt.Subplot(fig, axs0[0,:]) ; fig.add_subplot(ax)
                 else :
@@ -2029,7 +2027,7 @@ class ANEMO(object):
                     for name in list_param :
                         if name in param_f.keys() :
                             ax.text((TarOff_s-10), -arg.dir_target*35*scale+(-arg.dir_target*x),
-                                    "%s: %0.3f"%(name, param_f[name]) , color=c, size=t_text, va='center', ha='right')
+                                    "%s : %0.3f"%(name, param_f[name]) , color=c, size=t_text, va='center', ha='right')
                             x = x - 5*scale
                     if 'latence' in param_f.keys() :    ax.bar(param_f['latence'],    80, bottom=-40, color=c, width=3, lw=0)
                     if 'start_anti' in param_f.keys() : ax.bar(param_f['start_anti'], 80, bottom=-40, color=c, width=3, lw=0)
@@ -2085,7 +2083,7 @@ class ANEMO(object):
 
                 for s in range(len(arg.saccades)):
 
-                    if len(arg.saccades)==1:
+                    if len(arg.saccades)==1 :
                         if show_pos_sacc is True : ax1 = axs0[1]
                         else :                     ax1 = axs0
                     else :
@@ -2162,7 +2160,7 @@ class ANEMO(object):
                         px = 0
                         for name in list_param :
                             if name in param_f.keys() :
-                                ax1.text(maxx+(maxx-minx)/3+(3*(maxx-minx)/t_text)*len(arg.saccades), (maxy+(maxy-miny)/20)-px, "%s: %0.2f"%(name, param_f[name]), color=c, ha='right', va='top', size=t_text)
+                                ax1.text(maxx+(maxx-minx)/3+(3*(maxx-minx)/t_text)*len(arg.saccades), (maxy+(maxy-miny)/20)-px, "%s : %0.2f"%(name, param_f[name]), color=c, ha='right', va='top', size=t_text)
                                 px = px + (maxy-miny)/(t_text/1.7)
 
                         if 'T0' in param_f.keys() :
@@ -2195,7 +2193,7 @@ class ANEMO(object):
 
             if out is not None :
                 from IPython.display import display,clear_output
-                with out: clear_output(wait=True) ; display(ax.figure)
+                with out : clear_output(wait=True) ; display(ax.figure)
                 if show=='fit' : return result_fit
 
             else :
@@ -2203,26 +2201,27 @@ class ANEMO(object):
                 else : return ax
 
 
-        def plot_equation(self, equation='fct_velocity', fig_width=15, t_titre=35, t_label=20):
+        def plot_equation(self, equation='fct_velocity', fig_width=15, t_titre=35, t_label=20) :
 
             '''
             Returns figure of the equation used for the fit with the parameters of the fit
 
             Parameters
             ----------
-            equation : str or function
-                if 'fct_velocity' displays the fct_velocity equation
-                if 'fct_position' displays the fct_position equation
-                if 'fct_saccades' displays the fct_saccades equation
-                if function displays the function equation
+            equation : str {'fct_velocity', 'fct_position', 'fct_saccades'} or function (default 'fct_velocity')
+                function or name of the equation for the fit :
+                    - ``'fct_velocity'`` : displays the ``fct_velocity`` equation
+                    - ``'fct_position'`` : displays the ``fct_position`` equation
+                    - ``'fct_saccades'`` : displays the ``fct_saccades`` equation
+                    - ``function`` : displays the function equation
 
-            fig_width : int, optional(default 15)
+            fig_width : int, optional (default 15)
                 figure size
 
-            t_titre : int, optional(default 35)
+            t_titre : int, optional (default 35)
                 size of the title of the figure
 
-            t_label : int, optional(default 20)
+            t_label : int, optional (default 20)
                 size x and y label
 
             Returns
@@ -2377,9 +2376,9 @@ class ANEMO(object):
         def plot_data(self, data, show='velocity', trials=0, block=0,
                       N_blocks=None, N_trials=None,
                       before_sacc=5, after_sacc=15, stop_search_misac=None,
-                      filt=False, cutoff=30, sample_rate=1000,
+                      filt=None, cutoff=30, sample_rate=1000,
                       show_pos_sacc=True, show_target=False, show_num_trial=False,
-                      title=None, fig_width=15, t_titre=35, t_label=20, t_text=14):
+                      title=None, fig_width=15, t_titre=35, t_label=20, t_text=14) :
 
             '''
             Returns the data figure
@@ -2387,63 +2386,58 @@ class ANEMO(object):
             Parameters
             ----------
             data : list
-                edf data for the trials recorded by the eyetracker transformed by the read_edf function of the edfreader module
+                edf data for the trials recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
 
-            show : str, optional(default 'velocity')
-                if 'velocity' show the velocity of the eye
-                if 'position' show the position of the eye
-                if 'saccades' shows the saccades of the eye
+            show : str {'velocity', 'position', 'saccade'}, optional (default 'velocity')
+                - ``'velocity'`` : show the velocity data for a trial in deg/sec
+                - ``'position'`` : show the position data for a trial in deg
+                - ``'saccade'`` : show the position data for sacades in trial in deg
 
-            trials : int or list, optional(default 0)
+            trials : int or list, optional (default 0)
                 number or list of trials to display
-            block : int, optional(default 0)
+            block : int, optional (default 0)
                 number of the block in which it finds the trials to display
 
-            N_blocks : int, optional(default None)
-                number of blocks
-                if None went searched in param_exp
-            N_trials : int, optional(default None)
-                number of trials per block
-                if None went searched in param_exp
+            N_blocks : int, optional (default None)
+                number of blocks -- if ``None`` went searched in ``param_exp`` (see :mod:`~ANEMO.ANEMO.ANEMO`)
+            N_trials : int, optional (default None)
+                number of trials per block  --  if ``None`` went searched in ``param_exp`` (see :mod:`~ANEMO.ANEMO.ANEMO`)
 
-            before_sacc : int, optional(default 5)
-                time to remove before saccades, it is advisable to put : 5 for 'fct_velocity' and 'fct_position', 0 for 'fct_saccade'
-            after_sacc : int, optional(default 15)
-                time to delete after saccades, it is advisable to put 15
-            stop_search_misac : int, optional(default None)
-                stop search of micro_saccade
-                if None : stops searching at the end of fixation + 100ms
+            before_sacc : int, optional (default 5)
+                time to remove before saccades -- it is advisable to put : ``5`` for ``'fct_velocity'`` and ``'fct_position'``, ``0`` for ``'fct_saccade'``
+            after_sacc : int, optional (default 15)
+                time to delete after saccades -- it is advisable to put ``15``
+            stop_search_misac : int, optional (default None)
+                stop search of micro_saccade -- if ``None`` stops searching at the ``end of fixation + 100ms``
 
-            filt : str, optional(default False)
-                to filter the data can be : ::
+            filt : str {'position', 'velocity', 'velocity-position'} or None (default None)
+                to filter the data can be :
+                    - ``'position'`` : filter the position,
+                    - ``'velocity'`` : filter the speed,
+                    - ``'velocity-position'`` : filter the position then the speed
+                    - ``None`` : the data will not be filtered
+            cutoff : int, optional (default 30)
+                the critical frequencies for cutoff of filter
+            sample_rate : int, optional (default 1000)
+                sampling rate of the recording for the filtre
 
-                    - 'position': filter the position,
-                    - 'velocity': filter the speed,
-                    - 'velocity-position': filter the position then the speed
+            show_pos_sacc : bool, optional (default True)
+                if ``True`` shows in a first figure the location of saccades during the pousuite
+            show_target : bool, optional (default False)
+                if ``True`` show the target on the plot
+            show_num_trial : bool, optional (default None)
+                if ``True`` the num is written of the trial in y_label
 
-                if None the data will not be filtered
-            cutoff : int, optional(default 30)
-                the critical frequencies for cutoff of filter, must be defined if filt is not None
-            sample_rate : int, optional(default 1000)
-                sampling rate of the recording for the filtre, must be defined if filt is not None
-
-            show_pos_sacc : bool, optional(default True)
-                if True: shows in a first figure the location of saccades during the pousuite
-            show_target : bool, optional(default False)
-                if true : show the target on the plot
-            show_num_trial : bool, optional(default False)
-                if True the num is written of the trial in y_label
-
-            title : str, optional(default None)
+            title : str, optional (default None)
                 title of the figure
 
-            fig_width : int, optional(default 15)
+            fig_width : int, optional (default 15)
                 figure size
-            t_titre : int, optional(default 35)
+            t_titre : int, optional (default 35)
                 size of the title of the figure
-            t_label : int, optional(default 20)
+            t_label : int, optional (default 20)
                 size x and y label
-            t_text : int, optional(default 14)
+            t_text : int, optional (default 14)
                 size of the text of the figure
 
             Returns
@@ -2485,7 +2479,7 @@ class ANEMO(object):
                 if show=='saccade' : ax = gridspec.GridSpecFromSubplotSpec(2, len(arg.saccades), subplot_spec=axs[x], hspace=0.25, wspace=0.15)
 
                 else :
-                    if len(trials)==1: ax = axs
+                    if len(trials)==1 : ax = axs
                     else : ax = axs[x]
                     if x!= (len(trials)-1) : ax.set_xticklabels([])
 
@@ -2525,9 +2519,9 @@ class ANEMO(object):
                      time_sup=280, step_fit=2, do_whitening=False,
                      list_param_enre=None, param_fit=None, inde_vars=None,
                      before_sacc=5, after_sacc=15, stop_search_misac=None,
-                     filt=False, cutoff=30, sample_rate=1000,
+                     filt=None, cutoff=30, sample_rate=1000,
                      show_target=False, show_num_trial=False, report=None,
-                     title=None, fig_width=15, t_titre=35, t_label=20,  t_text=14):
+                     title=None, fig_width=15, t_titre=35, t_label=20,  t_text=14) :
 
             '''
             Returns figure of data fits
@@ -2535,100 +2529,103 @@ class ANEMO(object):
             Parameters
             ----------
             data : list
-                edf data for the trials recorded by the eyetracker transformed by the read_edf function of the edfreader module
+                edf data for the trials recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
 
-            trials : int or list, optional(default 0)
+            trials : int or list, optional (default 0)
                 number or list of trials to display
-            block : int, optional(default 0)
+            block : int, optional (default 0)
                 number of the block in which it finds the trials to display
 
-            fitted_data : bool, optional(default 'velocity')
-                nature of fitted data ::
+            fitted_data : str {'velocity', 'position', 'saccade'}, optional (default 'velocity')
+                nature of fitted data :
+                    - ``'velocity'`` : fit velocity data for trial in deg/sec
+                    - ``'position'`` : fit position data for trial in deg
+                    - ``'saccade'`` : fit position data for sacades in trial in deg
 
-                    fit :
-                    if 'velocity' : velocity data for trial in deg/sec
-                    if 'position' : position data for trial in deg
-                    if 'saccade' : position data for sacades in trial in deg
+            equation : str {'fct_velocity', 'fct_position', 'fct_saccades'} or function (default 'fct_velocity')
+                function or name of the equation for the fit :
+                    - ``'fct_velocity'`` : does a data fit with function ``'fct_velocity'``
+                    - ``'fct_position'`` : does a data fit with function ``'fct_position'``
+                    - ``'fct_saccades'`` : does a data fit with function ``'fct_saccades'``
+                    - ``function`` : does a data fit with function
 
-            equation : str, optional(default 'fct_velocity')
-                function or name of the equation for the fit ::
+            N_blocks : int, optional (default None)
+                number of blocks -- if ``None`` went searched in ``param_exp`` (see :mod:`~ANEMO.ANEMO.ANEMO`)
+            N_trials : int, optional (default None)
+                number of trials per block  --  if ``None`` went searched in ``param_exp`` (see :mod:`~ANEMO.ANEMO.ANEMO`)
 
-                    does a data fit :
-                    if 'fct_velocity' : with function 'fct_velocity'
-                    if 'fct_position' : with function 'fct_position'
-                    if 'fct_saccades' : with function 'fct_saccades'
-                    if function : with function
-
-            N_blocks : int, optional(default None)
-                number of blocks
-                if None went searched in param_exp
-            N_trials : int, optional(default None)
-                number of trials per block
-                if None went searched in param_exp
-
-            time_sup : int, optional(default 280)
+            time_sup : int, optional (default 280)
                 time that will be deleted to perform the fit (for data that is less good at the end of the test)
-            step_fit : int, optional(default 2)
+            step_fit : int, optional (default 2)
                 number of steps for the fit
-            do_whitening : bool, optional(default False)
-                if True return the whitened fit
+            do_whitening : bool, optional (default False)
+                if ``True`` return the whitened fit
 
-            list_param_enre : list, optional(default None)
-                list of fit parameters to record
-                if None : ::
+            list_param_enre : list, optional (default None)
+                list of fit parameters to record \n
+                if ``None`` :
+                    - if ``equation`` is ``'fct_velocity'`` or ``'fct_position'`` : ::
 
-                    if equation in ['fct_velocity', 'fct_position'] :
-                        ['fit', 'start_anti', 'v_anti', 'latence', 'tau',
-                            'maxi', 'saccades', 'old_anti', 'old_max',
-                            'old_latence']
+                        list_param_enre = ['fit', 'start_anti', 'v_anti',
+                                           'latence', 'tau', 'maxi',
+                                           'saccades', 'old_anti',
+                                           'old_max', 'old_latence']
 
-                    if equation is 'fct_saccades' :
-                    ['fit', 'T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2',
-                        'tau']
+                    - if ``equation`` is ``'fct_saccades'`` : ::
 
-            param_fit : dict, optional(default None)
-                dictionary containing the parameters of the fit
-            inde_vars : dict, optional(default None)
-                dictionary containing the independent variables of the fit
+                        list_param_enre = ['fit', 'T0', 't1', 't2', 'tr',
+                                           'x_0', 'x1', 'x2', 'tau']
 
-            before_sacc : int, optional(default 5)
-                time to remove before saccades, it is advisable to put : 5 for 'fct_velocity' and 'fct_position', 0 for 'fct_saccade'
-            after_sacc : int, optional(default 15)
-                time to delete after saccades, it is advisable to put 15
-            stop_search_misac : int, optional(default None)
-                stop search of micro_saccade
-                if None : stops searching at the end of fixation + 100ms
+            param_fit : dic, optional (default None)
+                fit parameter dictionary, each parameter is a dict containing : ::
+                    - ``'name'`` : name of the variable,
+                    - ``'value'`` : initial value,
+                    - ``'min'`` : minimum value,
+                    - ``'max'`` : maximum value,
+                    - ``'vary'`` :
+                        - ``True`` if varies during fit,
+                        - ``'vary'`` if only varies for step 2,
+                        - ``False`` if not varies during fit
 
-            filt : str, optional(default False)
-                to filter the data can be : ::
+                if ``None`` generate by :func:`~ANEMO.ANEMO.ANEMO.Fit.generation_param_fit`
+            inde_vars : dic, optional (default None)
+                independent variable dictionary of fit -- if ``None`` generate by :func:`~ANEMO.ANEMO.ANEMO.Fit.generation_param_fit`
 
-                    - 'position': filter the position,
-                    - 'velocity': filter the speed,
-                    - 'velocity-position': filter the position then the speed
+            before_sacc : int, optional (default 5)
+                time to remove before saccades -- it is advisable to put : ``5`` for ``'fct_velocity'`` and ``'fct_position'``, ``0`` for ``'fct_saccade'``
+            after_sacc : int, optional (default 15)
+                time to delete after saccades -- it is advisable to put ``15``
+            stop_search_misac : int, optional (default None)
+                stop search of micro_saccade -- if ``None`` stops searching at the ``end of fixation + 100ms``
 
-                if None the data will not be filtered
-            cutoff : int, optional(default 30)
-                the critical frequencies for cutoff of filter, must be defined if filt is not None
-            sample_rate : int, optional(default 1000)
-                sampling rate of the recording for the filtre, must be defined if filt is not None
+            filt : str {'position', 'velocity', 'velocity-position'} or None (default None)
+                to filter the data can be :
+                    - ``'position'`` : filter the position,
+                    - ``'velocity'`` : filter the speed,
+                    - ``'velocity-position'`` : filter the position then the speed
+                    - ``None`` : the data will not be filtered
+            cutoff : int, optional (default 30)
+                the critical frequencies for cutoff of filter
+            sample_rate : int, optional (default 1000)
+                sampling rate of the recording for the filtre
 
-            show_target : bool, optional(default False)
-                if true : show the target on the plot
-            show_num_trial : bool, optional(default False)
-                if True the num is written of the trial in y_label
-            report : bool, optional(default None)
-                if true return the report of the fit for each trial
+            show_target : bool, optional (default False)
+                if ``True`` show the target on the plot
+            show_num_trial : bool, optional (default None)
+                if ``True`` the num is written of the trial in y_label
+            report : bool, optional (default None)
+                if ``True`` return the report of the fit for each trial
 
-            title : str, optional(default None)
+            title : str, optional (default None)
                 title of the figure
 
-            fig_width : int, optional(default 15)
+            fig_width : int, optional (default 15)
                 figure size
-            t_titre : int, optional(default 35)
+            t_titre : int, optional (default 35)
                 size of the title of the figure
-            t_label : int, optional(default 20)
+            t_label : int, optional (default 20)
                 size x and y label
-            t_text : int, optional(default 14)
+            t_text : int, optional (default 14)
                 size of the text of the figure
 
             Returns
@@ -2678,7 +2675,7 @@ class ANEMO(object):
                 if fitted_data=='saccade' : ax = gridspec.GridSpecFromSubplotSpec(2, len(arg.saccades), subplot_spec=axs[x], hspace=0.25, wspace=0.15)
 
                 else :
-                    if len(trials)==1: ax = axs
+                    if len(trials)==1 : ax = axs
                     else :             ax = axs[x]
                     if x!= (len(trials)-1) : ax.set_xticklabels([])
 
@@ -2722,7 +2719,7 @@ class ANEMO(object):
         def plot_Full_data(self, data, show='velocity',
                            N_blocks=None, N_trials=None,
                            before_sacc=5, after_sacc=15, stop_search_misac=None,
-                           filt=False, cutoff=30, sample_rate=1000,
+                           filt=None, cutoff=30, sample_rate=1000,
                            file_fig=None, show_pos_sacc=True, show_target=False,
                            fig_width=12, t_titre=20, t_label=14, t_text=10) :
 
@@ -2732,56 +2729,50 @@ class ANEMO(object):
             Parameters
             ----------
             data : list
-                edf data for the trials recorded by the eyetracker transformed by the read_edf function of the edfreader module
+                edf data for the trials recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
 
-            show : str, optional(default 'velocity')
-                if 'velocity' show velocity of the eye
-                if 'position' show the position of the eye
-                if 'saccades' shows the saccades of the eye
+            show : str {'velocity', 'position', 'saccade'}, optional (default 'velocity')
+                - ``'velocity'`` : show the velocity data for a trial in deg/sec
+                - ``'position'`` : show the position data for a trial in deg
+                - ``'saccade'`` : show the position data for sacades in trial in deg
 
-            N_blocks : int, optional(default None)
-                number of blocks
-                if None went searched in param_exp
-            N_trials : int, optional(default None)
-                number of trials per block
-                if None went searched in param_exp
+            N_blocks : int, optional (default None)
+                number of blocks -- if ``None`` went searched in ``param_exp`` (see :mod:`~ANEMO.ANEMO.ANEMO`)
+            N_trials : int, optional (default None)
+                number of trials per block  --  if ``None`` went searched in ``param_exp`` (see :mod:`~ANEMO.ANEMO.ANEMO`)
 
-            before_sacc : int, optional(default 5)
-                time to remove before saccades, it is advisable to put : 5 for 'fct_velocity' and 'fct_position', 0 for 'fct_saccade'
-            after_sacc : int, optional(default 15)
-                time to delete after saccades, it is advisable to put 15
-            stop_search_misac : int, optional(default None)
-                stop search of micro_saccade
-                if None : stops searching at the end of fixation + 100ms
+            before_sacc : int, optional (default 5)
+                time to remove before saccades -- it is advisable to put : ``5`` for ``'fct_velocity'`` and ``'fct_position'``, ``0`` for ``'fct_saccade'``
+            after_sacc : int, optional (default 15)
+                time to delete after saccades -- it is advisable to put ``15``
+            stop_search_misac : int, optional (default None)
+                stop search of micro_saccade -- if ``None`` stops searching at the ``end of fixation + 100ms``
 
-            filt : str, optional(default False)
-                to filter the data can be : ::
+            filt : str {'position', 'velocity', 'velocity-position'} or None (default None)
+                to filter the data can be :
+                    - ``'position'`` : filter the position,
+                    - ``'velocity'`` : filter the speed,
+                    - ``'velocity-position'`` : filter the position then the speed
+                    - ``None`` : the data will not be filtered
+            cutoff : int, optional (default 30)
+                the critical frequencies for cutoff of filter
+            sample_rate : int, optional (default 1000)
+                sampling rate of the recording for the filtre
 
-                    - 'position': filter the position,
-                    - 'velocity': filter the speed,
-                    - 'velocity-position': filter the position then the speed
+            file_fig : str, optional (default None)
+                name of file figure reccorded -- if ``None`` file_fig is ``show``
+            show_pos_sacc : bool, optional (default True)
+                if ``True`` shows in a first figure the location of saccades during the pousuite
+            show_target : bool, optional (default False)
+                if ``True`` show the target on the plot
 
-                if None the data will not be filtered
-            cutoff : int, optional(default 30)
-                the critical frequencies for cutoff of filter, must be defined if filt is not None
-            sample_rate : int, optional(default 1000)
-                sampling rate of the recording for the filtre, must be defined if filt is not None
-
-            file_fig : str, optional(default None)
-                name of file figure reccorded
-                if None file_fig is show
-            show_pos_sacc : bool, optional(default True)
-                if True: shows in a first figure the location of saccades during the pousuite
-            show_target : bool, optional(default False)
-                if true : show the target on the plot
-
-            fig_width : int, optional(default 12)
+            fig_width : int, optional (default 12)
                 figure size
-            t_titre : int, optional(default 20)
+            t_titre : int, optional (default 20)
                 size of the title of the figure
-            t_label : int, optional(default 14)
+            t_label : int, optional (default 14)
                 size x and y label
-            t_text : int, optional(default 10)
+            t_text : int, optional (default 10)
                 size of the text of the figure
 
             Returns
@@ -2825,72 +2816,67 @@ class ANEMO(object):
             Parameters
             ----------
             data : list
-                edf data for the trials recorded by the eyetracker transformed by the read_edf function of the edfreader module
+                edf data for the trials recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
 
             list_data_fitfct : dict
-                dictionary of correspondence between the data and the fit
-                if None : list_data_fitfct = {'velocity':'fct_velocity', 'position':'fct_position', 'saccade':'fct_saccade'}
+                dictionary of correspondence between the data and the fit --
+                if ``None`` by default ``{'velocity':'fct_velocity', 'position':'fct_position', 'saccade':'fct_saccade'}``
             Full_param_fit : dict
-                dictionary containing all the parameters of fit
-                if None: fit is for each figure
+                dictionary containing all the parameters of fit -- if ``None`` fit is for each figure
 
-            show_data : str, optional(default 'velocity')
+            show_data : str {'velocity', 'position', 'saccade'}, optional (default 'velocity')
+                - ``'velocity'`` : show the velocity data for a trial in deg/sec
+                - ``'position'`` : show the position data for a trial in deg
+                - ``'saccade'`` : show the position data for sacades in trial in deg
 
-                show :
-                if 'velocity' : the velocity data for a trial in deg/sec
-                if 'position' : the position data for a trial in deg
-                if 'saccade' : the position data for sacades in trial in deg
+            N_blocks : int, optional (default None)
+                number of blocks -- if ``None`` went searched in ``param_exp`` (see :mod:`~ANEMO.ANEMO.ANEMO`)
+            N_trials : int, optional (default None)
+                number of trials per block  --  if ``None`` went searched in ``param_exp`` (see :mod:`~ANEMO.ANEMO.ANEMO`)
 
-            N_blocks : int, optional(default None)
-                number of blocks
-                if None went searched in param_exp
-            N_trials : int, optional(default None)
-                number of trials per block
-                if None went searched in param_exp
+            list_param_enre : list, optional (default None)
+                list of fit parameters to record \n
+                if ``None`` :
+                    - if ``equation`` is ``'fct_velocity'`` or ``'fct_position'`` : ::
 
-            list_param_enre : list, optional(default None)
-                list of fit parameters to record
-                if None : ::
+                        list_param_enre = ['fit', 'start_anti', 'v_anti',
+                                           'latence', 'tau', 'maxi',
+                                           'saccades', 'old_anti',
+                                           'old_max', 'old_latence']
 
-                    if equation in ['fct_velocity', 'fct_position'] :
-                        ['fit', 'start_anti', 'v_anti', 'latence', 'tau',
-                            'maxi', 'saccades', 'old_anti', 'old_max',
-                            'old_latence']
+                    - if ``equation`` is ``'fct_saccades'`` : ::
 
-                    if equation is 'fct_saccades' :
-                    ['fit', 'T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2',
-                        'tau']
+                        list_param_enre = ['fit', 'T0', 't1', 't2', 'tr',
+                                           'x_0', 'x1', 'x2', 'tau']
 
-            inde_vars : dic, optional(default None)
-                independent variable dictionary of fit
-                if None : Generate by generation_param_fit
+            inde_vars : dic, optional (default None)
+                independent variable dictionary of fit -- if ``None`` generate by :func:`~ANEMO.ANEMO.ANEMO.Fit.generation_param_fit`
 
-            time_sup : int, optional(default 280)
+            time_sup : int, optional (default 280)
                 time that will be deleted to perform the fit (for data that is less good at the end of the test)
-            step_fit : int, optional(default 2)
+            step_fit : int, optional (default 2)
                 number of steps for the fit
-            do_whitening : bool, optional(default False)
-                if True return the whitened fit
+            do_whitening : bool, optional (default False)
+                if ``True`` return the whitened fit
 
-            before_sacc : int, optional(default 5)
+            before_sacc : int, optional (default 5)
                 time to delete before saccades
-            after_sacc : int, optional(default 15)
+            after_sacc : int, optional (default 15)
                 time to delete after saccades
-            stop_search_misac : int, optional(default None)
-                stop search of micro_saccade
-                if None : stops searching at the end of fixation + 100ms
+            stop_search_misac : int, optional (default None)
+                stop search of micro_saccade -- if ``None`` stops searching at the ``end of fixation + 100ms``
 
-            sample_rate : int, optional(default 1000)
+            sample_rate : int, optional (default 1000)
                 sampling rate of the recording for the filtre
 
-            show_target : bool, optional(default False)
-                if true : show the target on the plot
+            show_target : bool, optional (default False)
+                if ``True`` show the target on the plot
 
-            fig_width : int, optional(default 15)
+            fig_width : int, optional (default 15)
                 figure size
-            t_label : int, optional(default 20)
+            t_label : int, optional (default 20)
                 size x and y label
-            t_text : int, optional(default 14)
+            t_text : int, optional (default 14)
                 size of the text of the figure
 
             Returns
@@ -3037,14 +3023,14 @@ class ANEMO(object):
                 fig(ss_title, c, out)
 
             #-----------------------------------
-            def Next(b):
+            def Next(b) :
                 nonlocal trial, block
                 trial = trial+1
                 if trial >= N_trials : trial = 0 ;          block = block+1
                 if block >= N_blocks : trial = N_trials-1 ; block = N_blocks-1
                 _trial.value, _block.value = trial, '%s'%block
 
-            def Previews(b):
+            def Previews(b) :
                 nonlocal trial, block
                 trial = trial-1
                 if trial < 0 : trial = N_trials-1 ; block = block-1
@@ -3052,12 +3038,12 @@ class ANEMO(object):
                 _trial.value, _block.value = trial, '%s'%block
 
             #-----------------------------------
-            def Bad(b):
+            def Bad(b) :
                 nonlocal show_data, trial, block, Full_list, show
                 Full_list[show][show_data][block][trial] = 'Bad'
                 fig(' -- Bad', 'r', out)
 
-            def no_Bad(b):
+            def no_Bad(b) :
                 nonlocal show_data, trial, block, Full_list, show
                 Full_list[show][show_data][block][trial] = 'OK'
                 fig(' -- OK', 'g', out)

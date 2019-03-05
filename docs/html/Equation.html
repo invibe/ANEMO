@@ -50,6 +50,8 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="ANEMO_doc.html">ANEMO</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="arg.html">arg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_modification.html">data_modification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="read_edf.html">read_edf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classical_method.html">classical_method</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Equation</a><ul>
@@ -133,13 +135,13 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>x</strong> (<em>ndarray</em>) – time of the function</li>
-<li><strong>dir_target</strong> (<em>int</em>) – direction of the target -1 ou 1</li>
+<li><strong>dir_target</strong> (<em>int</em>) – direction of the target -1 or 1</li>
 <li><strong>start_anti</strong> (<em>int</em>) – time when anticipation begins</li>
 <li><strong>v_anti</strong> (<em>float</em>) – velocity of anticipation in seconds</li>
 <li><strong>latence</strong> (<em>int</em>) – time when the movement begins</li>
 <li><strong>tau</strong> (<em>float</em>) – curve of the pursuit</li>
 <li><strong>maxi</strong> (<em>float</em>) – maximum velocity reached during the pursuit</li>
-<li><strong>do_whitening</strong> (<em>bool</em>) – if True return the whitened velocity</li>
+<li><strong>do_whitening</strong> (<em>bool</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> return the whitened velocity</li>
 </ul>
 </td>
 </tr>
@@ -170,16 +172,21 @@
 </li>
 <li><p class="first"><strong>saccades</strong> (<em>ndarray the same size as data_x</em>) –</p>
 <p>List of saccades perform during the trial</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">saccade</span><span class="p">))</span> <span class="p">:</span>
-    <span class="n">saccades</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="n">onset</span>
-    <span class="n">saccades</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="n">end</span>
-    <span class="n">saccades</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="n">time</span> <span class="n">sacc</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">saccades</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data_x</span><span class="p">))</span>
+<span class="n">i</span><span class="o">=</span><span class="mi">0</span>
+<span class="c1"># sacc is list of edf saccades for the trial recorded</span>
+<span class="c1"># by the eyetracker transformed by the read_edf function</span>
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sacc</span><span class="p">))</span> <span class="p">:</span>
+    <span class="n">saccades</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>   <span class="o">=</span> <span class="n">sacc</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># onset sacc</span>
+    <span class="n">saccades</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sacc</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># end sacc</span>
+    <span class="n">saccades</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">sacc</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="c1"># time sacc</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">3</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first"><strong>nb_sacc</strong> (<em>int</em>) – number of saccades during the trial</p>
 </li>
-<li><p class="first"><strong>dir_target</strong> (<em>int</em>) – direction of the target -1 ou 1</p>
+<li><p class="first"><strong>dir_target</strong> (<em>int</em>) – direction of the target -1 or 1</p>
 </li>
 <li><p class="first"><strong>start_anti</strong> (<em>int</em>) – time when anticipation begins</p>
 </li>
@@ -199,7 +206,7 @@
 </li>
 <li><p class="first"><strong>after_sacc</strong> (<em>int</em>) – time to delete after saccades</p>
 </li>
-<li><p class="first"><strong>do_whitening</strong> (<em>bool</em>) – if True return the whitened position</p>
+<li><p class="first"><strong>do_whitening</strong> (<em>bool</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> return the whitened position</p>
 </li>
 </ul>
 </td>
@@ -234,7 +241,7 @@
 <li><strong>t1</strong> (<em>float</em>) – maximum time of the first curvature after T0 in ms</li>
 <li><strong>t2</strong> (<em>float</em>) – time of the maximum of the second curvature after t1 in ms</li>
 <li><strong>tr</strong> (<em>float</em>) – time of the end of the second curvature after t2 in ms</li>
-<li><strong>do_whitening</strong> (<em>bool</em>) – if True return the whitened position</li>
+<li><strong>do_whitening</strong> (<em>bool</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> return the whitened position</li>
 </ul>
 </td>
 </tr>

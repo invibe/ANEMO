@@ -4,7 +4,7 @@
 
 body {
     font-family: Open Sans;
-    font-size: 17px;
+    font-size: 15px;
     background-color: #fff;
     color: #000;
     margin: 0;
@@ -182,7 +182,7 @@ div.sphinxsidebar h3.donation {
 /* -- body styles ----------------------------------------------------------- */
 
 a {
-    color: #6B0500;
+    color: #640000;
     text-decoration: underline;
 }
 
@@ -328,7 +328,7 @@ p.admonition-title:after {
 
 pre, tt, code {
     font-family: 'Consolas', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
-    font-size: 0.9em;
+    font-size: 15px;
 }
 
 .hll {
@@ -455,8 +455,8 @@ dl pre, blockquote pre, li pre {
 }
 
 tt, code {
-    background-color: #FFFFFF;
-    color: #550D09;
+    background-color: transparent;
+    color: #850000;
     /* padding: 1px 2px; */
 }
 
@@ -467,7 +467,7 @@ tt.xref, code.xref, a tt {
 
 a.reference {
     text-decoration: none;
-    border-bottom: 1px dotted #6B0500;
+    border-bottom: 1px dotted #640000;
 }
 
 /* Don't put an underline on images */
@@ -483,7 +483,7 @@ a.footnote-reference {
     text-decoration: none;
     font-size: 0.7em;
     vertical-align: top;
-    border-bottom: 1px dotted #6B0500;
+    border-bottom: 1px dotted #640000;
 }
 
 a.footnote-reference:hover {

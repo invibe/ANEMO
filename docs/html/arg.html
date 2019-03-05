@@ -1,0 +1,212 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>arg &#8212; ANEMO 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="data_modification" href="data_modification.html" />
+    <link rel="prev" title="ANEMO" href="ANEMO_doc.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ANEMO</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=invibe&repo=ANEMO&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="ANEMO_doc.html">ANEMO</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">arg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_modification.html">data_modification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="read_edf.html">read_edf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classical_method.html">classical_method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Equation.html">Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Fit.html">Fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Plot.html">Plot</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="ANEMO_doc.html">ANEMO</a><ul>
+      <li>Previous: <a href="ANEMO_doc.html" title="previous chapter">ANEMO</a></li>
+      <li>Next: <a href="data_modification.html" title="next chapter">data_modification</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="ANEMO_doc.html" title="Previous document">ANEMO</a>
+        </li>
+        <li>
+          <a href="data_modification.html" title="Next document">data_modification</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="arg">
+<h1>arg<a class="headerlink" href="#arg" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="ANEMO.ANEMO.ANEMO.arg">
+<code class="descclassname">ANEMO.ANEMO.ANEMO.</code><code class="descname">arg</code><span class="sig-paren">(</span><em>self</em>, <em>data_trial</em>, <em>dir_target=None</em>, <em>trial=None</em>, <em>block=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.arg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a dictionary of the parameters of the trial</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last">
+<li><p class="first"><strong>data_trial</strong> (<em>list</em>) – edf data for a trial recorded by the eyetracker transformed by <a class="reference internal" href="read_edf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
+</li>
+<li><p class="first"><strong>dir_target</strong> (<em>int, or None (default None)</em>) – the direction of the target</p>
+<p>if <code class="docutils literal notranslate"><span class="pre">None</span></code> went searched in <code class="docutils literal notranslate"><span class="pre">param_exp</span></code> (see <a class="reference internal" href="ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a>), can be :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;dir_target&#39;</span><span class="p">][</span><span class="n">block</span><span class="p">][</span><span class="n">trial</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="o">-</span><span class="mi">1</span>
+<span class="o">-</span> <span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">][</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="mi">1</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>trial</strong> (<em>int, optional (default None)</em>) – number of the trial in the block</p>
+</li>
+<li><p class="first"><strong>block</strong> (<em>int, optional (default None)</em>) – block number</p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p><strong>some parameters must be defined :</strong></p>
+<ul class="last simple">
+<li><dl class="first docutils">
+<dt>if <code class="docutils literal notranslate"><span class="pre">dir_target</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code> :</dt>
+<dd><ul class="first last">
+<li><strong>trial</strong></li>
+<li><strong>block</strong></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>arg</strong> (<em>dict</em>) – dictionary of the parameters of the trial</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="ANEMO_doc.html" title="Previous document">ANEMO</a>
+        </li>
+        <li>
+          <a href="data_modification.html" title="Next document">data_modification</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      
+      
+      
+      <a href="_sources/arg.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/invibe/ANEMO" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

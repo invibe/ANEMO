@@ -17,7 +17,7 @@
     <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="read_edf" href="read_edf.html" />
+    <link rel="next" title="arg" href="arg.html" />
     <link rel="prev" title="The parameters of the experiment" href="demo_ANEMO.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -50,6 +50,8 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">ANEMO</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="arg.html">arg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_modification.html">data_modification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="read_edf.html">read_edf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classical_method.html">classical_method</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Equation.html">Equation</a></li>
@@ -64,7 +66,7 @@
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="demo_ANEMO.html" title="previous chapter">The parameters of the experiment</a></li>
-      <li>Next: <a href="read_edf.html" title="next chapter">read_edf</a></li>
+      <li>Next: <a href="arg.html" title="next chapter">arg</a></li>
   </ul></li>
 </ul>
 </div>
@@ -101,7 +103,7 @@
           <a href="demo_ANEMO.html" title="Previous document">The parameters of the experiment</a>
         </li>
         <li>
-          <a href="read_edf.html" title="Next document">read_edf</a>
+          <a href="arg.html" title="Next document">arg</a>
           &rarr;
         </li>
     </ul>
@@ -130,7 +132,7 @@ It must be initialized with the parameters of the experiment :</p>
 <span class="n">dir_target</span> <span class="o">=</span> <span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;dir_target&#39;</span><span class="p">][</span><span class="n">block</span><span class="p">][</span><span class="n">trial</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>or <strong>‘p’</strong> (ndarray) - ndarray containing for each trial of each block the direction of the target, its probability of direction and the switches of this probability:</p>
+<p>or <strong>‘p’</strong> (ndarray) - ndarray containing for each trial of each block the direction of the target, its probability of direction and the switches of this probability</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># the direction of the target is to 0 for left 1 for right</span>
 <span class="n">dir_target</span> <span class="o">=</span> <span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">][</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
 <span class="n">proba</span> <span class="o">=</span> <span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">][</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
@@ -140,13 +142,13 @@ It must be initialized with the parameters of the experiment :</p>
 <p><strong>‘N_trials’</strong> (int) - number of trials per block</p>
 <p><strong>‘N_blocks’</strong> (int) - number of blocks</p>
 <p><strong>‘observer’</strong> (str, optional) - subject name</p>
-<p><strong>‘list_events’</strong> (list, optional) - list of the names of the events of the trial</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">&#39;onset fixation&#39;</span><span class="p">,</span> <span class="s1">&#39;end fixation&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;start pursuit&#39;</span><span class="p">,</span> <span class="s1">&#39;end pursuit&#39;</span><span class="p">]</span>
+<p><strong>‘list_events’</strong> (list(str), optional) - list of the names of the events of the trial</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">list_events</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;onset fixation&#39;</span><span class="p">,</span> <span class="s1">&#39;end fixation&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;start pursuit&#39;</span><span class="p">,</span> <span class="s1">&#39;end pursuit&#39;</span><span class="p">]</span>
 
 <span class="n">by</span> <span class="n">default</span> <span class="p">:</span>
-    <span class="p">[</span><span class="s1">&#39;StimulusOn</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;StimulusOff</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;TargetOn</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;TargetOff</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">]</span>
+    <span class="n">list_events</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;StimulusOn</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;StimulusOff</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;TargetOn</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;TargetOff</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>optional not obligatory, just to display the target in ANEMO.Plot :</p>
@@ -157,241 +159,18 @@ It must be initialized with the parameters of the experiment :</p>
 </div></blockquote>
 </dd>
 </dl>
-<dl class="function">
-<dt id="ANEMO.ANEMO.ANEMO.arg">
-<code class="descclassname">ANEMO.ANEMO.ANEMO.</code><code class="descname">arg</code><span class="sig-paren">(</span><em>self</em>, <em>data_trial</em>, <em>dir_target=None</em>, <em>trial=None</em>, <em>block=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.arg" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generates a dictionary of the parameters of the trial</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first">
-<li><p class="first"><strong>data_trial</strong> (<em>list</em>) – edf data for a trial recorded by the eyetracker transformed by the read_edf function of the edfreader module</p>
-</li>
-<li><p class="first"><strong>dir_target</strong> (<em>int, or None (default None)</em>) – the direction of the target,
-if None went searched in param_exp, can be :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;dir_target&#39;</span><span class="p">][</span><span class="n">block</span><span class="p">][</span><span class="n">trial</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="o">-</span><span class="mi">1</span>
-<span class="o">-</span> <span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">][</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="mi">1</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first"><strong>trial</strong> (<em>int, optional(default None)</em>) – number of the trial in the block, must be defined if dir_target is None</p>
-</li>
-<li><p class="first"><strong>block</strong> (<em>int, optional(default None)</em>) – block number, must be defined if dir_target is None</p>
-</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>arg</strong> (<em>dict</em>) – dictionary of the parameters of the trial</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="ANEMO.ANEMO.ANEMO.filter_data">
-<code class="descclassname">ANEMO.ANEMO.ANEMO.</code><code class="descname">filter_data</code><span class="sig-paren">(</span><em>self</em>, <em>data</em>, <em>cutoff=30</em>, <em>sample_rate=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.filter_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the filtering of data</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<em>ndarray</em>) – position or velocity for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module</li>
-<li><strong>cutoff</strong> (<em>int (default 30)</em>) – the critical frequencies for cutoff of filter</li>
-<li><strong>sample_rate</strong> (<em>int (default 1000)</em>) – sampling rate of the recording</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>filt_data</strong> (<em>ndarray</em>) – Filtered position or filtered velocity of the eye</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="ANEMO.ANEMO.ANEMO.data_deg">
-<code class="descclassname">ANEMO.ANEMO.ANEMO.</code><code class="descname">data_deg</code><span class="sig-paren">(</span><em>self</em>, <em>data</em>, <em>StimulusOf</em>, <em>t_0</em>, <em>saccades</em>, <em>before_sacc</em>, <em>after_sacc</em>, <em>filt=None</em>, <em>cutoff=30</em>, <em>sample_rate=1000</em>, <em>**opt</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.data_deg" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the position of the eye in deg</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first">
-<li><p class="first"><strong>data</strong> (<em>ndarray</em>) – position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module</p>
-</li>
-<li><p class="first"><strong>StimulusOf</strong> (<em>int</em>) – time when the stimulus disappears</p>
-</li>
-<li><p class="first"><strong>t_0</strong> (<em>int</em>) – time 0 of the trial</p>
-</li>
-<li><p class="first"><strong>saccades</strong> (<em>list</em>) – list of edf saccades for the trial recorded by the eyetracker transformed by the function read_edf of the module edfreader</p>
-</li>
-<li><p class="first"><strong>before_sacc</strong> (<em>int</em>) – time to delete before saccades</p>
-</li>
-<li><p class="first"><strong>after_sacc</strong> (<em>int</em>) – time to delete after saccades</p>
-</li>
-<li><p class="first"><strong>filt</strong> (<em>str{‘position’, ‘velocity-position’} or None (default None)</em>) –</p>
-<dl class="docutils">
-<dt>to filter the data can be :</dt>
-<dd><ul class="first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">'position'</span></code>: filter the position,</li>
-<li><code class="docutils literal notranslate"><span class="pre">'velocity-position'</span></code>: filter the position then the speed</li>
-<li><code class="docutils literal notranslate"><span class="pre">None</span></code>: the data will not be filtered</li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><p class="first"><strong>cutoff</strong> (<em>int (default 30)</em>) – the critical frequencies for cutoff of filter, must be defined if filt is not None</p>
-</li>
-<li><p class="first"><strong>sample_rate</strong> (<em>int (default 1000)</em>) – sampling rate of the recording for the filtre, must be defined if filt is not None</p>
-</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>data_deg</strong> (<em>ndarray</em>) – position of the eye in deg</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="ANEMO.ANEMO.ANEMO.velocity_deg">
-<code class="descclassname">ANEMO.ANEMO.ANEMO.</code><code class="descname">velocity_deg</code><span class="sig-paren">(</span><em>self</em>, <em>data_x</em>, <em>filt=False</em>, <em>cutoff=30</em>, <em>sample_rate=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.velocity_deg" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the velocity of the eye in deg/sec</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first">
-<li><p class="first"><strong>data_x</strong> (<em>ndarray</em>) – x position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module</p>
-</li>
-<li><p class="first"><strong>filt</strong> (<em>str, optional(default False)</em>) –</p>
-<p>to filter the data can be :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="nb">filter</span> <span class="n">the</span> <span class="n">position</span><span class="p">,</span>
-<span class="o">-</span> <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="nb">filter</span> <span class="n">the</span> <span class="n">speed</span><span class="p">,</span>
-<span class="o">-</span> <span class="s1">&#39;velocity-position&#39;</span><span class="p">:</span> <span class="nb">filter</span> <span class="n">the</span> <span class="n">position</span> <span class="n">then</span> <span class="n">the</span> <span class="n">speed</span>
-</pre></div>
-</div>
-<p>if None the data will not be filtered</p>
-</li>
-<li><p class="first"><strong>cutoff</strong> (<em>int, optional(default 30)</em>) – the critical frequencies for cutoff of filter, must be defined if filt is not None</p>
-</li>
-<li><p class="first"><strong>sample_rate</strong> (<em>int, optional(default 1000)</em>) – sampling rate of the recording for the filtre, must be defined if filt is not None</p>
-</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>gradient_deg</strong> (<em>ndarray</em>) – velocity of the eye in deg/sec</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="ANEMO.ANEMO.ANEMO.detec_misac">
-<code class="descclassname">ANEMO.ANEMO.ANEMO.</code><code class="descname">detec_misac</code><span class="sig-paren">(</span><em>self</em>, <em>velocity_x</em>, <em>velocity_y</em>, <em>t_0=0</em>, <em>VFAC=5</em>, <em>mindur=5</em>, <em>maxdur=100</em>, <em>minsep=30</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.detec_misac" title="Permalink to this definition">¶</a></dt>
-<dd><p>Detection of micro-saccades not detected by eyelink in the data</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>velocity_x</strong> (<em>ndarray</em>) – velocity x of the eye in deg/sec</li>
-<li><strong>velocity_y</strong> (<em>ndarray</em>) – velocity y of the eye in deg/sec</li>
-<li><strong>t_0</strong> (<em>int, optional(default 0)</em>) – time 0 of the trial</li>
-<li><strong>VFAC</strong> (<em>int, optional(default 5)</em>) – relative velocity threshold</li>
-<li><strong>mindur</strong> (<em>int, optional(default 5)</em>) – minimal saccade duration (ms)</li>
-<li><strong>maxdur</strong> (<em>int, optional(default 100)</em>) – maximal saccade duration (ms)</li>
-<li><strong>minsep</strong> (<em>int, optional(default 30)</em>) – minimal time interval between two detected saccades (ms)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>misaccades</strong> (<em>list</em>) – list of lists, each containing [start micro-saccade, end micro-saccade]</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="ANEMO.ANEMO.ANEMO.supp_sacc">
-<code class="descclassname">ANEMO.ANEMO.ANEMO.</code><code class="descname">supp_sacc</code><span class="sig-paren">(</span><em>self</em>, <em>velocity</em>, <em>saccades</em>, <em>trackertime</em>, <em>before_sacc</em>, <em>after_sacc</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.supp_sacc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Eliminates saccades detected</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>velocity</strong> (<em>ndarray</em>) – velocity of the eye in deg/sec</li>
-<li><strong>saccades</strong> (<em>list</em>) – list of edf saccades for the trial recorded by the eyetracker transformed by the function read_edf of the module edfreader</li>
-<li><strong>trackertime</strong> (<em>ndarray</em>) – the time of the tracker</li>
-<li><strong>before_sacc</strong> (<em>int</em>) – time to delete before saccades</li>
-<li><strong>after_sacc</strong> (<em>int</em>) – time to delete after saccades</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>new_velocity</strong> (<em>ndarray</em>) – velocity of the eye in deg/sec without saccades</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="ANEMO.ANEMO.ANEMO.velocity_NAN">
-<code class="descclassname">ANEMO.ANEMO.ANEMO.</code><code class="descname">velocity_NAN</code><span class="sig-paren">(</span><em>self</em>, <em>data_x</em>, <em>data_y</em>, <em>saccades</em>, <em>trackertime</em>, <em>TargetOn</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>stop_search_misac=None</em>, <em>filt=False</em>, <em>cutoff=30</em>, <em>sample_rate=1000</em>, <em>**opt</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.velocity_NAN" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns velocity of the eye in deg / sec without the saccades</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first">
-<li><p class="first"><strong>data_x</strong> (<em>ndarray</em>) – x position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module</p>
-</li>
-<li><p class="first"><strong>data_y</strong> (<em>ndarray</em>) – y position for the trial recorded by the eyetracker transformed by the read_edf function of the edfreader module</p>
-</li>
-<li><p class="first"><strong>saccades</strong> (<em>list</em>) – list of edf saccades for the trial recorded by the eyetracker transformed by the function read_edf of the module edfreader</p>
-</li>
-<li><p class="first"><strong>trackertime</strong> (<em>ndarray</em>) – the time of the tracker</p>
-</li>
-<li><p class="first"><strong>TargetOn</strong> (<em>int</em>) – time when the target to follow appears</p>
-</li>
-<li><p class="first"><strong>before_sacc</strong> (<em>int, optional(default 5)</em>) – time to delete before saccades</p>
-</li>
-<li><p class="first"><strong>after_sacc</strong> (<em>int, optional(default 15)</em>) – time to delete after saccades</p>
-</li>
-<li><p class="first"><strong>stop_search_misac</strong> (<em>int, optional(default None)</em>) – stop search of micro_saccade
-if None : stops searching at the end of fixation + 100ms</p>
-</li>
-<li><p class="first"><strong>filt</strong> (<em>str, optional(default False)</em>) –</p>
-<p>to filter the data can be :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="nb">filter</span> <span class="n">the</span> <span class="n">position</span><span class="p">,</span>
-<span class="o">-</span> <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="nb">filter</span> <span class="n">the</span> <span class="n">speed</span><span class="p">,</span>
-<span class="o">-</span> <span class="s1">&#39;velocity-position&#39;</span><span class="p">:</span> <span class="nb">filter</span> <span class="n">the</span> <span class="n">position</span> <span class="n">then</span> <span class="n">the</span> <span class="n">speed</span>
-</pre></div>
-</div>
-<p>if None the data will not be filtered</p>
-</li>
-<li><p class="first"><strong>cutoff</strong> (<em>int, optional(default 30)</em>) – the critical frequencies for cutoff of filter, must be defined if filt is not None</p>
-</li>
-<li><p class="first"><strong>sample_rate</strong> (<em>int, optional(default 1000)</em>) – sampling rate of the recording for the filtre, must be defined if filt is not None</p>
-</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>velocity</strong> (<em>ndarray</em>) – velocity of the eye in deg / sec without the saccades</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="arg.html">arg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_modification.html">data_modification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="data_modification.html#filter-data">filter_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_modification.html#data-deg">data_deg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_modification.html#velocity-deg">velocity_deg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_modification.html#detec-misac">detec_misac</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_modification.html#supp-sacc">supp_sacc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_modification.html#velocity-nan">velocity_NAN</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="read_edf.html">read_edf</a></li>
 <li class="toctree-l1"><a class="reference internal" href="classical_method.html">classical_method</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="classical_method.html#latence">latence</a></li>
@@ -437,7 +216,7 @@ if None : stops searching at the end of fixation + 100ms</p>
           <a href="demo_ANEMO.html" title="Previous document">The parameters of the experiment</a>
         </li>
         <li>
-          <a href="read_edf.html" title="Next document">read_edf</a>
+          <a href="arg.html" title="Next document">arg</a>
           &rarr;
         </li>
     </ul>
