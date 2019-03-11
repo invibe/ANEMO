@@ -296,11 +296,11 @@ class ANEMO(object) :
 
         from scipy import signal
 
-        nyq_rate = sample_rate/2 # The Nyquist rate of the signal.
+        nyq_rate = sample_rate/2                # The Nyquist rate of the signal.
         Wn = cutoff/nyq_rate
-        N = 2                      # The order of the filter.
+        N = 2                                   # The order of the filter.
 
-        b, a = signal.butter(N, Wn, 'lowpass') # Butterworth digital and analog filter design.
+        b, a = signal.butter(N, Wn, 'lowpass')  # Butterworth digital and analog filter design.
         filt_data = signal.filtfilt(b, a, data) # Apply a digital filter forward and backward to a signal.
 
         return filt_data
@@ -2682,7 +2682,7 @@ class ANEMO(object) :
                 if x==0 :
                     write_step_trial = True
                     if title is None :
-                        if show=='velocity' : title = 'Velocity Fit'
+                        if fitted_data=='velocity' : title = 'Velocity Fit'
                         else :                title = 'Position Fit'
                 else :
                     title, write_step_trial = '', False

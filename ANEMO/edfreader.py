@@ -58,21 +58,22 @@ def read_edf(filename, start, stop=None, missing=0.0, debug=False):
     Does not actually read EDFs directly, but ASC files that are produced  by edf2asc (SR Research).
     Information on saccades, fixations and blinks is read from the EDF, hence based on SR Research algorithms.
 
-    Returns a list with dicts for every trial. A trial dict contains the
-    following keys:
-        - ``x``       -   numpy array of x positions
-        - ``y``       -   numpy array of y positions
-        - ``size``        -   numpy array of pupil size
+    Returns a list with dicts for every trial. A trial dict contains the following keys:
+
+        - ``x``           -  numpy array of x positions
+        - ``y``           -  numpy array of y positions
+        - ``size``        -  numpy array of pupil size
         - ``time``        -   numpy array of timestamps, t=0 at trialstart
-        - ``trackertime`` -   numpy array of timestamps, according to EDF
-        - ``events``  -   dict with the following keys:
-            - ``Sfix``    -   list of lists, each containing ``[starttime]``
-            - ``Ssac``    -   list of lists, each containing ``[starttime]``
-            - ``Sblk``    -   list of lists, each containing ``[starttime]``
-            - ``Efix``    -   list of lists, each containing ``[starttime, endtime, duration, endx, endy]``
-            - ``Esac``    -   list of lists, each containing ``[starttime, endtime, duration, startx, starty, endx, endy]``
-            - ``Eblk``    -   list of lists, each containing ``[starttime, endtime, duration]``
-            - ``msg`` -   list of lists, each containing ``[time, message]``
+        - ``trackertime`` -  numpy array of timestamps, according to EDF
+        - ``events``      -  dict with the following keys:
+            - ``Sfix`` -  list of lists, each containing ``[start_fixation]``
+            - ``Ssac`` -  list of lists, each containing ``[start_saccade]``
+            - ``Sblk`` -  list of lists, each containing ``[start_blink]``
+            - ``Efix`` -  list of lists, each containing ``[start_fixation, end_fixation, duration_fixation, endx_fixation, endy_fixation]``
+            - ``Esac`` -  list of lists, each containing ``[start_saccade, end_saccade, duration_saccade, startx_saccade, starty_saccade, endx_saccade, endy_saccade]``
+            - ``Eblk`` -  list of lists, each containing ``[start_blink, end_blink, duration_blink]``
+            - ``msg``  -  list of lists, each containing ``[time, message]``
+
     Note
     ----
     timing is in EDF time!
