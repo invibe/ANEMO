@@ -144,7 +144,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
-<div class="viewcode-block" id="read_edf"><a class="viewcode-back" href="../../read_edf.html#ANEMO.read_edf">[docs]</a><span class="k">def</span> <span class="nf">read_edf</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">missing</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="read_edf"><a class="viewcode-back" href="../../readedf.html#ANEMO.read_edf">[docs]</a><span class="k">def</span> <span class="nf">read_edf</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">missing</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This code comes from PyGazeAnalyser available `here &lt;https://github.com/esdalmaijer/PyGazeAnalyser&gt;`_.</span>
@@ -155,21 +155,22 @@
 <span class="sd">    Does not actually read EDFs directly, but ASC files that are produced  by edf2asc (SR Research).</span>
 <span class="sd">    Information on saccades, fixations and blinks is read from the EDF, hence based on SR Research algorithms.</span>
 
-<span class="sd">    Returns a list with dicts for every trial. A trial dict contains the</span>
-<span class="sd">    following keys:</span>
-<span class="sd">        - ``x``       -   numpy array of x positions</span>
-<span class="sd">        - ``y``       -   numpy array of y positions</span>
-<span class="sd">        - ``size``        -   numpy array of pupil size</span>
+<span class="sd">    Returns a list with dicts for every trial. A trial dict contains the following keys:</span>
+
+<span class="sd">        - ``x``           -  numpy array of x positions</span>
+<span class="sd">        - ``y``           -  numpy array of y positions</span>
+<span class="sd">        - ``size``        -  numpy array of pupil size</span>
 <span class="sd">        - ``time``        -   numpy array of timestamps, t=0 at trialstart</span>
-<span class="sd">        - ``trackertime`` -   numpy array of timestamps, according to EDF</span>
-<span class="sd">        - ``events``  -   dict with the following keys:</span>
-<span class="sd">            - ``Sfix``    -   list of lists, each containing ``[starttime]``</span>
-<span class="sd">            - ``Ssac``    -   list of lists, each containing ``[starttime]``</span>
-<span class="sd">            - ``Sblk``    -   list of lists, each containing ``[starttime]``</span>
-<span class="sd">            - ``Efix``    -   list of lists, each containing ``[starttime, endtime, duration, endx, endy]``</span>
-<span class="sd">            - ``Esac``    -   list of lists, each containing ``[starttime, endtime, duration, startx, starty, endx, endy]``</span>
-<span class="sd">            - ``Eblk``    -   list of lists, each containing ``[starttime, endtime, duration]``</span>
-<span class="sd">            - ``msg`` -   list of lists, each containing ``[time, message]``</span>
+<span class="sd">        - ``trackertime`` -  numpy array of timestamps, according to EDF</span>
+<span class="sd">        - ``events``      -  dict with the following keys:</span>
+<span class="sd">            - ``Sfix`` -  list of lists, each containing ``[start_fixation]``</span>
+<span class="sd">            - ``Ssac`` -  list of lists, each containing ``[start_saccade]``</span>
+<span class="sd">            - ``Sblk`` -  list of lists, each containing ``[start_blink]``</span>
+<span class="sd">            - ``Efix`` -  list of lists, each containing ``[start_fixation, end_fixation, duration_fixation, endx_fixation, endy_fixation]``</span>
+<span class="sd">            - ``Esac`` -  list of lists, each containing ``[start_saccade, end_saccade, duration_saccade, startx_saccade, starty_saccade, endx_saccade, endy_saccade]``</span>
+<span class="sd">            - ``Eblk`` -  list of lists, each containing ``[start_blink, end_blink, duration_blink]``</span>
+<span class="sd">            - ``msg``  -  list of lists, each containing ``[time, message]``</span>
+
 <span class="sd">    Note</span>
 <span class="sd">    ----</span>
 <span class="sd">    timing is in EDF time!</span>

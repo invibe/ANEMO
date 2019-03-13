@@ -50,10 +50,10 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="ANEMO_doc.html">ANEMO</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="readedf.html">read_edf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="arg.html">arg</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data_modification.html">data_modification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="read_edf.html">read_edf</a></li>
-<li class="toctree-l2"><a class="reference internal" href="classical_method.html">classical_method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datamodification.html">data_modification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classicalmethod.html">classical_method</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Equation.html">Equation</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Fit</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#generation-param-fit">generation_param_fit</a></li>
@@ -125,7 +125,7 @@
 <p>Fit allows you to perform Fits on Smooth Pursuite Eyes Movements data.
 You could use the functions ‘velocity’, ‘position’ and ‘saccades’ already present, but also your own functions.
 It must be initialized with the parameters of the experiment
-(see <a class="reference internal" href="ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a> for more precisions on the parameters)</p>
+(see <a class="reference internal" href="ANEMO_doc_old.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a> for more precisions on the parameters)</p>
 <div class="section" id="generation-param-fit">
 <h2>generation_param_fit<a class="headerlink" href="#generation-param-fit" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
@@ -148,9 +148,9 @@ It must be initialized with the parameters of the experiment
 </dd>
 </dl>
 </li>
-<li><p class="first"><strong>data_x</strong> (<em>ndarray, optional (default None)</em>) – x position for the trial recorded by the eyetracker transformed by <a class="reference internal" href="read_edf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
+<li><p class="first"><strong>data_x</strong> (<em>ndarray, optional (default None)</em>) – x position for the trial recorded by the eyetracker transformed by <a class="reference internal" href="readedf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
 </li>
-<li><p class="first"><strong>dir_target</strong> (<em>int, optional (default None)</em>) – the direction of the target – if <code class="docutils literal notranslate"><span class="pre">None</span></code> went searched in <code class="docutils literal notranslate"><span class="pre">param_exp</span></code> (see <a class="reference internal" href="ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a>)</p>
+<li><p class="first"><strong>dir_target</strong> (<em>int, optional (default None)</em>) – the direction of the target – if <code class="docutils literal notranslate"><span class="pre">None</span></code> went searched in <code class="docutils literal notranslate"><span class="pre">param_exp</span></code> (see <a class="reference internal" href="ANEMO_doc_old.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a>)</p>
 </li>
 <li><p class="first"><strong>trackertime</strong> (<em>ndarray, optional (default None)</em>) – the time of the tracker</p>
 </li>
@@ -158,7 +158,7 @@ It must be initialized with the parameters of the experiment
 </li>
 <li><p class="first"><strong>StimulusOf</strong> (<em>int, optional (default None)</em>) – time when the stimulus disappears</p>
 </li>
-<li><p class="first"><strong>saccades</strong> (<em>list, optional (default None)</em>) – list of edf saccades for the trial recorded by the eyetracker transformed by <a class="reference internal" href="read_edf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
+<li><p class="first"><strong>saccades</strong> (<em>list, optional (default None)</em>) – list of edf saccades for the trial recorded by the eyetracker transformed by <a class="reference internal" href="readedf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
 </li>
 <li><p class="first"><strong>value_latence</strong> (<em>int, optional (default None)</em>) – value that takes the parameter latence to begin the fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">nan</span></code> by default <code class="docutils literal notranslate"><span class="pre">TargetOn-t_0+100</span></code></p>
 </li>
@@ -251,9 +251,9 @@ It must be initialized with the parameters of the experiment
 </dd>
 </dl>
 </li>
-<li><p class="first"><strong>data_x</strong> (<em>ndarray, optional (default None)</em>) – x position for the trial recorded by the eyetracker transformed by <a class="reference internal" href="read_edf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
+<li><p class="first"><strong>data_x</strong> (<em>ndarray, optional (default None)</em>) – x position for the trial recorded by the eyetracker transformed by <a class="reference internal" href="readedf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
 </li>
-<li><p class="first"><strong>dir_target</strong> (<em>int, optional (default None)</em>) – the direction of the target – if <code class="docutils literal notranslate"><span class="pre">None</span></code> went searched in <code class="docutils literal notranslate"><span class="pre">param_exp</span></code> (see <a class="reference internal" href="ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a>)</p>
+<li><p class="first"><strong>dir_target</strong> (<em>int, optional (default None)</em>) – the direction of the target – if <code class="docutils literal notranslate"><span class="pre">None</span></code> went searched in <code class="docutils literal notranslate"><span class="pre">param_exp</span></code> (see <a class="reference internal" href="ANEMO_doc_old.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a>)</p>
 </li>
 <li><p class="first"><strong>trackertime</strong> (<em>ndarray, optional (default None)</em>) – the time of the tracker, if <code class="docutils literal notranslate"><span class="pre">None</span></code> = <code class="docutils literal notranslate"><span class="pre">np.arrange((len(data_trial))</span></code></p>
 </li>
@@ -261,7 +261,7 @@ It must be initialized with the parameters of the experiment
 </li>
 <li><p class="first"><strong>StimulusOf</strong> (<em>int, optional (default None)</em>) – time when the stimulus disappears</p>
 </li>
-<li><p class="first"><strong>saccades</strong> (<em>list, optional (default None)</em>) – list of edf saccades for the trial recorded by the eyetracker transformed by <a class="reference internal" href="read_edf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
+<li><p class="first"><strong>saccades</strong> (<em>list, optional (default None)</em>) – list of edf saccades for the trial recorded by the eyetracker transformed by <a class="reference internal" href="readedf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
 </li>
 <li><p class="first"><strong>time_sup</strong> (<em>int, optional (default 280)</em>) – time that will be deleted to perform the fit (for data that is less good at the end of the test)</p>
 </li>
@@ -372,7 +372,7 @@ It must be initialized with the parameters of the experiment
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first">
-<li><p class="first"><strong>data</strong> (<em>list</em>) – edf data for the trials recorded by the eyetracker transformed by <a class="reference internal" href="read_edf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
+<li><p class="first"><strong>data</strong> (<em>list</em>) – edf data for the trials recorded by the eyetracker transformed by <a class="reference internal" href="readedf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
 </li>
 <li><p class="first"><strong>equation</strong> (<em>str {‘fct_velocity’, ‘fct_position’, ‘fct_saccades’} or function (default ‘fct_velocity’)</em>) –</p>
 <dl class="docutils">
@@ -397,9 +397,9 @@ It must be initialized with the parameters of the experiment
 </dd>
 </dl>
 </li>
-<li><p class="first"><strong>N_blocks</strong> (<em>int, optional (default None)</em>) – number of blocks – if <code class="docutils literal notranslate"><span class="pre">None</span></code> went searched in <code class="docutils literal notranslate"><span class="pre">param_exp</span></code> (see <a class="reference internal" href="ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a>)</p>
+<li><p class="first"><strong>N_blocks</strong> (<em>int, optional (default None)</em>) – number of blocks – if <code class="docutils literal notranslate"><span class="pre">None</span></code> went searched in <code class="docutils literal notranslate"><span class="pre">param_exp</span></code> (see <a class="reference internal" href="ANEMO_doc_old.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a>)</p>
 </li>
-<li><p class="first"><strong>N_trials</strong> (<em>int, optional (default None)</em>) – number of trials per block  –  if <code class="docutils literal notranslate"><span class="pre">None</span></code> went searched in <code class="docutils literal notranslate"><span class="pre">param_exp</span></code> (see <a class="reference internal" href="ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a>)</p>
+<li><p class="first"><strong>N_trials</strong> (<em>int, optional (default None)</em>) – number of trials per block  –  if <code class="docutils literal notranslate"><span class="pre">None</span></code> went searched in <code class="docutils literal notranslate"><span class="pre">param_exp</span></code> (see <a class="reference internal" href="ANEMO_doc_old.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a>)</p>
 </li>
 <li><p class="first"><strong>time_sup</strong> (<em>int, optional (default 280)</em>) – time that will be deleted to perform the fit (for data that is less good at the end of the test)</p>
 </li>

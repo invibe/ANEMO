@@ -1,0 +1,219 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>ANEMO &#8212; ANEMO 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ANEMO</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=invibe&repo=ANEMO&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ANEMO_doc.html">ANEMO</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-ANEMO.ANEMO.ANEMO">
+<span id="anemo"></span><h1>ANEMO<a class="headerlink" href="#module-ANEMO.ANEMO.ANEMO" title="Permalink to this headline">¶</a></h1>
+<p>ANEMO allows you to perform Fits on data of Smooth Pursuite Eyes Movements.
+You could use the functions ‘velocity’, ‘position’ and ‘saccades’ already present, but also your own functions.
+It must be initialized with the parameters of the experiment :</p>
+<dl class="docutils">
+<dt><strong>param_exp</strong> (dict) :</dt>
+<dd><p class="first">dictionary containing the parameters of the experiment :</p>
+<p><strong>‘px_per_deg’</strong> (float) - number of px per degree for the experiment</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tan</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">((</span><span class="n">screen_width_cm</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">viewing_Distance_cm</span><span class="p">)</span>
+<span class="n">screen_width_deg</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">tan</span> <span class="o">*</span> <span class="mi">180</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+<span class="n">px_per_deg</span> <span class="o">=</span> <span class="n">screen_width_px</span> <span class="o">/</span> <span class="n">screen_width_deg</span>
+</pre></div>
+</div>
+<p><strong>‘dir_target’</strong> (list(list(int))) - list of lists for each block containing the direction of the target for each trial</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#the direction of the target is to -1 for left 1 for right</span>
+<span class="n">dir_target</span> <span class="o">=</span> <span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;dir_target&#39;</span><span class="p">][</span><span class="n">block</span><span class="p">][</span><span class="n">trial</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>or <strong>‘p’</strong> (ndarray) - ndarray containing for each trial of each block the direction of the target, its probability of direction and the switches of this probability</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># the direction of the target is to 0 for left 1 for right</span>
+<span class="n">dir_target</span> <span class="o">=</span> <span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">][</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">proba</span> <span class="o">=</span> <span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">][</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">switch</span> <span class="o">=</span> <span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">][</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>‘N_trials’</strong> (int) - number of trials per block</p>
+<p><strong>‘N_blocks’</strong> (int) - number of blocks</p>
+<p><strong>‘observer’</strong> (str, optional) - subject name</p>
+<p><strong>‘list_events’</strong> (list(str), optional) - list of the names of the events of the trial</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">list_events</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;onset fixation&#39;</span><span class="p">,</span> <span class="s1">&#39;end fixation&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;start pursuit&#39;</span><span class="p">,</span> <span class="s1">&#39;end pursuit&#39;</span><span class="p">]</span>
+
+<span class="n">by</span> <span class="n">default</span> <span class="p">:</span>
+    <span class="n">list_events</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;StimulusOn</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;StimulusOff</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;TargetOn</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;TargetOff</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>optional not obligatory, just to display the target in ANEMO.Plot :</p>
+<blockquote class="last">
+<div><p><strong>‘V_X_deg’</strong> (float, optional) - target velocity in deg/s</p>
+<p><strong>‘stim_tau’</strong> (float, optional) - presentation time of the target</p>
+<p><strong>‘RashBass’</strong> (int, optional) - the time the target has to arrive at the center of the screen in ms, to move the target back to t=0 of its <code class="docutils literal notranslate"><span class="pre">RashBass</span> <span class="pre">=</span> <span class="pre">velocity*latency</span></code></p>
+</div></blockquote>
+</dd>
+</dl>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="readedf.html">read_edf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arg.html">arg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datamodification.html">data_modification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="datamodification.html#filter-data">filter_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datamodification.html#data-deg">data_deg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datamodification.html#velocity-deg">velocity_deg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datamodification.html#detec-misac">detec_misac</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datamodification.html#supp-sacc">supp_sacc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datamodification.html#velocity-nan">velocity_NAN</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="classicalmethod.html">classical_method</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classicalmethod.html#latence">latence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classicalmethod.html#maximum">maximum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classicalmethod.html#anticipation">anticipation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classicalmethod.html#full">Full</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Equation.html">Equation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Equation.html#fct-velocity">fct_velocity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Equation.html#fct-position">fct_position</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Equation.html#fct-saccade">fct_saccade</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Fit.html">Fit</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Fit.html#generation-param-fit">generation_param_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Fit.html#fit-trial">Fit_trial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Fit.html#fit-full">Fit_full</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Plot.html">Plot</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Plot.html#deco">deco</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Plot.html#generate-fig">generate_fig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Plot.html#plot-equation">plot_equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Plot.html#plot-data">plot_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Plot.html#plot-fit">plot_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Plot.html#plot-full-data">plot_Full_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Plot.html#show-fig">show_fig</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      
+      
+      
+      <a href="_sources/ANEMO_doc_old.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/invibe/ANEMO" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

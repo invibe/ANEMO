@@ -1,0 +1,120 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# ANEMO"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    ".. automodule:: ANEMO.ANEMO.ANEMO"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "\n",
+    "screen_width_px = 1280 # px\n",
+    "screen_width_cm = 36   # cm\n",
+    "viewingDistance = 57.  # cm\n",
+    "\n",
+    "screen_width_deg = 2. * np.arctan((screen_width_cm/2) / viewingDistance) * 180/np.pi\n",
+    "\n",
+    "\n",
+    "param_exp = {# OBLIGATORY :\n",
+    "                # - number of trials per block :\n",
+    "                      'N_trials' : 2,\n",
+    "                # - number of blocks :\n",
+    "                      'N_blocks' : 2,\n",
+    "                # - direction of the target :\n",
+    "                    # list of lists for each block containing the direction of\n",
+    "                    # the target for each trial is to -1 for left 1 for right\n",
+    "                      'dir_target' : [[-1, 1], [1, -1]],\n",
+    "                # - number of px per degree for the experiment :\n",
+    "                      'px_per_deg' : screen_width_px / screen_width_deg,\n",
+    "             # OPTIONAL :\n",
+    "                # - subject name :\n",
+    "                      'observer' : 'test',\n",
+    "                # - list of the names of the events of the trial :\n",
+    "                      'list_events' : ['StimulusOn\\n', 'StimulusOff\\n',\n",
+    "                                      'TargetOn\\n', 'TargetOff\\n'],\n",
+    "                # - target velocity in deg/s :\n",
+    "                      'V_X_deg' : 15,\n",
+    "                # - presentation time of the target :\n",
+    "                      'stim_tau' : 0.75,\n",
+    "                # - the time the target has to arrive at the center of the screen in ms,\n",
+    "                    # to move the target back to t=0 of its RashBass = velocity*latency\n",
+    "                     'RashBass' : 100, \n",
+    "              }"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    ".. toctree:: readedf\n",
+    "\n",
+    ".. toctree:: arg\n",
+    "   \n",
+    ".. toctree:: datamodification\n",
+    "   \n",
+    ".. toctree:: classicalmethod\n",
+    "   \n",
+    ".. toctree:: Equation\n",
+    "   \n",
+    ".. toctree:: Fit\n",
+    "   \n",
+    ".. toctree:: Plot\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.5.2"
+  },
+  "toc": {
+   "base_numbering": 1,
+   "nav_menu": {},
+   "number_sections": true,
+   "sideBar": true,
+   "skip_h1_title": false,
+   "title_cell": "Table of Contents",
+   "title_sidebar": "Contents",
+   "toc_cell": false,
+   "toc_position": {},
+   "toc_section_display": true,
+   "toc_window_display": false
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

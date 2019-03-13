@@ -4,12 +4,15 @@ ANEMO
 
 .. automodule:: ANEMO.ANEMO.ANEMO
     :members:
+.. toctree::
+   demo_param_exp
+
 
 .. toctree::
+   readedf
    arg
-   data_modification
-   read_edf
-   classical_method
+   datamodification
+   classicalmethod
    Equation
    Fit
    Plot

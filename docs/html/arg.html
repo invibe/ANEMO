@@ -17,8 +17,8 @@
     <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="data_modification" href="data_modification.html" />
-    <link rel="prev" title="ANEMO" href="ANEMO_doc.html" />
+    <link rel="next" title="data_modification" href="datamodification.html" />
+    <link rel="prev" title="read_edf" href="readedf.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -50,10 +50,10 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="ANEMO_doc.html">ANEMO</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="readedf.html">read_edf</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">arg</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data_modification.html">data_modification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="read_edf.html">read_edf</a></li>
-<li class="toctree-l2"><a class="reference internal" href="classical_method.html">classical_method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datamodification.html">data_modification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classicalmethod.html">classical_method</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Equation.html">Equation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Fit.html">Fit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Plot.html">Plot</a></li>
@@ -66,8 +66,8 @@
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="ANEMO_doc.html">ANEMO</a><ul>
-      <li>Previous: <a href="ANEMO_doc.html" title="previous chapter">ANEMO</a></li>
-      <li>Next: <a href="data_modification.html" title="next chapter">data_modification</a></li>
+      <li>Previous: <a href="readedf.html" title="previous chapter">read_edf</a></li>
+      <li>Next: <a href="datamodification.html" title="next chapter">data_modification</a></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -102,10 +102,10 @@
     <ul>
         <li>
           &larr;
-          <a href="ANEMO_doc.html" title="Previous document">ANEMO</a>
+          <a href="readedf.html" title="Previous document">read_edf</a>
         </li>
         <li>
-          <a href="data_modification.html" title="Next document">data_modification</a>
+          <a href="datamodification.html" title="Next document">data_modification</a>
           &rarr;
         </li>
     </ul>
@@ -126,10 +126,10 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last">
-<li><p class="first"><strong>data_trial</strong> (<em>list</em>) – edf data for a trial recorded by the eyetracker transformed by <a class="reference internal" href="read_edf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
+<li><p class="first"><strong>data_trial</strong> (<em>list</em>) – edf data for a trial recorded by the eyetracker transformed by <a class="reference internal" href="readedf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
 </li>
 <li><p class="first"><strong>dir_target</strong> (<em>int, or None (default None)</em>) – the direction of the target</p>
-<p>if <code class="docutils literal notranslate"><span class="pre">None</span></code> went searched in <code class="docutils literal notranslate"><span class="pre">param_exp</span></code> (see <a class="reference internal" href="ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a>), can be :</p>
+<p>if <code class="docutils literal notranslate"><span class="pre">None</span></code> went searched in <code class="docutils literal notranslate"><span class="pre">param_exp</span></code> (see <a class="reference internal" href="ANEMO_doc_old.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a>), can be :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;dir_target&#39;</span><span class="p">][</span><span class="n">block</span><span class="p">][</span><span class="n">trial</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="o">-</span><span class="mi">1</span>
 <span class="o">-</span> <span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">][</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="mi">1</span>
 </pre></div>
@@ -179,10 +179,10 @@
     <ul>
         <li>
           &larr;
-          <a href="ANEMO_doc.html" title="Previous document">ANEMO</a>
+          <a href="readedf.html" title="Previous document">read_edf</a>
         </li>
         <li>
-          <a href="data_modification.html" title="Next document">data_modification</a>
+          <a href="datamodification.html" title="Next document">data_modification</a>
           &rarr;
         </li>
     </ul>

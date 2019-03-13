@@ -51,7 +51,7 @@ extensions = [
     'nbsphinx',
     #'numpydoc',
     'sphinx.ext.napoleon',
-    'sphinx.ext.autosectionlabel'
+    'sphinx.ext.autosectionlabel',
 ]
 
 def setup(app):
@@ -86,6 +86,17 @@ exclude_patterns = ['_build', '**.ipynb_checkpoints']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'trac'
+
+
+#### Run notebook configuration
+###
+#### The template used when exporting from nbconvert
+####   full  - Outputs the full HTML document [Default]
+####   basic - Outputs a single div (with no additional resources)
+###run_notebook_export_template = 'basic'  # Default: 'full'
+###
+#### Display the source links to the generated evaluated files
+###run_notebook_display_source_links = False  # Default: True
 
 
 # -- Options for HTML output -------------------------------------------------

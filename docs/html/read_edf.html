@@ -125,25 +125,24 @@
 <a class="reference external" href="mailto:edwin&#46;dalmaijer&#37;&#52;&#48;gmail&#46;com">edwin<span>&#46;</span>dalmaijer<span>&#64;</span>gmail<span>&#46;</span>com</a></p>
 <p>Does not actually read EDFs directly, but ASC files that are produced  by edf2asc (SR Research).
 Information on saccades, fixations and blinks is read from the EDF, hence based on SR Research algorithms.</p>
-<p>Returns a list with dicts for every trial. A trial dict contains the
-following keys:</p>
+<p>Returns a list with dicts for every trial. A trial dict contains the following keys:</p>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">x</span></code>       -   numpy array of x positions</li>
-<li><code class="docutils literal notranslate"><span class="pre">y</span></code>       -   numpy array of y positions</li>
-<li><code class="docutils literal notranslate"><span class="pre">size</span></code>        -   numpy array of pupil size</li>
+<li><code class="docutils literal notranslate"><span class="pre">x</span></code>           -  numpy array of x positions</li>
+<li><code class="docutils literal notranslate"><span class="pre">y</span></code>           -  numpy array of y positions</li>
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code>        -  numpy array of pupil size</li>
 <li><code class="docutils literal notranslate"><span class="pre">time</span></code>        -   numpy array of timestamps, t=0 at trialstart</li>
-<li><code class="docutils literal notranslate"><span class="pre">trackertime</span></code> -   numpy array of timestamps, according to EDF</li>
+<li><code class="docutils literal notranslate"><span class="pre">trackertime</span></code> -  numpy array of timestamps, according to EDF</li>
 <li><dl class="first docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">events</span></code>  -   dict with the following keys:</dt>
+<dt><code class="docutils literal notranslate"><span class="pre">events</span></code>      -  dict with the following keys:</dt>
 <dd><ul class="first last">
-<li><code class="docutils literal notranslate"><span class="pre">Sfix</span></code>    -   list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[starttime]</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">Ssac</span></code>    -   list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[starttime]</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">Sblk</span></code>    -   list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[starttime]</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">Efix</span></code>    -   list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[starttime,</span> <span class="pre">endtime,</span> <span class="pre">duration,</span> <span class="pre">endx,</span> <span class="pre">endy]</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">Esac</span></code>    -   list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[starttime,</span> <span class="pre">endtime,</span> <span class="pre">duration,</span> <span class="pre">startx,</span> <span class="pre">starty,</span> <span class="pre">endx,</span> <span class="pre">endy]</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">Eblk</span></code>    -   list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[starttime,</span> <span class="pre">endtime,</span> <span class="pre">duration]</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">msg</span></code> -   list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[time,</span> <span class="pre">message]</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">Sfix</span></code> -  list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[start_fixation]</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">Ssac</span></code> -  list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[start_saccade]</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">Sblk</span></code> -  list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[start_blink]</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">Efix</span></code> -  list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[start_fixation,</span> <span class="pre">end_fixation,</span> <span class="pre">duration_fixation,</span> <span class="pre">endx_fixation,</span> <span class="pre">endy_fixation]</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">Esac</span></code> -  list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[start_saccade,</span> <span class="pre">end_saccade,</span> <span class="pre">duration_saccade,</span> <span class="pre">startx_saccade,</span> <span class="pre">starty_saccade,</span> <span class="pre">endx_saccade,</span> <span class="pre">endy_saccade]</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">Eblk</span></code> -  list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[start_blink,</span> <span class="pre">end_blink,</span> <span class="pre">duration_blink]</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">msg</span></code>  -  list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[time,</span> <span class="pre">message]</span></code></li>
 </ul>
 </dd>
 </dl>
