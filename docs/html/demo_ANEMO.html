@@ -17,7 +17,7 @@
     <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="ANEMO" href="ANEMO_doc.html" />
+    <link rel="next" title="ANEMO" href="0_ANEMO_doc.html" />
     <link rel="prev" title="Tutorial" href="Tutorial.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -70,7 +70,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#Retrieving-the-parameters">Retrieving the parameters</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="ANEMO_doc.html">ANEMO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="0_ANEMO_doc.html">ANEMO</a></li>
 </ul>
 
 <div class="relations">
@@ -79,7 +79,7 @@
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="Tutorial.html">Tutorial</a><ul>
       <li>Previous: <a href="Tutorial.html" title="previous chapter">Tutorial</a></li>
-      <li>Next: <a href="ANEMO_doc.html" title="next chapter">ANEMO</a></li>
+      <li>Next: <a href="0_ANEMO_doc.html" title="next chapter">ANEMO</a></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -117,7 +117,7 @@
           <a href="Tutorial.html" title="Previous document">Tutorial</a>
         </li>
         <li>
-          <a href="ANEMO_doc.html" title="Next document">ANEMO</a>
+          <a href="0_ANEMO_doc.html" title="Next document">ANEMO</a>
           &rarr;
         </li>
     </ul>
@@ -562,7 +562,7 @@ To see the data, you could use:
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">velocity_NAN</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">velocity_NAN</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">data_x</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">data_y</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">saccades</span><span class="p">,</span>
-                              <span class="n">arg</span><span class="o">.</span><span class="n">trackertime</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">TargetOn</span><span class="p">)</span>
+                              <span class="n">arg</span><span class="o">.</span><span class="n">trackertime</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">TargetOn</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -957,15 +957,6 @@ see : <a href="Fit.html#generation-param-fit">generation_param_fit</a><div class
 <img alt="_images/demo_ANEMO_67_0.png" src="_images/demo_ANEMO_67_0.png" />
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 <div class="section" id="Full">
@@ -1149,19 +1140,19 @@ see pdf :<br/>
 Param recorded
 ---------------
 
-dict_keys([&#39;old_anti&#39;, &#39;fit&#39;, &#39;latence&#39;, &#39;observer&#39;, &#39;old_latence&#39;, &#39;start_anti&#39;, &#39;v_anti&#39;, &#39;maxi&#39;, &#39;tau&#39;, &#39;old_max&#39;])
+dict_keys([&#39;maxi&#39;, &#39;old_anti&#39;, &#39;observer&#39;, &#39;latence&#39;, &#39;old_latence&#39;, &#39;v_anti&#39;, &#39;old_max&#39;, &#39;fit&#39;, &#39;start_anti&#39;, &#39;tau&#39;])
 
 For the first trial
 ---------------
 
+maxi = 11.947688290137648
 old_anti = 5.2029031109490695
 latence = 211.9999995956723
 old_latence = nan
-start_anti = 74.99999999995998
 v_anti = -23.805279360219536
-maxi = 11.947688290137648
-tau = 13.000000071848424
 old_max = 14.807736090766625
+start_anti = 74.99999999995998
+tau = 13.000000071848424
 </pre></div></div>
 </div>
 <p><strong>position</strong></p>
@@ -1183,19 +1174,19 @@ old_max = 14.807736090766625
 Param recorded
 ---------------
 
-dict_keys([&#39;old_anti&#39;, &#39;fit&#39;, &#39;latence&#39;, &#39;observer&#39;, &#39;old_latence&#39;, &#39;start_anti&#39;, &#39;v_anti&#39;, &#39;maxi&#39;, &#39;tau&#39;, &#39;old_max&#39;])
+dict_keys([&#39;maxi&#39;, &#39;old_anti&#39;, &#39;observer&#39;, &#39;latence&#39;, &#39;old_latence&#39;, &#39;v_anti&#39;, &#39;old_max&#39;, &#39;fit&#39;, &#39;start_anti&#39;, &#39;tau&#39;])
 
 For the first trial
 ---------------
 
+maxi = 15.367464795043494
 old_anti = 5.2029031109490695
 latence = 196.35326495100298
 old_latence = nan
-start_anti = -111.01380810289334
 v_anti = 1.0106661120280975
-maxi = 15.367464795043494
-tau = 32.0021265083987
 old_max = 14.807736090766625
+start_anti = -111.01380810289334
+tau = 32.0021265083987
 </pre></div></div>
 </div>
 <p><strong>saccade</strong></p>
@@ -1217,47 +1208,20 @@ old_max = 14.807736090766625
 Param recorded
 ---------------
 
-dict_keys([&#39;observer&#39;, &#39;fit&#39;, &#39;x1&#39;, &#39;x_0&#39;, &#39;t1&#39;, &#39;tau&#39;, &#39;T0&#39;, &#39;t2&#39;, &#39;x2&#39;, &#39;tr&#39;])
+dict_keys([&#39;x_0&#39;, &#39;t2&#39;, &#39;observer&#39;, &#39;tau&#39;, &#39;x1&#39;, &#39;t1&#39;, &#39;x2&#39;, &#39;tr&#39;, &#39;T0&#39;, &#39;fit&#39;])
 
 For the first trial
 ---------------
 
-x1 = [-0.5403870450794503, -0.470849767691071, -1.9886089942475516]
 x_0 = [0.2272847148467203, -0.15334872327007254, -7.958311077230758]
-t1 = [15.11919791704251, 10.01001220733005, 17.30352269809784]
-tau = [39.748470336932996, 32.353245365355164, 9.486777647869626]
-T0 = [1.4957655349267789, 2.807204981522389, 5.000000126645588]
 t2 = [10.427471643651351, 10.468903043142417, 13.938671800591317]
+tau = [39.748470336932996, 32.353245365355164, 9.486777647869626]
+x1 = [-0.5403870450794503, -0.470849767691071, -1.9886089942475516]
+t1 = [15.11919791704251, 10.01001220733005, 17.30352269809784]
 x2 = [-0.20657746249432218, -3.3206742243690126, -1.2756707098296949]
 tr = [0.2606254276512182, 2.713879744320553, 14.89065017335387]
+T0 = [1.4957655349267789, 2.807204981522389, 5.000000126645588]
 </pre></div></div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>
-</pre></div>
-</div>
 </div>
 </div>
 
@@ -1272,7 +1236,7 @@ tr = [0.2606254276512182, 2.713879744320553, 14.89065017335387]
           <a href="Tutorial.html" title="Previous document">Tutorial</a>
         </li>
         <li>
-          <a href="ANEMO_doc.html" title="Next document">ANEMO</a>
+          <a href="0_ANEMO_doc.html" title="Next document">ANEMO</a>
           &rarr;
         </li>
     </ul>

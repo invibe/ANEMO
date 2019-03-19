@@ -1,0 +1,793 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Plot &#8212; ANEMO 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Fit" href="6_Fit.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ANEMO</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=invibe&repo=ANEMO&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="0_ANEMO_doc.html">ANEMO</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="1_readedf.html">read_edf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_arg.html">arg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_datamodification.html">data_modification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_classicalmethod.html">classical_method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_Equation.html">Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_Fit.html">Fit</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Plot</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#deco">deco</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generate-fig">generate_fig</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plot-equation">plot_equation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plot-data">plot_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plot-fit">plot_fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plot-full-data">plot_Full_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#show-fig">show_fig</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="0_ANEMO_doc.html">ANEMO</a><ul>
+      <li>Previous: <a href="6_Fit.html" title="previous chapter">Fit</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="6_Fit.html" title="Previous document">Fit</a>
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-ANEMO.ANEMO.ANEMO.Plot">
+<span id="plot"></span><h1>Plot<a class="headerlink" href="#module-ANEMO.ANEMO.ANEMO.Plot" title="Permalink to this headline">¶</a></h1>
+<p>Plot allows to display the data as well as their Fits.
+You could use the functions ‘velocity’, ‘position’ and ‘saccades’ already present, but also your own functions.
+It must be initialized with the parameters of the experiment
+(see <a class="reference internal" href="0_ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a> for more precisions on the parameters)</p>
+<div class="section" id="deco">
+<h2>deco<a class="headerlink" href="#deco" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ANEMO.ANEMO.ANEMO.Plot.deco">
+<code class="descclassname">ANEMO.ANEMO.ANEMO.Plot.</code><code class="descname">deco</code><span class="sig-paren">(</span><em>self</em>, <em>ax</em>, <em>StimulusOn=None</em>, <em>StimulusOf=None</em>, <em>TargetOn=None</em>, <em>TargetOff=None</em>, <em>saccades=None</em>, <em>t_label=20</em>, <em>**opt</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Plot.deco" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows to display the fixation, the gap and the pursuit on a figure</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> (<em>AxesSubplot</em>) – ax on which deco should be displayed</li>
+<li><strong>StimulusOn</strong> (<em>int, optional (default None)</em>) – time when the stimulus appears</li>
+<li><strong>StimulusOf</strong> (<em>int, optional (default None)</em>) – time when the stimulus disappears</li>
+<li><strong>TargetOn</strong> (<em>int, optional (default None)</em>) – time when the target to follow appears</li>
+<li><strong>TargetOff</strong> (<em>int, optional (default None)</em>) – time when the target to follow disappears</li>
+<li><strong>saccades</strong> (<em>list, optional (default None)</em>) – list of edf saccades for the trial recorded by the eyetracker transformed by <a class="reference internal" href="1_readedf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></li>
+<li><strong>t_label</strong> (<em>int, optional (default 20)</em>) – size x and y label</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>fig</strong> (<em>matplotlib.figure.Figure</em>) – figure</li>
+<li><strong>ax</strong> (<em>AxesSubplot</em>) – figure</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="generate-fig">
+<h2>generate_fig<a class="headerlink" href="#generate-fig" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ANEMO.ANEMO.ANEMO.Plot.generate_fig">
+<code class="descclassname">ANEMO.ANEMO.ANEMO.Plot.</code><code class="descname">generate_fig</code><span class="sig-paren">(</span><em>self</em>, <em>ax</em>, <em>data</em>, <em>trial</em>, <em>block</em>, <em>show='data'</em>, <em>show_data='velocity'</em>, <em>equation='fct_velocity'</em>, <em>N_blocks=None</em>, <em>N_trials=None</em>, <em>time_sup=280</em>, <em>step_fit=2</em>, <em>do_whitening=False</em>, <em>list_param_enre=None</em>, <em>param_fit=None</em>, <em>inde_vars=None</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>stop_search_misac=None</em>, <em>filt=None</em>, <em>cutoff=30</em>, <em>sample_rate=1000</em>, <em>show_pos_sacc=True</em>, <em>plot_detail=None</em>, <em>show_target=False</em>, <em>show_num_trial=None</em>, <em>write_step_trial=True</em>, <em>title=''</em>, <em>c='k'</em>, <em>fig=None</em>, <em>out=None</em>, <em>report=None</em>, <em>fig_width=15</em>, <em>t_label=20</em>, <em>t_text=14</em>, <em>**opt</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Plot.generate_fig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the parameters of the fit present in list_param_enre</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first">
+<li><p class="first"><strong>ax</strong> (<em>AxesSubplot</em>) – axis on which the figure is to be displayed</p>
+</li>
+<li><p class="first"><strong>data</strong> (<em>list</em>) – edf data for the trials recorded by the eyetracker transformed by <a class="reference internal" href="1_readedf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
+</li>
+<li><p class="first"><strong>trial</strong> (<em>int</em>) – number of the trial in the block</p>
+</li>
+<li><p class="first"><strong>block</strong> (<em>int</em>) – block number</p>
+</li>
+<li><p class="first"><strong>show</strong> (<em>str {‘data’, ‘fit’}, optional (default ‘data’)</em>) –</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">'data'</span></code> : show a data</li>
+<li><code class="docutils literal notranslate"><span class="pre">'fit'</span></code> : show a data fit with the function defined with equation parameter</li>
+</ul>
+</li>
+<li><p class="first"><strong>show_data</strong> (<em>str {‘velocity’, ‘position’, ‘saccade’}, optional (default ‘velocity’)</em>) –</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">'velocity'</span></code> : show the velocity data for a trial in deg/sec</li>
+<li><code class="docutils literal notranslate"><span class="pre">'position'</span></code> : show the position data for a trial in deg</li>
+<li><code class="docutils literal notranslate"><span class="pre">'saccade'</span></code> : show the position data for sacades in trial in deg</li>
+</ul>
+</li>
+<li><p class="first"><strong>equation</strong> (<em>str {‘fct_velocity’, ‘fct_position’, ‘fct_saccades’} or function (default ‘fct_velocity’)</em>) –</p>
+<dl class="docutils">
+<dt>function or name of the equation for the fit :</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code> : does a data fit with function <code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code> : does a data fit with function <code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">'fct_saccades'</span></code> : does a data fit with function <code class="docutils literal notranslate"><span class="pre">'fct_saccades'</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">function</span></code> : does a data fit with function</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><strong>N_blocks</strong> (<em>int, optional (default None)</em>) – number of blocks – if <code class="docutils literal notranslate"><span class="pre">None</span></code> went searched in <code class="docutils literal notranslate"><span class="pre">param_exp</span></code> (see <a class="reference internal" href="0_ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a>)</p>
+</li>
+<li><p class="first"><strong>N_trials</strong> (<em>int, optional (default None)</em>) – number of trials per block  –  if <code class="docutils literal notranslate"><span class="pre">None</span></code> went searched in <code class="docutils literal notranslate"><span class="pre">param_exp</span></code> (see <a class="reference internal" href="0_ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a>)</p>
+</li>
+<li><p class="first"><strong>time_sup</strong> (<em>int, optional (default 280)</em>) – time that will be deleted to perform the fit (for data that is less good at the end of the test)</p>
+</li>
+<li><p class="first"><strong>step_fit</strong> (<em>int, optional (default 2)</em>) – number of steps for the fit</p>
+</li>
+<li><p class="first"><strong>do_whitening</strong> (<em>bool, optional (default False)</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> return the whitened fit</p>
+</li>
+<li><p class="first"><strong>list_param_enre</strong> (<em>list, optional (default None)</em>) – list of fit parameters to record</p>
+<dl class="docutils">
+<dt>if <code class="docutils literal notranslate"><span class="pre">None</span></code> :</dt>
+<dd><ul class="first last">
+<li><p class="first">if <code class="docutils literal notranslate"><span class="pre">equation</span></code> is <code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code> or <code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code> :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">list_param_enre</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;start_anti&#39;</span><span class="p">,</span> <span class="s1">&#39;v_anti&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;latence&#39;</span><span class="p">,</span> <span class="s1">&#39;tau&#39;</span><span class="p">,</span> <span class="s1">&#39;maxi&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;saccades&#39;</span><span class="p">,</span> <span class="s1">&#39;old_anti&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;old_max&#39;</span><span class="p">,</span> <span class="s1">&#39;old_latence&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">if <code class="docutils literal notranslate"><span class="pre">equation</span></code> is <code class="docutils literal notranslate"><span class="pre">'fct_saccades'</span></code> :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">list_param_enre</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;T0&#39;</span><span class="p">,</span> <span class="s1">&#39;t1&#39;</span><span class="p">,</span> <span class="s1">&#39;t2&#39;</span><span class="p">,</span> <span class="s1">&#39;tr&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;x_0&#39;</span><span class="p">,</span> <span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="s1">&#39;tau&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><strong>param_fit</strong> (<em>dic, optional (default None)</em>) –</p>
+<dl class="docutils">
+<dt>fit parameter dictionary, each parameter is a dict containing <span class="classifier-delimiter">:</span> <span class="classifier">::</span></dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">'name'</span></code> : name of the variable,</li>
+<li><code class="docutils literal notranslate"><span class="pre">'value'</span></code> : initial value,</li>
+<li><code class="docutils literal notranslate"><span class="pre">'min'</span></code> : minimum value,</li>
+<li><code class="docutils literal notranslate"><span class="pre">'max'</span></code> : maximum value,</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal notranslate"><span class="pre">'vary'</span></code> :</dt>
+<dd><ul class="first last">
+<li><code class="docutils literal notranslate"><span class="pre">True</span></code> if varies during fit,</li>
+<li><code class="docutils literal notranslate"><span class="pre">'vary'</span></code> if only varies for step 2,</li>
+<li><code class="docutils literal notranslate"><span class="pre">False</span></code> if not varies during fit</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<p>if <code class="docutils literal notranslate"><span class="pre">None</span></code> generate by <a class="reference internal" href="6_Fit.html#ANEMO.ANEMO.ANEMO.Fit.generation_param_fit" title="ANEMO.ANEMO.ANEMO.Fit.generation_param_fit"><code class="xref py py-func docutils literal notranslate"><span class="pre">generation_param_fit()</span></code></a></p>
+</li>
+<li><p class="first"><strong>inde_vars</strong> (<em>dic, optional (default None)</em>) – independent variable dictionary of fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> generate by <a class="reference internal" href="6_Fit.html#ANEMO.ANEMO.ANEMO.Fit.generation_param_fit" title="ANEMO.ANEMO.ANEMO.Fit.generation_param_fit"><code class="xref py py-func docutils literal notranslate"><span class="pre">generation_param_fit()</span></code></a></p>
+</li>
+<li><p class="first"><strong>before_sacc</strong> (<em>int, optional (default 5)</em>) – time to remove before saccades – it is advisable to put : <code class="docutils literal notranslate"><span class="pre">5</span></code> for <code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code>, <code class="docutils literal notranslate"><span class="pre">0</span></code> for <code class="docutils literal notranslate"><span class="pre">'fct_saccade'</span></code></p>
+</li>
+<li><p class="first"><strong>after_sacc</strong> (<em>int, optional (default 15)</em>) – time to delete after saccades – it is advisable to put <code class="docutils literal notranslate"><span class="pre">15</span></code></p>
+</li>
+<li><p class="first"><strong>stop_search_misac</strong> (<em>int, optional (default None)</em>) – stop search of micro_saccade – if <code class="docutils literal notranslate"><span class="pre">None</span></code> stops searching at the <code class="docutils literal notranslate"><span class="pre">end</span> <span class="pre">of</span> <span class="pre">fixation</span> <span class="pre">+</span> <span class="pre">100ms</span></code></p>
+</li>
+<li><p class="first"><strong>filt</strong> (<em>str {‘position’, ‘velocity’, ‘velocity-position’} or None (default None)</em>) –</p>
+<dl class="docutils">
+<dt>to filter the data can be :</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">'position'</span></code> : filter the position,</li>
+<li><code class="docutils literal notranslate"><span class="pre">'velocity'</span></code> : filter the speed,</li>
+<li><code class="docutils literal notranslate"><span class="pre">'velocity-position'</span></code> : filter the position then the speed</li>
+<li><code class="docutils literal notranslate"><span class="pre">None</span></code> : the data will not be filtered</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><strong>cutoff</strong> (<em>int, optional (default 30)</em>) – the critical frequencies for cutoff of filter</p>
+</li>
+<li><p class="first"><strong>sample_rate</strong> (<em>int, optional (default 1000)</em>) – sampling rate of the recording for the filtre</p>
+</li>
+<li><p class="first"><strong>show_pos_sacc</strong> (<em>bool, optional (default True)</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> shows in a first figure the location of saccades during the pousuite</p>
+</li>
+<li><p class="first"><strong>plot_detail</strong> (<em>bool, optional (default None)</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> show the fit parameters on the data</p>
+</li>
+<li><p class="first"><strong>show_target</strong> (<em>bool, optional (default False)</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> show the target on the plot</p>
+</li>
+<li><p class="first"><strong>show_num_trial</strong> (<em>bool, optional (default None)</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> the num is written of the trial in y_label</p>
+</li>
+<li><p class="first"><strong>write_step_trial</strong> (<em>bool, optional (default True)</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> : write the steps of the trial on the figure</p>
+</li>
+<li><p class="first"><strong>title</strong> (<em>str, optional (default ‘’)</em>) – title of the figure</p>
+</li>
+<li><p class="first"><strong>c</strong> (<em>str, optional (default ‘k’)</em>) – text color and fit</p>
+</li>
+<li><p class="first"><strong>fig</strong> (<em>matplotlib.figure.Figure, optional (default None)</em>) – figure on which the function should be displayed – if <code class="docutils literal notranslate"><span class="pre">None</span></code> a figure is created</p>
+</li>
+<li><p class="first"><strong>out</strong> (<em>for the function show_fig, optional (default None)</em>)</p>
+</li>
+<li><p class="first"><strong>report</strong> (<em>bool, optional (default None)</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> return the report of the fit for each trial</p>
+</li>
+<li><p class="first"><strong>fig_width</strong> (<em>int, optional (default 15)</em>) – figure size</p>
+</li>
+<li><p class="first"><strong>t_label</strong> (<em>int, optional (default 20)</em>) – size x and y label</p>
+</li>
+<li><p class="first"><strong>t_text</strong> (<em>int, optional (default 14)</em>) – size of the text of the figure</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>ax</strong> (<em>AxesSubplot</em>) – figure</li>
+<li><strong>result</strong> (<em>dict</em>) – if report is True</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="plot-equation">
+<h2>plot_equation<a class="headerlink" href="#plot-equation" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ANEMO.ANEMO.ANEMO.Plot.plot_equation">
+<code class="descclassname">ANEMO.ANEMO.ANEMO.Plot.</code><code class="descname">plot_equation</code><span class="sig-paren">(</span><em>self</em>, <em>equation='fct_velocity'</em>, <em>fig_width=15</em>, <em>t_titre=35</em>, <em>t_label=20</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Plot.plot_equation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns figure of the equation used for the fit with the parameters of the fit</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first">
+<li><p class="first"><strong>equation</strong> (<em>str {‘fct_velocity’, ‘fct_position’, ‘fct_saccades’} or function (default ‘fct_velocity’)</em>) –</p>
+<dl class="docutils">
+<dt>function or name of the equation for the fit :</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code> : displays the <code class="docutils literal notranslate"><span class="pre">fct_velocity</span></code> equation</li>
+<li><code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code> : displays the <code class="docutils literal notranslate"><span class="pre">fct_position</span></code> equation</li>
+<li><code class="docutils literal notranslate"><span class="pre">'fct_saccades'</span></code> : displays the <code class="docutils literal notranslate"><span class="pre">fct_saccades</span></code> equation</li>
+<li><code class="docutils literal notranslate"><span class="pre">function</span></code> : displays the function equation</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><strong>fig_width</strong> (<em>int, optional (default 15)</em>) – figure size</p>
+</li>
+<li><p class="first"><strong>t_titre</strong> (<em>int, optional (default 35)</em>) – size of the title of the figure</p>
+</li>
+<li><p class="first"><strong>t_label</strong> (<em>int, optional (default 20)</em>) – size x and y label</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>fig</strong> (<em>matplotlib.figure.Figure</em>) – figure</li>
+<li><strong>ax</strong> (<em>AxesSubplot</em>) – figure</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="plot-data">
+<h2>plot_data<a class="headerlink" href="#plot-data" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ANEMO.ANEMO.ANEMO.Plot.plot_data">
+<code class="descclassname">ANEMO.ANEMO.ANEMO.Plot.</code><code class="descname">plot_data</code><span class="sig-paren">(</span><em>self</em>, <em>data</em>, <em>show='velocity'</em>, <em>trials=0</em>, <em>block=0</em>, <em>N_blocks=None</em>, <em>N_trials=None</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>stop_search_misac=None</em>, <em>filt=None</em>, <em>cutoff=30</em>, <em>sample_rate=1000</em>, <em>show_pos_sacc=True</em>, <em>show_target=False</em>, <em>show_num_trial=False</em>, <em>title=None</em>, <em>fig_width=15</em>, <em>t_titre=35</em>, <em>t_label=20</em>, <em>t_text=14</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Plot.plot_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the data figure</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first">
+<li><p class="first"><strong>data</strong> (<em>list</em>) – edf data for the trials recorded by the eyetracker transformed by <a class="reference internal" href="1_readedf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
+</li>
+<li><p class="first"><strong>show</strong> (<em>str {‘velocity’, ‘position’, ‘saccade’}, optional (default ‘velocity’)</em>) –</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">'velocity'</span></code> : show the velocity data for a trial in deg/sec</li>
+<li><code class="docutils literal notranslate"><span class="pre">'position'</span></code> : show the position data for a trial in deg</li>
+<li><code class="docutils literal notranslate"><span class="pre">'saccade'</span></code> : show the position data for sacades in trial in deg</li>
+</ul>
+</li>
+<li><p class="first"><strong>trials</strong> (<em>int or list, optional (default 0)</em>) – number or list of trials to display</p>
+</li>
+<li><p class="first"><strong>block</strong> (<em>int, optional (default 0)</em>) – number of the block in which it finds the trials to display</p>
+</li>
+<li><p class="first"><strong>N_blocks</strong> (<em>int, optional (default None)</em>) – number of blocks – if <code class="docutils literal notranslate"><span class="pre">None</span></code> went searched in <code class="docutils literal notranslate"><span class="pre">param_exp</span></code> (see <a class="reference internal" href="0_ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a>)</p>
+</li>
+<li><p class="first"><strong>N_trials</strong> (<em>int, optional (default None)</em>) – number of trials per block  –  if <code class="docutils literal notranslate"><span class="pre">None</span></code> went searched in <code class="docutils literal notranslate"><span class="pre">param_exp</span></code> (see <a class="reference internal" href="0_ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a>)</p>
+</li>
+<li><p class="first"><strong>before_sacc</strong> (<em>int, optional (default 5)</em>) – time to remove before saccades – it is advisable to put : <code class="docutils literal notranslate"><span class="pre">5</span></code> for <code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code>, <code class="docutils literal notranslate"><span class="pre">0</span></code> for <code class="docutils literal notranslate"><span class="pre">'fct_saccade'</span></code></p>
+</li>
+<li><p class="first"><strong>after_sacc</strong> (<em>int, optional (default 15)</em>) – time to delete after saccades – it is advisable to put <code class="docutils literal notranslate"><span class="pre">15</span></code></p>
+</li>
+<li><p class="first"><strong>stop_search_misac</strong> (<em>int, optional (default None)</em>) – stop search of micro_saccade – if <code class="docutils literal notranslate"><span class="pre">None</span></code> stops searching at the <code class="docutils literal notranslate"><span class="pre">end</span> <span class="pre">of</span> <span class="pre">fixation</span> <span class="pre">+</span> <span class="pre">100ms</span></code></p>
+</li>
+<li><p class="first"><strong>filt</strong> (<em>str {‘position’, ‘velocity’, ‘velocity-position’} or None (default None)</em>) –</p>
+<dl class="docutils">
+<dt>to filter the data can be :</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">'position'</span></code> : filter the position,</li>
+<li><code class="docutils literal notranslate"><span class="pre">'velocity'</span></code> : filter the speed,</li>
+<li><code class="docutils literal notranslate"><span class="pre">'velocity-position'</span></code> : filter the position then the speed</li>
+<li><code class="docutils literal notranslate"><span class="pre">None</span></code> : the data will not be filtered</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><strong>cutoff</strong> (<em>int, optional (default 30)</em>) – the critical frequencies for cutoff of filter</p>
+</li>
+<li><p class="first"><strong>sample_rate</strong> (<em>int, optional (default 1000)</em>) – sampling rate of the recording for the filtre</p>
+</li>
+<li><p class="first"><strong>show_pos_sacc</strong> (<em>bool, optional (default True)</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> shows in a first figure the location of saccades during the pousuite</p>
+</li>
+<li><p class="first"><strong>show_target</strong> (<em>bool, optional (default False)</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> show the target on the plot</p>
+</li>
+<li><p class="first"><strong>show_num_trial</strong> (<em>bool, optional (default None)</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> the num is written of the trial in y_label</p>
+</li>
+<li><p class="first"><strong>title</strong> (<em>str, optional (default None)</em>) – title of the figure</p>
+</li>
+<li><p class="first"><strong>fig_width</strong> (<em>int, optional (default 15)</em>) – figure size</p>
+</li>
+<li><p class="first"><strong>t_titre</strong> (<em>int, optional (default 35)</em>) – size of the title of the figure</p>
+</li>
+<li><p class="first"><strong>t_label</strong> (<em>int, optional (default 20)</em>) – size x and y label</p>
+</li>
+<li><p class="first"><strong>t_text</strong> (<em>int, optional (default 14)</em>) – size of the text of the figure</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>fig</strong> (<em>matplotlib.figure.Figure</em>) – figure</li>
+<li><strong>ax</strong> (<em>AxesSubplot</em>) – figure</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="plot-fit">
+<h2>plot_fit<a class="headerlink" href="#plot-fit" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ANEMO.ANEMO.ANEMO.Plot.plot_fit">
+<code class="descclassname">ANEMO.ANEMO.ANEMO.Plot.</code><code class="descname">plot_fit</code><span class="sig-paren">(</span><em>self</em>, <em>data</em>, <em>trials=0</em>, <em>block=0</em>, <em>fitted_data='velocity'</em>, <em>equation='fct_velocity'</em>, <em>N_blocks=None</em>, <em>N_trials=None</em>, <em>time_sup=280</em>, <em>step_fit=2</em>, <em>do_whitening=False</em>, <em>list_param_enre=None</em>, <em>param_fit=None</em>, <em>inde_vars=None</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>stop_search_misac=None</em>, <em>filt=None</em>, <em>cutoff=30</em>, <em>sample_rate=1000</em>, <em>show_target=False</em>, <em>show_num_trial=False</em>, <em>report=None</em>, <em>title=None</em>, <em>fig_width=15</em>, <em>t_titre=35</em>, <em>t_label=20</em>, <em>t_text=14</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Plot.plot_fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns figure of data fits</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first">
+<li><p class="first"><strong>data</strong> (<em>list</em>) – edf data for the trials recorded by the eyetracker transformed by <a class="reference internal" href="1_readedf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
+</li>
+<li><p class="first"><strong>trials</strong> (<em>int or list, optional (default 0)</em>) – number or list of trials to display</p>
+</li>
+<li><p class="first"><strong>block</strong> (<em>int, optional (default 0)</em>) – number of the block in which it finds the trials to display</p>
+</li>
+<li><p class="first"><strong>fitted_data</strong> (<em>str {‘velocity’, ‘position’, ‘saccade’}, optional (default ‘velocity’)</em>) –</p>
+<dl class="docutils">
+<dt>nature of fitted data :</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">'velocity'</span></code> : fit velocity data for trial in deg/sec</li>
+<li><code class="docutils literal notranslate"><span class="pre">'position'</span></code> : fit position data for trial in deg</li>
+<li><code class="docutils literal notranslate"><span class="pre">'saccade'</span></code> : fit position data for sacades in trial in deg</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><strong>equation</strong> (<em>str {‘fct_velocity’, ‘fct_position’, ‘fct_saccades’} or function (default ‘fct_velocity’)</em>) –</p>
+<dl class="docutils">
+<dt>function or name of the equation for the fit :</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code> : does a data fit with function <code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code> : does a data fit with function <code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">'fct_saccades'</span></code> : does a data fit with function <code class="docutils literal notranslate"><span class="pre">'fct_saccades'</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">function</span></code> : does a data fit with function</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><strong>N_blocks</strong> (<em>int, optional (default None)</em>) – number of blocks – if <code class="docutils literal notranslate"><span class="pre">None</span></code> went searched in <code class="docutils literal notranslate"><span class="pre">param_exp</span></code> (see <a class="reference internal" href="0_ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a>)</p>
+</li>
+<li><p class="first"><strong>N_trials</strong> (<em>int, optional (default None)</em>) – number of trials per block  –  if <code class="docutils literal notranslate"><span class="pre">None</span></code> went searched in <code class="docutils literal notranslate"><span class="pre">param_exp</span></code> (see <a class="reference internal" href="0_ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a>)</p>
+</li>
+<li><p class="first"><strong>time_sup</strong> (<em>int, optional (default 280)</em>) – time that will be deleted to perform the fit (for data that is less good at the end of the test)</p>
+</li>
+<li><p class="first"><strong>step_fit</strong> (<em>int, optional (default 2)</em>) – number of steps for the fit</p>
+</li>
+<li><p class="first"><strong>do_whitening</strong> (<em>bool, optional (default False)</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> return the whitened fit</p>
+</li>
+<li><p class="first"><strong>list_param_enre</strong> (<em>list, optional (default None)</em>) – list of fit parameters to record</p>
+<dl class="docutils">
+<dt>if <code class="docutils literal notranslate"><span class="pre">None</span></code> :</dt>
+<dd><ul class="first last">
+<li><p class="first">if <code class="docutils literal notranslate"><span class="pre">equation</span></code> is <code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code> or <code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code> :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">list_param_enre</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;start_anti&#39;</span><span class="p">,</span> <span class="s1">&#39;v_anti&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;latence&#39;</span><span class="p">,</span> <span class="s1">&#39;tau&#39;</span><span class="p">,</span> <span class="s1">&#39;maxi&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;saccades&#39;</span><span class="p">,</span> <span class="s1">&#39;old_anti&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;old_max&#39;</span><span class="p">,</span> <span class="s1">&#39;old_latence&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">if <code class="docutils literal notranslate"><span class="pre">equation</span></code> is <code class="docutils literal notranslate"><span class="pre">'fct_saccades'</span></code> :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">list_param_enre</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;T0&#39;</span><span class="p">,</span> <span class="s1">&#39;t1&#39;</span><span class="p">,</span> <span class="s1">&#39;t2&#39;</span><span class="p">,</span> <span class="s1">&#39;tr&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;x_0&#39;</span><span class="p">,</span> <span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="s1">&#39;tau&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><strong>param_fit</strong> (<em>dic, optional (default None)</em>) –</p>
+<dl class="docutils">
+<dt>fit parameter dictionary, each parameter is a dict containing <span class="classifier-delimiter">:</span> <span class="classifier">::</span></dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">'name'</span></code> : name of the variable,</li>
+<li><code class="docutils literal notranslate"><span class="pre">'value'</span></code> : initial value,</li>
+<li><code class="docutils literal notranslate"><span class="pre">'min'</span></code> : minimum value,</li>
+<li><code class="docutils literal notranslate"><span class="pre">'max'</span></code> : maximum value,</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal notranslate"><span class="pre">'vary'</span></code> :</dt>
+<dd><ul class="first last">
+<li><code class="docutils literal notranslate"><span class="pre">True</span></code> if varies during fit,</li>
+<li><code class="docutils literal notranslate"><span class="pre">'vary'</span></code> if only varies for step 2,</li>
+<li><code class="docutils literal notranslate"><span class="pre">False</span></code> if not varies during fit</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<p>if <code class="docutils literal notranslate"><span class="pre">None</span></code> generate by <a class="reference internal" href="6_Fit.html#ANEMO.ANEMO.ANEMO.Fit.generation_param_fit" title="ANEMO.ANEMO.ANEMO.Fit.generation_param_fit"><code class="xref py py-func docutils literal notranslate"><span class="pre">generation_param_fit()</span></code></a></p>
+</li>
+<li><p class="first"><strong>inde_vars</strong> (<em>dic, optional (default None)</em>) – independent variable dictionary of fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> generate by <a class="reference internal" href="6_Fit.html#ANEMO.ANEMO.ANEMO.Fit.generation_param_fit" title="ANEMO.ANEMO.ANEMO.Fit.generation_param_fit"><code class="xref py py-func docutils literal notranslate"><span class="pre">generation_param_fit()</span></code></a></p>
+</li>
+<li><p class="first"><strong>before_sacc</strong> (<em>int, optional (default 5)</em>) – time to remove before saccades – it is advisable to put : <code class="docutils literal notranslate"><span class="pre">5</span></code> for <code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code>, <code class="docutils literal notranslate"><span class="pre">0</span></code> for <code class="docutils literal notranslate"><span class="pre">'fct_saccade'</span></code></p>
+</li>
+<li><p class="first"><strong>after_sacc</strong> (<em>int, optional (default 15)</em>) – time to delete after saccades – it is advisable to put <code class="docutils literal notranslate"><span class="pre">15</span></code></p>
+</li>
+<li><p class="first"><strong>stop_search_misac</strong> (<em>int, optional (default None)</em>) – stop search of micro_saccade – if <code class="docutils literal notranslate"><span class="pre">None</span></code> stops searching at the <code class="docutils literal notranslate"><span class="pre">end</span> <span class="pre">of</span> <span class="pre">fixation</span> <span class="pre">+</span> <span class="pre">100ms</span></code></p>
+</li>
+<li><p class="first"><strong>filt</strong> (<em>str {‘position’, ‘velocity’, ‘velocity-position’} or None (default None)</em>) –</p>
+<dl class="docutils">
+<dt>to filter the data can be :</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">'position'</span></code> : filter the position,</li>
+<li><code class="docutils literal notranslate"><span class="pre">'velocity'</span></code> : filter the speed,</li>
+<li><code class="docutils literal notranslate"><span class="pre">'velocity-position'</span></code> : filter the position then the speed</li>
+<li><code class="docutils literal notranslate"><span class="pre">None</span></code> : the data will not be filtered</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><strong>cutoff</strong> (<em>int, optional (default 30)</em>) – the critical frequencies for cutoff of filter</p>
+</li>
+<li><p class="first"><strong>sample_rate</strong> (<em>int, optional (default 1000)</em>) – sampling rate of the recording for the filtre</p>
+</li>
+<li><p class="first"><strong>show_target</strong> (<em>bool, optional (default False)</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> show the target on the plot</p>
+</li>
+<li><p class="first"><strong>show_num_trial</strong> (<em>bool, optional (default None)</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> the num is written of the trial in y_label</p>
+</li>
+<li><p class="first"><strong>report</strong> (<em>bool, optional (default None)</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> return the report of the fit for each trial</p>
+</li>
+<li><p class="first"><strong>title</strong> (<em>str, optional (default None)</em>) – title of the figure</p>
+</li>
+<li><p class="first"><strong>fig_width</strong> (<em>int, optional (default 15)</em>) – figure size</p>
+</li>
+<li><p class="first"><strong>t_titre</strong> (<em>int, optional (default 35)</em>) – size of the title of the figure</p>
+</li>
+<li><p class="first"><strong>t_label</strong> (<em>int, optional (default 20)</em>) – size x and y label</p>
+</li>
+<li><p class="first"><strong>t_text</strong> (<em>int, optional (default 14)</em>) – size of the text of the figure</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>fig</strong> (<em>matplotlib.figure.Figure</em>) – figure</li>
+<li><strong>ax</strong> (<em>AxesSubplot</em>) – figure</li>
+<li><strong>report</strong> (<em>list</em>) – list of the reports of the fit for each trial</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="plot-full-data">
+<h2>plot_Full_data<a class="headerlink" href="#plot-full-data" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ANEMO.ANEMO.ANEMO.Plot.plot_Full_data">
+<code class="descclassname">ANEMO.ANEMO.ANEMO.Plot.</code><code class="descname">plot_Full_data</code><span class="sig-paren">(</span><em>self</em>, <em>data</em>, <em>show='velocity'</em>, <em>N_blocks=None</em>, <em>N_trials=None</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>stop_search_misac=None</em>, <em>filt=None</em>, <em>cutoff=30</em>, <em>sample_rate=1000</em>, <em>file_fig=None</em>, <em>show_pos_sacc=True</em>, <em>show_target=False</em>, <em>fig_width=12</em>, <em>t_titre=20</em>, <em>t_label=14</em>, <em>t_text=10</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Plot.plot_Full_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the full data figure</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first">
+<li><p class="first"><strong>data</strong> (<em>list</em>) – edf data for the trials recorded by the eyetracker transformed by <a class="reference internal" href="1_readedf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
+</li>
+<li><p class="first"><strong>show</strong> (<em>str {‘velocity’, ‘position’, ‘saccade’}, optional (default ‘velocity’)</em>) –</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">'velocity'</span></code> : show the velocity data for a trial in deg/sec</li>
+<li><code class="docutils literal notranslate"><span class="pre">'position'</span></code> : show the position data for a trial in deg</li>
+<li><code class="docutils literal notranslate"><span class="pre">'saccade'</span></code> : show the position data for sacades in trial in deg</li>
+</ul>
+</li>
+<li><p class="first"><strong>N_blocks</strong> (<em>int, optional (default None)</em>) – number of blocks – if <code class="docutils literal notranslate"><span class="pre">None</span></code> went searched in <code class="docutils literal notranslate"><span class="pre">param_exp</span></code> (see <a class="reference internal" href="0_ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a>)</p>
+</li>
+<li><p class="first"><strong>N_trials</strong> (<em>int, optional (default None)</em>) – number of trials per block  –  if <code class="docutils literal notranslate"><span class="pre">None</span></code> went searched in <code class="docutils literal notranslate"><span class="pre">param_exp</span></code> (see <a class="reference internal" href="0_ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a>)</p>
+</li>
+<li><p class="first"><strong>before_sacc</strong> (<em>int, optional (default 5)</em>) – time to remove before saccades – it is advisable to put : <code class="docutils literal notranslate"><span class="pre">5</span></code> for <code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code>, <code class="docutils literal notranslate"><span class="pre">0</span></code> for <code class="docutils literal notranslate"><span class="pre">'fct_saccade'</span></code></p>
+</li>
+<li><p class="first"><strong>after_sacc</strong> (<em>int, optional (default 15)</em>) – time to delete after saccades – it is advisable to put <code class="docutils literal notranslate"><span class="pre">15</span></code></p>
+</li>
+<li><p class="first"><strong>stop_search_misac</strong> (<em>int, optional (default None)</em>) – stop search of micro_saccade – if <code class="docutils literal notranslate"><span class="pre">None</span></code> stops searching at the <code class="docutils literal notranslate"><span class="pre">end</span> <span class="pre">of</span> <span class="pre">fixation</span> <span class="pre">+</span> <span class="pre">100ms</span></code></p>
+</li>
+<li><p class="first"><strong>filt</strong> (<em>str {‘position’, ‘velocity’, ‘velocity-position’} or None (default None)</em>) –</p>
+<dl class="docutils">
+<dt>to filter the data can be :</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">'position'</span></code> : filter the position,</li>
+<li><code class="docutils literal notranslate"><span class="pre">'velocity'</span></code> : filter the speed,</li>
+<li><code class="docutils literal notranslate"><span class="pre">'velocity-position'</span></code> : filter the position then the speed</li>
+<li><code class="docutils literal notranslate"><span class="pre">None</span></code> : the data will not be filtered</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><strong>cutoff</strong> (<em>int, optional (default 30)</em>) – the critical frequencies for cutoff of filter</p>
+</li>
+<li><p class="first"><strong>sample_rate</strong> (<em>int, optional (default 1000)</em>) – sampling rate of the recording for the filtre</p>
+</li>
+<li><p class="first"><strong>file_fig</strong> (<em>str, optional (default None)</em>) – name of file figure reccorded – if <code class="docutils literal notranslate"><span class="pre">None</span></code> file_fig is <code class="docutils literal notranslate"><span class="pre">show</span></code></p>
+</li>
+<li><p class="first"><strong>show_pos_sacc</strong> (<em>bool, optional (default True)</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> shows in a first figure the location of saccades during the pousuite</p>
+</li>
+<li><p class="first"><strong>show_target</strong> (<em>bool, optional (default False)</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> show the target on the plot</p>
+</li>
+<li><p class="first"><strong>fig_width</strong> (<em>int, optional (default 12)</em>) – figure size</p>
+</li>
+<li><p class="first"><strong>t_titre</strong> (<em>int, optional (default 20)</em>) – size of the title of the figure</p>
+</li>
+<li><p class="first"><strong>t_label</strong> (<em>int, optional (default 14)</em>) – size x and y label</p>
+</li>
+<li><p class="first"><strong>t_text</strong> (<em>int, optional (default 10)</em>) – size of the text of the figure</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>save the figure</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="show-fig">
+<h2>show_fig<a class="headerlink" href="#show-fig" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ANEMO.ANEMO.ANEMO.Plot.show_fig">
+<code class="descclassname">ANEMO.ANEMO.ANEMO.Plot.</code><code class="descname">show_fig</code><span class="sig-paren">(</span><em>self</em>, <em>data</em>, <em>list_data_fitfct</em>, <em>Full_param_fit</em>, <em>show_data='velocity'</em>, <em>N_blocks=None</em>, <em>N_trials=None</em>, <em>list_param_enre=None</em>, <em>inde_vars=None</em>, <em>time_sup=280</em>, <em>step_fit=2</em>, <em>do_whitening=False</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>stop_search_misac=None</em>, <em>sample_rate=1000</em>, <em>show_target=False</em>, <em>fig_width=15</em>, <em>t_label=20</em>, <em>t_text=14</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Plot.show_fig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the parameters of the fit present in list_param_enre</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first">
+<li><p class="first"><strong>data</strong> (<em>list</em>) – edf data for the trials recorded by the eyetracker transformed by <a class="reference internal" href="1_readedf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
+</li>
+<li><p class="first"><strong>list_data_fitfct</strong> (<em>dict</em>) – dictionary of correspondence between the data and the fit –
+if <code class="docutils literal notranslate"><span class="pre">None</span></code> by default <code class="docutils literal notranslate"><span class="pre">{'velocity':'fct_velocity',</span> <span class="pre">'position':'fct_position',</span> <span class="pre">'saccade':'fct_saccade'}</span></code></p>
+</li>
+<li><p class="first"><strong>Full_param_fit</strong> (<em>dict</em>) – dictionary containing all the parameters of fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> fit is for each figure</p>
+</li>
+<li><p class="first"><strong>show_data</strong> (<em>str {‘velocity’, ‘position’, ‘saccade’}, optional (default ‘velocity’)</em>) –</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">'velocity'</span></code> : show the velocity data for a trial in deg/sec</li>
+<li><code class="docutils literal notranslate"><span class="pre">'position'</span></code> : show the position data for a trial in deg</li>
+<li><code class="docutils literal notranslate"><span class="pre">'saccade'</span></code> : show the position data for sacades in trial in deg</li>
+</ul>
+</li>
+<li><p class="first"><strong>N_blocks</strong> (<em>int, optional (default None)</em>) – number of blocks – if <code class="docutils literal notranslate"><span class="pre">None</span></code> went searched in <code class="docutils literal notranslate"><span class="pre">param_exp</span></code> (see <a class="reference internal" href="0_ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a>)</p>
+</li>
+<li><p class="first"><strong>N_trials</strong> (<em>int, optional (default None)</em>) – number of trials per block  –  if <code class="docutils literal notranslate"><span class="pre">None</span></code> went searched in <code class="docutils literal notranslate"><span class="pre">param_exp</span></code> (see <a class="reference internal" href="0_ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a>)</p>
+</li>
+<li><p class="first"><strong>list_param_enre</strong> (<em>list, optional (default None)</em>) – list of fit parameters to record</p>
+<dl class="docutils">
+<dt>if <code class="docutils literal notranslate"><span class="pre">None</span></code> :</dt>
+<dd><ul class="first last">
+<li><p class="first">if <code class="docutils literal notranslate"><span class="pre">equation</span></code> is <code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code> or <code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code> :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">list_param_enre</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;start_anti&#39;</span><span class="p">,</span> <span class="s1">&#39;v_anti&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;latence&#39;</span><span class="p">,</span> <span class="s1">&#39;tau&#39;</span><span class="p">,</span> <span class="s1">&#39;maxi&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;saccades&#39;</span><span class="p">,</span> <span class="s1">&#39;old_anti&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;old_max&#39;</span><span class="p">,</span> <span class="s1">&#39;old_latence&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">if <code class="docutils literal notranslate"><span class="pre">equation</span></code> is <code class="docutils literal notranslate"><span class="pre">'fct_saccades'</span></code> :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">list_param_enre</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;T0&#39;</span><span class="p">,</span> <span class="s1">&#39;t1&#39;</span><span class="p">,</span> <span class="s1">&#39;t2&#39;</span><span class="p">,</span> <span class="s1">&#39;tr&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;x_0&#39;</span><span class="p">,</span> <span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="s1">&#39;tau&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><strong>inde_vars</strong> (<em>dic, optional (default None)</em>) – independent variable dictionary of fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> generate by <a class="reference internal" href="6_Fit.html#ANEMO.ANEMO.ANEMO.Fit.generation_param_fit" title="ANEMO.ANEMO.ANEMO.Fit.generation_param_fit"><code class="xref py py-func docutils literal notranslate"><span class="pre">generation_param_fit()</span></code></a></p>
+</li>
+<li><p class="first"><strong>time_sup</strong> (<em>int, optional (default 280)</em>) – time that will be deleted to perform the fit (for data that is less good at the end of the test)</p>
+</li>
+<li><p class="first"><strong>step_fit</strong> (<em>int, optional (default 2)</em>) – number of steps for the fit</p>
+</li>
+<li><p class="first"><strong>do_whitening</strong> (<em>bool, optional (default False)</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> return the whitened fit</p>
+</li>
+<li><p class="first"><strong>before_sacc</strong> (<em>int, optional (default 5)</em>) – time to delete before saccades</p>
+</li>
+<li><p class="first"><strong>after_sacc</strong> (<em>int, optional (default 15)</em>) – time to delete after saccades</p>
+</li>
+<li><p class="first"><strong>stop_search_misac</strong> (<em>int, optional (default None)</em>) – stop search of micro_saccade – if <code class="docutils literal notranslate"><span class="pre">None</span></code> stops searching at the <code class="docutils literal notranslate"><span class="pre">end</span> <span class="pre">of</span> <span class="pre">fixation</span> <span class="pre">+</span> <span class="pre">100ms</span></code></p>
+</li>
+<li><p class="first"><strong>sample_rate</strong> (<em>int, optional (default 1000)</em>) – sampling rate of the recording for the filtre</p>
+</li>
+<li><p class="first"><strong>show_target</strong> (<em>bool, optional (default False)</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> show the target on the plot</p>
+</li>
+<li><p class="first"><strong>fig_width</strong> (<em>int, optional (default 15)</em>) – figure size</p>
+</li>
+<li><p class="first"><strong>t_label</strong> (<em>int, optional (default 20)</em>) – size x and y label</p>
+</li>
+<li><p class="first"><strong>t_text</strong> (<em>int, optional (default 14)</em>) – size of the text of the figure</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>Full_list</strong> (<em>dict</em>) – dictionary containing all good and bad trials</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="6_Fit.html" title="Previous document">Fit</a>
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      
+      
+      
+      <a href="_sources/7_Plot.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/invibe/ANEMO" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

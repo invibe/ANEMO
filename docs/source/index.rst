@@ -8,4 +8,4 @@ Summary
 
 .. toctree::
    Tutorial
-   ANEMO_doc
+   0_ANEMO_doc

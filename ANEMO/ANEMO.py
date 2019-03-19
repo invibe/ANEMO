@@ -575,7 +575,7 @@ class ANEMO(object) :
 
         velocity_NAN = ANEMO.supp_sacc(self, velocity=velocity, saccades=new_saccades, trackertime=trackertime, before_sacc=before_sacc, after_sacc=after_sacc)
 
-        return velocity_NAN, new_saccades
+        return velocity_NAN
 
 
 
@@ -1473,7 +1473,7 @@ class ANEMO(object) :
                     opt = opt_base.copy()
                     opt.update(arg)
 
-                    velocity_NAN = ANEMO.velocity_NAN(self, **opt)[0]
+                    velocity_NAN = ANEMO.velocity_NAN(self, **opt)
 
                     if fitted_data=='velocity' :
                         data_x = arg.data_x
@@ -1892,7 +1892,7 @@ class ANEMO(object) :
             TarOff_s = arg.TargetOff - start
             StimOf_s = arg.StimulusOf - start
 
-            velocity_NAN = ANEMO.velocity_NAN(self, **opt)[0]
+            velocity_NAN = ANEMO.velocity_NAN(self, **opt)
 
             if show_data=='velocity' :
                 scale = 1
