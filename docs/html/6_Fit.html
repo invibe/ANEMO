@@ -48,7 +48,7 @@
 
 <h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_ANEMO.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="0_ANEMO_doc.html">ANEMO</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="1_readedf.html">read_edf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_arg.html">arg</a></li>
@@ -56,9 +56,13 @@
 <li class="toctree-l2"><a class="reference internal" href="4_classicalmethod.html">classical_method</a></li>
 <li class="toctree-l2"><a class="reference internal" href="5_Equation.html">Equation</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Fit</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#generation-param-fit">generation_param_fit</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fit-trial">Fit_trial</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fit-full">Fit_full</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#before-using-the-functions">before using the functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Fit">Fit</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#generation_param_fit">generation_param_fit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Fit_trial">Fit_trial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Fit_full">Fit_full</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="7_Plot.html">Plot</a></li>
@@ -120,17 +124,313 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-ANEMO.ANEMO.ANEMO.Fit">
-<span id="fit"></span><h1>Fit<a class="headerlink" href="#module-ANEMO.ANEMO.ANEMO.Fit" title="Permalink to this headline">¶</a></h1>
-<p>Fit allows you to perform Fits on Smooth Pursuite Eyes Movements data.
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 5ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<div class="section" id="Fit">
+<h1>Fit<a class="headerlink" href="#Fit" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="before-using-the-functions">
+<span id="before-using-the-function"></span><h2>before using the functions<a class="headerlink" href="#before-using-the-functions" title="Permalink to this headline">¶</a></h2>
+<p>for use these functions, you will need :</p>
+<ul class="simple">
+<li>to use <a class="reference internal" href="0_ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">ANEMO</span> <span class="k">import</span> <span class="n">ANEMO</span>
+
+<span class="n">param_exp</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;N_trials&#39;</span> <span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;N_blocks&#39;</span> <span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+             <span class="s1">&#39;dir_target&#39;</span> <span class="p">:</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
+             <span class="s1">&#39;px_per_deg&#39;</span> <span class="p">:</span> <span class="mf">36.51</span><span class="p">}</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">ANEMO</span><span class="p">(</span><span class="n">param_exp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<ul class="simple">
+<li>to define Fit</li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Fit</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">Fit</span><span class="p">(</span><span class="n">param_exp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<ul class="simple">
+<li>to use <a class="reference internal" href="1_readedf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">ANEMO</span> <span class="k">import</span> <span class="n">read_edf</span>
+
+<span class="n">datafile</span> <span class="o">=</span> <span class="s1">&#39;name_data_file.asc&#39;</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">read_edf</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;TRIALID&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<ul class="simple">
+<li>to use <a class="reference internal" href="2_arg.html#ANEMO.ANEMO.ANEMO.arg" title="ANEMO.ANEMO.ANEMO.arg"><code class="xref py py-func docutils literal notranslate"><span class="pre">arg()</span></code></a></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">block</span><span class="p">,</span> <span class="n">trial</span>  <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
+<span class="n">trial_data</span> <span class="o">=</span> <span class="n">trial</span> <span class="o">+</span> <span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;N_trials&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">block</span>
+<span class="n">arg</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">arg</span><span class="p">(</span><span class="n">data_trial</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">trial_data</span><span class="p">],</span> <span class="n">trial</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<ul class="simple">
+<li>to use <a class="reference internal" href="3_datamodification.html#ANEMO.ANEMO.ANEMO.velocity_NAN" title="ANEMO.ANEMO.ANEMO.velocity_NAN"><code class="xref py py-func docutils literal notranslate"><span class="pre">velocity_NAN()</span></code></a></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">velocity_NAN</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">velocity_NAN</span><span class="p">(</span><span class="n">data_x</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">data_x</span><span class="p">,</span>
+                              <span class="n">data_y</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">data_y</span><span class="p">,</span>
+                              <span class="n">saccades</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">saccades</span><span class="p">,</span>
+                              <span class="n">trackertime</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">trackertime</span><span class="p">,</span>
+                              <span class="n">TargetOn</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">TargetOn</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<ul class="simple">
+<li>to use <a class="reference internal" href="4_classicalmethod.html#ANEMO.ANEMO.ANEMO.classical_method.Full" title="ANEMO.ANEMO.ANEMO.classical_method.Full"><code class="xref py py-func docutils literal notranslate"><span class="pre">Full()</span></code></a></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># time since the beginning of the trial when the target to follow appears</span>
+<span class="n">TargetOn_0</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">TargetOn</span><span class="o">-</span><span class="n">arg</span><span class="o">.</span><span class="n">t_0</span>
+
+<span class="n">classic_lat</span><span class="p">,</span> <span class="n">classic_max</span><span class="p">,</span> <span class="n">classic_ant</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">classical_method</span><span class="o">.</span><span class="n">Full</span><span class="p">(</span><span class="n">velocity_NAN</span><span class="p">,</span> <span class="n">TargetOn_0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<hr style="height: 0px; width: 100%; border: 1px solid #B1B4B6; margin-left:0"><hr style="height: 0px; width: 1%; border: 10px solid #B1B4B6; margin-left:0; opacity: 0"></div>
+<div class="section" id="Fit">
+<h2>Fit<a class="headerlink" href="#Fit" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-ANEMO.ANEMO.ANEMO.Fit"></span><p>Fit allows you to perform Fits on Smooth Pursuite Eyes Movements data.
 You could use the functions ‘velocity’, ‘position’ and ‘saccades’ already present, but also your own functions.
 It must be initialized with the parameters of the experiment
 (see <a class="reference internal" href="0_ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a> for more precisions on the parameters)</p>
-<div class="section" id="generation-param-fit">
-<h2>generation_param_fit<a class="headerlink" href="#generation-param-fit" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="generation_param_fit">
+<h3>generation_param_fit<a class="headerlink" href="#generation_param_fit" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="ANEMO.ANEMO.ANEMO.Fit.generation_param_fit">
-<code class="descclassname">ANEMO.ANEMO.ANEMO.Fit.</code><code class="descname">generation_param_fit</code><span class="sig-paren">(</span><em>self</em>, <em>equation='fct_velocity'</em>, <em>data_x=None</em>, <em>dir_target=None</em>, <em>trackertime=None</em>, <em>TargetOn=None</em>, <em>StimulusOf=None</em>, <em>saccades=None</em>, <em>value_latence=None</em>, <em>value_maxi=None</em>, <em>value_anti=None</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>**opt</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Fit.generation_param_fit" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ANEMO.ANEMO.ANEMO.Fit.</code><code class="descname">generation_param_fit</code><span class="sig-paren">(</span><em>self</em>, <em>equation=’fct_velocity’</em>, <em>data_x=None</em>, <em>dir_target=None</em>, <em>trackertime=None</em>, <em>TargetOn=None</em>, <em>StimulusOf=None</em>, <em>saccades=None</em>, <em>value_latence=None</em>, <em>value_maxi=None</em>, <em>value_anti=None</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>**opt</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Fit.generation_param_fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates the parameters and independent variables of the fit</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -215,12 +515,75 @@ It must be initialized with the parameters of the experiment
 </table>
 </dd></dl>
 
+<p><strong>Exemple:</strong></p>
+<p>see <a class="reference internal" href="#before-using-the-function"><span class="std std-ref">here</span></a> before using the function</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
 </div>
-<div class="section" id="fit-trial">
-<h2>Fit_trial<a class="headerlink" href="#fit-trial" title="Permalink to this headline">¶</a></h2>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">param_fit</span><span class="p">,</span> <span class="n">inde_var</span> <span class="o">=</span> <span class="n">Fit</span><span class="o">.</span><span class="n">generation_param_fit</span><span class="p">(</span><span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_velocity&#39;</span><span class="p">,</span> <span class="n">data_x</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">data_x</span><span class="p">,</span>
+                                     <span class="n">dir_target</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">dir_target</span><span class="p">,</span> <span class="n">trackertime</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">trackertime</span><span class="p">,</span>
+                                     <span class="n">TargetOn</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">TargetOn</span><span class="p">,</span> <span class="n">StimulusOf</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">StimulusOf</span><span class="p">,</span> <span class="n">saccades</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">saccades</span><span class="p">,</span>
+                                     <span class="n">value_latence</span><span class="o">=</span><span class="n">classic_lat</span><span class="p">,</span> <span class="n">value_maxi</span><span class="o">=</span><span class="n">classic_max</span><span class="p">,</span> <span class="n">value_anti</span><span class="o">=</span><span class="n">classic_ant</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">param_fit</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>[{&#39;max&#39;: 80.0, &#39;min&#39;: 13.0, &#39;name&#39;: &#39;tau&#39;, &#39;value&#39;: 15.0, &#39;vary&#39;: &#39;vary&#39;},
+ {&#39;max&#39;: 40.0,
+  &#39;min&#39;: 1.0,
+  &#39;name&#39;: &#39;maxi&#39;,
+  &#39;value&#39;: 14.172123868097575,
+  &#39;vary&#39;: True},
+ {&#39;max&#39;: None, &#39;min&#39;: None, &#39;name&#39;: &#39;dir_target&#39;, &#39;value&#39;: 1, &#39;vary&#39;: False},
+ {&#39;max&#39;: 40.0,
+  &#39;min&#39;: -40.0,
+  &#39;name&#39;: &#39;v_anti&#39;,
+  &#39;value&#39;: 7.1213366201041435,
+  &#39;vary&#39;: True},
+ {&#39;max&#39;: 1122, &#39;min&#39;: 997, &#39;name&#39;: &#39;latence&#39;, &#39;value&#39;: 1022, &#39;vary&#39;: True},
+ {&#39;max&#39;: 997, &#39;min&#39;: 422, &#39;name&#39;: &#39;start_anti&#39;, &#39;value&#39;: 822, &#39;vary&#39;: &#39;vary&#39;}]
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">inde_var</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>{&#39;x&#39;: array([   0,    1,    2, ..., 1800, 1801, 1802])}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Fit_trial">
+<h3>Fit_trial<a class="headerlink" href="#Fit_trial" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="ANEMO.ANEMO.ANEMO.Fit.Fit_trial">
-<code class="descclassname">ANEMO.ANEMO.ANEMO.Fit.</code><code class="descname">Fit_trial</code><span class="sig-paren">(</span><em>self</em>, <em>data_trial</em>, <em>equation='fct_velocity'</em>, <em>data_x=None</em>, <em>dir_target=None</em>, <em>trackertime=None</em>, <em>TargetOn=None</em>, <em>StimulusOf=None</em>, <em>saccades=None</em>, <em>time_sup=280</em>, <em>step_fit=2</em>, <em>do_whitening=False</em>, <em>param_fit=None</em>, <em>inde_vars=None</em>, <em>value_latence=None</em>, <em>value_maxi=15.0</em>, <em>value_anti=0.0</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>**opt</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Fit.Fit_trial" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ANEMO.ANEMO.ANEMO.Fit.</code><code class="descname">Fit_trial</code><span class="sig-paren">(</span><em>self</em>, <em>data_trial</em>, <em>equation=’fct_velocity’</em>, <em>data_x=None</em>, <em>dir_target=None</em>, <em>trackertime=None</em>, <em>TargetOn=None</em>, <em>StimulusOf=None</em>, <em>saccades=None</em>, <em>time_sup=280</em>, <em>step_fit=2</em>, <em>do_whitening=False</em>, <em>param_fit=None</em>, <em>inde_vars=None</em>, <em>value_latence=None</em>, <em>value_maxi=15.0</em>, <em>value_anti=0.0</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>**opt</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Fit.Fit_trial" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the result of the fit of a trial</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -360,12 +723,64 @@ It must be initialized with the parameters of the experiment
 </table>
 </dd></dl>
 
+<p><strong>Exemple:</strong></p>
+<p>see <a class="reference internal" href="#before-using-the-function"><span class="std std-ref">here</span></a> before using the function</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
 </div>
-<div class="section" id="fit-full">
-<h2>Fit_full<a class="headerlink" href="#fit-full" title="Permalink to this headline">¶</a></h2>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># /!\ Warning /!\</span>
+<span class="c1"># inde_var must be the same size as data without time_sup</span>
+
+<span class="n">time_sup</span><span class="o">=</span><span class="mi">280</span>
+<span class="n">inde_var</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inde_var</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">][:</span><span class="o">-</span><span class="n">time_sup</span><span class="p">]</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">Fit</span><span class="o">.</span><span class="n">Fit_trial</span><span class="p">(</span><span class="n">velocity_NAN</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_velocity&#39;</span><span class="p">,</span>
+                       <span class="n">data_x</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">data_x</span><span class="p">,</span> <span class="n">dir_target</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">dir_target</span><span class="p">,</span>
+                       <span class="n">trackertime</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">trackertime</span><span class="p">,</span> <span class="n">TargetOn</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">TargetOn</span><span class="p">,</span>
+                       <span class="n">StimulusOf</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">StimulusOf</span><span class="p">,</span> <span class="n">saccades</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">saccades</span><span class="p">,</span>
+                       <span class="n">time_sup</span><span class="o">=</span><span class="n">time_sup</span><span class="p">,</span>
+                       <span class="n">param_fit</span><span class="o">=</span><span class="n">param_fit</span><span class="p">,</span> <span class="n">inde_vars</span><span class="o">=</span><span class="n">inde_var</span><span class="p">,</span>
+                       <span class="n">value_latence</span><span class="o">=</span><span class="n">classic_lat</span><span class="p">,</span> <span class="n">value_maxi</span><span class="o">=</span><span class="n">classic_max</span><span class="p">,</span> <span class="n">value_anti</span><span class="o">=</span><span class="n">classic_ant</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># to find the values of the fitted parameters:</span>
+<span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+tau = 17.380266561997693
+maxi = 12.835471134911385
+dir_target = 1
+v_anti = 6.562746785796833
+latence = 1105.1464651453684
+start_anti = 830.9999986217952
+do_whitening = False
+</pre></div></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">timing of the values of the fitted parameters is the time relative at the beginning of the trial</p>
+</div>
+</div>
+<div class="section" id="Fit_full">
+<h3>Fit_full<a class="headerlink" href="#Fit_full" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="ANEMO.ANEMO.ANEMO.Fit.Fit_full">
-<code class="descclassname">ANEMO.ANEMO.ANEMO.Fit.</code><code class="descname">Fit_full</code><span class="sig-paren">(</span><em>self</em>, <em>data</em>, <em>equation='fct_velocity'</em>, <em>fitted_data='velocity'</em>, <em>N_blocks=None</em>, <em>N_trials=None</em>, <em>time_sup=280</em>, <em>step_fit=2</em>, <em>do_whitening=False</em>, <em>list_param_enre=None</em>, <em>param_fit=None</em>, <em>inde_vars=None</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>stop_search_misac=None</em>, <em>filt=None</em>, <em>cutoff=30</em>, <em>sample_rate=1000</em>, <em>plot=None</em>, <em>file_fig=None</em>, <em>show_target=False</em>, <em>fig_width=12</em>, <em>t_label=20</em>, <em>t_text=14</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Fit.Fit_full" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ANEMO.ANEMO.ANEMO.Fit.</code><code class="descname">Fit_full</code><span class="sig-paren">(</span><em>self</em>, <em>data</em>, <em>equation=’fct_velocity’</em>, <em>fitted_data=’velocity’</em>, <em>N_blocks=None</em>, <em>N_trials=None</em>, <em>time_sup=280</em>, <em>step_fit=2</em>, <em>do_whitening=False</em>, <em>list_param_enre=None</em>, <em>param_fit=None</em>, <em>inde_vars=None</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>stop_search_misac=None</em>, <em>filt=None</em>, <em>cutoff=30</em>, <em>sample_rate=1000</em>, <em>plot=None</em>, <em>file_fig=None</em>, <em>show_target=False</em>, <em>fig_width=12</em>, <em>t_label=20</em>, <em>t_text=14</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Fit.Fit_full" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the parameters of the fit present in list_param_enre</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -498,6 +913,54 @@ It must be initialized with the parameters of the experiment
 </table>
 </dd></dl>
 
+<p><strong>Exemple:</strong></p>
+<p>see <a class="reference internal" href="#before-using-the-function"><span class="std std-ref">here</span></a> before using the function</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">param</span> <span class="o">=</span> <span class="n">Fit</span><span class="o">.</span><span class="n">Fit_full</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_velocity&#39;</span><span class="p">,</span>
+                     <span class="n">list_param_enre</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;start_anti&#39;</span><span class="p">,</span> <span class="s1">&#39;v_anti&#39;</span><span class="p">,</span> <span class="s1">&#39;latence&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;tau&#39;</span><span class="p">,</span> <span class="s1">&#39;maxi&#39;</span><span class="p">])</span>
+<span class="n">param</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+block, trial =  0 0
+block, trial =  0 1
+block, trial =  1 0
+block, trial =  1 1
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>{&#39;latence&#39;: [[192.64240469756055, 183.14646514536844],
+  [172.00000025769714, 211.9999996828751]],
+ &#39;maxi&#39;: [[14.685157668221773, 12.835471134911385],
+  [11.581100536852771, 12.051296551729866]],
+ &#39;start_anti&#39;: [[-83.99912519837142, -91.00000137820484],
+  [37.49888309979531, 74.94650198695126]],
+ &#39;tau&#39;: [[72.41699558658769, 17.380266561997693],
+  [44.439207099077635, 13.000069212831383]],
+ &#39;v_anti&#39;: [[-1.5973336847205815, 6.562746785796833],
+  [29.6508826222867, -23.031916593878364]]}
+</pre></div>
+</div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">timing of the values of the fitted parameters is the time relative to the appearance of the target</p>
+</div>
+</div>
 </div>
 </div>
 
@@ -527,7 +990,7 @@ It must be initialized with the parameters of the experiment
       
       
       
-      <a href="_sources/6_Fit.rst.txt"
+      <a href="_sources/6_Fit.ipynb.txt"
           rel="nofollow">Page source</a>
     </div>
 

@@ -48,17 +48,21 @@
 
 <h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_ANEMO.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="0_ANEMO_doc.html">ANEMO</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="1_readedf.html">read_edf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_arg.html">arg</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">data_modification</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#filter_data">filter_data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#data_deg">data_deg</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#velocity_deg">velocity_deg</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#detec_misac">detec_misac</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#supp_sacc">supp_sacc</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#velocity_NAN">velocity_NAN</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#before-using-the-functions">before using the functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data_modification">data_modification</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#filter_data">filter_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#data_deg">data_deg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#velocity_deg">velocity_deg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#detec_misac">detec_misac</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#supp_sacc">supp_sacc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#velocity_NAN">velocity_NAN</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="4_classicalmethod.html">classical_method</a></li>
@@ -325,8 +329,12 @@ div.rendered_html tbody tr:hover {
 </style>
 <div class="section" id="data_modification">
 <h1>data_modification<a class="headerlink" href="#data_modification" title="Permalink to this headline">¶</a></h1>
-<p>for use these functions, you will need to use:</p>
-<p><a class="reference internal" href="0_ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a></p>
+<div class="section" id="before-using-the-functions">
+<span id="before-using-the-function"></span><h2>before using the functions<a class="headerlink" href="#before-using-the-functions" title="Permalink to this headline">¶</a></h2>
+<p>for use these functions, you will need :</p>
+<ul class="simple">
+<li>to use <a class="reference internal" href="0_ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a></li>
+</ul>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -342,7 +350,9 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<p><a class="reference internal" href="1_readedf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
+<ul class="simple">
+<li>to use <a class="reference internal" href="1_readedf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></li>
+</ul>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -355,7 +365,9 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<p><a class="reference internal" href="2_arg.html#ANEMO.ANEMO.ANEMO.arg" title="ANEMO.ANEMO.ANEMO.arg"><code class="xref py py-func docutils literal notranslate"><span class="pre">arg()</span></code></a></p>
+<ul class="simple">
+<li>to use <a class="reference internal" href="2_arg.html#ANEMO.ANEMO.ANEMO.arg" title="ANEMO.ANEMO.ANEMO.arg"><code class="xref py py-func docutils literal notranslate"><span class="pre">arg()</span></code></a></li>
+</ul>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
@@ -368,8 +380,11 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<hr style="height: 0px; width: 100%; border: 1px solid #B1B4B6; margin-left:0"><div class="section" id="filter_data">
-<h2>filter_data<a class="headerlink" href="#filter_data" title="Permalink to this headline">¶</a></h2>
+<hr style="height: 0px; width: 100%; border: 1px solid #B1B4B6; margin-left:0"></div>
+<div class="section" id="data_modification">
+<h2>data_modification<a class="headerlink" href="#data_modification" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="filter_data">
+<h3>filter_data<a class="headerlink" href="#filter_data" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="ANEMO.ANEMO.ANEMO.filter_data">
 <code class="descclassname">ANEMO.ANEMO.ANEMO.</code><code class="descname">filter_data</code><span class="sig-paren">(</span><em>self</em>, <em>data</em>, <em>cutoff=30</em>, <em>sample_rate=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.filter_data" title="Permalink to this definition">¶</a></dt>
@@ -393,7 +408,7 @@ div.rendered_html tbody tr:hover {
 </dd></dl>
 
 <p><strong>Exemple:</strong></p>
-<p>see : <a class="reference internal" href="2_arg.html#ANEMO.ANEMO.ANEMO.arg" title="ANEMO.ANEMO.ANEMO.arg"><code class="xref py py-func docutils literal notranslate"><span class="pre">arg()</span></code></a></p>
+<p>see <a class="reference internal" href="6_Fit.html#before-using-the-function"><span class="std std-ref">here</span></a> before using the function</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
@@ -405,7 +420,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="section" id="data_deg">
-<h2>data_deg<a class="headerlink" href="#data_deg" title="Permalink to this headline">¶</a></h2>
+<h3>data_deg<a class="headerlink" href="#data_deg" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="ANEMO.ANEMO.ANEMO.data_deg">
 <code class="descclassname">ANEMO.ANEMO.ANEMO.</code><code class="descname">data_deg</code><span class="sig-paren">(</span><em>self</em>, <em>data</em>, <em>StimulusOf</em>, <em>t_0</em>, <em>saccades</em>, <em>before_sacc</em>, <em>after_sacc</em>, <em>filt=None</em>, <em>cutoff=30</em>, <em>sample_rate=1000</em>, <em>**opt</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.data_deg" title="Permalink to this definition">¶</a></dt>
@@ -453,7 +468,7 @@ div.rendered_html tbody tr:hover {
 </dd></dl>
 
 <p><strong>Exemple:</strong></p>
-<p>see : <a class="reference internal" href="2_arg.html#ANEMO.ANEMO.ANEMO.arg" title="ANEMO.ANEMO.ANEMO.arg"><code class="xref py py-func docutils literal notranslate"><span class="pre">arg()</span></code></a></p>
+<p>see <a class="reference internal" href="6_Fit.html#before-using-the-function"><span class="std std-ref">here</span></a> before using the function</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
@@ -471,7 +486,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="section" id="velocity_deg">
-<h2>velocity_deg<a class="headerlink" href="#velocity_deg" title="Permalink to this headline">¶</a></h2>
+<h3>velocity_deg<a class="headerlink" href="#velocity_deg" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="ANEMO.ANEMO.ANEMO.velocity_deg">
 <code class="descclassname">ANEMO.ANEMO.ANEMO.</code><code class="descname">velocity_deg</code><span class="sig-paren">(</span><em>self</em>, <em>data_x</em>, <em>filt=None</em>, <em>cutoff=30</em>, <em>sample_rate=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.velocity_deg" title="Permalink to this definition">¶</a></dt>
@@ -509,8 +524,8 @@ div.rendered_html tbody tr:hover {
 </table>
 </dd></dl>
 
-<p><strong>Exemple:</strong></p>
-<p>see : <a class="reference internal" href="2_arg.html#ANEMO.ANEMO.ANEMO.arg" title="ANEMO.ANEMO.ANEMO.arg"><code class="xref py py-func docutils literal notranslate"><span class="pre">arg()</span></code></a></p>
+<p id="id2"><strong>Exemple:</strong></p>
+<p>see <a class="reference internal" href="6_Fit.html#before-using-the-function"><span class="std std-ref">here</span></a> before using the function</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
@@ -526,7 +541,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="section" id="detec_misac">
-<h2>detec_misac<a class="headerlink" href="#detec_misac" title="Permalink to this headline">¶</a></h2>
+<h3>detec_misac<a class="headerlink" href="#detec_misac" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="ANEMO.ANEMO.ANEMO.detec_misac">
 <code class="descclassname">ANEMO.ANEMO.ANEMO.</code><code class="descname">detec_misac</code><span class="sig-paren">(</span><em>self</em>, <em>velocity_x</em>, <em>velocity_y</em>, <em>t_0=0</em>, <em>VFAC=5</em>, <em>mindur=5</em>, <em>maxdur=100</em>, <em>minsep=30</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.detec_misac" title="Permalink to this definition">¶</a></dt>
@@ -553,8 +568,11 @@ div.rendered_html tbody tr:hover {
 </table>
 </dd></dl>
 
-<p><strong>Exemple:</strong></p>
-<p>see : <a class="reference internal" href="2_arg.html#ANEMO.ANEMO.ANEMO.arg" title="ANEMO.ANEMO.ANEMO.arg"><code class="xref py py-func docutils literal notranslate"><span class="pre">arg()</span></code></a> and <a class="reference internal" href="#ANEMO.ANEMO.ANEMO.velocity_deg" title="ANEMO.ANEMO.ANEMO.velocity_deg"><code class="xref py py-func docutils literal notranslate"><span class="pre">velocity_deg()</span></code></a></p>
+<p id="misac"><strong>Exemple:</strong></p>
+<p>see <a class="reference internal" href="6_Fit.html#before-using-the-function"><span class="std std-ref">here</span></a> before using the function</p>
+<ul class="simple">
+<li>for <code class="docutils literal notranslate"><span class="pre">velocity_deg_x</span></code> and <code class="docutils literal notranslate"><span class="pre">velocity_deg_y</span></code> see <a class="reference internal" href="#id2"><span class="std std-ref">here</span></a></li>
+</ul>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
@@ -569,7 +587,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="section" id="supp_sacc">
-<h2>supp_sacc<a class="headerlink" href="#supp_sacc" title="Permalink to this headline">¶</a></h2>
+<h3>supp_sacc<a class="headerlink" href="#supp_sacc" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="ANEMO.ANEMO.ANEMO.supp_sacc">
 <code class="descclassname">ANEMO.ANEMO.ANEMO.</code><code class="descname">supp_sacc</code><span class="sig-paren">(</span><em>self</em>, <em>velocity</em>, <em>saccades</em>, <em>trackertime</em>, <em>before_sacc</em>, <em>after_sacc</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.supp_sacc" title="Permalink to this definition">¶</a></dt>
@@ -595,7 +613,11 @@ div.rendered_html tbody tr:hover {
 </dd></dl>
 
 <p><strong>Exemple:</strong></p>
-<p>see : <a class="reference internal" href="2_arg.html#ANEMO.ANEMO.ANEMO.arg" title="ANEMO.ANEMO.ANEMO.arg"><code class="xref py py-func docutils literal notranslate"><span class="pre">arg()</span></code></a>, <a class="reference internal" href="#ANEMO.ANEMO.ANEMO.velocity_deg" title="ANEMO.ANEMO.ANEMO.velocity_deg"><code class="xref py py-func docutils literal notranslate"><span class="pre">velocity_deg()</span></code></a> and <a class="reference internal" href="#ANEMO.ANEMO.ANEMO.detec_misac" title="ANEMO.ANEMO.ANEMO.detec_misac"><code class="xref py py-func docutils literal notranslate"><span class="pre">detec_misac()</span></code></a></p>
+<p>see <a class="reference internal" href="6_Fit.html#before-using-the-function"><span class="std std-ref">here</span></a> before using the function</p>
+<ul class="simple">
+<li>for <code class="docutils literal notranslate"><span class="pre">velocity_deg_x</span></code> see <a class="reference internal" href="#id2"><span class="std std-ref">here</span></a></li>
+<li>for <code class="docutils literal notranslate"><span class="pre">misac</span></code> see <a class="reference internal" href="#misac"><span class="std std-ref">here</span></a></li>
+</ul>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
@@ -613,7 +635,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="section" id="velocity_NAN">
-<h2>velocity_NAN<a class="headerlink" href="#velocity_NAN" title="Permalink to this headline">¶</a></h2>
+<h3>velocity_NAN<a class="headerlink" href="#velocity_NAN" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="ANEMO.ANEMO.ANEMO.velocity_NAN">
 <code class="descclassname">ANEMO.ANEMO.ANEMO.</code><code class="descname">velocity_NAN</code><span class="sig-paren">(</span><em>self</em>, <em>data_x</em>, <em>data_y</em>, <em>saccades</em>, <em>trackertime</em>, <em>TargetOn</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>stop_search_misac=None</em>, <em>filt=None</em>, <em>cutoff=30</em>, <em>sample_rate=1000</em>, <em>**opt</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.velocity_NAN" title="Permalink to this definition">¶</a></dt>
@@ -666,7 +688,7 @@ div.rendered_html tbody tr:hover {
 </dd></dl>
 
 <p><strong>Exemple:</strong></p>
-<p>see : <a class="reference internal" href="2_arg.html#ANEMO.ANEMO.ANEMO.arg" title="ANEMO.ANEMO.ANEMO.arg"><code class="xref py py-func docutils literal notranslate"><span class="pre">arg()</span></code></a></p>
+<p>see <a class="reference internal" href="6_Fit.html#before-using-the-function"><span class="std std-ref">here</span></a> before using the function</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
@@ -681,6 +703,7 @@ div.rendered_html tbody tr:hover {
                               <span class="n">stop_search_misac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                               <span class="n">filt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
 </pre></div>
+</div>
 </div>
 </div>
 </div>

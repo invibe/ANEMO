@@ -48,7 +48,7 @@
 
 <h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_ANEMO.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="0_ANEMO_doc.html">ANEMO</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">read_edf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_arg.html">arg</a></li>
@@ -386,10 +386,7 @@ currently is doing will be printed to the console</li>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1">#-------------------------------------------------------------------</span>
-<span class="c1"># Retrieving the data</span>
-<span class="c1">#-------------------------------------------------------------------</span>
-<span class="kn">from</span> <span class="nn">ANEMO</span> <span class="k">import</span> <span class="n">read_edf</span>
+<span></span><span class="kn">from</span> <span class="nn">ANEMO</span> <span class="k">import</span> <span class="n">read_edf</span>
 
 <span class="n">datafile</span> <span class="o">=</span> <span class="s1">&#39;name_data_file.asc&#39;</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">read_edf</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;TRIALID&#39;</span><span class="p">)</span>

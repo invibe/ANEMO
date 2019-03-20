@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>The parameters of the experiment &#8212; ANEMO 0.0.1 documentation</title>
+    <title>Tutorial &#8212; ANEMO 0.0.1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
@@ -18,7 +18,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="ANEMO" href="0_ANEMO_doc.html" />
-    <link rel="prev" title="Tutorial" href="Tutorial.html" />
+    <link rel="prev" title="Summary" href="index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -48,8 +48,11 @@
 
 <h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="Tutorial.html">Tutorial</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">The parameters of the experiment</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#import-ANEMO">import ANEMO</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#The-parameters-of-the-experiment">The parameters of the experiment</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#Retrieving-the-data">Retrieving the data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#arg">arg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Data">Data</a><ul>
@@ -77,10 +80,8 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-  <li><a href="Tutorial.html">Tutorial</a><ul>
-      <li>Previous: <a href="Tutorial.html" title="previous chapter">Tutorial</a></li>
+      <li>Previous: <a href="index.html" title="previous chapter">Summary</a></li>
       <li>Next: <a href="0_ANEMO_doc.html" title="next chapter">ANEMO</a></li>
-  </ul></li>
   </ul></li>
 </ul>
 </div>
@@ -114,7 +115,7 @@
     <ul>
         <li>
           &larr;
-          <a href="Tutorial.html" title="Previous document">Tutorial</a>
+          <a href="index.html" title="Previous document">Summary</a>
         </li>
         <li>
           <a href="0_ANEMO_doc.html" title="Next document">ANEMO</a>
@@ -327,11 +328,16 @@ div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
+<div class="section" id="Tutorial">
+<h1>Tutorial<a class="headerlink" href="#Tutorial" title="Permalink to this headline">¶</a></h1>
 <p>ANEMO allows you to perform Fits on data of Smooth Pursuite Eyes Movements. You could use the functions <code class="docutils literal notranslate"><span class="pre">‘velocity’</span></code>, <code class="docutils literal notranslate"><span class="pre">‘position’</span></code> and <code class="docutils literal notranslate"><span class="pre">‘saccades’</span></code> already present, but also your own functions.</p>
 <p>It must be initialized with the parameters of the experiment :</p>
+<div class="section" id="import-ANEMO">
+<h2>import ANEMO<a class="headerlink" href="#import-ANEMO" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="The-parameters-of-the-experiment">
-<h1>The parameters of the experiment<a class="headerlink" href="#The-parameters-of-the-experiment" title="Permalink to this headline">¶</a></h1>
-<b>param_exp</b> is dictionary containing the parameters of the experiment, see : <a href="ANEMO_doc.html">doc</a><div class="nbinput nblast docutils container">
+<h3>The parameters of the experiment<a class="headerlink" href="#The-parameters-of-the-experiment" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">param_exp</span></code> is dictionary containing the parameters of the experiment, see <a class="reference internal" href="0_ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a></p>
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
@@ -342,8 +348,9 @@ div.rendered_html tbody tr:hover {
 <span class="n">screen_width_cm</span> <span class="o">=</span> <span class="mi">36</span>   <span class="c1"># cm</span>
 <span class="n">viewingDistance</span> <span class="o">=</span> <span class="mf">57.</span>  <span class="c1"># cm</span>
 
-<span class="n">screen_width_deg</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">((</span><span class="n">screen_width_cm</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">viewingDistance</span><span class="p">)</span> <span class="o">*</span> <span class="mi">180</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
-
+<span class="n">tan</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">((</span><span class="n">screen_width_cm</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">viewingDistance</span><span class="p">)</span>
+<span class="n">screen_width_deg</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">tan</span> <span class="o">*</span> <span class="mi">180</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+<span class="n">px_per_deg</span> <span class="o">=</span> <span class="n">screen_width_px</span> <span class="o">/</span> <span class="n">screen_width_deg</span>
 
 <span class="n">param_exp</span> <span class="o">=</span> <span class="p">{</span><span class="c1"># OBLIGATORY :</span>
                 <span class="c1"># - number of trials per block :</span>
@@ -355,7 +362,7 @@ div.rendered_html tbody tr:hover {
                     <span class="c1"># the target for each trial is to -1 for left 1 for right</span>
                       <span class="s1">&#39;dir_target&#39;</span> <span class="p">:</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
                 <span class="c1"># - number of px per degree for the experiment :</span>
-                      <span class="s1">&#39;px_per_deg&#39;</span> <span class="p">:</span> <span class="n">screen_width_px</span> <span class="o">/</span> <span class="n">screen_width_deg</span><span class="p">,</span>
+                      <span class="s1">&#39;px_per_deg&#39;</span> <span class="p">:</span> <span class="n">px_per_deg</span><span class="p">,</span>
              <span class="c1"># OPTIONAL :</span>
                 <span class="c1"># - subject name :</span>
                       <span class="s1">&#39;observer&#39;</span> <span class="p">:</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span>
@@ -373,89 +380,66 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Retrieving-the-data">
-<h1>Retrieving the data<a class="headerlink" href="#Retrieving-the-data" title="Permalink to this headline">¶</a></h1>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">ANEMO</span> <span class="k">import</span> <span class="n">read_edf</span>
+<span></span><span class="kn">from</span> <span class="nn">ANEMO</span> <span class="k">import</span> <span class="n">ANEMO</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">ANEMO</span><span class="p">(</span><span class="n">param_exp</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-see : <a href="read_edf.html">read_edf</a><p>Does not actually read EDFs directly, but the ASC files that are produced by edf2asc (SR Research). Information on saccades, fixations and blinks is read from the EDF, therefore based on SR Research algorithms.</p>
+</div>
+</div>
+<div class="section" id="Retrieving-the-data">
+<h2>Retrieving the data<a class="headerlink" href="#Retrieving-the-data" title="Permalink to this headline">¶</a></h2>
+<p>for retrieving the data we use the function : <a class="reference internal" href="1_readedf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># path to the file that has to be read</span>
-<span class="n">datafile</span> <span class="o">=</span> <span class="s1">&#39;data/enregistrement_AM_2017-10-23_100057.asc&#39;</span>
+<span></span><span class="kn">from</span> <span class="nn">ANEMO</span> <span class="k">import</span> <span class="n">read_edf</span>
 
-<span class="c1"># trial start string</span>
-<span class="n">start</span> <span class="o">=</span> <span class="s1">&#39;TRIALID&#39;</span>
+<span class="c1"># path to the file that has to be read</span>
+<span class="n">datafile</span> <span class="o">=</span> <span class="s1">&#39;name_data_file.asc&#39;</span>
 
-<span class="n">data</span> <span class="o">=</span> <span class="n">read_edf</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">read_edf</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;TRIALID&#39;</span><span class="p">)</span>
 
 <span class="c1"># for the demo we need only the first four trials</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
-<p>Data is a list with dicts for every trial. A trial dict contains the following keys:</p>
-<ul class="simple">
-<li><strong>x</strong> - numpy array of x positions</li>
-<li><strong>y</strong> - numpy array of y positions</li>
-<li><strong>size</strong> - numpy array of pupil size</li>
-<li><strong>time</strong> - numpy array of timestamps, t=0 at trialstart</li>
-<li><strong>trackertime</strong> - numpy array of timestamps, according to EDF</li>
-<li><strong>events</strong> - dict with the following keys:<ul>
-<li><strong>Sfix</strong> - list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[start_fixation]</span></code></li>
-<li><strong>Ssac</strong> - list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[start_saccade]</span></code></li>
-<li><strong>Sblk</strong> - list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[start_blink]</span></code></li>
-<li><strong>Efix</strong> - list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[start_fixation,</span> <span class="pre">end_fixation,</span> <span class="pre">duration_fixation,</span> <span class="pre">endx_fixation,</span> <span class="pre">endy_fixation]</span></code></li>
-<li><strong>Esac</strong> - list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[start_saccade,</span> <span class="pre">end_saccade,</span> <span class="pre">duration_saccade,</span> <span class="pre">startx_saccade,</span> <span class="pre">starty_saccade,</span> <span class="pre">endx_saccade,</span> <span class="pre">endy_saccade]</span></code></li>
-<li><strong>Eblk</strong> - list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[start_blink,</span> <span class="pre">end_blink,</span> <span class="pre">duration_blink]</span></code></li>
-<li><strong>msg</strong> - list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[time,</span> <span class="pre">message]</span></code></li>
-</ul>
-</li>
-</ul>
-<div class="admonition note">
-<strong>Note:</strong> timing is in EDF time!</div>
 </div>
 <div class="section" id="arg">
-<h1>arg<a class="headerlink" href="#arg" title="Permalink to this headline">¶</a></h1>
-<a href="arg.html">arg</a>  Generates a dictionary of the parameters of the trial<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<h2>arg<a class="headerlink" href="#arg" title="Permalink to this headline">¶</a></h2>
+<p>For generate a dictionary of the parameters of the trial we use the function  : <a class="reference internal" href="2_arg.html#ANEMO.ANEMO.ANEMO.arg" title="ANEMO.ANEMO.ANEMO.arg"><code class="xref py py-func docutils literal notranslate"><span class="pre">arg()</span></code></a></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># number of the block and trial that you want to display</span>
-<span class="n">block</span><span class="p">,</span> <span class="n">trial</span>  <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span>
-<span class="c1"># data divided into two blocks of two trials each</span>
-<span class="n">N_blocks</span><span class="p">,</span> <span class="n">N_trials</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span>
+<span></span><span class="c1"># number of the block and trial</span>
+<span class="n">block</span><span class="p">,</span> <span class="n">trial</span>  <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span>
+
+<span class="c1"># number of the trial</span>
+<span class="n">trial_data</span> <span class="o">=</span> <span class="n">trial</span> <span class="o">+</span> <span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;N_trials&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">block</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">ANEMO</span> <span class="k">import</span> <span class="n">ANEMO</span>
-<span class="n">A</span> <span class="o">=</span> <span class="n">ANEMO</span><span class="p">(</span><span class="n">param_exp</span><span class="p">)</span>
-
-<span class="c1"># number of the trial</span>
-<span class="n">trial_data</span> <span class="o">=</span> <span class="n">trial</span> <span class="o">+</span> <span class="n">N_trials</span><span class="o">*</span><span class="n">block</span>
-
-<span class="n">arg</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">arg</span><span class="p">(</span><span class="n">data_trial</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">trial_data</span><span class="p">])</span>
+<span></span><span class="n">arg</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">arg</span><span class="p">(</span><span class="n">data_trial</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">trial_data</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -464,29 +448,50 @@ see : <a href="read_edf.html">read_edf</a><p>Does not actually read EDFs directl
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>{&#39;StimulusOf&#39;: 883690,
- &#39;StimulusOn&#39;: 882944,
- &#39;TargetOff&#39;: 884762,
- &#39;TargetOn&#39;: 883990,
- &#39;data_x&#39;: array([656.7, 656.5, 656.6, ..., 207.4, 207.3, 207.4]),
- &#39;data_y&#39;: array([502.1, 502.4, 502.8, ..., 518. , 518.2, 518.3]),
+<span></span>{&#39;StimulusOf&#39;: 880031,
+ &#39;StimulusOn&#39;: 879399,
+ &#39;TargetOff&#39;: 881113,
+ &#39;TargetOn&#39;: 880331,
+ &#39;data_x&#39;: array([ 666.7,  666.8,  666.9, ..., 1086.3, 1086.1, 1086. ]),
+ &#39;data_y&#39;: array([500.2, 499.8, 499.7, ..., 516.4, 516.7, 516.9]),
  &#39;dir_target&#39;: None,
  &#39;px_per_deg&#39;: 36.51807384230632,
- &#39;saccades&#39;: [[883196, 883213, 18, 654.4, 501.5, 643.4, 507.0],
-  [884214, 884252, 39, 642.3, 507.0, 542.2, 506.1],
-  [884595, 884617, 23, 355.0, 516.0, 291.0, 519.6]],
- &#39;t_0&#39;: 882900,
- &#39;trackertime&#39;: array([882900, 882901, 882902, ..., 884868, 884869, 884870])}
+ &#39;saccades&#39;: [[879579, 879597, 19, 665.6, 503.5, 647.7, 506.7],
+  [880527, 880550, 24, 672.9, 504.2, 733.2, 507.2],
+  [880682, 880704, 23, 783.2, 502.4, 862.6, 499.5]],
+ &#39;t_0&#39;: 879350,
+ &#39;trackertime&#39;: array([879350, 879351, 879352, ..., 881212, 881213, 881214])}
+</pre></div>
+</div>
+</div>
+<ul class="simple">
+<li>to retrieve the <code class="docutils literal notranslate"><span class="pre">x</span></code> positions</li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">arg</span><span class="o">.</span><span class="n">data_x</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>array([ 666.7,  666.8,  666.9, ..., 1086.3, 1086.1, 1086. ])
 </pre></div>
 </div>
 </div>
 </div>
 <div class="section" id="Data">
-<h1>Data<a class="headerlink" href="#Data" title="Permalink to this headline">¶</a></h1>
+<h2>Data<a class="headerlink" href="#Data" title="Permalink to this headline">¶</a></h2>
 <p>ANEMO allows you to perform Fits on different data. You could use the data of <strong>velocity</strong>, <strong>position</strong> and <strong>saccades</strong>.</p>
 To see the data, you could use:
 
@@ -515,7 +520,7 @@ To see the data, you could use:
 </div>
 </div>
 <div class="section" id="Raw-Data">
-<h2>Raw Data<a class="headerlink" href="#Raw-Data" title="Permalink to this headline">¶</a></h2>
+<h3>Raw Data<a class="headerlink" href="#Raw-Data" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
@@ -588,7 +593,7 @@ fct Plot_data
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_27_1.png" src="_images/demo_ANEMO_27_1.png" />
+<img alt="_images/demo_ANEMO_29_1.png" src="_images/demo_ANEMO_29_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -636,7 +641,7 @@ fct Plot_data
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_31_1.png" src="_images/demo_ANEMO_31_1.png" />
+<img alt="_images/demo_ANEMO_33_1.png" src="_images/demo_ANEMO_33_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -684,7 +689,7 @@ fct Plot_data
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_35_1.png" src="_images/demo_ANEMO_35_1.png" />
+<img alt="_images/demo_ANEMO_37_1.png" src="_images/demo_ANEMO_37_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -711,7 +716,7 @@ see pdf :<br/>
   <li><a href="_static/result/saccade_2.pdf">saccade_2.pdf</a></li>
 </ul></div>
 <div class="section" id="Filter">
-<h2>Filter<a class="headerlink" href="#Filter" title="Permalink to this headline">¶</a></h2>
+<h3>Filter<a class="headerlink" href="#Filter" title="Permalink to this headline">¶</a></h3>
 Defines in : <a href="data_modification.html#filter-data">filter_data</a> <br/><p>the filt option allows you to apply a low-pass filter on the data,</p>
 <p>filt can be:</p>
 <ul class="simple">
@@ -758,34 +763,34 @@ can be used with functions : <br/>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_41_0.png" src="_images/demo_ANEMO_41_0.png" />
+<img alt="_images/demo_ANEMO_43_0.png" src="_images/demo_ANEMO_43_0.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_41_1.png" src="_images/demo_ANEMO_41_1.png" />
+<img alt="_images/demo_ANEMO_43_1.png" src="_images/demo_ANEMO_43_1.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_41_2.png" src="_images/demo_ANEMO_41_2.png" />
+<img alt="_images/demo_ANEMO_43_2.png" src="_images/demo_ANEMO_43_2.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_41_3.png" src="_images/demo_ANEMO_41_3.png" />
+<img alt="_images/demo_ANEMO_43_3.png" src="_images/demo_ANEMO_43_3.png" />
 </div>
 </div>
 </div>
 </div>
 <div class="section" id="Classical-Methode">
-<h1>Classical Methode<a class="headerlink" href="#Classical-Methode" title="Permalink to this headline">¶</a></h1>
+<h2>Classical Methode<a class="headerlink" href="#Classical-Methode" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
@@ -828,7 +833,7 @@ nan nan nan
 </div>
 </div>
 <div class="section" id="Equation">
-<h1>Equation<a class="headerlink" href="#Equation" title="Permalink to this headline">¶</a></h1>
+<h2>Equation<a class="headerlink" href="#Equation" title="Permalink to this headline">¶</a></h2>
 see : <a href="Equation.html">Equation</a><p><strong>velocity</strong></p>
 <a href="Equation.html#fct-velocity">fct_velocity</a> : Function reproducing the velocity of the eye during the smooth pursuit of a moving target<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
@@ -843,7 +848,7 @@ see : <a href="Equation.html">Equation</a><p><strong>velocity</strong></p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_49_0.png" src="_images/demo_ANEMO_49_0.png" />
+<img alt="_images/demo_ANEMO_51_0.png" src="_images/demo_ANEMO_51_0.png" />
 </div>
 </div>
 <p><strong>position</strong></p>
@@ -860,7 +865,7 @@ see : <a href="Equation.html">Equation</a><p><strong>velocity</strong></p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_52_0.png" src="_images/demo_ANEMO_52_0.png" />
+<img alt="_images/demo_ANEMO_54_0.png" src="_images/demo_ANEMO_54_0.png" />
 </div>
 </div>
 <p><strong>saccade</strong></p>
@@ -877,12 +882,12 @@ see : <a href="Equation.html">Equation</a><p><strong>velocity</strong></p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_55_0.png" src="_images/demo_ANEMO_55_0.png" />
+<img alt="_images/demo_ANEMO_57_0.png" src="_images/demo_ANEMO_57_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="Fit">
-<h1>Fit<a class="headerlink" href="#Fit" title="Permalink to this headline">¶</a></h1>
+<h2>Fit<a class="headerlink" href="#Fit" title="Permalink to this headline">¶</a></h2>
 see : <a href="Fit.html">Fit</a><div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
@@ -893,7 +898,7 @@ see : <a href="Fit.html">Fit</a><div class="nbinput nblast docutils container">
 </div>
 </div>
 <div class="section" id="generation-param-fit">
-<h2>generation-param-fit<a class="headerlink" href="#generation-param-fit" title="Permalink to this headline">¶</a></h2>
+<h3>generation-param-fit<a class="headerlink" href="#generation-param-fit" title="Permalink to this headline">¶</a></h3>
 see : <a href="Fit.html#generation-param-fit">generation_param_fit</a><div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
@@ -920,7 +925,7 @@ see : <a href="Fit.html#generation-param-fit">generation_param_fit</a><div class
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_63_0.png" src="_images/demo_ANEMO_63_0.png" />
+<img alt="_images/demo_ANEMO_65_0.png" src="_images/demo_ANEMO_65_0.png" />
 </div>
 </div>
 <p><strong>position</strong></p>
@@ -937,7 +942,7 @@ see : <a href="Fit.html#generation-param-fit">generation_param_fit</a><div class
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_65_0.png" src="_images/demo_ANEMO_65_0.png" />
+<img alt="_images/demo_ANEMO_67_0.png" src="_images/demo_ANEMO_67_0.png" />
 </div>
 </div>
 <p><strong>saccade</strong></p>
@@ -954,15 +959,15 @@ see : <a href="Fit.html#generation-param-fit">generation_param_fit</a><div class
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_67_0.png" src="_images/demo_ANEMO_67_0.png" />
+<img alt="_images/demo_ANEMO_69_0.png" src="_images/demo_ANEMO_69_0.png" />
 </div>
 </div>
 </div>
 </div>
 <div class="section" id="Full">
-<h1>Full<a class="headerlink" href="#Full" title="Permalink to this headline">¶</a></h1>
+<h2>Full<a class="headerlink" href="#Full" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="Fit">
-<h2>Fit<a class="headerlink" href="#Fit" title="Permalink to this headline">¶</a></h2>
+<h3>Fit<a class="headerlink" href="#Fit" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
@@ -1101,7 +1106,7 @@ see pdf :<br/>
 </ul></div>
 </div>
 <div class="section" id="Retrieving-the-parameters">
-<h1>Retrieving the parameters<a class="headerlink" href="#Retrieving-the-parameters" title="Permalink to this headline">¶</a></h1>
+<h2>Retrieving the parameters<a class="headerlink" href="#Retrieving-the-parameters" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
@@ -1224,6 +1229,7 @@ T0 = [1.4957655349267789, 2.807204981522389, 5.000000126645588]
 </pre></div></div>
 </div>
 </div>
+</div>
 
 
           </div>
@@ -1233,7 +1239,7 @@ T0 = [1.4957655349267789, 2.807204981522389, 5.000000126645588]
     <ul>
         <li>
           &larr;
-          <a href="Tutorial.html" title="Previous document">Tutorial</a>
+          <a href="index.html" title="Previous document">Summary</a>
         </li>
         <li>
           <a href="0_ANEMO_doc.html" title="Next document">ANEMO</a>

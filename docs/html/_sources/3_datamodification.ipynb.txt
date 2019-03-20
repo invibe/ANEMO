@@ -4,14 +4,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## data_modification"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "for use these functions, you will need to use:"
+    "# data_modification"
    ]
   },
   {
@@ -20,7 +13,30 @@
     "raw_mimetype": "text/restructuredtext"
    },
    "source": [
-    ":mod:`~ANEMO.ANEMO.ANEMO`"
+    ".. _before using the function:"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## before using the functions"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "for use these functions, you will need :"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "metadata": {
+    "raw_mimetype": "text/restructuredtext"
+   },
+   "source": [
+    "- to use :mod:`~ANEMO.ANEMO.ANEMO`"
    ]
   },
   {
@@ -44,7 +60,7 @@
     "raw_mimetype": "text/restructuredtext"
    },
    "source": [
-    ":func:`~ANEMO.read_edf`"
+    "- to use :func:`~ANEMO.read_edf`"
    ]
   },
   {
@@ -67,7 +83,7 @@
     "raw_mimetype": "text/restructuredtext"
    },
    "source": [
-    ":func:`~ANEMO.ANEMO.ANEMO.arg`"
+    "- to use :func:`~ANEMO.ANEMO.ANEMO.arg`"
    ]
   },
   {
@@ -87,6 +103,13 @@
    "metadata": {},
    "source": [
     "<hr style=\"height: 0px; width: 100%; border: 1px solid #B1B4B6; margin-left:0\">"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## data_modification"
    ]
   },
   {
@@ -118,7 +141,7 @@
     "raw_mimetype": "text/restructuredtext"
    },
    "source": [
-    "see : :func:`~ANEMO.ANEMO.ANEMO.arg`"
+    "see :ref:`here <before using the function>` before using the function"
    ]
   },
   {
@@ -159,7 +182,7 @@
     "raw_mimetype": "text/restructuredtext"
    },
    "source": [
-    "see : :func:`~ANEMO.ANEMO.ANEMO.arg`"
+    "see :ref:`here <before using the function>` before using the function"
    ]
   },
   {
@@ -194,6 +217,15 @@
    ]
   },
   {
+   "cell_type": "raw",
+   "metadata": {
+    "raw_mimetype": "text/restructuredtext"
+   },
+   "source": [
+    ".. _velocity_deg:"
+   ]
+  },
+  {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
@@ -206,7 +238,7 @@
     "raw_mimetype": "text/restructuredtext"
    },
    "source": [
-    "see : :func:`~ANEMO.ANEMO.ANEMO.arg`"
+    "see :ref:`here <before using the function>` before using the function"
    ]
   },
   {
@@ -239,6 +271,15 @@
    ]
   },
   {
+   "cell_type": "raw",
+   "metadata": {
+    "raw_mimetype": "text/restructuredtext"
+   },
+   "source": [
+    ".. _misac:"
+   ]
+  },
+  {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
@@ -251,7 +292,9 @@
     "raw_mimetype": "text/restructuredtext"
    },
    "source": [
-    "see : :func:`~ANEMO.ANEMO.ANEMO.arg` and :func:`~ANEMO.ANEMO.ANEMO.velocity_deg`"
+    "see :ref:`here <before using the function>` before using the function\n",
+    "\n",
+    "- for ``velocity_deg_x`` and ``velocity_deg_y`` see :ref:`here <velocity_deg>`"
    ]
   },
   {
@@ -295,7 +338,10 @@
     "raw_mimetype": "text/restructuredtext"
    },
    "source": [
-    "see : :func:`~ANEMO.ANEMO.ANEMO.arg`, :func:`~ANEMO.ANEMO.ANEMO.velocity_deg` and :func:`~ANEMO.ANEMO.ANEMO.detec_misac`"
+    "see :ref:`here <before using the function>` before using the function\n",
+    "\n",
+    "- for ``velocity_deg_x`` see :ref:`here <velocity_deg>`\n",
+    "- for ``misac`` see :ref:`here <misac>`"
    ]
   },
   {
@@ -342,7 +388,7 @@
     "raw_mimetype": "text/restructuredtext"
    },
    "source": [
-    "see : :func:`~ANEMO.ANEMO.ANEMO.arg`"
+    "see :ref:`here <before using the function>` before using the function"
    ]
   },
   {

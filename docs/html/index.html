@@ -17,7 +17,7 @@
     <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Tutorial" href="Tutorial.html" />
+    <link rel="next" title="Tutorial" href="demo_ANEMO.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -47,7 +47,7 @@
 
 <h3>Navigation</h3>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_ANEMO.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="0_ANEMO_doc.html">ANEMO</a></li>
 </ul>
 
@@ -55,7 +55,7 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="#">Documentation overview</a><ul>
-      <li>Next: <a href="Tutorial.html" title="next chapter">Tutorial</a></li>
+      <li>Next: <a href="demo_ANEMO.html" title="next chapter">Tutorial</a></li>
   </ul></li>
 </ul>
 </div>
@@ -88,7 +88,7 @@
   <nav id="rellinks">
     <ul>
         <li>
-          <a href="Tutorial.html" title="Next document">Tutorial</a>
+          <a href="demo_ANEMO.html" title="Next document">Tutorial</a>
           &rarr;
         </li>
     </ul>
@@ -102,8 +102,11 @@
 <h1>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html">The parameters of the experiment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_ANEMO.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#import-ANEMO">import ANEMO</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demo_ANEMO.html#The-parameters-of-the-experiment">The parameters of the experiment</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#Retrieving-the-data">Retrieving the data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#arg">arg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#Data">Data</a><ul>
@@ -124,7 +127,65 @@
 <li class="toctree-l2"><a class="reference internal" href="demo_ANEMO.html#Retrieving-the-parameters">Retrieving the parameters</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="0_ANEMO_doc.html">ANEMO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="0_ANEMO_doc.html">ANEMO</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="1_readedf.html">read_edf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_arg.html">arg</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="2_arg.html#before-using-the-function">before using the function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_arg.html#arg">arg</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="3_datamodification.html">data_modification</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="3_datamodification.html#before-using-the-functions">before using the functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3_datamodification.html#data_modification">data_modification</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="3_datamodification.html#filter_data">filter_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="3_datamodification.html#data_deg">data_deg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="3_datamodification.html#velocity_deg">velocity_deg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="3_datamodification.html#detec_misac">detec_misac</a></li>
+<li class="toctree-l4"><a class="reference internal" href="3_datamodification.html#supp_sacc">supp_sacc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="3_datamodification.html#velocity_NAN">velocity_NAN</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="4_classicalmethod.html">classical_method</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="4_classicalmethod.html#before-using-the-functions">before using the functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_classicalmethod.html#classical_method">classical_method</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="4_classicalmethod.html#latence">latence</a></li>
+<li class="toctree-l4"><a class="reference internal" href="4_classicalmethod.html#maximum">maximum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="4_classicalmethod.html#anticipation">anticipation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="4_classicalmethod.html#Full">Full</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="5_Equation.html">Equation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="5_Equation.html#fct_velocity">fct_velocity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_Equation.html#fct_position">fct_position</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_Equation.html#fct_saccade">fct_saccade</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="6_Fit.html">Fit</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="6_Fit.html#before-using-the-functions">before using the functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="6_Fit.html#Fit">Fit</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="6_Fit.html#generation_param_fit">generation_param_fit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="6_Fit.html#Fit_trial">Fit_trial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="6_Fit.html#Fit_full">Fit_full</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="7_Plot.html">Plot</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="7_Plot.html#deco">deco</a></li>
+<li class="toctree-l3"><a class="reference internal" href="7_Plot.html#generate-fig">generate_fig</a></li>
+<li class="toctree-l3"><a class="reference internal" href="7_Plot.html#plot-equation">plot_equation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="7_Plot.html#plot-data">plot_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="7_Plot.html#plot-fit">plot_fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="7_Plot.html#plot-full-data">plot_Full_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="7_Plot.html#show-fig">show_fig</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -136,7 +197,7 @@
   <nav id="rellinks">
     <ul>
         <li>
-          <a href="Tutorial.html" title="Next document">Tutorial</a>
+          <a href="demo_ANEMO.html" title="Next document">Tutorial</a>
           &rarr;
         </li>
     </ul>

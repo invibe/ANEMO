@@ -48,16 +48,20 @@
 
 <h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_ANEMO.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="0_ANEMO_doc.html">ANEMO</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="1_readedf.html">read_edf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_arg.html">arg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="3_datamodification.html">data_modification</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">classical_method</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#latence">latence</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#maximum">maximum</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#anticipation">anticipation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Full">Full</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#before-using-the-functions">before using the functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#classical_method">classical_method</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#latence">latence</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#maximum">maximum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#anticipation">anticipation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Full">Full</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="5_Equation.html">Equation</a></li>
@@ -323,8 +327,12 @@ div.rendered_html tbody tr:hover {
 </style>
 <div class="section" id="classical_method">
 <h1>classical_method<a class="headerlink" href="#classical_method" title="Permalink to this headline">¶</a></h1>
-<p>for use these functions, you will need to use:</p>
-<p><a class="reference internal" href="0_ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a></p>
+<div class="section" id="before-using-the-functions">
+<span id="before-using-the-function"></span><h2>before using the functions<a class="headerlink" href="#before-using-the-functions" title="Permalink to this headline">¶</a></h2>
+<p>for use these functions, you will need :</p>
+<ul class="simple">
+<li>to use <a class="reference internal" href="0_ANEMO_doc.html#module-ANEMO.ANEMO.ANEMO" title="ANEMO.ANEMO.ANEMO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ANEMO</span></code></a></li>
+</ul>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -332,15 +340,17 @@ div.rendered_html tbody tr:hover {
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">ANEMO</span> <span class="k">import</span> <span class="n">ANEMO</span>
 
-<span class="n">param_exp</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;N_trials&#39;</span> <span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;N_blocks&#39;</span> <span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-             <span class="s1">&#39;dir_target&#39;</span> <span class="p">:</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
+<span class="n">param_exp</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;N_trials&#39;</span> <span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;N_blocks&#39;</span> <span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+             <span class="s1">&#39;dir_target&#39;</span> <span class="p">:</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
              <span class="s1">&#39;px_per_deg&#39;</span> <span class="p">:</span> <span class="mf">36.51</span><span class="p">}</span>
 
 <span class="n">A</span> <span class="o">=</span> <span class="n">ANEMO</span><span class="p">(</span><span class="n">param_exp</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<p><a class="reference internal" href="1_readedf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
+<ul class="simple">
+<li>to use <a class="reference internal" href="1_readedf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></li>
+</ul>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -353,7 +363,9 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<p><a class="reference internal" href="2_arg.html#ANEMO.ANEMO.ANEMO.arg" title="ANEMO.ANEMO.ANEMO.arg"><code class="xref py py-func docutils literal notranslate"><span class="pre">arg()</span></code></a></p>
+<ul class="simple">
+<li>to use <a class="reference internal" href="2_arg.html#ANEMO.ANEMO.ANEMO.arg" title="ANEMO.ANEMO.ANEMO.arg"><code class="xref py py-func docutils literal notranslate"><span class="pre">arg()</span></code></a></li>
+</ul>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
@@ -365,7 +377,9 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<p><a class="reference internal" href="3_datamodification.html#ANEMO.ANEMO.ANEMO.velocity_NAN" title="ANEMO.ANEMO.ANEMO.velocity_NAN"><code class="xref py py-func docutils literal notranslate"><span class="pre">velocity_NAN()</span></code></a></p>
+<ul class="simple">
+<li>to use <a class="reference internal" href="3_datamodification.html#ANEMO.ANEMO.ANEMO.velocity_NAN" title="ANEMO.ANEMO.ANEMO.velocity_NAN"><code class="xref py py-func docutils literal notranslate"><span class="pre">velocity_NAN()</span></code></a></li>
+</ul>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
@@ -382,17 +396,22 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
+<ul class="simple">
+<li>to define time since the beginning of the trial when the target to follow</li>
+</ul>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># time since the beginning of the trial when the target to follow appears</span>
-<span class="n">TargetOn_0</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">TargetOn</span><span class="o">-</span><span class="n">arg</span><span class="o">.</span><span class="n">t_0</span>
+<span></span><span class="n">TargetOn_0</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">TargetOn</span><span class="o">-</span><span class="n">arg</span><span class="o">.</span><span class="n">t_0</span>
 </pre></div>
 </div>
 </div>
-<hr style="height: 0px; width: 100%; border: 1px solid #B1B4B6; margin-left:0"><hr style="height: 0px; width: 1%; border: 10px solid #B1B4B6; margin-left:0; opacity: 0"><span class="target" id="module-ANEMO.ANEMO.ANEMO.classical_method"></span><p>Function used to calculate in a ‘classical’ way :</p>
+<hr style="height: 0px; width: 100%; border: 1px solid #B1B4B6; margin-left:0"></div>
+<div class="section" id="classical_method">
+<h2>classical_method<a class="headerlink" href="#classical_method" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-ANEMO.ANEMO.ANEMO.classical_method"></span><p>Function used to calculate in a ‘classical’ way :</p>
 <blockquote>
 <div><ul class="simple">
 <li>the latency of the pursuit,</li>
@@ -401,7 +420,7 @@ div.rendered_html tbody tr:hover {
 </ul>
 </div></blockquote>
 <div class="section" id="latence">
-<h2>latence<a class="headerlink" href="#latence" title="Permalink to this headline">¶</a></h2>
+<h3>latence<a class="headerlink" href="#latence" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="ANEMO.ANEMO.ANEMO.classical_method.latence">
 <code class="descclassname">ANEMO.ANEMO.ANEMO.classical_method.</code><code class="descname">latence</code><span class="sig-paren">(</span><em>velocity_NAN</em>, <em>w1=300</em>, <em>w2=50</em>, <em>off=50</em>, <em>crit=0.17</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.classical_method.latence" title="Permalink to this definition">¶</a></dt>
@@ -427,7 +446,7 @@ div.rendered_html tbody tr:hover {
 </dd></dl>
 
 <p><strong>Exemple:</strong></p>
-<p>see : <a class="reference internal" href="3_datamodification.html#ANEMO.ANEMO.ANEMO.velocity_NAN" title="ANEMO.ANEMO.ANEMO.velocity_NAN"><code class="xref py py-func docutils literal notranslate"><span class="pre">velocity_NAN()</span></code></a></p>
+<p>see <a class="reference internal" href="6_Fit.html#before-using-the-function"><span class="std std-ref">here</span></a> before using the function</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
@@ -467,7 +486,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="section" id="maximum">
-<h2>maximum<a class="headerlink" href="#maximum" title="Permalink to this headline">¶</a></h2>
+<h3>maximum<a class="headerlink" href="#maximum" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="ANEMO.ANEMO.ANEMO.classical_method.maximum">
 <code class="descclassname">ANEMO.ANEMO.ANEMO.classical_method.</code><code class="descname">maximum</code><span class="sig-paren">(</span><em>velocity_NAN</em>, <em>TargetOn_0</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.classical_method.maximum" title="Permalink to this definition">¶</a></dt>
@@ -490,7 +509,7 @@ div.rendered_html tbody tr:hover {
 </dd></dl>
 
 <p><strong>Exemple:</strong></p>
-<p>see : <a class="reference internal" href="3_datamodification.html#ANEMO.ANEMO.ANEMO.velocity_NAN" title="ANEMO.ANEMO.ANEMO.velocity_NAN"><code class="xref py py-func docutils literal notranslate"><span class="pre">velocity_NAN()</span></code></a></p>
+<p>see <a class="reference internal" href="6_Fit.html#before-using-the-function"><span class="std std-ref">here</span></a> before using the function</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
@@ -512,7 +531,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="section" id="anticipation">
-<h2>anticipation<a class="headerlink" href="#anticipation" title="Permalink to this headline">¶</a></h2>
+<h3>anticipation<a class="headerlink" href="#anticipation" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="ANEMO.ANEMO.ANEMO.classical_method.anticipation">
 <code class="descclassname">ANEMO.ANEMO.ANEMO.classical_method.</code><code class="descname">anticipation</code><span class="sig-paren">(</span><em>velocity_NAN</em>, <em>TargetOn_0</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.classical_method.anticipation" title="Permalink to this definition">¶</a></dt>
@@ -535,7 +554,7 @@ div.rendered_html tbody tr:hover {
 </dd></dl>
 
 <p><strong>Exemple:</strong></p>
-<p>see : <a class="reference internal" href="3_datamodification.html#ANEMO.ANEMO.ANEMO.velocity_NAN" title="ANEMO.ANEMO.ANEMO.velocity_NAN"><code class="xref py py-func docutils literal notranslate"><span class="pre">velocity_NAN()</span></code></a></p>
+<p>see <a class="reference internal" href="6_Fit.html#before-using-the-function"><span class="std std-ref">here</span></a> before using the function</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
@@ -557,7 +576,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="section" id="Full">
-<h2>Full<a class="headerlink" href="#Full" title="Permalink to this headline">¶</a></h2>
+<h3>Full<a class="headerlink" href="#Full" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="ANEMO.ANEMO.ANEMO.classical_method.Full">
 <code class="descclassname">ANEMO.ANEMO.ANEMO.classical_method.</code><code class="descname">Full</code><span class="sig-paren">(</span><em>velocity_NAN</em>, <em>TargetOn_0</em>, <em>w1=300</em>, <em>w2=50</em>, <em>off=50</em>, <em>crit=0.17</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.classical_method.Full" title="Permalink to this definition">¶</a></dt>
@@ -597,18 +616,18 @@ div.rendered_html tbody tr:hover {
 </dd></dl>
 
 <p><strong>Exemple:</strong></p>
-<p>see : <a class="reference internal" href="3_datamodification.html#ANEMO.ANEMO.ANEMO.velocity_NAN" title="ANEMO.ANEMO.ANEMO.velocity_NAN"><code class="xref py py-func docutils literal notranslate"><span class="pre">velocity_NAN()</span></code></a></p>
+<p>see <a class="reference internal" href="6_Fit.html#before-using-the-function"><span class="std std-ref">here</span></a> before using the function</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">latency</span><span class="p">,</span> <span class="n">maximum</span><span class="p">,</span> <span class="n">anticipation</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">classical_method</span><span class="o">.</span><span class="n">Full</span><span class="p">(</span><span class="n">velocity_NAN</span><span class="p">,</span> <span class="n">TargetOn_0</span><span class="p">,</span>
-                                                         <span class="n">w1</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">w2</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">off</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">crit</span><span class="o">=</span><span class="mf">0.17</span><span class="p">)</span>
+<span></span><span class="n">classic_lat</span><span class="p">,</span> <span class="n">classic_max</span><span class="p">,</span> <span class="n">classic_ant</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">classical_method</span><span class="o">.</span><span class="n">Full</span><span class="p">(</span><span class="n">velocity_NAN</span><span class="p">,</span> <span class="n">TargetOn_0</span><span class="p">,</span>
+                                                                <span class="n">w1</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">w2</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">off</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">crit</span><span class="o">=</span><span class="mf">0.17</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;latency =&#39;</span><span class="p">,</span> <span class="n">latency</span><span class="o">-</span><span class="n">TargetOn_0</span><span class="p">,</span>
-      <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">maximum =&#39;</span><span class="p">,</span> <span class="n">maximum</span><span class="p">,</span>
-      <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">anticipation =&#39;</span><span class="p">,</span> <span class="n">anticipation</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;latency =&#39;</span><span class="p">,</span> <span class="n">classic_lat</span><span class="o">-</span><span class="n">TargetOn_0</span><span class="p">,</span>
+      <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">maximum =&#39;</span><span class="p">,</span> <span class="n">classic_max</span><span class="p">,</span>
+      <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">anticipation =&#39;</span><span class="p">,</span> <span class="n">classic_ant</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -621,6 +640,7 @@ latency = 207.0
 maximum = 14.139281445163348
 anticipation = -0.13694878115587977
 </pre></div></div>
+</div>
 </div>
 </div>
 </div>

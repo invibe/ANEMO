@@ -4,6 +4,13 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
+    "# Tutorial"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
     "ANEMO allows you to perform Fits on data of Smooth Pursuite Eyes Movements. You could use the functions ``‘velocity’``, ``‘position’`` and ``‘saccades’`` already present, but also your own functions.\n",
     "\n",
     "It must be initialized with the parameters of the experiment :"
@@ -13,14 +20,23 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "# The parameters of the experiment"
+    "## import ANEMO"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### The parameters of the experiment"
    ]
   },
   {
    "cell_type": "raw",
-   "metadata": {},
+   "metadata": {
+    "raw_mimetype": "text/restructuredtext"
+   },
    "source": [
-    "<b>param_exp</b> is dictionary containing the parameters of the experiment, see : <a href=\"ANEMO_doc.html\">doc</a>"
+    "``param_exp`` is dictionary containing the parameters of the experiment, see :mod:`~ANEMO.ANEMO.ANEMO`"
    ]
   },
   {
@@ -35,8 +51,9 @@
     "screen_width_cm = 36   # cm\n",
     "viewingDistance = 57.  # cm\n",
     "\n",
-    "screen_width_deg = 2. * np.arctan((screen_width_cm/2) / viewingDistance) * 180/np.pi\n",
-    "\n",
+    "tan = np.arctan((screen_width_cm/2)/viewingDistance)\n",
+    "screen_width_deg = 2. * tan * 180/np.pi\n",
+    "px_per_deg = screen_width_px / screen_width_deg\n",
     "\n",
     "param_exp = {# OBLIGATORY :\n",
     "                # - number of trials per block :\n",
@@ -48,7 +65,7 @@
     "                    # the target for each trial is to -1 for left 1 for right\n",
     "                      'dir_target' : [[-1, 1], [1, -1]],\n",
     "                # - number of px per degree for the experiment :\n",
-    "                      'px_per_deg' : screen_width_px / screen_width_deg,\n",
+    "                      'px_per_deg' : px_per_deg,\n",
     "             # OPTIONAL :\n",
     "                # - subject name :\n",
     "                      'observer' : 'test',\n",
@@ -66,38 +83,29 @@
    ]
   },
   {
-   "cell_type": "markdown",
+   "cell_type": "code",
+   "execution_count": 2,
    "metadata": {},
+   "outputs": [],
    "source": [
-    "# Retrieving the data"
+    "from ANEMO import ANEMO\n",
+    "A = ANEMO(param_exp)"
    ]
   },
   {
-   "cell_type": "code",
-   "execution_count": 2,
-   "metadata": {
-    "ExecuteTime": {
-     "end_time": "2018-05-11T11:02:53.898429Z",
-     "start_time": "2018-05-11T11:02:53.532294Z"
-    }
-   },
-   "outputs": [],
+   "cell_type": "markdown",
+   "metadata": {},
    "source": [
-    "from ANEMO import read_edf"
+    "## Retrieving the data"
    ]
   },
   {
    "cell_type": "raw",
-   "metadata": {},
+   "metadata": {
+    "raw_mimetype": "text/restructuredtext"
+   },
    "source": [
-    "see : <a href=\"read_edf.html\">read_edf</a>"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "Does not actually read EDFs directly, but the ASC files that are produced by edf2asc (SR Research). Information on saccades, fixations and blinks is read from the EDF, therefore based on SR Research algorithms."
+    "for retrieving the data we use the function : :func:`~ANEMO.read_edf`"
    ]
   },
   {
@@ -106,13 +114,12 @@
    "metadata": {},
    "outputs": [],
    "source": [
+    "from ANEMO import read_edf\n",
+    "\n",
     "# path to the file that has to be read\n",
-    "datafile = 'data/enregistrement_AM_2017-10-23_100057.asc'\n",
+    "datafile = 'name_data_file.asc'\n",
     "\n",
-    "# trial start string\n",
-    "start = 'TRIALID'\n",
-    "\n",
-    "data = read_edf(datafile, start)\n",
+    "data = read_edf(datafile, start='TRIALID')\n",
     "\n",
     "# for the demo we need only the first four trials\n",
     "data = data[:4]"
@@ -122,95 +129,64 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "Data is a list with dicts for every trial. A trial dict contains the following keys:\n",
-    "\n",
-    "- **x**           -  numpy array of x positions\n",
-    "- **y**           -  numpy array of y positions\n",
-    "- **size**        -  numpy array of pupil size\n",
-    "- **time**        -   numpy array of timestamps, t=0 at trialstart\n",
-    "- **trackertime** -  numpy array of timestamps, according to EDF\n",
-    "- **events**      -  dict with the following keys:\n",
-    "    - **Sfix** -  list of lists, each containing ``[start_fixation]``\n",
-    "    - **Ssac** -  list of lists, each containing ``[start_saccade]``\n",
-    "    - **Sblk** -  list of lists, each containing ``[start_blink]``\n",
-    "    - **Efix** -  list of lists, each containing ``[start_fixation, end_fixation, duration_fixation, endx_fixation, endy_fixation]``\n",
-    "    - **Esac** -  list of lists, each containing ``[start_saccade, end_saccade, duration_saccade, startx_saccade, starty_saccade, endx_saccade, endy_saccade]``\n",
-    "    - **Eblk** -  list of lists, each containing ``[start_blink, end_blink, duration_blink]``\n",
-    "    - **msg**  -  list of lists, each containing ``[time, message]``\n",
-    "\n",
-    "<div class=\"alert alert-info\">\n",
-    "\n",
-    "**Note:**\n",
-    "timing is in EDF time!\n",
-    "\n",
-    "</div>"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "# arg"
+    "## arg"
    ]
   },
   {
    "cell_type": "raw",
-   "metadata": {},
+   "metadata": {
+    "raw_mimetype": "text/restructuredtext"
+   },
    "source": [
-    "<a href=\"arg.html\">arg</a>  Generates a dictionary of the parameters of the trial"
+    "For generate a dictionary of the parameters of the trial we use the function  : :func:`~ANEMO.ANEMO.ANEMO.arg`"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 4,
+   "execution_count": 7,
    "metadata": {},
    "outputs": [],
    "source": [
-    "# number of the block and trial that you want to display\n",
-    "block, trial  = 1, 1\n",
-    "# data divided into two blocks of two trials each\n",
-    "N_blocks, N_trials = 2, 2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 5,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "from ANEMO import ANEMO\n",
-    "A = ANEMO(param_exp)\n",
+    "# number of the block and trial\n",
+    "block, trial  = 1, 0\n",
     "\n",
     "# number of the trial\n",
-    "trial_data = trial + N_trials*block\n",
-    "\n",
+    "trial_data = trial + param_exp['N_trials']*block"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [],
+   "source": [
     "arg = A.arg(data_trial=data[trial_data])"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 6,
+   "execution_count": 9,
    "metadata": {},
    "outputs": [
     {
      "data": {
       "text/plain": [
-       "{'StimulusOf': 883690,\n",
-       " 'StimulusOn': 882944,\n",
-       " 'TargetOff': 884762,\n",
-       " 'TargetOn': 883990,\n",
-       " 'data_x': array([656.7, 656.5, 656.6, ..., 207.4, 207.3, 207.4]),\n",
-       " 'data_y': array([502.1, 502.4, 502.8, ..., 518. , 518.2, 518.3]),\n",
+       "{'StimulusOf': 880031,\n",
+       " 'StimulusOn': 879399,\n",
+       " 'TargetOff': 881113,\n",
+       " 'TargetOn': 880331,\n",
+       " 'data_x': array([ 666.7,  666.8,  666.9, ..., 1086.3, 1086.1, 1086. ]),\n",
+       " 'data_y': array([500.2, 499.8, 499.7, ..., 516.4, 516.7, 516.9]),\n",
        " 'dir_target': None,\n",
        " 'px_per_deg': 36.51807384230632,\n",
-       " 'saccades': [[883196, 883213, 18, 654.4, 501.5, 643.4, 507.0],\n",
-       "  [884214, 884252, 39, 642.3, 507.0, 542.2, 506.1],\n",
-       "  [884595, 884617, 23, 355.0, 516.0, 291.0, 519.6]],\n",
-       " 't_0': 882900,\n",
-       " 'trackertime': array([882900, 882901, 882902, ..., 884868, 884869, 884870])}"
+       " 'saccades': [[879579, 879597, 19, 665.6, 503.5, 647.7, 506.7],\n",
+       "  [880527, 880550, 24, 672.9, 504.2, 733.2, 507.2],\n",
+       "  [880682, 880704, 23, 783.2, 502.4, 862.6, 499.5]],\n",
+       " 't_0': 879350,\n",
+       " 'trackertime': array([879350, 879351, 879352, ..., 881212, 881213, 881214])}"
       ]
      },
-     "execution_count": 6,
+     "execution_count": 9,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -223,7 +199,34 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "# Data"
+    "- to retrieve the ``x`` positions"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([ 666.7,  666.8,  666.9, ..., 1086.3, 1086.1, 1086. ])"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "arg.data_x"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Data"
    ]
   },
   {
@@ -270,7 +273,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Raw Data"
+    "### Raw Data"
    ]
   },
   {
@@ -347,7 +350,7 @@
    "cell_type": "code",
    "execution_count": 12,
    "metadata": {
-    "scrolled": false
+    "scrolled": true
    },
    "outputs": [
     {
@@ -555,7 +558,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Filter"
+    "### Filter"
    ]
   },
   {
@@ -675,7 +678,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "# Classical Methode"
+    "## Classical Methode"
    ]
   },
   {
@@ -722,7 +725,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "# Equation"
+    "## Equation"
    ]
   },
   {
@@ -844,7 +847,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "# Fit"
+    "## Fit"
    ]
   },
   {
@@ -867,7 +870,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## generation-param-fit"
+    "### generation-param-fit"
    ]
   },
   {
@@ -980,14 +983,14 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "# Full"
+    "## Full"
    ]
   },
   {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Fit"
+    "### Fit"
    ]
   },
   {
@@ -1168,7 +1171,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "# Retrieving the parameters"
+    "## Retrieving the parameters"
    ]
   },
   {
@@ -1312,6 +1315,7 @@
   }
  ],
  "metadata": {
+  "celltoolbar": "Format de la Cellule Texte Brut",
   "kernelspec": {
    "display_name": "Python 3",
    "language": "python",

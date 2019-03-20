@@ -18,7 +18,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="read_edf" href="1_readedf.html" />
-    <link rel="prev" title="The parameters of the experiment" href="demo_ANEMO.html" />
+    <link rel="prev" title="Tutorial" href="demo_ANEMO.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -48,7 +48,7 @@
 
 <h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_ANEMO.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">ANEMO</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="1_readedf.html">read_edf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_arg.html">arg</a></li>
@@ -65,7 +65,7 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="demo_ANEMO.html" title="previous chapter">The parameters of the experiment</a></li>
+      <li>Previous: <a href="demo_ANEMO.html" title="previous chapter">Tutorial</a></li>
       <li>Next: <a href="1_readedf.html" title="next chapter">read_edf</a></li>
   </ul></li>
 </ul>
@@ -100,7 +100,7 @@
     <ul>
         <li>
           &larr;
-          <a href="demo_ANEMO.html" title="Previous document">The parameters of the experiment</a>
+          <a href="demo_ANEMO.html" title="Previous document">Tutorial</a>
         </li>
         <li>
           <a href="1_readedf.html" title="Next document">read_edf</a>
@@ -359,16 +359,16 @@ It must be initialized with the parameters of the experiment :</p>
 </div></blockquote>
 </dd>
 </dl>
-<p><strong>Exemple</strong></p>
+<p><strong>Exemple:</strong></p>
+<ul class="simple">
+<li>the parameters of the experiment :</li>
+</ul>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1">#-------------------------------------------------------------------</span>
-<span class="c1"># the parameters of the experiment</span>
-<span class="c1">#-------------------------------------------------------------------</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="n">screen_width_px</span> <span class="o">=</span> <span class="mi">1280</span> <span class="c1"># px</span>
 <span class="n">screen_width_cm</span> <span class="o">=</span> <span class="mi">36</span>   <span class="c1"># cm</span>
@@ -393,20 +393,30 @@ It must be initialized with the parameters of the experiment :</p>
 </pre></div>
 </div>
 </div>
+<ul class="simple">
+<li>import ANEMO :</li>
+</ul>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1">#-------------------------------------------------------------------</span>
-<span class="c1"># import ANEMO</span>
-<span class="c1">#-------------------------------------------------------------------</span>
-<span class="kn">from</span> <span class="nn">ANEMO</span> <span class="k">import</span> <span class="n">ANEMO</span>
+<span></span><span class="kn">from</span> <span class="nn">ANEMO</span> <span class="k">import</span> <span class="n">ANEMO</span>
 <span class="n">A</span> <span class="o">=</span> <span class="n">ANEMO</span><span class="p">(</span><span class="n">param_exp</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+<p>ANEMO function :</p>
 <div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="1_readedf.html">read_edf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_arg.html">arg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_datamodification.html">data_modification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_classicalmethod.html">classical_method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_Equation.html">Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_Fit.html">Fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7_Plot.html">Plot</a></li>
+</ul>
 </div>
 </div>
 
@@ -418,7 +428,7 @@ It must be initialized with the parameters of the experiment :</p>
     <ul>
         <li>
           &larr;
-          <a href="demo_ANEMO.html" title="Previous document">The parameters of the experiment</a>
+          <a href="demo_ANEMO.html" title="Previous document">Tutorial</a>
         </li>
         <li>
           <a href="1_readedf.html" title="Next document">read_edf</a>

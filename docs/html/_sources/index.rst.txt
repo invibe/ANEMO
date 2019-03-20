@@ -7,5 +7,6 @@ Summary
 --------
 
 .. toctree::
-   Tutorial
+
+   demo_ANEMO
    0_ANEMO_doc
