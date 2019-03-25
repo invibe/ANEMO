@@ -415,9 +415,9 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="section" id="arg">
 <h2>arg<a class="headerlink" href="#arg" title="Permalink to this headline">¶</a></h2>
-<p>For generate a dictionary of the parameters of the trial we use the function  : <a class="reference internal" href="2_arg.html#ANEMO.ANEMO.ANEMO.arg" title="ANEMO.ANEMO.ANEMO.arg"><code class="xref py py-func docutils literal notranslate"><span class="pre">arg()</span></code></a></p>
+<p>The function <a class="reference internal" href="2_arg.html#ANEMO.ANEMO.ANEMO.arg" title="ANEMO.ANEMO.ANEMO.arg"><code class="xref py py-func docutils literal notranslate"><span class="pre">arg()</span></code></a> generate a dictionary of the parameters of the trial</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -430,16 +430,16 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">arg</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">arg</span><span class="p">(</span><span class="n">data_trial</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">trial_data</span><span class="p">])</span>
+<span></span><span class="n">arg</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">arg</span><span class="p">(</span><span class="n">data_trial</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">trial_data</span><span class="p">],</span> <span class="n">trial</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -448,7 +448,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -458,7 +458,7 @@ div.rendered_html tbody tr:hover {
  &#39;TargetOn&#39;: 880331,
  &#39;data_x&#39;: array([ 666.7,  666.8,  666.9, ..., 1086.3, 1086.1, 1086. ]),
  &#39;data_y&#39;: array([500.2, 499.8, 499.7, ..., 516.4, 516.7, 516.9]),
- &#39;dir_target&#39;: None,
+ &#39;dir_target&#39;: 1,
  &#39;px_per_deg&#39;: 36.51807384230632,
  &#39;saccades&#39;: [[879579, 879597, 19, 665.6, 503.5, 647.7, 506.7],
   [880527, 880550, 24, 672.9, 504.2, 733.2, 507.2],
@@ -468,26 +468,127 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<ul class="simple">
-<li>to retrieve the <code class="docutils literal notranslate"><span class="pre">x</span></code> positions</li>
-</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span>
+
+<span class="s1">&#39;the number of px per degree is : &#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">px_per_deg</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+<span class="s1">&#39;the direction of the target for the trial is : &#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">dir_target</span><span class="p">,</span>
+
+      <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+the number of px per degree is : 36.51807384230632
+the direction of the target for the trial is : 1
+</pre></div></div>
+</div>
+<p><strong>the timings of the trial :</strong></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span>
+
+<span class="s1">&#39;the time of StimulusOn is : &#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">StimulusOn</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+<span class="s1">&#39;the time of StimulusOf is : &#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">StimulusOf</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+<span class="s1">&#39;the time of TargetOn is : &#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">TargetOn</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+<span class="s1">&#39;the time of TargetOff is : &#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">TargetOff</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+<span class="s1">&#39;the time of the beginning of the trial is : &#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">t_0</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+<span class="s1">&#39;the time of the trial is : &#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">trackertime</span><span class="p">,</span>
+
+      <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+the time of StimulusOn is : 879399
+the time of StimulusOf is : 880031
+the time of TargetOn is : 880331
+the time of TargetOff is : 881113
+the time of the beginning of the trial is : 879350
+the time of the trial is : [879350 879351 879352 ... 881212 881213 881214]
+</pre></div></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>Timing is in <strong>EDF time</strong>!</p>
+<p class="last">To retrieve the time according to the beginning of the trial it is necessary <strong>to subtract arg.t_0</strong></p>
+</div>
+<p><strong>the position of the eye on the screen in px during the trial :</strong></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span>
+
+<span class="s1">&#39;the horizontal position is : &#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">data_x</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+<span class="s1">&#39;the vertical position is : &#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">data_y</span><span class="p">,</span>
+
+      <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+the horizontal position is : [ 666.7  666.8  666.9 ... 1086.3 1086.1 1086. ]
+the vertical position is : [500.2 499.8 499.7 ... 516.4 516.7 516.9]
+</pre></div></div>
+</div>
+<p><strong>the saccade parameter is :</strong> list of lists, each containing <code class="docutils literal notranslate"><span class="pre">[start_saccade,</span> <span class="pre">end_saccade,</span> <span class="pre">duration_saccade,</span> <span class="pre">startx_saccade,</span> <span class="pre">starty_saccade,</span> <span class="pre">endx_saccade,</span> <span class="pre">endy_saccade]</span></code></p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">arg</span><span class="o">.</span><span class="n">data_x</span>
+<span></span><span class="nb">print</span><span class="p">(</span>
+
+<span class="s1">&#39;the saccade of the trial is : &#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">saccades</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">,</span>
+<span class="s1">&#39;the first saccade begins at time : &#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">saccades</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+<span class="s1">&#39;the first saccade ends in time : &#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">saccades</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+<span class="s1">&#39;the first saccade has a duration : &#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">saccades</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+<span class="s1">&#39;the first saccade begins at the horizontal position : &#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">saccades</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+<span class="s1">&#39;the first saccade begins at the vertical position : &#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">saccades</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">4</span><span class="p">],</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+<span class="s1">&#39;the first saccade ends at the horizontal position : &#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">saccades</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">5</span><span class="p">],</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+<span class="s1">&#39;the first saccade ends at the vertical position : &#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">saccades</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">6</span><span class="p">],</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+
+      <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>array([ 666.7,  666.8,  666.9, ..., 1086.3, 1086.1, 1086. ])
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+the saccade of the trial is : [[879579, 879597, 19, 665.6, 503.5, 647.7, 506.7], [880527, 880550, 24, 672.9, 504.2, 733.2, 507.2], [880682, 880704, 23, 783.2, 502.4, 862.6, 499.5]]
+
+the first saccade begins at time : 879579
+the first saccade ends in time : 879597
+the first saccade has a duration : 19
+the first saccade begins at the horizontal position : 665.6
+the first saccade begins at the vertical position : 503.5
+the first saccade ends at the horizontal position : 647.7
+the first saccade ends at the vertical position : 506.7
+
+</pre></div></div>
 </div>
 </div>
 <div class="section" id="Data">
@@ -593,7 +694,7 @@ fct Plot_data
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_29_1.png" src="_images/demo_ANEMO_29_1.png" />
+<img alt="_images/demo_ANEMO_35_1.png" src="_images/demo_ANEMO_35_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -641,7 +742,7 @@ fct Plot_data
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_33_1.png" src="_images/demo_ANEMO_33_1.png" />
+<img alt="_images/demo_ANEMO_39_1.png" src="_images/demo_ANEMO_39_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -689,7 +790,7 @@ fct Plot_data
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_37_1.png" src="_images/demo_ANEMO_37_1.png" />
+<img alt="_images/demo_ANEMO_43_1.png" src="_images/demo_ANEMO_43_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -763,28 +864,28 @@ can be used with functions : <br/>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_43_0.png" src="_images/demo_ANEMO_43_0.png" />
+<img alt="_images/demo_ANEMO_49_0.png" src="_images/demo_ANEMO_49_0.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_43_1.png" src="_images/demo_ANEMO_43_1.png" />
+<img alt="_images/demo_ANEMO_49_1.png" src="_images/demo_ANEMO_49_1.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_43_2.png" src="_images/demo_ANEMO_43_2.png" />
+<img alt="_images/demo_ANEMO_49_2.png" src="_images/demo_ANEMO_49_2.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_43_3.png" src="_images/demo_ANEMO_43_3.png" />
+<img alt="_images/demo_ANEMO_49_3.png" src="_images/demo_ANEMO_49_3.png" />
 </div>
 </div>
 </div>
@@ -848,7 +949,7 @@ see : <a href="Equation.html">Equation</a><p><strong>velocity</strong></p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_51_0.png" src="_images/demo_ANEMO_51_0.png" />
+<img alt="_images/demo_ANEMO_57_0.png" src="_images/demo_ANEMO_57_0.png" />
 </div>
 </div>
 <p><strong>position</strong></p>
@@ -865,7 +966,7 @@ see : <a href="Equation.html">Equation</a><p><strong>velocity</strong></p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_54_0.png" src="_images/demo_ANEMO_54_0.png" />
+<img alt="_images/demo_ANEMO_60_0.png" src="_images/demo_ANEMO_60_0.png" />
 </div>
 </div>
 <p><strong>saccade</strong></p>
@@ -882,7 +983,7 @@ see : <a href="Equation.html">Equation</a><p><strong>velocity</strong></p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_57_0.png" src="_images/demo_ANEMO_57_0.png" />
+<img alt="_images/demo_ANEMO_63_0.png" src="_images/demo_ANEMO_63_0.png" />
 </div>
 </div>
 </div>
@@ -925,7 +1026,7 @@ see : <a href="Fit.html#generation-param-fit">generation_param_fit</a><div class
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_65_0.png" src="_images/demo_ANEMO_65_0.png" />
+<img alt="_images/demo_ANEMO_71_0.png" src="_images/demo_ANEMO_71_0.png" />
 </div>
 </div>
 <p><strong>position</strong></p>
@@ -942,7 +1043,7 @@ see : <a href="Fit.html#generation-param-fit">generation_param_fit</a><div class
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_67_0.png" src="_images/demo_ANEMO_67_0.png" />
+<img alt="_images/demo_ANEMO_73_0.png" src="_images/demo_ANEMO_73_0.png" />
 </div>
 </div>
 <p><strong>saccade</strong></p>
@@ -959,7 +1060,7 @@ see : <a href="Fit.html#generation-param-fit">generation_param_fit</a><div class
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_69_0.png" src="_images/demo_ANEMO_69_0.png" />
+<img alt="_images/demo_ANEMO_75_0.png" src="_images/demo_ANEMO_75_0.png" />
 </div>
 </div>
 </div>

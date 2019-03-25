@@ -138,12 +138,12 @@
     "raw_mimetype": "text/restructuredtext"
    },
    "source": [
-    "For generate a dictionary of the parameters of the trial we use the function  : :func:`~ANEMO.ANEMO.ANEMO.arg`"
+    "The function :func:`~ANEMO.ANEMO.ANEMO.arg` generate a dictionary of the parameters of the trial"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 7,
+   "execution_count": 4,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -156,16 +156,16 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 8,
+   "execution_count": 5,
    "metadata": {},
    "outputs": [],
    "source": [
-    "arg = A.arg(data_trial=data[trial_data])"
+    "arg = A.arg(data_trial=data[trial_data], trial=trial, block=block)"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 9,
+   "execution_count": 6,
    "metadata": {},
    "outputs": [
     {
@@ -177,7 +177,7 @@
        " 'TargetOn': 880331,\n",
        " 'data_x': array([ 666.7,  666.8,  666.9, ..., 1086.3, 1086.1, 1086. ]),\n",
        " 'data_y': array([500.2, 499.8, 499.7, ..., 516.4, 516.7, 516.9]),\n",
-       " 'dir_target': None,\n",
+       " 'dir_target': 1,\n",
        " 'px_per_deg': 36.51807384230632,\n",
        " 'saccades': [[879579, 879597, 19, 665.6, 503.5, 647.7, 506.7],\n",
        "  [880527, 880550, 24, 672.9, 504.2, 733.2, 507.2],\n",
@@ -186,7 +186,7 @@
        " 'trackertime': array([879350, 879351, 879352, ..., 881212, 881213, 881214])}"
       ]
      },
-     "execution_count": 9,
+     "execution_count": 6,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -196,10 +196,116 @@
    ]
   },
   {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "the number of px per degree is : 36.51807384230632\n",
+      "the direction of the target for the trial is : 1\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(\n",
+    "\n",
+    "'the number of px per degree is : ', arg.px_per_deg, '\\n',\n",
+    "'the direction of the target for the trial is : ', arg.dir_target,\n",
+    "\n",
+    "      sep='')"
+   ]
+  },
+  {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "- to retrieve the ``x`` positions"
+    "**the timings of the trial :**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "the time of StimulusOn is : 879399\n",
+      "the time of StimulusOf is : 880031\n",
+      "the time of TargetOn is : 880331\n",
+      "the time of TargetOff is : 881113\n",
+      "the time of the beginning of the trial is : 879350\n",
+      "the time of the trial is : [879350 879351 879352 ... 881212 881213 881214]\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(\n",
+    "\n",
+    "'the time of StimulusOn is : ', arg.StimulusOn, '\\n',\n",
+    "'the time of StimulusOf is : ', arg.StimulusOf, '\\n',\n",
+    "'the time of TargetOn is : ', arg.TargetOn, '\\n',\n",
+    "'the time of TargetOff is : ', arg.TargetOff, '\\n',\n",
+    "'the time of the beginning of the trial is : ', arg.t_0, '\\n',\n",
+    "'the time of the trial is : ', arg.trackertime,\n",
+    "\n",
+    "      sep='')"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "metadata": {
+    "raw_mimetype": "text/restructuredtext"
+   },
+   "source": [
+    ".. warning::\n",
+    "    \n",
+    "    Timing is in **EDF time**!\n",
+    "\n",
+    "    To retrieve the time according to the beginning of the trial it is necessary **to subtract arg.t_0**"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "**the position of the eye on the screen in px during the trial :**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "the horizontal position is : [ 666.7  666.8  666.9 ... 1086.3 1086.1 1086. ]\n",
+      "the vertical position is : [500.2 499.8 499.7 ... 516.4 516.7 516.9]\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(\n",
+    "\n",
+    "'the horizontal position is : ', arg.data_x, '\\n',\n",
+    "'the vertical position is : ', arg.data_y,\n",
+    "    \n",
+    "      sep='')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "**the saccade parameter is :** list of lists, each containing ``[start_saccade, end_saccade, duration_saccade, startx_saccade, starty_saccade, endx_saccade, endy_saccade]``"
    ]
   },
   {
@@ -208,18 +314,35 @@
    "metadata": {},
    "outputs": [
     {
-     "data": {
-      "text/plain": [
-       "array([ 666.7,  666.8,  666.9, ..., 1086.3, 1086.1, 1086. ])"
-      ]
-     },
-     "execution_count": 10,
-     "metadata": {},
-     "output_type": "execute_result"
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "the saccade of the trial is : [[879579, 879597, 19, 665.6, 503.5, 647.7, 506.7], [880527, 880550, 24, 672.9, 504.2, 733.2, 507.2], [880682, 880704, 23, 783.2, 502.4, 862.6, 499.5]]\n",
+      "\n",
+      "the first saccade begins at time : 879579\n",
+      "the first saccade ends in time : 879597\n",
+      "the first saccade has a duration : 19\n",
+      "the first saccade begins at the horizontal position : 665.6\n",
+      "the first saccade begins at the vertical position : 503.5\n",
+      "the first saccade ends at the horizontal position : 647.7\n",
+      "the first saccade ends at the vertical position : 506.7\n",
+      "\n"
+     ]
     }
    ],
    "source": [
-    "arg.data_x"
+    "print(\n",
+    "\n",
+    "'the saccade of the trial is : ', arg.saccades, '\\n\\n',\n",
+    "'the first saccade begins at time : ', arg.saccades[0][0], '\\n',\n",
+    "'the first saccade ends in time : ', arg.saccades[0][1], '\\n',\n",
+    "'the first saccade has a duration : ', arg.saccades[0][2], '\\n',\n",
+    "'the first saccade begins at the horizontal position : ', arg.saccades[0][3], '\\n',\n",
+    "'the first saccade begins at the vertical position : ', arg.saccades[0][4], '\\n',\n",
+    "'the first saccade ends at the horizontal position : ', arg.saccades[0][5], '\\n',\n",
+    "'the first saccade ends at the vertical position : ', arg.saccades[0][6], '\\n',\n",
+    "\n",
+    "      sep='')"
    ]
   },
   {
