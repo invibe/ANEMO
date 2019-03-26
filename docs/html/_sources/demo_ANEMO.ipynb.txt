@@ -210,11 +210,8 @@
     }
    ],
    "source": [
-    "print(\n",
-    "\n",
-    "'the number of px per degree is : ', arg.px_per_deg, '\\n',\n",
-    "'the direction of the target for the trial is : ', arg.dir_target,\n",
-    "\n",
+    "print('the number of px per degree is : ', arg.px_per_deg, '\\n',\n",
+    "      'the direction of the target for the trial is : ', arg.dir_target,\n",
     "      sep='')"
    ]
   },
@@ -244,15 +241,12 @@
     }
    ],
    "source": [
-    "print(\n",
-    "\n",
-    "'the time of StimulusOn is : ', arg.StimulusOn, '\\n',\n",
-    "'the time of StimulusOf is : ', arg.StimulusOf, '\\n',\n",
-    "'the time of TargetOn is : ', arg.TargetOn, '\\n',\n",
-    "'the time of TargetOff is : ', arg.TargetOff, '\\n',\n",
-    "'the time of the beginning of the trial is : ', arg.t_0, '\\n',\n",
-    "'the time of the trial is : ', arg.trackertime,\n",
-    "\n",
+    "print('the time of StimulusOn is : ', arg.StimulusOn, '\\n',\n",
+    "      'the time of StimulusOf is : ', arg.StimulusOf, '\\n',\n",
+    "      'the time of TargetOn is : ', arg.TargetOn, '\\n',\n",
+    "      'the time of TargetOff is : ', arg.TargetOff, '\\n',\n",
+    "      'the time of the beginning of the trial is : ', arg.t_0, '\\n',\n",
+    "      'the time of the trial is : ', arg.trackertime,\n",
     "      sep='')"
    ]
   },
@@ -293,11 +287,8 @@
     }
    ],
    "source": [
-    "print(\n",
-    "\n",
-    "'the horizontal position is : ', arg.data_x, '\\n',\n",
-    "'the vertical position is : ', arg.data_y,\n",
-    "    \n",
+    "print('the horizontal position is : ', arg.data_x, '\\n',\n",
+    "      'the vertical position is : ', arg.data_y,\n",
     "      sep='')"
    ]
   },
@@ -331,17 +322,14 @@
     }
    ],
    "source": [
-    "print(\n",
-    "\n",
-    "'the saccade of the trial is : ', arg.saccades, '\\n\\n',\n",
-    "'the first saccade begins at time : ', arg.saccades[0][0], '\\n',\n",
-    "'the first saccade ends in time : ', arg.saccades[0][1], '\\n',\n",
-    "'the first saccade has a duration : ', arg.saccades[0][2], '\\n',\n",
-    "'the first saccade begins at the horizontal position : ', arg.saccades[0][3], '\\n',\n",
-    "'the first saccade begins at the vertical position : ', arg.saccades[0][4], '\\n',\n",
-    "'the first saccade ends at the horizontal position : ', arg.saccades[0][5], '\\n',\n",
-    "'the first saccade ends at the vertical position : ', arg.saccades[0][6], '\\n',\n",
-    "\n",
+    "print('the saccade of the trial is : ', arg.saccades, '\\n\\n',\n",
+    "      'the first saccade begins at time : ', arg.saccades[0][0], '\\n',\n",
+    "      'the first saccade ends in time : ', arg.saccades[0][1], '\\n',\n",
+    "      'the first saccade has a duration : ', arg.saccades[0][2], '\\n',\n",
+    "      'the first saccade begins at the horizontal position : ', arg.saccades[0][3], '\\n',\n",
+    "      'the first saccade begins at the vertical position : ', arg.saccades[0][4], '\\n',\n",
+    "      'the first saccade ends at the horizontal position : ', arg.saccades[0][5], '\\n',\n",
+    "      'the first saccade ends at the vertical position : ', arg.saccades[0][6], '\\n',\n",
     "      sep='')"
    ]
   },
@@ -398,6 +386,13 @@
    "source": [
     "### Raw Data"
    ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
   },
   {
    "cell_type": "code",
