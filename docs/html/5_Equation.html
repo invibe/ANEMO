@@ -126,7 +126,7 @@
 <h2>fct_velocity<a class="headerlink" href="#fct_velocity" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="ANEMO.ANEMO.ANEMO.Equation.fct_velocity">
-<code class="descclassname">ANEMO.ANEMO.ANEMO.Equation.</code><code class="descname">fct_velocity</code><span class="sig-paren">(</span><em>x</em>, <em>dir_target</em>, <em>start_anti</em>, <em>v_anti</em>, <em>latence</em>, <em>tau</em>, <em>maxi</em>, <em>do_whitening</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Equation.fct_velocity" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ANEMO.ANEMO.ANEMO.Equation.</code><code class="descname">fct_velocity</code><span class="sig-paren">(</span><em>x</em>, <em>dir_target</em>, <em>start_anti</em>, <em>a_anti</em>, <em>latency</em>, <em>tau</em>, <em>maxi</em>, <em>do_whitening</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Equation.fct_velocity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function reproducing the velocity of the eye during the smooth pursuit of a moving target</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -136,8 +136,8 @@
 <li><strong>x</strong> (<em>ndarray</em>) – time of the function</li>
 <li><strong>dir_target</strong> (<em>int</em>) – direction of the target -1 or 1</li>
 <li><strong>start_anti</strong> (<em>int</em>) – time when anticipation begins</li>
-<li><strong>v_anti</strong> (<em>float</em>) – velocity of anticipation in seconds</li>
-<li><strong>latence</strong> (<em>int</em>) – time when the movement begins</li>
+<li><strong>a_anti</strong> (<em>float</em>) – velocity of anticipation in seconds</li>
+<li><strong>latency</strong> (<em>int</em>) – time when the movement begins</li>
 <li><strong>tau</strong> (<em>float</em>) – curve of the pursuit</li>
 <li><strong>maxi</strong> (<em>float</em>) – maximum velocity reached during the pursuit</li>
 <li><strong>do_whitening</strong> (<em>bool</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> return the whitened velocity</li>
@@ -158,7 +158,7 @@
 <h2>fct_position<a class="headerlink" href="#fct_position" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="ANEMO.ANEMO.ANEMO.Equation.fct_position">
-<code class="descclassname">ANEMO.ANEMO.ANEMO.Equation.</code><code class="descname">fct_position</code><span class="sig-paren">(</span><em>x</em>, <em>data_x</em>, <em>saccades</em>, <em>nb_sacc</em>, <em>dir_target</em>, <em>start_anti</em>, <em>v_anti</em>, <em>latence</em>, <em>tau</em>, <em>maxi</em>, <em>t_0</em>, <em>px_per_deg</em>, <em>before_sacc</em>, <em>after_sacc</em>, <em>do_whitening</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Equation.fct_position" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ANEMO.ANEMO.ANEMO.Equation.</code><code class="descname">fct_position</code><span class="sig-paren">(</span><em>x</em>, <em>data_x</em>, <em>saccades</em>, <em>nb_sacc</em>, <em>dir_target</em>, <em>start_anti</em>, <em>a_anti</em>, <em>latency</em>, <em>tau</em>, <em>maxi</em>, <em>t_0</em>, <em>px_per_deg</em>, <em>before_sacc</em>, <em>after_sacc</em>, <em>do_whitening</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Equation.fct_position" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function reproducing the position of the eye during the smooth pursuit of a moving target</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -189,9 +189,9 @@
 </li>
 <li><p class="first"><strong>start_anti</strong> (<em>int</em>) – time when anticipation begins</p>
 </li>
-<li><p class="first"><strong>v_anti</strong> (<em>float</em>) – velocity of anticipation in seconds</p>
+<li><p class="first"><strong>a_anti</strong> (<em>float</em>) – velocity of anticipation in seconds</p>
 </li>
-<li><p class="first"><strong>latence</strong> (<em>int</em>) – time when the movement begins</p>
+<li><p class="first"><strong>latency</strong> (<em>int</em>) – time when the movement begins</p>
 </li>
 <li><p class="first"><strong>tau</strong> (<em>float</em>) – curve of the pursuit</p>
 </li>

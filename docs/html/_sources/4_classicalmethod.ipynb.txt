@@ -166,7 +166,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "### latence"
+    "### latency"
    ]
   },
   {
@@ -175,7 +175,7 @@
     "raw_mimetype": "text/restructuredtext"
    },
    "source": [
-    ".. autofunction :: ANEMO.ANEMO.ANEMO.classical_method.latence"
+    ".. autofunction :: ANEMO.ANEMO.ANEMO.classical_method.latency"
    ]
   },
   {
@@ -211,7 +211,7 @@
     }
    ],
    "source": [
-    "latency = A.classical_method.latence(velocity_NAN, w1=300, w2=50, off=50, crit=0.17)\n",
+    "latency = A.classical_method.latency(velocity_NAN, w1=300, w2=50, off=50, crit=0.17)\n",
     "latency"
    ]
   },

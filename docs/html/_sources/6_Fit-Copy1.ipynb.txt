@@ -222,7 +222,7 @@
     "param_fit, inde_var = Fit.generation_param_fit(equation='fct_velocity', data_x=arg.data_x,\n",
     "                                     dir_target=arg.dir_target, trackertime=arg.trackertime,\n",
     "                                     TargetOn=arg.TargetOn, StimulusOf=arg.StimulusOf, saccades=arg.saccades,\n",
-    "                                     value_latence=classic_lat, value_maxi=classic_max, value_anti=classic_ant)"
+    "                                     value_latency=classic_lat, value_maxi=classic_max, value_anti=classic_ant)"
    ]
   },
   {
@@ -242,10 +242,10 @@
        " {'max': None, 'min': None, 'name': 'dir_target', 'value': 1, 'vary': False},\n",
        " {'max': 40.0,\n",
        "  'min': -40.0,\n",
-       "  'name': 'v_anti',\n",
+       "  'name': 'a_anti',\n",
        "  'value': 7.1213366201041435,\n",
        "  'vary': True},\n",
-       " {'max': 1122, 'min': 997, 'name': 'latence', 'value': 1022, 'vary': True},\n",
+       " {'max': 1122, 'min': 997, 'name': 'latency', 'value': 1022, 'vary': True},\n",
        " {'max': 997, 'min': 422, 'name': 'start_anti', 'value': 822, 'vary': 'vary'}]"
       ]
      },
@@ -332,7 +332,7 @@
     "                       StimulusOf=arg.StimulusOf, saccades=arg.saccades,\n",
     "                       time_sup=time_sup,\n",
     "                       param_fit=param_fit, inde_vars=inde_var,\n",
-    "                       value_latence=classic_lat, value_maxi=classic_max, value_anti=classic_ant)"
+    "                       value_latency=classic_lat, value_maxi=classic_max, value_anti=classic_ant)"
    ]
   },
   {
@@ -349,8 +349,8 @@
       "tau = 17.380266561997693\n",
       "maxi = 12.835471134911385\n",
       "dir_target = 1\n",
-      "v_anti = 6.562746785796833\n",
-      "latence = 1105.1464651453684\n",
+      "a_anti = 6.562746785796833\n",
+      "latency = 1105.1464651453684\n",
       "start_anti = 830.9999986217952\n",
       "do_whitening = False\n"
      ]
@@ -422,16 +422,16 @@
     {
      "data": {
       "text/plain": [
-       "{'latence': [[192.64240469756055, 183.14646514536844],\n",
+       "{'a_anti': [[-1.5973336847205815, 6.562746785796833],\n",
+       "  [29.6508826222867, -23.031916593878364]],\n",
+       " 'latency': [[192.64240469756055, 183.14646514536844],\n",
        "  [172.00000025769714, 211.9999996828751]],\n",
        " 'maxi': [[14.685157668221773, 12.835471134911385],\n",
        "  [11.581100536852771, 12.051296551729866]],\n",
        " 'start_anti': [[-83.99912519837142, -91.00000137820484],\n",
        "  [37.49888309979531, 74.94650198695126]],\n",
        " 'tau': [[72.41699558658769, 17.380266561997693],\n",
-       "  [44.439207099077635, 13.000069212831383]],\n",
-       " 'v_anti': [[-1.5973336847205815, 6.562746785796833],\n",
-       "  [29.6508826222867, -23.031916593878364]]}"
+       "  [44.439207099077635, 13.000069212831383]]}"
       ]
      },
      "execution_count": 12,
@@ -441,7 +441,7 @@
    ],
    "source": [
     "param = Fit.Fit_full(data, equation='fct_velocity',\n",
-    "                     list_param_enre=['start_anti', 'v_anti', 'latence',\n",
+    "                     list_param_enre=['start_anti', 'a_anti', 'latency',\n",
     "                                      'tau', 'maxi'])\n",
     "param"
    ]

@@ -398,7 +398,7 @@ It must be initialized with the parameters of the experiment
 <h3>generation_param_fit<a class="headerlink" href="#generation_param_fit" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="ANEMO.ANEMO.ANEMO.Fit.generation_param_fit">
-<code class="descclassname">ANEMO.ANEMO.ANEMO.Fit.</code><code class="descname">generation_param_fit</code><span class="sig-paren">(</span><em>self</em>, <em>equation=’fct_velocity’</em>, <em>data_x=None</em>, <em>dir_target=None</em>, <em>trackertime=None</em>, <em>TargetOn=None</em>, <em>StimulusOf=None</em>, <em>saccades=None</em>, <em>value_latence=None</em>, <em>value_maxi=None</em>, <em>value_anti=None</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>**opt</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Fit.generation_param_fit" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ANEMO.ANEMO.ANEMO.Fit.</code><code class="descname">generation_param_fit</code><span class="sig-paren">(</span><em>self</em>, <em>equation=’fct_velocity’</em>, <em>data_x=None</em>, <em>dir_target=None</em>, <em>trackertime=None</em>, <em>TargetOn=None</em>, <em>StimulusOf=None</em>, <em>saccades=None</em>, <em>value_latency=None</em>, <em>value_maxi=None</em>, <em>value_anti=None</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>**opt</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Fit.generation_param_fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates the parameters and independent variables of the fit</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -428,11 +428,11 @@ It must be initialized with the parameters of the experiment
 </li>
 <li><p class="first"><strong>saccades</strong> (<em>list, optional (default None)</em>) – list of edf saccades for the trial recorded by the eyetracker transformed by <a class="reference internal" href="1_readedf.html#ANEMO.read_edf" title="ANEMO.read_edf"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_edf()</span></code></a></p>
 </li>
-<li><p class="first"><strong>value_latence</strong> (<em>int, optional (default None)</em>) – value that takes the parameter latence to begin the fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">nan</span></code> by default <code class="docutils literal notranslate"><span class="pre">TargetOn-t_0+100</span></code></p>
+<li><p class="first"><strong>value_latency</strong> (<em>int, optional (default None)</em>) – value that takes the parameter latency to begin the fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">nan</span></code> by default <code class="docutils literal notranslate"><span class="pre">TargetOn-t_0+100</span></code></p>
 </li>
 <li><p class="first"><strong>value_maxi</strong> (<em>float, optional (default 15)</em>) – value that takes the parameter maxi to begin the fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">nan</span></code> by default <code class="docutils literal notranslate"><span class="pre">15.</span></code></p>
 </li>
-<li><p class="first"><strong>value_anti</strong> (<em>float, optional (default 0)</em>) – value that takes the parameter v_anti to begin the fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">nan</span></code> by default <code class="docutils literal notranslate"><span class="pre">0.</span></code></p>
+<li><p class="first"><strong>value_anti</strong> (<em>float, optional (default 0)</em>) – value that takes the parameter a_anti to begin the fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">nan</span></code> by default <code class="docutils literal notranslate"><span class="pre">0.</span></code></p>
 </li>
 <li><p class="first"><strong>before_sacc</strong> (<em>int, optional (default 5)</em>) – time to remove before saccades – it is advisable to put : <code class="docutils literal notranslate"><span class="pre">5</span></code> for <code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code>, <code class="docutils literal notranslate"><span class="pre">0</span></code> for <code class="docutils literal notranslate"><span class="pre">'fct_saccade'</span></code></p>
 </li>
@@ -493,7 +493,7 @@ It must be initialized with the parameters of the experiment
 <span></span><span class="n">param_fit</span><span class="p">,</span> <span class="n">inde_var</span> <span class="o">=</span> <span class="n">Fit</span><span class="o">.</span><span class="n">generation_param_fit</span><span class="p">(</span><span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_velocity&#39;</span><span class="p">,</span> <span class="n">data_x</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">data_x</span><span class="p">,</span>
                                      <span class="n">dir_target</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">dir_target</span><span class="p">,</span> <span class="n">trackertime</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">trackertime</span><span class="p">,</span>
                                      <span class="n">TargetOn</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">TargetOn</span><span class="p">,</span> <span class="n">StimulusOf</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">StimulusOf</span><span class="p">,</span> <span class="n">saccades</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">saccades</span><span class="p">,</span>
-                                     <span class="n">value_latence</span><span class="o">=</span><span class="n">classic_lat</span><span class="p">,</span> <span class="n">value_maxi</span><span class="o">=</span><span class="n">classic_max</span><span class="p">,</span> <span class="n">value_anti</span><span class="o">=</span><span class="n">classic_ant</span><span class="p">)</span>
+                                     <span class="n">value_latency</span><span class="o">=</span><span class="n">classic_lat</span><span class="p">,</span> <span class="n">value_maxi</span><span class="o">=</span><span class="n">classic_max</span><span class="p">,</span> <span class="n">value_anti</span><span class="o">=</span><span class="n">classic_ant</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -520,10 +520,10 @@ It must be initialized with the parameters of the experiment
  {&#39;max&#39;: None, &#39;min&#39;: None, &#39;name&#39;: &#39;dir_target&#39;, &#39;value&#39;: 1, &#39;vary&#39;: False},
  {&#39;max&#39;: 40.0,
   &#39;min&#39;: -40.0,
-  &#39;name&#39;: &#39;v_anti&#39;,
+  &#39;name&#39;: &#39;a_anti&#39;,
   &#39;value&#39;: 7.1213366201041435,
   &#39;vary&#39;: True},
- {&#39;max&#39;: 1122, &#39;min&#39;: 997, &#39;name&#39;: &#39;latence&#39;, &#39;value&#39;: 1022, &#39;vary&#39;: True},
+ {&#39;max&#39;: 1122, &#39;min&#39;: 997, &#39;name&#39;: &#39;latency&#39;, &#39;value&#39;: 1022, &#39;vary&#39;: True},
  {&#39;max&#39;: 997, &#39;min&#39;: 422, &#39;name&#39;: &#39;start_anti&#39;, &#39;value&#39;: 822, &#39;vary&#39;: &#39;vary&#39;}]
 </pre></div>
 </div>
@@ -551,7 +551,7 @@ It must be initialized with the parameters of the experiment
 <h3>Fit_trial<a class="headerlink" href="#Fit_trial" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="ANEMO.ANEMO.ANEMO.Fit.Fit_trial">
-<code class="descclassname">ANEMO.ANEMO.ANEMO.Fit.</code><code class="descname">Fit_trial</code><span class="sig-paren">(</span><em>self</em>, <em>data_trial</em>, <em>equation=’fct_velocity’</em>, <em>data_x=None</em>, <em>dir_target=None</em>, <em>trackertime=None</em>, <em>TargetOn=None</em>, <em>StimulusOf=None</em>, <em>saccades=None</em>, <em>time_sup=280</em>, <em>step_fit=2</em>, <em>do_whitening=False</em>, <em>param_fit=None</em>, <em>inde_vars=None</em>, <em>value_latence=None</em>, <em>value_maxi=15.0</em>, <em>value_anti=0.0</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>**opt</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Fit.Fit_trial" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ANEMO.ANEMO.ANEMO.Fit.</code><code class="descname">Fit_trial</code><span class="sig-paren">(</span><em>self</em>, <em>data_trial</em>, <em>equation=’fct_velocity’</em>, <em>data_x=None</em>, <em>dir_target=None</em>, <em>trackertime=None</em>, <em>TargetOn=None</em>, <em>StimulusOf=None</em>, <em>saccades=None</em>, <em>time_sup=280</em>, <em>step_fit=2</em>, <em>do_whitening=False</em>, <em>param_fit=None</em>, <em>inde_vars=None</em>, <em>value_latency=None</em>, <em>value_maxi=15.0</em>, <em>value_anti=0.0</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>**opt</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Fit.Fit_trial" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the result of the fit of a trial</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -625,11 +625,11 @@ It must be initialized with the parameters of the experiment
 </li>
 <li><p class="first"><strong>inde_vars</strong> (<em>dic, optional (default None)</em>) – independent variable dictionary of fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> generate by <a class="reference internal" href="#ANEMO.ANEMO.ANEMO.Fit.generation_param_fit" title="ANEMO.ANEMO.ANEMO.Fit.generation_param_fit"><code class="xref py py-func docutils literal notranslate"><span class="pre">generation_param_fit()</span></code></a></p>
 </li>
-<li><p class="first"><strong>value_latence</strong> (<em>int, optional (default None)</em>) – value that takes the parameter latence to begin the fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">nan</span></code> by default <code class="docutils literal notranslate"><span class="pre">TargetOn-t_0+100</span></code></p>
+<li><p class="first"><strong>value_latency</strong> (<em>int, optional (default None)</em>) – value that takes the parameter latency to begin the fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">nan</span></code> by default <code class="docutils literal notranslate"><span class="pre">TargetOn-t_0+100</span></code></p>
 </li>
 <li><p class="first"><strong>value_maxi</strong> (<em>float, optional (default 15)</em>) – value that takes the parameter maxi to begin the fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">nan</span></code> by default <code class="docutils literal notranslate"><span class="pre">15.</span></code></p>
 </li>
-<li><p class="first"><strong>value_anti</strong> (<em>float, optional (default 0)</em>) – value that takes the parameter v_anti to begin the fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">nan</span></code> by default <code class="docutils literal notranslate"><span class="pre">0.</span></code></p>
+<li><p class="first"><strong>value_anti</strong> (<em>float, optional (default 0)</em>) – value that takes the parameter a_anti to begin the fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">nan</span></code> by default <code class="docutils literal notranslate"><span class="pre">0.</span></code></p>
 </li>
 <li><p class="first"><strong>before_sacc</strong> (<em>int, optional (default 5)</em>) – time to remove before saccades – it is advisable to put : <code class="docutils literal notranslate"><span class="pre">5</span></code> for <code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code>, <code class="docutils literal notranslate"><span class="pre">0</span></code> for <code class="docutils literal notranslate"><span class="pre">'fct_saccade'</span></code></p>
 </li>
@@ -710,7 +710,7 @@ It must be initialized with the parameters of the experiment
                        <span class="n">StimulusOf</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">StimulusOf</span><span class="p">,</span> <span class="n">saccades</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">saccades</span><span class="p">,</span>
                        <span class="n">time_sup</span><span class="o">=</span><span class="n">time_sup</span><span class="p">,</span>
                        <span class="n">param_fit</span><span class="o">=</span><span class="n">param_fit</span><span class="p">,</span> <span class="n">inde_vars</span><span class="o">=</span><span class="n">inde_var</span><span class="p">,</span>
-                       <span class="n">value_latence</span><span class="o">=</span><span class="n">classic_lat</span><span class="p">,</span> <span class="n">value_maxi</span><span class="o">=</span><span class="n">classic_max</span><span class="p">,</span> <span class="n">value_anti</span><span class="o">=</span><span class="n">classic_ant</span><span class="p">)</span>
+                       <span class="n">value_latency</span><span class="o">=</span><span class="n">classic_lat</span><span class="p">,</span> <span class="n">value_maxi</span><span class="o">=</span><span class="n">classic_max</span><span class="p">,</span> <span class="n">value_anti</span><span class="o">=</span><span class="n">classic_ant</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -733,8 +733,8 @@ It must be initialized with the parameters of the experiment
 tau = 17.380266561997693
 maxi = 12.835471134911385
 dir_target = 1
-v_anti = 6.562746785796833
-latence = 1105.1464651453684
+a_anti = 6.562746785796833
+latency = 1105.1464651453684
 start_anti = 830.9999986217952
 do_whitening = False
 </pre></div></div>
@@ -795,10 +795,10 @@ do_whitening = False
 <dt>if <code class="docutils literal notranslate"><span class="pre">None</span></code> :</dt>
 <dd><ul class="first last">
 <li><p class="first">if <code class="docutils literal notranslate"><span class="pre">equation</span></code> is <code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code> or <code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code> :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">list_param_enre</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;start_anti&#39;</span><span class="p">,</span> <span class="s1">&#39;v_anti&#39;</span><span class="p">,</span>
-                   <span class="s1">&#39;latence&#39;</span><span class="p">,</span> <span class="s1">&#39;tau&#39;</span><span class="p">,</span> <span class="s1">&#39;maxi&#39;</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">list_param_enre</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;start_anti&#39;</span><span class="p">,</span> <span class="s1">&#39;a_anti&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;latency&#39;</span><span class="p">,</span> <span class="s1">&#39;tau&#39;</span><span class="p">,</span> <span class="s1">&#39;maxi&#39;</span><span class="p">,</span>
                    <span class="s1">&#39;saccades&#39;</span><span class="p">,</span> <span class="s1">&#39;old_anti&#39;</span><span class="p">,</span>
-                   <span class="s1">&#39;old_max&#39;</span><span class="p">,</span> <span class="s1">&#39;old_latence&#39;</span><span class="p">]</span>
+                   <span class="s1">&#39;old_max&#39;</span><span class="p">,</span> <span class="s1">&#39;old_latency&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </li>
@@ -889,7 +889,7 @@ do_whitening = False
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">param</span> <span class="o">=</span> <span class="n">Fit</span><span class="o">.</span><span class="n">Fit_full</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_velocity&#39;</span><span class="p">,</span>
-                     <span class="n">list_param_enre</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;start_anti&#39;</span><span class="p">,</span> <span class="s1">&#39;v_anti&#39;</span><span class="p">,</span> <span class="s1">&#39;latence&#39;</span><span class="p">,</span>
+                     <span class="n">list_param_enre</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;start_anti&#39;</span><span class="p">,</span> <span class="s1">&#39;a_anti&#39;</span><span class="p">,</span> <span class="s1">&#39;latency&#39;</span><span class="p">,</span>
                                       <span class="s1">&#39;tau&#39;</span><span class="p">,</span> <span class="s1">&#39;maxi&#39;</span><span class="p">])</span>
 <span class="n">param</span>
 </pre></div>
@@ -911,16 +911,16 @@ block, trial =  1 1
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>{&#39;latence&#39;: [[192.64240469756055, 183.14646514536844],
+<span></span>{&#39;a_anti&#39;: [[-1.5973336847205815, 6.562746785796833],
+  [29.6508826222867, -23.031916593878364]],
+ &#39;latency&#39;: [[192.64240469756055, 183.14646514536844],
   [172.00000025769714, 211.9999996828751]],
  &#39;maxi&#39;: [[14.685157668221773, 12.835471134911385],
   [11.581100536852771, 12.051296551729866]],
  &#39;start_anti&#39;: [[-83.99912519837142, -91.00000137820484],
   [37.49888309979531, 74.94650198695126]],
  &#39;tau&#39;: [[72.41699558658769, 17.380266561997693],
-  [44.439207099077635, 13.000069212831383]],
- &#39;v_anti&#39;: [[-1.5973336847205815, 6.562746785796833],
-  [29.6508826222867, -23.031916593878364]]}
+  [44.439207099077635, 13.000069212831383]]}
 </pre></div>
 </div>
 </div>

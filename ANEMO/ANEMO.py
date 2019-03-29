@@ -588,7 +588,7 @@ class ANEMO(object) :
                 - the anticipation of the pursuit, during smooth pursuit
         """
 
-        def latence(velocity_NAN, w1=300, w2=50, off=50, crit=0.17) :
+        def latency(velocity_NAN, w1=300, w2=50, off=50, crit=0.17) :
 
             '''
             Return the latency of the pursuit during a smooth pursuit calculated in a 'classic' way
@@ -632,12 +632,12 @@ class ANEMO(object) :
                     fitLine2 = slope2 * timew + intercept2
 
                     idx = np.argwhere(np.isclose(fitLine1, fitLine2, atol=0.1)).reshape(-1)
-                    old_latence = timew[idx]
+                    old_latency = timew[idx]
                     break
 
-            if a is None or len(old_latence)==0 : old_latence = [np.nan]
+            if a is None or len(old_latency)==0 : old_latency = [np.nan]
 
-            return old_latence[0]
+            return old_latency[0]
 
         def maximum(velocity_NAN, TargetOn_0) :
 
@@ -720,18 +720,18 @@ class ANEMO(object) :
             '''
 
 
-            latence      = ANEMO.classical_method.latence(velocity_NAN, w1, w2, off, crit)
+            latency      = ANEMO.classical_method.latency(velocity_NAN, w1, w2, off, crit)
             maximum      = ANEMO.classical_method.maximum(velocity_NAN, TargetOn_0)
             anticipation = ANEMO.classical_method.anticipation(velocity_NAN, TargetOn_0)
 
-            return latence, maximum, anticipation/0.1
+            return latency, maximum, anticipation/0.1
 
 
 
     class Equation(object) :
         """ Function used to perform the Fits """
 
-        def fct_velocity(x, dir_target, start_anti, v_anti, latence, tau, maxi, do_whitening) :
+        def fct_velocity(x, dir_target, start_anti, a_anti, latency, tau, maxi, do_whitening) :
 
             '''
             Function reproducing the velocity of the eye during the smooth pursuit of a moving target
@@ -745,9 +745,9 @@ class ANEMO(object) :
                 direction of the target -1 or 1
             start_anti : int
                 time when anticipation begins
-            v_anti : float
+            a_anti : float
                 velocity of anticipation in seconds
-            latence : int
+            latency : int
                 time when the movement begins
             tau : float
                 curve of the pursuit
@@ -762,33 +762,33 @@ class ANEMO(object) :
                 velocity of the eye in deg/sec
             '''
 
-            v_anti = v_anti/1000 # to switch from sec to ms
+            a_anti = a_anti/1000 # to switch from sec to ms
             time = x
             vitesse = []
             y = 0
 
             for t in range(len(time)) :
 
-                if start_anti >= latence :
-                    if time[t] < latence :
+                if start_anti >= latency :
+                    if time[t] < latency :
                         vitesse.append(0)
                     else :
-                        vitesse.append(dir_target*maxi*(1-np.exp(-1/tau*(time[t]-latence))))
+                        vitesse.append(dir_target*maxi*(1-np.exp(-1/tau*(time[t]-latency))))
                 else :
                     if time[t] < start_anti :
                         vitesse.append(0)
                     else :
-                        if time[t] < latence :
-                            vitesse.append((time[t]-start_anti)*v_anti)
-                            y = (time[t]-start_anti)*v_anti
+                        if time[t] < latency :
+                            vitesse.append((time[t]-start_anti)*a_anti)
+                            y = (time[t]-start_anti)*a_anti
                         else :
-                            vitesse.append(dir_target*maxi*(1-np.exp(-1/tau*(time[t]-latence)))+y)
+                            vitesse.append(dir_target*maxi*(1-np.exp(-1/tau*(time[t]-latency)))+y)
 
             if do_whitening is True : vitesse = whitening(vitesse)
 
             return vitesse
 
-        def fct_position(x, data_x, saccades, nb_sacc, dir_target, start_anti, v_anti, latence, tau, maxi, t_0, px_per_deg, before_sacc, after_sacc, do_whitening) :
+        def fct_position(x, data_x, saccades, nb_sacc, dir_target, start_anti, a_anti, latency, tau, maxi, t_0, px_per_deg, before_sacc, after_sacc, do_whitening) :
 
             '''
             Function reproducing the position of the eye during the smooth pursuit of a moving target
@@ -818,9 +818,9 @@ class ANEMO(object) :
                 direction of the target -1 or 1
             start_anti : int
                 time when anticipation begins
-            v_anti : float
+            a_anti : float
                 velocity of anticipation in seconds
-            latence : int
+            latency : int
                 time when the movement begins
             tau : float
                 curve of the pursuit
@@ -844,10 +844,10 @@ class ANEMO(object) :
             '''
 
             ms = 1000
-            v_anti = v_anti/ms
+            a_anti = a_anti/ms
             maxi   = maxi/ms
 
-            speed = ANEMO.Equation.fct_velocity(x=x, dir_target=dir_target, start_anti=start_anti, v_anti=v_anti, latence=latence, tau=tau, maxi=maxi, do_whitening=False)
+            speed = ANEMO.Equation.fct_velocity(x=x, dir_target=dir_target, start_anti=start_anti, a_anti=a_anti, latency=latency, tau=tau, maxi=maxi, do_whitening=False)
             pos = np.cumsum(speed)
 
 
@@ -863,7 +863,7 @@ class ANEMO(object) :
 
                 if int(sacc[1]-t_0)+int(after_sacc)+1 <= len(pos) :
                     pos[int(sacc[0]-t_0)-int(before_sacc):int(sacc[1]-t_0)+int(after_sacc)] = a
-                    if sacc[0]-t_0 >= int(latence-1) :
+                    if sacc[0]-t_0 >= int(latency-1) :
                         pos[int(sacc[1]-t_0)+int(after_sacc):] += ((data_x[int(sacc[1]-t_0)+int(after_sacc)]-data_x[int(sacc[0]-t_0)-int(before_sacc)-1])/px_per_deg) - np.mean(speed[int(sacc[0]-t_0):int(sacc[1]-t_0)]) * sacc[2]
                 else :
                     pos[int(sacc[0]-t_0)-int(before_sacc):] = a
@@ -991,7 +991,7 @@ class ANEMO(object) :
 
         def generation_param_fit(self, equation='fct_velocity', data_x=None, dir_target=None,
                                  trackertime=None, TargetOn=None, StimulusOf=None, saccades=None,
-                                 value_latence=None, value_maxi=None, value_anti=None,
+                                 value_latency=None, value_maxi=None, value_anti=None,
                                  before_sacc=5, after_sacc=15, **opt) :
 
             '''
@@ -1019,12 +1019,12 @@ class ANEMO(object) :
             saccades : list, optional (default None)
                 list of edf saccades for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
 
-            value_latence : int, optional (default None)
-                value that takes the parameter latence to begin the fit -- if ``None`` or ``nan`` by default ``TargetOn-t_0+100``
+            value_latency : int, optional (default None)
+                value that takes the parameter latency to begin the fit -- if ``None`` or ``nan`` by default ``TargetOn-t_0+100``
             value_maxi : float, optional (default 15)
                 value that takes the parameter maxi to begin the fit -- if ``None`` or ``nan`` by default ``15.``
             value_anti : float, optional (default 0)
-                value that takes the parameter v_anti to begin the fit -- if ``None`` or ``nan`` by default ``0.``
+                value that takes the parameter a_anti to begin the fit -- if ``None`` or ``nan`` by default ``0.``
 
             before_sacc : int, optional (default 5)
                 time to remove before saccades -- it is advisable to put : ``5`` for ``'fct_velocity'`` and ``'fct_position'``, ``0`` for ``'fct_saccade'``
@@ -1064,26 +1064,26 @@ class ANEMO(object) :
 
                 if dir_target is None : dir_target = Test.test_value('dir_target', self.param_exp, value=None)
 
-                value_latence = Test.test_None(value_latence, value=TargetOn-t_0+100)
+                value_latency = Test.test_None(value_latency, value=TargetOn-t_0+100)
                 value_anti    = Test.test_None(value_anti, value=0.)
                 value_maxi    = Test.test_None(value_maxi, value=15.)
 
                 #----------------------------------------------
-                max_latence = []
+                max_latency = []
                 for s in range(len(saccades)) :
-                    if (saccades[s][0]-t_0) >= (TargetOn-t_0+100) : max_latence.append((saccades[s][0]-t_0))
-                if max_latence == [] :                              max_latence.append(len(trackertime))
-                max_latence = max_latence[0]
+                    if (saccades[s][0]-t_0) >= (TargetOn-t_0+100) : max_latency.append((saccades[s][0]-t_0))
+                if max_latency == [] :                              max_latency.append(len(trackertime))
+                max_latency = max_latency[0]
 
-                if value_latence >= max_latence-50 : value_latence = max_latence-150
-                if value_latence > 250 :             value_latence = TargetOn-t_0+100
+                if value_latency >= max_latency-50 : value_latency = max_latency-150
+                if value_latency > 250 :             value_latency = TargetOn-t_0+100
                 #----------------------------------------------
 
                 param_fit=[{'name':'tau',        'value':15.,              'min':13.,                'max':80.,             'vary':'vary'},
                            {'name':'maxi',       'value':value_maxi,       'min':1.,                 'max':40.,             'vary':True  },
                            {'name':'dir_target', 'value':dir_target,       'min':None,               'max':None,            'vary':False },
-                           {'name':'v_anti',     'value':value_anti,       'min':-40.,               'max':40.,             'vary':True  },
-                           {'name':'latence',    'value':value_latence,    'min':TargetOn-t_0+75,    'max':max_latence,     'vary':True  },
+                           {'name':'a_anti',     'value':value_anti,       'min':-40.,               'max':40.,             'vary':True  },
+                           {'name':'latency',    'value':value_latency,    'min':TargetOn-t_0+75,    'max':max_latency,     'vary':True  },
                            {'name':'start_anti', 'value':TargetOn-t_0-100, 'min':StimulusOf-t_0-200, 'max':TargetOn-t_0+75, 'vary':'vary'}]
 
                 inde_vars={'x':np.arange(len(trackertime))}
@@ -1138,7 +1138,7 @@ class ANEMO(object) :
                       trackertime=None, TargetOn=None, StimulusOf=None, saccades=None,
                       time_sup=280, step_fit=2, do_whitening=False,
                       param_fit=None, inde_vars=None,
-                      value_latence=None, value_maxi=15., value_anti=0.,
+                      value_latency=None, value_maxi=15., value_anti=0.,
                       before_sacc=5, after_sacc=15, **opt) :
 
             '''
@@ -1196,12 +1196,12 @@ class ANEMO(object) :
             inde_vars : dic, optional (default None)
                 independent variable dictionary of fit -- if ``None`` generate by :func:`~ANEMO.ANEMO.ANEMO.Fit.generation_param_fit`
 
-            value_latence : int, optional (default None)
-                value that takes the parameter latence to begin the fit -- if ``None`` or ``nan`` by default ``TargetOn-t_0+100``
+            value_latency : int, optional (default None)
+                value that takes the parameter latency to begin the fit -- if ``None`` or ``nan`` by default ``TargetOn-t_0+100``
             value_maxi : float, optional (default 15)
                 value that takes the parameter maxi to begin the fit -- if ``None`` or ``nan`` by default ``15.``
             value_anti : float, optional (default 0)
-                value that takes the parameter v_anti to begin the fit -- if ``None`` or ``nan`` by default ``0.``
+                value that takes the parameter a_anti to begin the fit -- if ``None`` or ``nan`` by default ``0.``
 
             before_sacc : int, optional (default 5)
                 time to remove before saccades -- it is advisable to put : ``5`` for ``'fct_velocity'`` and ``'fct_position'``, ``0`` for ``'fct_saccade'``
@@ -1261,7 +1261,7 @@ class ANEMO(object) :
             if param_fit is None or inde_vars is None :
                 opt = {'dir_target':dir_target,
                        'TargetOn':TargetOn,           'StimulusOf':StimulusOf, 'saccades':saccades,
-                       'value_latence':value_latence, 'value_maxi':value_maxi, 'value_anti':value_anti,
+                       'value_latency':value_latency, 'value_maxi':value_maxi, 'value_anti':value_anti,
                        'before_sacc':before_sacc,     'after_sacc':after_sacc}
 
             if param_fit is None : param_fit = ANEMO.Fit.generation_param_fit(self, equation=equation, trackertime=trackertime, data_x=data_x, **opt)[0]
@@ -1350,10 +1350,10 @@ class ANEMO(object) :
                 if ``None`` :
                     - if ``equation`` is ``'fct_velocity'`` or ``'fct_position'`` : ::
 
-                        list_param_enre = ['fit', 'start_anti', 'v_anti',
-                                           'latence', 'tau', 'maxi',
+                        list_param_enre = ['fit', 'start_anti', 'a_anti',
+                                           'latency', 'tau', 'maxi',
                                            'saccades', 'old_anti',
-                                           'old_max', 'old_latence']
+                                           'old_max', 'old_latency']
 
                     - if ``equation`` is ``'fct_saccades'`` : ::
 
@@ -1432,7 +1432,7 @@ class ANEMO(object) :
                 if fitted_data == 'saccade' : import matplotlib.gridspec as gridspec
 
             if equation in ['fct_velocity', 'fct_position'] :
-                list_param_enre = Test.test_None(list_param_enre, value=['fit', 'start_anti', 'v_anti', 'latence', 'tau', 'maxi', 'old_anti', 'old_max', 'old_latence'])
+                list_param_enre = Test.test_None(list_param_enre, value=['fit', 'start_anti', 'a_anti', 'latency', 'tau', 'maxi', 'old_anti', 'old_max', 'old_latency'])
 
             if equation == 'fct_saccade' :
                 list_param_enre = Test.test_None(list_param_enre, value=['fit', 'T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2', 'tau'])
@@ -1487,25 +1487,25 @@ class ANEMO(object) :
 
                     if fitted_data != 'saccade' :
 
-                        old_latence, old_max, old_anti = ANEMO.classical_method.Full(velocity_NAN, arg.TargetOn-arg.t_0)
+                        old_latency, old_max, old_anti = ANEMO.classical_method.Full(velocity_NAN, arg.TargetOn-arg.t_0)
 
                         #-------------------------------------------------
                         # FIT
                         #-------------------------------------------------
-                        f = ANEMO.Fit.Fit_trial(self, data_trial, equation=equation, value_latence=old_latence, value_maxi=old_max, value_anti=old_anti, **opt)
+                        f = ANEMO.Fit.Fit_trial(self, data_trial, equation=equation, value_latency=old_latency, value_maxi=old_max, value_anti=old_anti, **opt)
                         #-------------------------------------------------
 
                         onset  = arg.TargetOn - arg.t_0
                         for name in list_param_enre :
                             if name in f.values.keys() :
-                                if name in ['start_anti', 'latence'] : val = f.values[name] - onset
+                                if name in ['start_anti', 'latency'] : val = f.values[name] - onset
                                 else :                                 val = f.values[name]
                                 param[name][block].append(val)
 
                         if 'fit' in list_param_enre :         param['fit'][block].append(f.best_fit)
                         if 'old_anti' in list_param_enre :    param['old_anti'][block].append(old_anti)
                         if 'old_max' in list_param_enre :     param['old_max'][block].append(old_max)
-                        if 'old_latence' in list_param_enre : param['old_latence'][block].append(old_latence-onset)
+                        if 'old_latency' in list_param_enre : param['old_latency'][block].append(old_latency-onset)
 
 
                     if fitted_data == 'saccade' :
@@ -1732,10 +1732,10 @@ class ANEMO(object) :
                 if ``None`` :
                     - if ``equation`` is ``'fct_velocity'`` or ``'fct_position'`` : ::
 
-                        list_param_enre = ['fit', 'start_anti', 'v_anti',
-                                           'latence', 'tau', 'maxi',
+                        list_param_enre = ['fit', 'start_anti', 'a_anti',
+                                           'latency', 'tau', 'maxi',
                                            'saccades', 'old_anti',
-                                           'old_max', 'old_latence']
+                                           'old_max', 'old_latency']
 
                     - if ``equation`` is ``'fct_saccades'`` : ::
 
@@ -1841,8 +1841,8 @@ class ANEMO(object) :
                 else : eqt = equation
 
                 if equation in ['fct_velocity', 'fct_position'] :
-                    list_param = ['start_anti', 'v_anti', 'latence', 'tau', 'maxi']
-                    list_param_enre = Test.test_None(list_param_enre, value=list_param+['fit', 'old_anti', 'old_max', 'old_latence'])
+                    list_param = ['start_anti', 'a_anti', 'latency', 'tau', 'maxi']
+                    list_param_enre = Test.test_None(list_param_enre, value=list_param+['fit', 'old_anti', 'old_max', 'old_latency'])
 
                 if equation == 'fct_saccade' :
                     list_param = ['T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2', 'tau']
@@ -1971,12 +1971,12 @@ class ANEMO(object) :
                     #-------------------------------------------------
                     # FIT
                     #-------------------------------------------------
-                    old_latence, old_max, old_anti = ANEMO.classical_method.Full(velocity_NAN, arg.TargetOn-arg.t_0)
+                    old_latency, old_max, old_anti = ANEMO.classical_method.Full(velocity_NAN, arg.TargetOn-arg.t_0)
 
-                    f = ANEMO.Fit.Fit_trial(self, data_trial, equation=equation, value_latence=old_latence, value_maxi=old_max, value_anti=old_anti, **opt)
+                    f = ANEMO.Fit.Fit_trial(self, data_trial, equation=equation, value_latency=old_latency, value_maxi=old_max, value_anti=old_anti, **opt)
                     for name in list_param_enre :
                         if name in f.values.keys() :
-                            if name in ['start_anti', 'latence'] : val = f.values[name] - onset
+                            if name in ['start_anti', 'latency'] : val = f.values[name] - onset
                             else :                                 val = f.values[name]
                             result_fit[name], param_f[name] = val, val
                     if report is not None : result = f.fit_report()
@@ -1984,7 +1984,7 @@ class ANEMO(object) :
                     if 'fit' in list_param_enre :         result_fit['fit'] = f.best_fit
                     if 'old_anti' in list_param_enre :    result_fit['old_anti'] = old_anti
                     if 'old_max' in list_param_enre :     result_fit['old_max'] = old_max
-                    if 'old_latence' in list_param_enre : result_fit['old_latence'] = old_latence-onset
+                    if 'old_latency' in list_param_enre : result_fit['old_latency'] = old_latency-onset
                     #-------------------------------------------------
                     rv = f.values
 
@@ -1992,7 +1992,7 @@ class ANEMO(object) :
                     rv = {}
                     for name in list_param :
                         param_f[name] = param_fit[name][block][trial]
-                        if name in ['start_anti', 'latence'] : rv[name] = param_fit[name][block][trial] + onset
+                        if name in ['start_anti', 'latency'] : rv[name] = param_fit[name][block][trial] + onset
                         else :                                 rv[name] = param_fit[name][block][trial]
                     rv['do_whitening'] = False
                     rv['dir_target'] = arg.dir_target
@@ -2029,50 +2029,50 @@ class ANEMO(object) :
                             ax.text((TarOff_s-10), -arg.dir_target*35*scale+(-arg.dir_target*x),
                                     "%s : %0.3f"%(name, param_f[name]) , color=c, size=t_text, va='center', ha='right')
                             x = x - 5*scale
-                    if 'latence' in param_f.keys() :    ax.bar(param_f['latence'],    80, bottom=-40, color=c, width=3, lw=0)
+                    if 'latency' in param_f.keys() :    ax.bar(param_f['latency'],    80, bottom=-40, color=c, width=3, lw=0)
                     if 'start_anti' in param_f.keys() : ax.bar(param_f['start_anti'], 80, bottom=-40, color=c, width=3, lw=0)
 
                 else :
 
                     ax.plot(time_s[:int(rv['start_anti'])],                    fit[:int(rv['start_anti'])],                    c='k',       lw=lw)
-                    ax.plot(time_s[int(rv['start_anti']):int(rv['latence'])],  fit[int(rv['start_anti']):int(rv['latence'])],  c='r',       lw=lw)
-                    ax.plot(time_s[int(rv['latence']):int(rv['latence'])+250], fit[int(rv['latence']):int(rv['latence'])+250], c='darkred', lw=lw)
+                    ax.plot(time_s[int(rv['start_anti']):int(rv['latency'])],  fit[int(rv['start_anti']):int(rv['latency'])],  c='r',       lw=lw)
+                    ax.plot(time_s[int(rv['latency']):int(rv['latency'])+250], fit[int(rv['latency']):int(rv['latency'])+250], c='darkred', lw=lw)
 
                     #-----------------------------------------------------------------------------
                     y = {}
-                    for y_pos in [int(rv['start_anti']), int(rv['latence']), int(rv['latence'])+50, int(rv['latence'])+250, int(rv['latence'])+400] :
+                    for y_pos in [int(rv['start_anti']), int(rv['latency']), int(rv['latency'])+50, int(rv['latency'])+250, int(rv['latency'])+400] :
                         if np.isnan(fit[y_pos]) : y[y_pos] = data_1[y_pos]
                         else :                    y[y_pos] = fit[y_pos]
 
                     # V_a ------------------------------------------------------------------------
-                    ax.text((time_s[int(rv['start_anti'])]+time_s[int(rv['latence'])])/2, y[int(rv['start_anti'])]-15*scale, r"A$_a$ = %0.2f °/s$^2$"%(rv['v_anti']), color='r', size=t_label/1.5, ha='center')
+                    ax.text((time_s[int(rv['start_anti'])]+time_s[int(rv['latency'])])/2, y[int(rv['start_anti'])]-15*scale, r"A$_a$ = %0.2f °/s$^2$"%(rv['a_anti']), color='r', size=t_label/1.5, ha='center')
 
                     # Start_a --------------------------------------------------------------------
                     ax.text(time_s[int(rv['start_anti'])]-25, -35*scale, "Start anticipation = %0.2f ms"%(rv['start_anti']-onset), color='k', alpha=0.7, size=t_label/1.5, ha='right')
                     ax.bar( time_s[int(rv['start_anti'])], 80*scale, bottom=-40*scale, width=4, lw=0, color='k', alpha=0.7)
 
-                    # latence --------------------------------------------------------------------
-                    ax.text(time_s[int(rv['latence'])]+25, -35*scale, "Latency = %0.2f ms"%(rv['latence']-onset), color='firebrick', size=t_label/1.5, va='center')
-                    ax.bar( time_s[int(rv['latence'])], 80*scale, bottom=-40*scale, width=4, lw=0, color='firebrick', alpha=1)
+                    # latency --------------------------------------------------------------------
+                    ax.text(time_s[int(rv['latency'])]+25, -35*scale, "Latency = %0.2f ms"%(rv['latency']-onset), color='firebrick', size=t_label/1.5, va='center')
+                    ax.bar( time_s[int(rv['latency'])], 80*scale, bottom=-40*scale, width=4, lw=0, color='firebrick', alpha=1)
 
                     # tau ------------------------------------------------------------------------
-                    ax.text(time_s[int(rv['latence'])]+70+t_label, y[int(rv['latence'])], r"= %0.2f"%(rv['tau']), color='darkred', size=t_label/1.5, va='bottom')
-                    ax.annotate(r'$\tau$', xy=(time_s[int(rv['latence'])]+50, y[int(rv['latence'])+50]), xycoords='data', size=t_label/1., color='darkred', va='bottom',
-                                xytext=(time_s[int(rv['latence'])]+70, y[int(rv['latence'])]), textcoords='data', arrowprops=dict(arrowstyle="->", color='darkred'))
+                    ax.text(time_s[int(rv['latency'])]+70+t_label, y[int(rv['latency'])], r"= %0.2f"%(rv['tau']), color='darkred', size=t_label/1.5, va='bottom')
+                    ax.annotate(r'$\tau$', xy=(time_s[int(rv['latency'])]+50, y[int(rv['latency'])+50]), xycoords='data', size=t_label/1., color='darkred', va='bottom',
+                                xytext=(time_s[int(rv['latency'])]+70, y[int(rv['latency'])]), textcoords='data', arrowprops=dict(arrowstyle="->", color='darkred'))
 
                     # Max ------------------------------------------------------------------------
-                    ax.text(TarOn_s+475, (y[int(rv['latence'])]+y[int(rv['latence'])+250])/2, "Steady State = %0.2f °/s"%(rv['maxi']), color='k', size=t_label/1.5, va='center')
+                    ax.text(TarOn_s+475, (y[int(rv['latency'])]+y[int(rv['latency'])+250])/2, "Steady State = %0.2f °/s"%(rv['maxi']), color='k', size=t_label/1.5, va='center')
                     #-----------------------------------------------------------------------------
 
                     if equation=='fct_velocity' :
                         # V_a ------------------------------------------------------------------------
-                        ax.annotate('', xy=(time_s[int(rv['latence'])], y[int(rv['latence'])]-3), xycoords='data', size=t_label/1.5,
+                        ax.annotate('', xy=(time_s[int(rv['latency'])], y[int(rv['latency'])]-3), xycoords='data', size=t_label/1.5,
                                     xytext=(time_s[int(rv['start_anti'])], y[int(rv['start_anti'])]-3), textcoords='data', arrowprops=dict(arrowstyle="->", color='r'))
                         # Max ------------------------------------------------------------------------
-                        ax.annotate('', xy=(TarOn_s+450, y[int(rv['latence'])]), xycoords='data', size=t_label/1.5,
-                                    xytext=(TarOn_s+450, y[int(rv['latence'])+250]), textcoords='data', arrowprops=dict(arrowstyle="<->"))
+                        ax.annotate('', xy=(TarOn_s+450, y[int(rv['latency'])]), xycoords='data', size=t_label/1.5,
+                                    xytext=(TarOn_s+450, y[int(rv['latency'])+250]), textcoords='data', arrowprops=dict(arrowstyle="<->"))
                         ax.plot(time_s, np.zeros(len(time_s)), '--k', lw=1, alpha=0.5)
-                        ax.plot(time_s[int(rv['latence']):], np.ones(len(time_s[int(rv['latence']):]))*y[int(rv['latence'])+400], '--k', lw=1, alpha=0.5)
+                        ax.plot(time_s[int(rv['latency']):], np.ones(len(time_s[int(rv['latency']):]))*y[int(rv['latency'])+400], '--k', lw=1, alpha=0.5)
                     #-----------------------------------------------------------------------------
 
             if show_data == 'saccade' :
@@ -2244,7 +2244,7 @@ class ANEMO(object) :
                 time = np.arange(-750, 750, 1)
                 StimulusOn, StimulusOf = -750, -300
                 TargetOn, TargetOff    = 0, 750
-                start_anti, latence    = 650, 850
+                start_anti, latency    = 650, 850
                 #-----------------------------------------------------------------------------
 
                 if equation=='fct_velocity' :
@@ -2252,8 +2252,8 @@ class ANEMO(object) :
                     ax.set_ylabel('Velocity (°/s)', fontsize=t_label)
 
                     scale = 1
-                    result_fit = ANEMO.Equation.fct_velocity(x=np.arange(len(time)), start_anti=start_anti, latence=latence,
-                                                              v_anti=-20, tau=15., maxi=15., dir_target=-1, do_whitening=False)
+                    result_fit = ANEMO.Equation.fct_velocity(x=np.arange(len(time)), start_anti=start_anti, latency=latency,
+                                                              a_anti=-20, tau=15., maxi=15., dir_target=-1, do_whitening=False)
 
                 if equation=='fct_position' :
                     ax.set_title('Function Position', fontsize=t_titre, x=0.5, y=1.05)
@@ -2262,7 +2262,7 @@ class ANEMO(object) :
                     scale = 1/2
                     result_fit = ANEMO.Equation.fct_position(x=np.arange(len(time)), data_x=np.zeros(len(time)),
                                                             saccades=np.zeros(len(time)), nb_sacc=0, before_sacc=5, after_sacc=15,
-                                                            start_anti=start_anti, v_anti=-20, latence=latence, tau=15., maxi=15.,
+                                                            start_anti=start_anti, a_anti=-20, latency=latency, tau=15., maxi=15.,
                                                             t_0=0, dir_target=-1, px_per_deg=36.51807384230632,  do_whitening=False)
 
                 #-----------------------------------------------------------------------------
@@ -2270,36 +2270,36 @@ class ANEMO(object) :
                 ax.set_xlabel('Time (ms)', fontsize=t_label)
                 #-----------------------------------------------------------------------------
 
-                ax.plot(time[latence+250:],        result_fit[latence+250:],        c='k',       lw=lw)
+                ax.plot(time[latency+250:],        result_fit[latency+250:],        c='k',       lw=lw)
                 ax.plot(time[:start_anti],         result_fit[:start_anti],         c='k',       lw=lw)
-                ax.plot(time[start_anti:latence],  result_fit[start_anti:latence],  c='r',       lw=lw)
-                ax.plot(time[latence:latence+250], result_fit[latence:latence+250], c='darkred', lw=lw)
+                ax.plot(time[start_anti:latency],  result_fit[start_anti:latency],  c='r',       lw=lw)
+                ax.plot(time[latency:latency+250], result_fit[latency:latency+250], c='darkred', lw=lw)
 
                 # V_a ------------------------------------------------------------------------
                 ax.text(TargetOn, 15*scale, "Anticipation", color='r', size=t_label, ha='center')
                 ax.text(TargetOn-50, -5*scale, r"A$_a$", color='r', size=t_label/1.5, ha='center', va='top')
 
                 if equation=='fct_velocity' :
-                    ax.annotate('', xy=(time[latence], result_fit[latence]-3), xycoords='data', size=t_label/1.5, xytext=(time[start_anti], result_fit[start_anti]-3), textcoords='data', arrowprops=dict(arrowstyle="->", color='r'))
+                    ax.annotate('', xy=(time[latency], result_fit[latency]-3), xycoords='data', size=t_label/1.5, xytext=(time[start_anti], result_fit[start_anti]-3), textcoords='data', arrowprops=dict(arrowstyle="->", color='r'))
 
                 # Start_a --------------------------------------------------------------------
                 ax.text(TargetOn-125, -35*scale, "Start anticipation", color='k', size=t_label, alpha=0.7, ha='right')
                 ax.bar(time[start_anti], 80*scale, bottom=-40*scale, color='k', width=4, lw=0, alpha=0.7)
 
-                # latence --------------------------------------------------------------------
+                # latency --------------------------------------------------------------------
                 ax.text(TargetOn+125, -35*scale, "Latency", color='firebrick', size=t_label)
-                ax.bar(time[latence], 80*scale, bottom=-40*scale, color='firebrick', width=4, lw=0, alpha=1)
+                ax.bar(time[latency], 80*scale, bottom=-40*scale, color='firebrick', width=4, lw=0, alpha=1)
 
                 # tau ------------------------------------------------------------------------
-                ax.annotate(r'$\tau$', xy=(time[latence]+15, result_fit[latence+15]), xycoords='data', size=t_label/1., color='darkred', va='bottom', xytext=(time[latence]+70, result_fit[latence+7]), textcoords='data', arrowprops=dict(arrowstyle="->", color='darkred'))
+                ax.annotate(r'$\tau$', xy=(time[latency]+15, result_fit[latency+15]), xycoords='data', size=t_label/1., color='darkred', va='bottom', xytext=(time[latency]+70, result_fit[latency+7]), textcoords='data', arrowprops=dict(arrowstyle="->", color='darkred'))
 
                 # Max ------------------------------------------------------------------------
-                ax.text(TargetOn+400+25, ((result_fit[latence+400])/2), 'Steady State', color='k', size=t_label, va='center')
+                ax.text(TargetOn+400+25, ((result_fit[latency+400])/2), 'Steady State', color='k', size=t_label, va='center')
 
                 if equation=='fct_velocity' :
-                    ax.annotate('', xy=(TargetOn+400, 0), xycoords='data', size=t_label/1.5, xytext=(TargetOn+400, result_fit[latence+400]), textcoords='data', arrowprops=dict(arrowstyle="<->"))
+                    ax.annotate('', xy=(TargetOn+400, 0), xycoords='data', size=t_label/1.5, xytext=(TargetOn+400, result_fit[latency+400]), textcoords='data', arrowprops=dict(arrowstyle="<->"))
                     ax.plot(time, np.zeros(len(time)), '--k', lw=1, alpha=0.5)
-                    ax.plot(time[latence:], np.ones(len(time[latence:]))*result_fit[latence+400], '--k', lw=1, alpha=0.5)
+                    ax.plot(time[latency:], np.ones(len(time[latency:]))*result_fit[latency+400], '--k', lw=1, alpha=0.5)
 
                 # COSMETIQUE -----------------------------------------------------------------
                 ax.axvspan(StimulusOn, StimulusOf, color='k', alpha=0.2)
@@ -2566,10 +2566,10 @@ class ANEMO(object) :
                 if ``None`` :
                     - if ``equation`` is ``'fct_velocity'`` or ``'fct_position'`` : ::
 
-                        list_param_enre = ['fit', 'start_anti', 'v_anti',
-                                           'latence', 'tau', 'maxi',
+                        list_param_enre = ['fit', 'start_anti', 'a_anti',
+                                           'latency', 'tau', 'maxi',
                                            'saccades', 'old_anti',
-                                           'old_max', 'old_latence']
+                                           'old_max', 'old_latency']
 
                     - if ``equation`` is ``'fct_saccades'`` : ::
 
@@ -2839,10 +2839,10 @@ class ANEMO(object) :
                 if ``None`` :
                     - if ``equation`` is ``'fct_velocity'`` or ``'fct_position'`` : ::
 
-                        list_param_enre = ['fit', 'start_anti', 'v_anti',
-                                           'latence', 'tau', 'maxi',
+                        list_param_enre = ['fit', 'start_anti', 'a_anti',
+                                           'latency', 'tau', 'maxi',
                                            'saccades', 'old_anti',
-                                           'old_max', 'old_latence']
+                                           'old_max', 'old_latency']
 
                     - if ``equation`` is ``'fct_saccades'`` : ::
 
@@ -2902,8 +2902,8 @@ class ANEMO(object) :
                 list_data_fitfct = {'velocity':'fct_velocity', 'position':'fct_position', 'saccade':'fct_saccade'}
 
             list_param_enre = {}
-            list_param_enre['fct_velocity'] = ['start_anti', 'v_anti', 'latence', 'tau', 'maxi']
-            list_param_enre['fct_position'] = ['start_anti', 'v_anti', 'latence', 'tau', 'maxi']
+            list_param_enre['fct_velocity'] = ['start_anti', 'a_anti', 'latency', 'tau', 'maxi']
+            list_param_enre['fct_position'] = ['start_anti', 'a_anti', 'latency', 'tau', 'maxi']
             list_param_enre['fct_saccade'] =  ['T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2', 'tau']
 
             Full_list = {}
@@ -3064,10 +3064,3 @@ class ANEMO(object) :
             check_trial(None)
 
             return Full_list
-
-
-
-
-
-
-

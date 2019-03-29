@@ -589,7 +589,7 @@ To see the data, you could use:
   <li><a href="Plot.html#plot-full-data">plot_Full_data</a> : Save the full data figure</li>
   <li><a href="Plot.html#show-fig">show_fig</a> : Return the parameters of the fit present in list_param_enre</li>
 </ul><div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -599,7 +599,7 @@ To see the data, you could use:
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -620,7 +620,7 @@ To see the data, you could use:
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -640,18 +640,18 @@ To see the data, you could use:
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;fct Plot_Full_data</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="mi">44</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 
     <span class="n">file_path</span><span class="o">=</span><span class="s1">&#39;_static/result/&#39;</span><span class="o">+</span><span class="n">show</span>
-    <span class="n">Plot</span><span class="o">.</span><span class="n">plot_Full_data</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">show</span><span class="p">,</span> <span class="n">N_blocks</span><span class="o">=</span><span class="n">N_blocks</span><span class="p">,</span> <span class="n">N_trials</span><span class="o">=</span><span class="n">N_trials</span><span class="p">,</span> <span class="n">file_fig</span><span class="o">=</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="n">Plot</span><span class="o">.</span><span class="n">plot_Full_data</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">show</span><span class="p">,</span> <span class="n">N_blocks</span><span class="o">=</span><span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;N_blocks&#39;</span><span class="p">],</span> <span class="n">N_trials</span><span class="o">=</span><span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;N_trials&#39;</span><span class="p">],</span> <span class="n">file_fig</span><span class="o">=</span><span class="n">file_path</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_blocks</span><span class="p">)</span> <span class="p">:</span>
+    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;N_blocks&#39;</span><span class="p">])</span> <span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;figure data saved in </span><span class="si">%s</span><span class="s1">_</span><span class="si">%s</span><span class="s1"> for block </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <p><strong>velocity</strong></p>
 <a href="data_modification.html#velocity-deg">velocity_deg</a> : Return the velocity of the eye in deg/sec <br><div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -660,17 +660,17 @@ To see the data, you could use:
 </div>
 </div>
 <a href="data_modification.html#velocity-nan">velocity_NAN</a> : Returns velocity of the eye in deg / sec without the saccades<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">velocity_NAN</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">velocity_NAN</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">data_x</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">data_y</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">saccades</span><span class="p">,</span>
-                              <span class="n">arg</span><span class="o">.</span><span class="n">trackertime</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">TargetOn</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                              <span class="n">arg</span><span class="o">.</span><span class="n">trackertime</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">TargetOn</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -718,7 +718,7 @@ see pdf :<br/>
   <li><a href="_static/result/velocity_2.pdf">velocity_2.pdf</a></li>
 </ul><p><strong>position</strong></p>
 <a href="data_modification.html#data-deg">data_deg</a> : Return the position of the eye in deg<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -766,7 +766,7 @@ see pdf :<br/>
   <li><a href="_static/result/position_2.pdf">position_2.pdf</a></li>
 </ul><p><strong>saccade</strong></p>
 <a href="data_modification.html#data-deg">data_deg</a> : Return the position of the eye in deg<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -835,7 +835,7 @@ can be used with functions : <br/>
   <li><a href="Plot.html#plot-fit">plot_fit</a></li>
   <li><a href="Plot.html#plot-full-data">plot_Full_data</a></li>
 </ul><div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -890,11 +890,11 @@ can be used with functions : <br/>
 <div class="section" id="Classical-Methode">
 <h2>Classical Methode<a class="headerlink" href="#Classical-Methode" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">classical_lat</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">classical_method</span><span class="o">.</span><span class="n">latence</span><span class="p">(</span><span class="n">velocity_NAN</span><span class="p">)</span>
+<span></span><span class="n">classical_lat</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">classical_method</span><span class="o">.</span><span class="n">latency</span><span class="p">(</span><span class="n">velocity_NAN</span><span class="p">)</span>
 <span class="n">classical_max</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">classical_method</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">velocity_NAN</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">TargetOn</span><span class="p">)</span>
 <span class="n">classical_anti</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">classical_method</span><span class="o">.</span><span class="n">anticipation</span><span class="p">(</span><span class="n">velocity_NAN</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">TargetOn</span><span class="p">)</span>
 
@@ -913,7 +913,7 @@ can be used with functions : <br/>
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -934,7 +934,7 @@ nan nan nan
 <h2>Equation<a class="headerlink" href="#Equation" title="Permalink to this headline">¶</a></h2>
 see : <a href="Equation.html">Equation</a><p><strong>velocity</strong></p>
 <a href="Equation.html#fct-velocity">fct_velocity</a> : Function reproducing the velocity of the eye during the smooth pursuit of a moving target<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -951,7 +951,7 @@ see : <a href="Equation.html">Equation</a><p><strong>velocity</strong></p>
 </div>
 <p><strong>position</strong></p>
 <a href="Equation.html#fct-position">fct_position</a> : Function reproducing the position of the eye during the smooth pursuit of a moving target<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -968,7 +968,7 @@ see : <a href="Equation.html">Equation</a><p><strong>velocity</strong></p>
 </div>
 <p><strong>saccade</strong></p>
 <a href="Equation.html#fct-saccade">fct_saccade</a> : Function reproducing the position of the eye during the sacades<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -987,7 +987,7 @@ see : <a href="Equation.html">Equation</a><p><strong>velocity</strong></p>
 <div class="section" id="Fit">
 <h2>Fit<a class="headerlink" href="#Fit" title="Permalink to this headline">¶</a></h2>
 see : <a href="Fit.html">Fit</a><div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -998,20 +998,20 @@ see : <a href="Fit.html">Fit</a><div class="nbinput nblast docutils container">
 <div class="section" id="generation-param-fit">
 <h3>generation-param-fit<a class="headerlink" href="#generation-param-fit" title="Permalink to this headline">¶</a></h3>
 see : <a href="Fit.html#generation-param-fit">generation_param_fit</a><div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">param_fit</span> <span class="o">=</span> <span class="n">Fit</span><span class="o">.</span><span class="n">generation_param_fit</span><span class="p">(</span><span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_velocity&#39;</span><span class="p">,</span> <span class="n">data_x</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;x&#39;</span><span class="p">],</span>
                                      <span class="n">dir_target</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">dir_target</span><span class="p">,</span> <span class="n">trackertime</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">trackertime</span><span class="p">,</span>
                                      <span class="n">TargetOn</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">TargetOn</span><span class="p">,</span> <span class="n">StimulusOf</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">StimulusOf</span><span class="p">,</span> <span class="n">saccades</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">saccades</span><span class="p">,</span>
-                                     <span class="n">value_latence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">value_maxi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">value_anti</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">before_sacc</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">after_sacc</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+                                     <span class="n">value_latency</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">value_maxi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">value_anti</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">before_sacc</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">after_sacc</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <p><strong>velocity</strong></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1028,7 +1028,7 @@ see : <a href="Fit.html#generation-param-fit">generation_param_fit</a><div class
 </div>
 <p><strong>position</strong></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1045,7 +1045,7 @@ see : <a href="Fit.html#generation-param-fit">generation_param_fit</a><div class
 </div>
 <p><strong>saccade</strong></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1067,7 +1067,7 @@ see : <a href="Fit.html#generation-param-fit">generation_param_fit</a><div class
 <div class="section" id="Fit">
 <h3>Fit<a class="headerlink" href="#Fit" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1077,12 +1077,12 @@ see : <a href="Fit.html#generation-param-fit">generation_param_fit</a><div class
 </div>
 <p><strong>velocity</strong></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">param</span> <span class="o">=</span> <span class="n">Fit</span><span class="o">.</span><span class="n">Fit_full</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_velocity&#39;</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                     <span class="n">N_blocks</span><span class="o">=</span><span class="n">N_blocks</span><span class="p">,</span> <span class="n">N_trials</span><span class="o">=</span><span class="n">N_trials</span><span class="p">,</span>
+                     <span class="n">N_blocks</span><span class="o">=</span><span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;N_blocks&#39;</span><span class="p">],</span> <span class="n">N_trials</span><span class="o">=</span><span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;N_trials&#39;</span><span class="p">],</span>
                      <span class="n">filt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">file_fig</span><span class="o">=</span><span class="s1">&#39;_static/result/Fit_velocity&#39;</span><span class="p">)</span>
 
@@ -1119,12 +1119,12 @@ see pdf :<br/>
   <li><a href="_static/result/Fit_velocity_2.pdf">Fit_velocity_2.pdf</a></li>
 </ul><p><strong>position</strong></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">param</span> <span class="o">=</span> <span class="n">Fit</span><span class="o">.</span><span class="n">Fit_full</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_position&#39;</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                     <span class="n">N_blocks</span><span class="o">=</span><span class="n">N_blocks</span><span class="p">,</span> <span class="n">N_trials</span><span class="o">=</span><span class="n">N_trials</span><span class="p">,</span>
+                     <span class="n">N_blocks</span><span class="o">=</span><span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;N_blocks&#39;</span><span class="p">],</span> <span class="n">N_trials</span><span class="o">=</span><span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;N_trials&#39;</span><span class="p">],</span>
                      <span class="n">filt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">file_fig</span><span class="o">=</span><span class="s1">&#39;_static/result/Fit_position&#39;</span><span class="p">)</span>
 
@@ -1161,12 +1161,12 @@ see pdf :<br/>
   <li><a href="_static/result/Fit_position_2.pdf">Fit_position_2.pdf</a></li>
 </ul><p><strong>saccade</strong></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">param</span> <span class="o">=</span> <span class="n">Fit</span><span class="o">.</span><span class="n">Fit_full</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;fct_saccade&#39;</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                     <span class="n">N_blocks</span><span class="o">=</span><span class="n">N_blocks</span><span class="p">,</span> <span class="n">N_trials</span><span class="o">=</span><span class="n">N_trials</span><span class="p">,</span>
+                     <span class="n">N_blocks</span><span class="o">=</span><span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;N_blocks&#39;</span><span class="p">],</span> <span class="n">N_trials</span><span class="o">=</span><span class="n">param_exp</span><span class="p">[</span><span class="s1">&#39;N_trials&#39;</span><span class="p">],</span>
                      <span class="n">filt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">file_fig</span><span class="o">=</span><span class="s1">&#39;_static/result/Fit_saccade&#39;</span><span class="p">)</span>
 
@@ -1206,7 +1206,7 @@ see pdf :<br/>
 <div class="section" id="Retrieving-the-parameters">
 <h2>Retrieving the parameters<a class="headerlink" href="#Retrieving-the-parameters" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1226,7 +1226,7 @@ see pdf :<br/>
 </div>
 <p><strong>velocity</strong></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1243,24 +1243,24 @@ see pdf :<br/>
 Param recorded
 ---------------
 
-dict_keys([&#39;maxi&#39;, &#39;old_anti&#39;, &#39;observer&#39;, &#39;latence&#39;, &#39;old_latence&#39;, &#39;v_anti&#39;, &#39;old_max&#39;, &#39;fit&#39;, &#39;start_anti&#39;, &#39;tau&#39;])
+dict_keys([&#39;fit&#39;, &#39;old_anti&#39;, &#39;maxi&#39;, &#39;old_latency&#39;, &#39;old_max&#39;, &#39;tau&#39;, &#39;a_anti&#39;, &#39;latency&#39;, &#39;start_anti&#39;, &#39;observer&#39;])
 
 For the first trial
 ---------------
 
-maxi = 11.947688290137648
-old_anti = 5.2029031109490695
-latence = 211.9999995956723
-old_latence = nan
-v_anti = -23.805279360219536
-old_max = 14.807736090766625
-start_anti = 74.99999999995998
-tau = 13.000000071848424
+old_anti = -1.3691850291970993
+maxi = 11.575522298774453
+old_latency = nan
+old_max = 15.964697440438167
+tau = 44.46237986617848
+a_anti = 29.60507534268035
+latency = 172.0243437211359
+start_anti = 37.30796543958502
 </pre></div></div>
 </div>
 <p><strong>position</strong></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1277,24 +1277,24 @@ tau = 13.000000071848424
 Param recorded
 ---------------
 
-dict_keys([&#39;maxi&#39;, &#39;old_anti&#39;, &#39;observer&#39;, &#39;latence&#39;, &#39;old_latence&#39;, &#39;v_anti&#39;, &#39;old_max&#39;, &#39;fit&#39;, &#39;start_anti&#39;, &#39;tau&#39;])
+dict_keys([&#39;fit&#39;, &#39;old_anti&#39;, &#39;maxi&#39;, &#39;old_latency&#39;, &#39;old_max&#39;, &#39;tau&#39;, &#39;a_anti&#39;, &#39;latency&#39;, &#39;start_anti&#39;, &#39;observer&#39;])
 
 For the first trial
 ---------------
 
-maxi = 15.367464795043494
-old_anti = 5.2029031109490695
-latence = 196.35326495100298
-old_latence = nan
-v_anti = 1.0106661120280975
-old_max = 14.807736090766625
-start_anti = -111.01380810289334
-tau = 32.0021265083987
+old_anti = -1.3691850291970993
+maxi = 13.78802850709372
+old_latency = nan
+old_max = 15.964697440438167
+tau = 79.99999998314709
+a_anti = 1.4408621174132605
+latency = 148.45772362188427
+start_anti = -499.9999999247895
 </pre></div></div>
 </div>
 <p><strong>saccade</strong></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1311,20 +1311,29 @@ tau = 32.0021265083987
 Param recorded
 ---------------
 
-dict_keys([&#39;x_0&#39;, &#39;t2&#39;, &#39;observer&#39;, &#39;tau&#39;, &#39;x1&#39;, &#39;t1&#39;, &#39;x2&#39;, &#39;tr&#39;, &#39;T0&#39;, &#39;fit&#39;])
+dict_keys([&#39;fit&#39;, &#39;t1&#39;, &#39;x_0&#39;, &#39;t2&#39;, &#39;x2&#39;, &#39;tau&#39;, &#39;T0&#39;, &#39;x1&#39;, &#39;observer&#39;, &#39;tr&#39;])
 
 For the first trial
 ---------------
 
-x_0 = [0.2272847148467203, -0.15334872327007254, -7.958311077230758]
-t2 = [10.427471643651351, 10.468903043142417, 13.938671800591317]
-tau = [39.748470336932996, 32.353245365355164, 9.486777647869626]
-x1 = [-0.5403870450794503, -0.470849767691071, -1.9886089942475516]
-t1 = [15.11919791704251, 10.01001220733005, 17.30352269809784]
-x2 = [-0.20657746249432218, -3.3206742243690126, -1.2756707098296949]
-tr = [0.2606254276512182, 2.713879744320553, 14.89065017335387]
-T0 = [1.4957655349267789, 2.807204981522389, 5.000000126645588]
+t1 = [15.16276130486827, 16.96637070499535, 18.63972853153373]
+x_0 = [0.46855696355797183, 0.5396706820719184, 3.5089493230647104]
+t2 = [12.235688420693895, 10.004496240964688, 11.975185769162906]
+x2 = [-0.3560474250618597, 1.7216828177047994, 1.7401891168262225]
+tau = [5.000009050719314, 39.77154744933177, 9.76791449789115]
+T0 = [1.6132224303592757, -0.23661991258591542, 5.283216003115783]
+x1 = [-0.7829317681654278, 1.049446192397463, 2.3550376614679625]
+tr = [0.40741936662850115, 6.26575283192556, 4.101861455973224]
 </pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
 </div>
 </div>
 </div>
