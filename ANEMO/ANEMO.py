@@ -765,10 +765,9 @@ class ANEMO(object) :
             a_anti = a_anti/1000 # to switch from sec to ms
             time = x
             velocity = []
-            y = 0
 
             y = ((latency-1)-start_anti)*a_anti
-            maxi = steady_state - y
+            maxi = (dir_target*steady_state) - y
 
             for t in range(len(time)) :
 
@@ -777,9 +776,8 @@ class ANEMO(object) :
                 else :
                     if time[t] < latency :
                         velocity.append((time[t]-start_anti)*a_anti)
-
                     else :
-                        velocity.append(dir_target*maxi*(1-np.exp(-1/tau*(time[t]-latency)))+y)
+                        velocity.append(maxi*(1-np.exp(-1/tau*(time[t]-latency)))+y)
 
             if do_whitening is True : velocity = whitening(velocity)
 
@@ -803,7 +801,7 @@ class ANEMO(object) :
                 velocity of anticipation in seconds
             latency : int
                 time when the movement begins
-            tau : float
+            ramp_pursuit : float
                 curve of the pursuit
             steady_state : float
                 steady_state velocity reached during the pursuit
@@ -820,14 +818,13 @@ class ANEMO(object) :
             ramp_pursuit = -ramp_pursuit/1000
             time = x
             velocity = []
-            y = 0
 
             e = np.exp(1)
             time_r = np.arange(-e, len(time), 1)
 
             y = ((latency-1)-start_anti)*a_anti
-            maxi = steady_state - y
-            start_rampe = dir_target*(maxi/(1+np.exp(((ramp_pursuit*time_r[0])+e))))
+            maxi = (dir_target*steady_state) - y
+            start_rampe = (maxi/(1+np.exp(((ramp_pursuit*time_r[0])+e))))
 
             for t in range(len(time)):
                 if time[t] < start_anti :
@@ -836,11 +833,72 @@ class ANEMO(object) :
                     if time[t] < latency :
                         velocity.append((time[t]-start_anti)*a_anti)
                     else :
-                        velocity.append(((dir_target*maxi)/(1+np.exp(((ramp_pursuit*time_r[int(time[t]-latency)])+e))))+(y-start_rampe))
+                        velocity.append((maxi/(1+np.exp(((ramp_pursuit*time_r[int(time[t]-latency)])+e))))+(y-start_rampe))
 
             if do_whitening is True : velocity = whitening(velocity)
 
             return velocity
+
+        def fct_velocity_line(x, dir_target, start_anti, a_anti, latency, ramp_pursuit, steady_state, do_whitening) :
+
+            '''
+            Function reproducing the velocity of the eye during the smooth pursuit of a moving target
+
+            Parameters
+            ----------
+            x : ndarray
+                time of the function
+
+            dir_target : int
+                direction of the target -1 or 1
+            start_anti : int
+                time when anticipation begins
+            a_anti : float
+                velocity of anticipation in seconds
+            latency : int
+                time when the movement begins
+            ramp_pursuit : float
+                velocity of pursuit in seconds
+            steady_state : float
+                steady_state velocity reached during the pursuit
+            do_whitening : bool
+                if ``True`` return the whitened velocity
+
+            Returns
+            -------
+            velocity : list
+                velocity of the eye in deg/sec
+            '''
+
+            a_anti = a_anti/1000 # to switch from sec to ms
+            ramp_pursuit = dir_target*(ramp_pursuit)/1000
+            time = x
+            vitesse = []
+
+            y = ((latency-1)-start_anti)*a_anti
+            maxi = (dir_target*steady_state) - y
+            end_ramp_pursuit = (maxi/ramp_pursuit) + latency
+
+            for t in range(len(time)):
+                if time[t] < start_anti :
+                    vitesse.append(0)
+                else :
+                    if time[t] < latency :
+                        vitesse.append((time[t]-start_anti)*a_anti)
+
+                    else :
+                        if latency >= end_ramp_pursuit :
+                            vitesse.append(maxi)
+                        else :
+                            if time[t] < int(end_ramp_pursuit) :
+                                vitesse.append((time[t]-latency)*ramp_pursuit+y)
+                            else :
+                                vitesse.append(maxi+y)
+
+            if do_whitening is True : velocity = whitening(velocity)
+
+            return vitesse
+
 
 
         def fct_position(x, data_x, saccades, nb_sacc, dir_target, start_anti, a_anti, latency, tau, steady_state, t_0, px_per_deg, before_sacc, after_sacc, do_whitening) :
@@ -1057,7 +1115,8 @@ class ANEMO(object) :
             equation : str {'fct_velocity', 'fct_position', 'fct_saccades'} (default 'fct_velocity')
                 name of the equation for the fit :
                     - ``'fct_velocity'`` : generates the parameters for a fit velocity
-                    -``'fct_velocity_sigmo'`` : generates the parameters for a fit velocity sigmoïde
+                    -``'fct_velocity_sigmo'`` : generates the parameters for a fit velocity sigmoid
+                    - ``'fct_velocity_line'`` : generates the parameters for a fit velocity linear
                     - ``'fct_position'`` : generates the parameters for a fit position
                     - ``'fct_saccades'`` : generates the parameters for a fit saccades
 
@@ -1109,7 +1168,7 @@ class ANEMO(object) :
                 dictionary containing the independent variables of the fit
             '''
 
-            if equation in ['fct_velocity', 'fct_velocity_sigmo', 'fct_position'] :
+            if equation in ['fct_velocity', 'fct_velocity_sigmo', 'fct_velocity_line', 'fct_position'] :
 
                 TargetOn    = Test.crash_None('TargetOn', TargetOn)
                 StimulusOf  = Test.crash_None('StimulusOf', StimulusOf)
@@ -1149,7 +1208,11 @@ class ANEMO(object) :
                 param_fit.extend([{'name':'tau',  'value':15., 'min':13., 'max':80., 'vary':'vary'}])
 
             if equation == 'fct_velocity_sigmo' :
+                param_fit.extend([{'name':'ramp_pursuit', 'value':100, 'min':40., 'max':800., 'vary':'vary'}])
+
+            if equation == 'fct_velocity_line' :
                 param_fit.extend([{'name':'ramp_pursuit', 'value':40, 'min':40., 'max':80., 'vary':'vary'}])
+
 
             if equation == 'fct_position' :
 
@@ -1191,7 +1254,8 @@ class ANEMO(object) :
                 inde_vars={'x':np.arange(len(data_x))}
 
 
-            if equation not in ['fct_velocity', 'fct_velocity_sigmo', 'fct_position', 'fct_saccade'] : param_fit, inde_vars = None, None
+            if equation not in ['fct_velocity', 'fct_velocity_sigmo', 'fct_velocity_line', 'fct_position', 'fct_saccade'] :
+                param_fit, inde_vars = None, None
 
             return param_fit, inde_vars
 
@@ -1212,6 +1276,7 @@ class ANEMO(object) :
                 data for a trial :
                     - if ``equation`` is ``'fct_velocity'`` : velocity data in deg/sec
                     - if ``equation`` is ``'fct_velocity_sigmo'`` : velocity data in deg/sec
+                    - if ``equation`` is ``'fct_velocity_line'`` : velocity data in deg/sec
                     - if ``equation`` is ``'fct_position'`` : position data in deg
                     - if ``equation`` is ``'fct_saccades'`` : position data in deg
                     - if ``equation`` is ``function`` : velocity or position
@@ -1220,6 +1285,7 @@ class ANEMO(object) :
                 function or name of the equation for the fit :
                     - ``'fct_velocity'`` : does a data fit with function ``'fct_velocity'``
                     - ``'fct_velocity_sigmo'`` : does a data fit with function ``'fct_velocity_sigmo'``
+                    - ``'fct_velocity_line'`` : does a data fit with function ``'fct_velocity_line'``
                     - ``'fct_position'`` : does a data fit with function ``'fct_position'``
                     - ``'fct_saccades'`` : does a data fit with function ``'fct_saccades'``
                     - ``function`` : does a data fit with function
@@ -1332,6 +1398,7 @@ class ANEMO(object) :
 
             if equation == 'fct_velocity' :          equation = ANEMO.Equation.fct_velocity
             elif equation == 'fct_velocity_sigmo' :  equation = ANEMO.Equation.fct_velocity_sigmo
+            elif equation == 'fct_velocity_line' :  equation = ANEMO.Equation.fct_velocity_line
             elif equation == 'fct_position' :        equation = ANEMO.Equation.fct_position
             elif equation == 'fct_saccade' :         equation = ANEMO.Equation.fct_saccade
 
@@ -1393,6 +1460,7 @@ class ANEMO(object) :
                 function or name of the equation for the fit :
                     - ``'fct_velocity'`` : does a data fit with function ``'fct_velocity'``
                     - ``'fct_velocity_sigmo'`` : does a data fit with function ``'fct_velocity_sigmo'``
+                    - ``'fct_velocity_line'`` : does a data fit with function ``'fct_velocity_line'``
                     - ``'fct_position'`` : does a data fit with function ``'fct_position'``
                     - ``'fct_saccades'`` : does a data fit with function ``'fct_saccades'``
                     - ``function`` : does a data fit with function
@@ -1494,6 +1562,7 @@ class ANEMO(object) :
 
             if equation == 'fct_velocity' :       fitted_data = 'velocity'
             if equation == 'fct_velocity_sigmo' : fitted_data = 'velocity'
+            if equation == 'fct_velocity_line' :  fitted_data = 'velocity'
             if equation == 'fct_position' :       fitted_data = 'position'
             if equation == 'fct_saccade' :        fitted_data = 'saccade'
 
@@ -1503,15 +1572,12 @@ class ANEMO(object) :
                 if fitted_data == 'saccade' : import matplotlib.gridspec as gridspec
 
             if equation in ['fct_velocity', 'fct_position'] :
-                #list_param_enre = Test.test_None(list_param_enre, value=['fit', 'start_anti', 'a_anti', 'latency', 'tau', 'steady_state', 'old_anti', 'old_steady_state', 'old_latency'])
                 list_param_enre = Test.test_None(list_param_enre, value=['start_anti', 'a_anti', 'latency', 'tau', 'steady_state', 'old_anti', 'old_steady_state', 'old_latency', 'goodness_of_fit'])
 
-            if equation == 'fct_velocity_sigmo' :
-                #list_param_enre = Test.test_None(list_param_enre, value=['fit', 'start_anti', 'a_anti', 'latency', 'ramp_pursuit', 'steady_state', 'old_anti', 'old_steady_state', 'old_latency'])
+            if equation in ['fct_velocity_sigmo', 'fct_velocity_line'] :
                 list_param_enre = Test.test_None(list_param_enre, value=['start_anti', 'a_anti', 'latency', 'ramp_pursuit', 'steady_state', 'old_anti', 'old_steady_state', 'old_latency', 'goodness_of_fit'])
 
             if equation == 'fct_saccade' :
-                #list_param_enre = Test.test_None(list_param_enre, value=['fit', 'T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2', 'tau'])
                 list_param_enre = Test.test_None(list_param_enre, value=['T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2', 'tau', 'goodness_of_fit'])
 
             if list_param_enre is None :
@@ -1842,6 +1908,7 @@ class ANEMO(object) :
                 function or name of the equation for the fit :
                     - ``'fct_velocity'`` : does a data fit with function ``'fct_velocity'``
                     - ``'fct_velocity_sigmo'`` : does a data fit with function ``'fct_velocity_sigmo'``
+                    - ``'fct_velocity_line'`` : does a data fit with function ``'fct_velocity_line'``
                     - ``'fct_position'`` : does a data fit with function ``'fct_position'``
                     - ``'fct_saccades'`` : does a data fit with function ``'fct_saccades'``
                     - ``function`` : does a data fit with function
@@ -1955,9 +2022,9 @@ class ANEMO(object) :
                 N_trials = Test.test_None(N_trials, int(len(data)/N_blocks))
             #------------------------------------------------------------------------------
 
-            if equation in ['fct_velocity', 'fct_velocity_sigmo'] : show_data = 'velocity'
-            if equation == 'fct_position' :                         show_data = 'position'
-            if equation == 'fct_saccade' :                          show_data = 'saccade'
+            if equation in ['fct_velocity', 'fct_velocity_sigmo', 'fct_velocity_line'] : show_data = 'velocity'
+            if equation == 'fct_position' :                                              show_data = 'position'
+            if equation == 'fct_saccade' :                                               show_data = 'saccade'
 
             import matplotlib.pyplot as plt
             if show_data=='saccade' : import matplotlib.gridspec as gridspec
@@ -1966,17 +2033,18 @@ class ANEMO(object) :
 
             if show=='fit' :
 
-                if   equation == 'fct_velocity' : eqt = ANEMO.Equation.fct_velocity
+                if   equation == 'fct_velocity' :         eqt = ANEMO.Equation.fct_velocity
                 elif   equation == 'fct_velocity_sigmo' : eqt = ANEMO.Equation.fct_velocity_sigmo
-                elif equation == 'fct_position' : eqt = ANEMO.Equation.fct_position
-                elif equation == 'fct_saccade' :  eqt = ANEMO.Equation.fct_saccade
+                elif   equation == 'fct_velocity_line' :  eqt = ANEMO.Equation.fct_velocity_line
+                elif equation == 'fct_position' :         eqt = ANEMO.Equation.fct_position
+                elif equation == 'fct_saccade' :          eqt = ANEMO.Equation.fct_saccade
                 else : eqt = equation
 
                 if equation in ['fct_velocity', 'fct_position'] :
                     list_param = ['start_anti', 'a_anti', 'latency', 'tau', 'steady_state']
                     list_param_enre = Test.test_None(list_param_enre, value=list_param+['fit', 'old_anti', 'old_steady_state', 'old_latency'])
 
-                if equation == 'fct_velocity_sigmo' :
+                if equation in ['fct_velocity_sigmo', 'fct_velocity_line'] :
                     list_param = ['start_anti', 'a_anti', 'latency', 'ramp_pursuit', 'steady_state']
                     list_param_enre = Test.test_None(list_param_enre, value=list_param+['fit', 'old_anti', 'old_steady_state', 'old_latency'])
 
@@ -2385,6 +2453,8 @@ class ANEMO(object) :
             equation : str {'fct_velocity', 'fct_position', 'fct_saccades'} or function (default 'fct_velocity')
                 function or name of the equation for the fit :
                     - ``'fct_velocity'`` : displays the ``fct_velocity`` equation
+                    - ``'fct_velocity_sigmo'`` : displays the ``fct_velocity_sigmo`` equation
+                    - ``'fct_velocity_line'`` : displays the ``fct_velocity_line`` equation
                     - ``'fct_position'`` : displays the ``fct_position`` equation
                     - ``'fct_saccades'`` : displays the ``fct_saccades`` equation
                     - ``function`` : displays the function equation
@@ -2719,6 +2789,8 @@ class ANEMO(object) :
             equation : str {'fct_velocity', 'fct_position', 'fct_saccades'} or function (default 'fct_velocity')
                 function or name of the equation for the fit :
                     - ``'fct_velocity'`` : does a data fit with function ``'fct_velocity'``
+                    - ``'fct_velocity_sigmo'`` : does a data fit with function ``'fct_velocity_sigmo'``
+                    - ``'fct_velocity_line'`` : does a data fit with function ``'fct_velocity_line'``
                     - ``'fct_position'`` : does a data fit with function ``'fct_position'``
                     - ``'fct_saccades'`` : does a data fit with function ``'fct_saccades'``
                     - ``function`` : does a data fit with function
@@ -2822,9 +2894,11 @@ class ANEMO(object) :
                         'before_sacc':before_sacc, 'after_sacc':after_sacc, 'stop_search_misac':stop_search_misac,
                         't_label':t_label}
 
-            if   equation=='fct_velocity' : fitted_data, eqt = 'velocity', ANEMO.Equation.fct_velocity
-            elif equation=='fct_position' : fitted_data, eqt = 'position', ANEMO.Equation.fct_position
-            elif equation=='fct_saccade' :  fitted_data, eqt = 'saccade',  ANEMO.Equation.fct_saccade
+            if   equation=='fct_velocity' :       fitted_data, eqt = 'velocity', ANEMO.Equation.fct_velocity
+            elif equation=='fct_velocity_sigmo' : fitted_data, eqt = 'velocity', ANEMO.Equation.fct_velocity_sigmo
+            elif equation=='fct_velocity_line' :  fitted_data, eqt = 'velocity', ANEMO.Equation.fct_velocity_line
+            elif equation=='fct_position' :       fitted_data, eqt = 'position', ANEMO.Equation.fct_position
+            elif equation=='fct_saccade' :        fitted_data, eqt = 'saccade',  ANEMO.Equation.fct_saccade
             else : eqt = equation
 
             import matplotlib.pyplot as plt
@@ -2850,14 +2924,14 @@ class ANEMO(object) :
 
                 else :
                     if len(trials)==1 : ax = axs
-                    else :             ax = axs[x]
+                    else :              ax = axs[x]
                     if x!= (len(trials)-1) : ax.set_xticklabels([])
 
                 if x==0 :
                     write_step_trial = True
                     if title is None :
                         if fitted_data=='velocity' : title = 'Velocity Fit'
-                        else :                title = 'Position Fit'
+                        else :                       title = 'Position Fit'
                 else :
                     title, write_step_trial = '', False
 
@@ -3082,8 +3156,9 @@ class ANEMO(object) :
                 list_data_fitfct = {'velocity':'fct_velocity', 'position':'fct_position', 'saccade':'fct_saccade'}
 
             list_param_enre = {}
-            list_param_enre['fct_velocity_sigmo'] = ['start_anti', 'a_anti', 'latency', 'ramp_pursuit', 'steady_state']
             list_param_enre['fct_velocity'] = ['start_anti', 'a_anti', 'latency', 'tau', 'steady_state']
+            list_param_enre['fct_velocity_sigmo'] = ['start_anti', 'a_anti', 'latency', 'ramp_pursuit', 'steady_state']
+            list_param_enre['fct_velocity_line'] = ['start_anti', 'a_anti', 'latency', 'ramp_pursuit', 'steady_state']
             list_param_enre['fct_position'] = ['start_anti', 'a_anti', 'latency', 'tau', 'steady_state']
             list_param_enre['fct_saccade'] =  ['T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2', 'tau']
 
