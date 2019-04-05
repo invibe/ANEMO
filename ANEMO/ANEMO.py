@@ -762,24 +762,27 @@ class ANEMO(object) :
                 velocity of the eye in deg/sec
             '''
 
-            a_anti = a_anti/1000 # to switch from sec to ms
-            time = x
-            velocity = []
+            if start_anti >= latency :
+                velocity = None
 
-            y = ((latency-1)-start_anti)*a_anti
-            maxi = (dir_target*steady_state) - y
+            else :
+                a_anti = a_anti/1000 # to switch from sec to ms
+                time = x
+                velocity = []
+                y = ((latency-1)-start_anti)*a_anti
+                maxi = (dir_target*steady_state) - y
 
-            for t in range(len(time)) :
+                for t in range(len(time)) :
 
-                if time[t] < start_anti :
-                    velocity.append(0)
-                else :
-                    if time[t] < latency :
-                        velocity.append((time[t]-start_anti)*a_anti)
+                    if time[t] < start_anti :
+                        velocity.append(0)
                     else :
-                        velocity.append(maxi*(1-np.exp(-1/tau*(time[t]-latency)))+y)
+                        if time[t] < latency :
+                            velocity.append((time[t]-start_anti)*a_anti)
+                        else :
+                            velocity.append(maxi*(1-np.exp(-1/tau*(time[t]-latency)))+y)
 
-            if do_whitening is True : velocity = whitening(velocity)
+                if do_whitening is True : velocity = whitening(velocity)
 
             return velocity
 
@@ -814,28 +817,32 @@ class ANEMO(object) :
                 velocity of the eye in deg/sec
             '''
 
-            a_anti = a_anti/1000 # to switch from sec to ms
-            ramp_pursuit = -ramp_pursuit/1000
-            time = x
-            velocity = []
+            if start_anti >= latency :
+                velocity = None
 
-            e = np.exp(1)
-            time_r = np.arange(-e, len(time), 1)
+            else :
+                a_anti = a_anti/1000 # to switch from sec to ms
+                ramp_pursuit = -ramp_pursuit/1000
+                time = x
+                velocity = []
 
-            y = ((latency-1)-start_anti)*a_anti
-            maxi = (dir_target*steady_state) - y
-            start_rampe = (maxi/(1+np.exp(((ramp_pursuit*time_r[0])+e))))
+                e = np.exp(1)
+                time_r = np.arange(-e, len(time), 1)
 
-            for t in range(len(time)):
-                if time[t] < start_anti :
-                    velocity.append(0)
-                else :
-                    if time[t] < latency :
-                        velocity.append((time[t]-start_anti)*a_anti)
+                y = ((latency-1)-start_anti)*a_anti
+                maxi = (dir_target*steady_state) - y
+                start_rampe = (maxi/(1+np.exp(((ramp_pursuit*time_r[0])+e))))
+
+                for t in range(len(time)):
+                    if time[t] < start_anti :
+                        velocity.append(0)
                     else :
-                        velocity.append((maxi/(1+np.exp(((ramp_pursuit*time_r[int(time[t]-latency)])+e))))+(y-start_rampe))
+                        if time[t] < latency :
+                            velocity.append((time[t]-start_anti)*a_anti)
+                        else :
+                            velocity.append((maxi/(1+np.exp(((ramp_pursuit*time_r[int(time[t]-latency)])+e))))+(y-start_rampe))
 
-            if do_whitening is True : velocity = whitening(velocity)
+                if do_whitening is True : velocity = whitening(velocity)
 
             return velocity
 
@@ -870,36 +877,37 @@ class ANEMO(object) :
                 velocity of the eye in deg/sec
             '''
 
-            a_anti = a_anti/1000 # to switch from sec to ms
-            ramp_pursuit = dir_target*(ramp_pursuit)/1000
-            time = x
-            vitesse = []
+            if start_anti >= latency :
+                velocity = None
+            else :
+                a_anti = a_anti/1000 # to switch from sec to ms
+                ramp_pursuit = dir_target*(ramp_pursuit)/1000
+                time = x
+                vitesse = []
 
-            y = ((latency-1)-start_anti)*a_anti
-            maxi = (dir_target*steady_state) - y
-            end_ramp_pursuit = (maxi/ramp_pursuit) + latency
+                y = ((latency-1)-start_anti)*a_anti
+                maxi = (dir_target*steady_state) - y
+                end_ramp_pursuit = (maxi/ramp_pursuit) + latency
 
-            for t in range(len(time)):
-                if time[t] < start_anti :
-                    vitesse.append(0)
-                else :
-                    if time[t] < latency :
-                        vitesse.append((time[t]-start_anti)*a_anti)
-
+                for t in range(len(time)):
+                    if time[t] < start_anti :
+                        vitesse.append(0)
                     else :
-                        if latency >= end_ramp_pursuit :
-                            vitesse.append(maxi)
-                        else :
-                            if time[t] < int(end_ramp_pursuit) :
-                                vitesse.append((time[t]-latency)*ramp_pursuit+y)
-                            else :
-                                vitesse.append(maxi+y)
+                        if time[t] < latency :
+                            vitesse.append((time[t]-start_anti)*a_anti)
 
-            if do_whitening is True : velocity = whitening(velocity)
+                        else :
+                            if latency >= end_ramp_pursuit :
+                                vitesse.append(maxi)
+                            else :
+                                if time[t] < int(end_ramp_pursuit) :
+                                    vitesse.append((time[t]-latency)*ramp_pursuit+y)
+                                else :
+                                    vitesse.append(maxi+y)
+
+                if do_whitening is True : velocity = whitening(velocity)
 
             return vitesse
-
-
 
         def fct_position(x, data_x, saccades, nb_sacc, dir_target, start_anti, a_anti, latency, tau, steady_state, t_0, px_per_deg, before_sacc, after_sacc, do_whitening) :
 
@@ -956,34 +964,38 @@ class ANEMO(object) :
                 position of the eye in deg
             '''
 
-            ms = 1000
-            a_anti = a_anti/ms
-            steady_state   = steady_state/ms
+            if start_anti >= latency :
+                pos = None
 
-            speed = ANEMO.Equation.fct_velocity(x=x, dir_target=dir_target, start_anti=start_anti, a_anti=a_anti, latency=latency, tau=tau, steady_state=steady_state, do_whitening=False)
-            pos = np.cumsum(speed)
+            else :
+                ms = 1000
+                a_anti = a_anti/ms
+                steady_state   = steady_state/ms
+
+                speed = ANEMO.Equation.fct_velocity(x=x, dir_target=dir_target, start_anti=start_anti, a_anti=a_anti, latency=latency, tau=tau, steady_state=steady_state, do_whitening=False)
+                pos = np.cumsum(speed)
 
 
-            i=0
-            for s in range(nb_sacc) :
-                sacc = saccades[i:i+3] # obligation to have the independent variable at the same size :/
-                                        # saccades[i] -> onset, saccades[i+1] -> end, saccades[i+2] -> time sacc
+                i=0
+                for s in range(nb_sacc) :
+                    sacc = saccades[i:i+3] # obligation to have the independent variable at the same size :/
+                                            # saccades[i] -> onset, saccades[i+1] -> end, saccades[i+2] -> time sacc
 
-                if do_whitening is True :
-                    if int(sacc[0]-t_0)-int(before_sacc)-1 < len(pos) : a = pos[int(sacc[0]-t_0)-int(before_sacc)-1]
-                    else :                                              a = pos[-1]
-                else :                                                  a = np.nan
+                    if do_whitening is True :
+                        if int(sacc[0]-t_0)-int(before_sacc)-1 < len(pos) : a = pos[int(sacc[0]-t_0)-int(before_sacc)-1]
+                        else :                                              a = pos[-1]
+                    else :                                                  a = np.nan
 
-                if int(sacc[1]-t_0)+int(after_sacc)+1 <= len(pos) :
-                    pos[int(sacc[0]-t_0)-int(before_sacc):int(sacc[1]-t_0)+int(after_sacc)] = a
-                    if sacc[0]-t_0 >= int(latency-1) :
-                        pos[int(sacc[1]-t_0)+int(after_sacc):] += ((data_x[int(sacc[1]-t_0)+int(after_sacc)]-data_x[int(sacc[0]-t_0)-int(before_sacc)-1])/px_per_deg) - np.mean(speed[int(sacc[0]-t_0):int(sacc[1]-t_0)]) * sacc[2]
-                else :
-                    pos[int(sacc[0]-t_0)-int(before_sacc):] = a
+                    if int(sacc[1]-t_0)+int(after_sacc)+1 <= len(pos) :
+                        pos[int(sacc[0]-t_0)-int(before_sacc):int(sacc[1]-t_0)+int(after_sacc)] = a
+                        if sacc[0]-t_0 >= int(latency-1) :
+                            pos[int(sacc[1]-t_0)+int(after_sacc):] += ((data_x[int(sacc[1]-t_0)+int(after_sacc)]-data_x[int(sacc[0]-t_0)-int(before_sacc)-1])/px_per_deg) - np.mean(speed[int(sacc[0]-t_0):int(sacc[1]-t_0)]) * sacc[2]
+                    else :
+                        pos[int(sacc[0]-t_0)-int(before_sacc):] = a
 
-                i = i+3
+                    i = i+3
 
-            if do_whitening is True : pos = whitening(pos)
+                if do_whitening is True : pos = whitening(pos)
 
             return pos
 
@@ -1197,10 +1209,8 @@ class ANEMO(object) :
                 param_fit=[{'name':'steady_state', 'value':value_steady_state, 'min':5.,                 'max':40.,             'vary':True  },
                            {'name':'dir_target',   'value':dir_target,         'min':None,               'max':None,            'vary':False },
                            {'name':'a_anti',       'value':value_anti,         'min':-40.,               'max':40.,             'vary':True  },
-                           {'name':'lat',          'value':value_latency,      'min':TargetOn-t_0+75,    'max':max_latency,     'vary':True  },
-                           {'name':'latency', 'expr': 'int(lat)'},
-                           {'name':'sa',           'value':TargetOn-t_0-100,   'min':StimulusOf-t_0-200, 'max':TargetOn-t_0+75, 'vary':'vary'},
-                           {'name':'start_anti', 'expr': 'int(sa) if int(sa) < latency else StimulusOf-t_0-200'}]
+                           {'name':'latency',      'value':value_latency,      'min':TargetOn-t_0+75,    'max':max_latency,     'vary':True  },
+                           {'name':'start_anti',   'value':TargetOn-t_0-100,   'min':StimulusOf-t_0-200, 'max':TargetOn-t_0+75, 'vary':'vary'}]
 
                 inde_vars={'x':np.arange(len(trackertime))}
 
@@ -1729,7 +1739,8 @@ class ANEMO(object) :
 
                         param_fit_trial = {}
                         for name in list_param_enre :
-                            param_fit_trial[name] = param[name][block][trial]
+                            if name != 'goodness_of_fit' :
+                                param_fit_trial[name] = param[name][block][trial]
 
                         opt['param_fit'] = param_fit_trial
 
@@ -2245,7 +2256,7 @@ class ANEMO(object) :
 
                     fit = eqt(**rv)
 
-                    if plot_detail is None or equation not in ['fct_velocity', 'fct_position'] :
+                    if plot_detail is None or equation not in ['fct_velocity', 'fct_velocity_sigmo', 'fct_velocity_line', 'fct_position'] :
 
                         if time_sup is None : ax.plot(time_s,             fit,             color=c, linewidth=lw)
                         else :                ax.plot(time_s[:-time_sup], fit[:-time_sup], color=c, linewidth=lw)
@@ -2283,17 +2294,24 @@ class ANEMO(object) :
                         ax.text(time_s[int(rv['latency'])]+25, -35*scale, "Latency = %0.2f ms"%(rv['latency']-onset), color='firebrick', size=t_label/1.5, va='center')
                         ax.bar( time_s[int(rv['latency'])], 80*scale, bottom=-40*scale, width=4, lw=0, color='firebrick', alpha=1)
 
-                        # tau ------------------------------------------------------------------------
-                        ax.text(time_s[int(rv['latency'])]+70+t_label, y[int(rv['latency'])], r"= %0.2f"%(rv['tau']), color='darkred', size=t_label/1.5, va='bottom')
-                        ax.annotate(r'$\tau$', xy=(time_s[int(rv['latency'])]+50, y[int(rv['latency'])+50]), xycoords='data', size=t_label/1., color='darkred', va='bottom',
-                                    xytext=(time_s[int(rv['latency'])]+70, y[int(rv['latency'])]), textcoords='data', arrowprops=dict(arrowstyle="->", color='darkred'))
+                        if equation in ['fct_velocity', 'fct_position'] :
+                            # tau --------------------------------------------------------------------
+                            ax.text(time_s[int(rv['latency'])]+70+t_label, y[int(rv['latency'])], r"= %0.2f"%(rv['tau']), color='darkred', size=t_label/1.5, va='bottom')
+                            ax.annotate(r'$\tau$', xy=(time_s[int(rv['latency'])]+50, y[int(rv['latency'])+50]), xycoords='data', size=t_label/1., color='darkred', va='bottom',
+                                        xytext=(time_s[int(rv['latency'])]+70, y[int(rv['latency'])]), textcoords='data', arrowprops=dict(arrowstyle="->", color='darkred'))
 
-                        # Max ------------------------------------------------------------------------
+                        if equation in ['fct_velocity_sigmo', 'fct_velocity_line'] :
+                            # ramp_pursuit -----------------------------------------------------------
+                            ax.text(time_s[int(rv['latency'])]+70+((t_label/1.5)*11), y[int(rv['latency'])]+(-10*arg.dir_target), r"= %0.2f"%(rv['ramp_pursuit']), color='darkred', size=t_label/1.5, va='bottom')
+                            ax.annotate('Ramp Pursuit', xy=(time_s[int(rv['latency'])]+50, y[int(rv['latency'])+50]), xycoords='data', size=t_label/1.5, color='darkred', va='bottom',
+                                        xytext=(time_s[int(rv['latency'])]+70, y[int(rv['latency'])]+(-10*arg.dir_target)), textcoords='data', arrowprops=dict(arrowstyle="->", color='darkred'))
+
+                        # Steady State ------------------------------------------------------------------------
                         ax.text(TarOn_s+475, (y[int(rv['latency'])]+y[int(rv['latency'])+250])/2, "Steady State = %0.2f °/s"%(rv['steady_state']), color='k', size=t_label/1.5, va='center')
                         #-----------------------------------------------------------------------------
 
-                        if equation=='fct_velocity' :
-                            # V_a ------------------------------------------------------------------------
+                        if equation in ['fct_velocity', 'fct_velocity_sigmo', 'fct_velocity_line'] :
+                            # A_a ------------------------------------------------------------------------
                             ax.annotate('', xy=(time_s[int(rv['latency'])], y[int(rv['latency'])]-3), xycoords='data', size=t_label/1.5,
                                         xytext=(time_s[int(rv['start_anti'])], y[int(rv['start_anti'])]-3), textcoords='data', arrowprops=dict(arrowstyle="->", color='r'))
                             # Max ------------------------------------------------------------------------
@@ -2483,7 +2501,7 @@ class ANEMO(object) :
             if fig_width < 15 : lw = 1
             else : lw = 2
 
-            if equation in ['fct_velocity','fct_position'] :
+            if equation in ['fct_velocity', 'fct_velocity_sigmo', 'fct_velocity_line', 'fct_position'] :
 
                 time = np.arange(-750, 750, 1)
                 StimulusOn, StimulusOf = -750, -300
@@ -2491,13 +2509,24 @@ class ANEMO(object) :
                 start_anti, latency    = 650, 850
                 #-----------------------------------------------------------------------------
 
+                if equation in ['fct_velocity', 'fct_velocity_sigmo', 'fct_velocity_line'] :
+                    ax.set_ylabel('Velocity (°/s)', fontsize=t_label)
+                    scale = 1
+
                 if equation=='fct_velocity' :
                     ax.set_title('Function Velocity', fontsize=t_titre, x=0.5, y=1.05)
-                    ax.set_ylabel('Velocity (°/s)', fontsize=t_label)
-
-                    scale = 1
                     result_fit = ANEMO.Equation.fct_velocity(x=np.arange(len(time)), start_anti=start_anti, latency=latency,
                                                               a_anti=-20, tau=15., steady_state=15., dir_target=-1, do_whitening=False)
+
+                if equation=='fct_velocity_sigmo' :
+                    ax.set_title('Function Velocity Sigmoid', fontsize=t_titre, x=0.5, y=1.05)
+                    result_fit = ANEMO.Equation.fct_velocity_sigmo(x=np.arange(len(time)), start_anti=start_anti, latency=latency,
+                                                                   a_anti=-20, ramp_pursuit=40., steady_state=15., dir_target=-1, do_whitening=False)
+
+                if equation=='fct_velocity_line' :
+                    ax.set_title('Function Velocity Linear', fontsize=t_titre, x=0.5, y=1.05)
+                    result_fit = ANEMO.Equation.fct_velocity_line(x=np.arange(len(time)), start_anti=start_anti, latency=latency,
+                                                                   a_anti=-20, ramp_pursuit=100., steady_state=15., dir_target=-1, do_whitening=False)
 
                 if equation=='fct_position' :
                     ax.set_title('Function Position', fontsize=t_titre, x=0.5, y=1.05)
@@ -2534,8 +2563,15 @@ class ANEMO(object) :
                 ax.text(TargetOn+125, -35*scale, "Latency", color='firebrick', size=t_label)
                 ax.bar(time[latency], 80*scale, bottom=-40*scale, color='firebrick', width=4, lw=0, alpha=1)
 
-                # tau ------------------------------------------------------------------------
-                ax.annotate(r'$\tau$', xy=(time[latency]+15, result_fit[latency+15]), xycoords='data', size=t_label/1., color='darkred', va='bottom', xytext=(time[latency]+70, result_fit[latency+7]), textcoords='data', arrowprops=dict(arrowstyle="->", color='darkred'))
+                if equation in ['fct_velocity', 'fct_position'] :
+                    # tau --------------------------------------------------------------------
+                    ax.annotate(r'$\tau$', xy=(time[latency]+15, result_fit[latency+15]), xycoords='data', size=t_label, color='darkred', va='bottom',
+                                xytext=(time[latency]+70, result_fit[latency+7]), textcoords='data', arrowprops=dict(arrowstyle="->", color='darkred'))
+                if equation in ['fct_velocity_sigmo', 'fct_velocity_line'] :
+                    # ramp_pursuit -----------------------------------------------------------
+                    ax.annotate('Ramp Pursuit', xy=(time[latency]+50, result_fit[latency+50]), xycoords='data', size=t_label, color='darkred', va='bottom',
+                                xytext=(time[latency]+70, result_fit[latency+10]), textcoords='data', arrowprops=dict(arrowstyle="->", color='darkred'))
+
 
                 # Max ------------------------------------------------------------------------
                 ax.text(TargetOn+400+25, ((result_fit[latency+400])/2), 'Steady State', color='k', size=t_label, va='center')
