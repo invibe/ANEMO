@@ -721,7 +721,7 @@ class ANEMO(object) :
 
 
             latency      = ANEMO.classical_method.latency(velocity_NAN, w1, w2, off, crit)
-            steady_state      = ANEMO.classical_method.steady_state(velocity_NAN, TargetOn_0)
+            steady_state = ANEMO.classical_method.steady_state(velocity_NAN, TargetOn_0)
             anticipation = ANEMO.classical_method.anticipation(velocity_NAN, TargetOn_0)
 
             return latency, steady_state, anticipation/0.1
@@ -1636,95 +1636,118 @@ class ANEMO(object) :
 
                     trial_data = trial + N_trials*block
                     arg = ANEMO.arg(self, data[trial_data], trial=trial, block=block)
-                    opt = opt_base.copy()
-                    opt.update(arg)
 
-                    velocity_NAN = ANEMO.velocity_NAN(self, **opt)
-
-                    if fitted_data=='velocity' :
-                        data_x = arg.data_x
-                        data_1 = velocity_NAN
-                        data_trial = np.copy(data_1)
-                    else :
-                        data_x = ANEMO.data_deg(self, data=arg.data_x, **opt)
-                        data_1 = data_x
-                        data_trial = np.copy(data_1)
-
-
-                    if fitted_data != 'saccade' :
-
-                        old_latency, old_steady_state, old_anti = ANEMO.classical_method.Full(velocity_NAN, arg.TargetOn-arg.t_0)
-                        onset  = arg.TargetOn - arg.t_0
-
-                        try :
-                            #-------------------------------------------------
-                            # FIT
-                            #-------------------------------------------------
-                            f = ANEMO.Fit.Fit_trial(self, data_trial, equation=equation, value_latency=old_latency, value_steady_state=old_steady_state, value_anti=old_anti, **opt)
-                            #-------------------------------------------------
-
-                            for name in list_param_enre :
-                                if name in f.values.keys() :
-                                    if name in ['start_anti', 'latency'] : val = f.values[name] - onset
-                                    else :                                 val = f.values[name]
-                                    param[name][block].append(val)
-                            if 'fit' in list_param_enre : param['fit'][block].append(f.best_fit)
-
-                            if 'goodness_of_fit' in list_param_enre :
-                                param['goodness_of_fit']['nfev'][block].append(f.nfev)
-                                param['goodness_of_fit']['residual'][block].append(f.residual)
-                                param['goodness_of_fit']['chisqr'][block].append(f.chisqr)
-                                param['goodness_of_fit']['redchi'][block].append(f.redchi)
-                                param['goodness_of_fit']['aic'][block].append(f.aic)
-                                param['goodness_of_fit']['bic'][block].append(f.bic)
-
-                        except:
-                            print('Warning : The fit did not work! The values saved for the fit parameters will be NaN!')
-                            for name in list_param_enre :
-                                if name == 'goodness_of_fit' :
-                                    for g in list_goodness_of_fit : param[name][g][block].append(np.nan)
-                                else : param[name][block].append(np.nan)
-
-                        if 'old_anti' in list_param_enre :         param['old_anti'][block].append(old_anti)
-                        if 'old_steady_state' in list_param_enre : param['old_steady_state'][block].append(old_steady_state)
-                        if 'old_latency' in list_param_enre :      param['old_latency'][block].append(old_latency-onset)
-
-
-                    if fitted_data == 'saccade' :
-
+                    if arg.trackertime[-1] < arg.TargetOn + 500 :
+                        print('Warning : Not Data! The values saved for the fit parameters will be NaN!')
                         for name in list_param_enre :
                             if name == 'goodness_of_fit' :
-                                for g in list_goodness_of_fit : param[name][g][block].append([])
-                            else : param[name][block].append([])
+                                for g in list_goodness_of_fit : param[name][g][block].append(np.nan)
+                            else : param[name][block].append(np.nan)
 
-                        for s in range(len(arg.saccades)) :
-                            data_sacc = data_1[arg.saccades[s][0]-arg.t_0-before_sacc:arg.saccades[s][1]-arg.t_0+after_sacc]
-                            if len(data_sacc) > 0 :
-                                try :
-                                    #-------------------------------------------------
-                                    # FIT
-                                    #-------------------------------------------------
-                                    f = ANEMO.Fit.Fit_trial(self, data_sacc, equation=equation, **opt)
-                                    #-------------------------------------------------
+                    else :
+                        opt = opt_base.copy()
+                        opt.update(arg)
 
-                                    for name in list_param_enre :
-                                        if name in f.values.keys() : param[name][block][trial].append(f.values[name])
-                                    if 'fit' in list_param_enre :    param['fit'][block][trial].append(f.best_fit)
+                        velocity_NAN = ANEMO.velocity_NAN(self, **opt)
 
-                                    if 'goodness_of_fit' in list_param_enre :
-                                        param['goodness_of_fit']['nfev'][block][trial].append(f.nfev)
-                                        param['goodness_of_fit']['residual'][block][trial].append(f.residual)
-                                        param['goodness_of_fit']['chisqr'][block][trial].append(f.chisqr)
-                                        param['goodness_of_fit']['redchi'][block][trial].append(f.redchi)
-                                        param['goodness_of_fit']['aic'][block][trial].append(f.aic)
-                                        param['goodness_of_fit']['bic'][block][trial].append(f.bic)
+                        if fitted_data=='velocity' :
+                            data_x = arg.data_x
+                            data_1 = velocity_NAN
+                            data_trial = np.copy(data_1)
+                        else :
+                            data_x = ANEMO.data_deg(self, data=arg.data_x, **opt)
+                            data_1 = data_x
+                            data_trial = np.copy(data_1)
 
-                                except:
-                                    print('Warning : The fit did not work for the saccade %s! The values saved for the fit parameters will be NaN!'%s)
-                                    for name in list_param_enre :
-                                        if name == 'goodness_of_fit' :
-                                            for g in list_goodness_of_fit : param[name][g][block][trial].append(np.nan)
-                                        else : param[name][block][trial].append(np.nan)
+
+                        if fitted_data != 'saccade' :
+
+                            old_latency, old_steady_state, old_anti = ANEMO.classical_method.Full(velocity_NAN, arg.TargetOn-arg.t_0)
+                            onset  = arg.TargetOn - arg.t_0
+
+                            try :
+                                #-------------------------------------------------
+                                # FIT
+                                #-------------------------------------------------
+                                f = ANEMO.Fit.Fit_trial(self, data_trial, equation=equation, value_latency=old_latency, value_steady_state=old_steady_state, value_anti=old_anti, **opt)
+                                #-------------------------------------------------
+
+                                for name in list_param_enre :
+                                    if name in f.values.keys() :
+                                        if name in ['start_anti', 'latency'] : val = f.values[name] - onset
+                                        else :                                 val = f.values[name]
+                                        param[name][block].append(val)
+                                if 'fit' in list_param_enre : param['fit'][block].append(f.best_fit)
+
+                                if 'goodness_of_fit' in list_param_enre :
+                                    param['goodness_of_fit']['nfev'][block].append(f.nfev)
+                                    param['goodness_of_fit']['residual'][block].append(f.residual)
+                                    param['goodness_of_fit']['chisqr'][block].append(f.chisqr)
+                                    param['goodness_of_fit']['redchi'][block].append(f.redchi)
+                                    param['goodness_of_fit']['aic'][block].append(f.aic)
+                                    param['goodness_of_fit']['bic'][block].append(f.bic)
+
+                                if 'near_sacc' in list_param_enre :
+                                    near_sacc = False
+                                    for s in range(len(arg.saccades)) :
+                                        if arg.saccades[s][0] >= arg.TargetOn+100 :
+                                            if f.values['latency'] >= arg.saccades[s][0]-arg.t_0 - 50 : near_sacc = True
+                                    param['near_sacc'][block].append(near_sacc)
+
+
+                            except:
+                                print('Warning : The fit did not work! The values saved for the fit parameters will be NaN!')
+                                for name in list_param_enre :
+                                    if name == 'goodness_of_fit' :
+                                        for g in list_goodness_of_fit : param[name][g][block].append(np.nan)
+                                    else : param[name][block].append(np.nan)
+
+                            if 'old_anti' in list_param_enre :         param['old_anti'][block].append(old_anti)
+                            if 'old_steady_state' in list_param_enre : param['old_steady_state'][block].append(old_steady_state)
+                            if 'old_latency' in list_param_enre :      param['old_latency'][block].append(old_latency-onset)
+
+                            if 'nb_sacc' in list_param_enre :
+                                NB_sacc = 0
+                                for s in range(len(arg.saccades)) :
+                                    if arg.saccades[s][0] >= arg.TargetOn : NB_sacc += 1
+                                param['nb_sacc'][block].append(NB_sacc)
+
+
+                        if fitted_data == 'saccade' :
+
+                            for name in list_param_enre :
+                                if name == 'goodness_of_fit' :
+                                    for g in list_goodness_of_fit : param[name][g][block].append([])
+                                else : param[name][block].append([])
+
+                            for s in range(len(arg.saccades)) :
+                                data_sacc = data_1[arg.saccades[s][0]-arg.t_0-before_sacc:arg.saccades[s][1]-arg.t_0+after_sacc]
+                                if len(data_sacc) > 0 :
+                                    try :
+                                        #-------------------------------------------------
+                                        # FIT
+                                        #-------------------------------------------------
+                                        f = ANEMO.Fit.Fit_trial(self, data_sacc, equation=equation, **opt)
+                                        #-------------------------------------------------
+
+                                        for name in list_param_enre :
+                                            if name in f.values.keys() : param[name][block][trial].append(f.values[name])
+                                        if 'fit' in list_param_enre :    param['fit'][block][trial].append(f.best_fit)
+
+                                        if 'goodness_of_fit' in list_param_enre :
+                                            param['goodness_of_fit']['nfev'][block][trial].append(f.nfev)
+                                            param['goodness_of_fit']['residual'][block][trial].append(f.residual)
+                                            param['goodness_of_fit']['chisqr'][block][trial].append(f.chisqr)
+                                            param['goodness_of_fit']['redchi'][block][trial].append(f.redchi)
+                                            param['goodness_of_fit']['aic'][block][trial].append(f.aic)
+                                            param['goodness_of_fit']['bic'][block][trial].append(f.bic)
+
+                                    except:
+                                        print('Warning : The fit did not work for the saccade %s! The values saved for the fit parameters will be NaN!'%s)
+                                        for name in list_param_enre :
+                                            if name == 'goodness_of_fit' :
+                                                for g in list_goodness_of_fit : param[name][g][block][trial].append(np.nan)
+                                            else : param[name][block][trial].append(np.nan)
 
                     if plot is not None :
 
@@ -3090,7 +3113,7 @@ class ANEMO(object) :
                 plt.close()
 
 
-        def show_fig(self, data, list_data_fitfct, Full_param_fit,
+        def show_fig(self, data, list_data_fitfct, Full_param_fit, list_delete=None,
                      show_data='velocity',
                      N_blocks=None, N_trials=None,
                      list_param_enre=None, inde_vars=None,
@@ -3219,7 +3242,13 @@ class ANEMO(object) :
                         Full_list[s][d].append({})
                         option_block.append(str(block))
                         for trial in range(N_trials) :
-                            Full_list[s][d][block][trial] = None
+                            if list_delete is not None :
+                                if trial in list_delete[block] :
+                                    Full_list[s][d][block][trial] = 'Bad'
+                                else :
+                                    Full_list[s][d][block][trial] = None
+                            else :
+                                Full_list[s][d][block][trial] = None
 
             trial, block = 0, 0
 
