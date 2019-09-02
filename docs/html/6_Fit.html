@@ -518,7 +518,7 @@ It must be initialized with the parameters of the experiment
 </dd></dl>
 
 <p><strong>Exemple:</strong></p>
-<p>see <a class="reference internal" href="#before-using-the-function"><span class="std std-ref">here</span></a> before using the function</p>
+<p>see <a class="reference internal" href="7_Plot.html#before-using-the-function"><span class="std std-ref">here</span></a> before using the function</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
@@ -545,11 +545,10 @@ It must be initialized with the parameters of the experiment
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[{&#39;max&#39;: 80.0, &#39;min&#39;: 13.0, &#39;name&#39;: &#39;tau&#39;, &#39;value&#39;: 15.0, &#39;vary&#39;: &#39;vary&#39;},
- {&#39;max&#39;: 40.0,
-  &#39;min&#39;: 1.0,
-  &#39;name&#39;: &#39;maxi&#39;,
-  &#39;value&#39;: 14.172123868097575,
+<span></span>[{&#39;max&#39;: 40.0,
+  &#39;min&#39;: 5.0,
+  &#39;name&#39;: &#39;steady_state&#39;,
+  &#39;value&#39;: 15.0,
   &#39;vary&#39;: True},
  {&#39;max&#39;: None, &#39;min&#39;: None, &#39;name&#39;: &#39;dir_target&#39;, &#39;value&#39;: 1, &#39;vary&#39;: False},
  {&#39;max&#39;: 40.0,
@@ -558,7 +557,8 @@ It must be initialized with the parameters of the experiment
   &#39;value&#39;: 7.1213366201041435,
   &#39;vary&#39;: True},
  {&#39;max&#39;: 1122, &#39;min&#39;: 997, &#39;name&#39;: &#39;latency&#39;, &#39;value&#39;: 1022, &#39;vary&#39;: True},
- {&#39;max&#39;: 997, &#39;min&#39;: 422, &#39;name&#39;: &#39;start_anti&#39;, &#39;value&#39;: 822, &#39;vary&#39;: &#39;vary&#39;}]
+ {&#39;max&#39;: 997, &#39;min&#39;: 422, &#39;name&#39;: &#39;start_anti&#39;, &#39;value&#39;: 822, &#39;vary&#39;: &#39;vary&#39;},
+ {&#39;max&#39;: 80.0, &#39;min&#39;: 13.0, &#39;name&#39;: &#39;tau&#39;, &#39;value&#39;: 15.0, &#39;vary&#39;: &#39;vary&#39;}]
 </pre></div>
 </div>
 </div>
@@ -730,7 +730,7 @@ It must be initialized with the parameters of the experiment
 </dd></dl>
 
 <p><strong>Exemple:</strong></p>
-<p>see <a class="reference internal" href="#before-using-the-function"><span class="std std-ref">here</span></a> before using the function</p>
+<p>see <a class="reference internal" href="7_Plot.html#before-using-the-function"><span class="std std-ref">here</span></a> before using the function</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
@@ -768,12 +768,12 @@ It must be initialized with the parameters of the experiment
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-tau = 17.380266561997693
-maxi = 12.835471134911385
+steady_state = 14.634110855815893
 dir_target = 1
-a_anti = 6.562746785796833
-latency = 1105.1464651453684
-start_anti = 830.9999986217952
+a_anti = 6.554708005204965
+latency = 1105.138362590692
+start_anti = 831.0000514897167
+tau = 17.394030973092214
 do_whitening = False
 </pre></div></div>
 </div>
@@ -922,7 +922,7 @@ do_whitening = False
 </dd></dl>
 
 <p><strong>Exemple:</strong></p>
-<p>see <a class="reference internal" href="#before-using-the-function"><span class="std std-ref">here</span></a> before using the function</p>
+<p>see <a class="reference internal" href="7_Plot.html#before-using-the-function"><span class="std std-ref">here</span></a> before using the function</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
@@ -951,16 +951,26 @@ block, trial =  1 1
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>{&#39;a_anti&#39;: [[-1.5973336847205815, 6.562746785796833],
-  [29.6508826222867, -23.031916593878364]],
- &#39;latency&#39;: [[192.64240469756055, 183.14646514536844],
-  [172.00000025769714, 211.9999996828751]],
- &#39;maxi&#39;: [[14.685157668221773, 12.835471134911385],
-  [11.581100536852771, 12.051296551729866]],
- &#39;start_anti&#39;: [[-83.99912519837142, -91.00000137820484],
-  [37.49888309979531, 74.94650198695126]],
- &#39;tau&#39;: [[72.41699558658769, 17.380266561997693],
-  [44.439207099077635, 13.000069212831383]]}
+<span></span>{&#39;N_blocks&#39;: 2,
+ &#39;N_trials&#39;: 2,
+ &#39;a_anti&#39;: [[-5.263458603054076, 6.554708176826011],
+  [17.03446560846193, -23.807584045633114]],
+ &#39;after_sacc&#39;: 15,
+ &#39;before_sacc&#39;: 5,
+ &#39;cutoff&#39;: 30,
+ &#39;do_whitening&#39;: False,
+ &#39;filt&#39;: None,
+ &#39;latency&#39;: [[193.93220612548885, 183.13836277506653],
+  [147.25542711805315, 211.9987232004114]],
+ &#39;maxi&#39;: [[], []],
+ &#39;sample_rate&#39;: 1000,
+ &#39;start_anti&#39;: [[62.99995480736379, -90.99994851028328],
+  [20.69861405958261, 74.99999956993747]],
+ &#39;step_fit&#39;: 2,
+ &#39;stop_search_misac&#39;: None,
+ &#39;tau&#39;: [[72.41341850031684, 17.394030973092214],
+  [63.31132540732852, 13.000015681019875]],
+ &#39;time_sup&#39;: 280}
 </pre></div>
 </div>
 </div>
