@@ -239,7 +239,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "### maximum"
+    "### steady_state"
    ]
   },
   {
@@ -248,7 +248,7 @@
     "raw_mimetype": "text/restructuredtext"
    },
    "source": [
-    ".. autofunction :: ANEMO.ANEMO.ANEMO.classical_method.maximum"
+    ".. autofunction :: ANEMO.ANEMO.ANEMO.classical_method.steady_state"
    ]
   },
   {
@@ -284,8 +284,8 @@
     }
    ],
    "source": [
-    "maxi = A.classical_method.maximum(velocity_NAN, TargetOn_0)\n",
-    "maxi"
+    "steady_state = A.classical_method.steady_state(velocity_NAN, TargetOn_0)\n",
+    "steady_state"
    ]
   },
   {
@@ -389,13 +389,20 @@
     }
    ],
    "source": [
-    "classic_lat, classic_max, classic_ant = A.classical_method.Full(velocity_NAN, TargetOn_0,\n",
+    "classic_lat, classic_steady_state, classic_ant = A.classical_method.Full(velocity_NAN, TargetOn_0,\n",
     "                                                                w1=300, w2=50, off=50, crit=0.17)\n",
     "\n",
     "print('latency =', classic_lat-TargetOn_0,\n",
-    "      '\\nmaximum =', classic_max,\n",
+    "      '\\nmaximum =', classic_steady_state,\n",
     "      '\\nanticipation =', classic_ant)"
    ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
   }
  ],
  "metadata": {

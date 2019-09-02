@@ -398,7 +398,7 @@ It must be initialized with the parameters of the experiment
 <h3>generation_param_fit<a class="headerlink" href="#generation_param_fit" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="ANEMO.ANEMO.ANEMO.Fit.generation_param_fit">
-<code class="descclassname">ANEMO.ANEMO.ANEMO.Fit.</code><code class="descname">generation_param_fit</code><span class="sig-paren">(</span><em>self</em>, <em>equation=’fct_velocity’</em>, <em>data_x=None</em>, <em>dir_target=None</em>, <em>trackertime=None</em>, <em>TargetOn=None</em>, <em>StimulusOf=None</em>, <em>saccades=None</em>, <em>value_latency=None</em>, <em>value_maxi=None</em>, <em>value_anti=None</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>**opt</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Fit.generation_param_fit" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ANEMO.ANEMO.ANEMO.Fit.</code><code class="descname">generation_param_fit</code><span class="sig-paren">(</span><em>self</em>, <em>equation=’fct_velocity’</em>, <em>data_x=None</em>, <em>dir_target=None</em>, <em>trackertime=None</em>, <em>TargetOn=None</em>, <em>StimulusOf=None</em>, <em>saccades=None</em>, <em>value_latency=None</em>, <em>value_steady_state=None</em>, <em>value_anti=None</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>**opt</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Fit.generation_param_fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates the parameters and independent variables of the fit</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -408,11 +408,13 @@ It must be initialized with the parameters of the experiment
 <li><p class="first"><strong>equation</strong> (<em>str {‘fct_velocity’, ‘fct_position’, ‘fct_saccades’} (default ‘fct_velocity’)</em>) –</p>
 <dl class="docutils">
 <dt>name of the equation for the fit :</dt>
-<dd><ul class="first last simple">
+<dd><ul class="first simple">
 <li><code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code> : generates the parameters for a fit velocity</li>
-<li><code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code> : generates the parameters for a fit position</li>
-<li><code class="docutils literal notranslate"><span class="pre">'fct_saccades'</span></code> : generates the parameters for a fit saccades</li>
 </ul>
+<p class="last">-<code class="docutils literal notranslate"><span class="pre">'fct_velocity_sigmo'</span></code> : generates the parameters for a fit velocity sigmoid
+- <code class="docutils literal notranslate"><span class="pre">'fct_velocity_line'</span></code> : generates the parameters for a fit velocity linear
+- <code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code> : generates the parameters for a fit position
+- <code class="docutils literal notranslate"><span class="pre">'fct_saccades'</span></code> : generates the parameters for a fit saccades</p>
 </dd>
 </dl>
 </li>
@@ -430,7 +432,7 @@ It must be initialized with the parameters of the experiment
 </li>
 <li><p class="first"><strong>value_latency</strong> (<em>int, optional (default None)</em>) – value that takes the parameter latency to begin the fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">nan</span></code> by default <code class="docutils literal notranslate"><span class="pre">TargetOn-t_0+100</span></code></p>
 </li>
-<li><p class="first"><strong>value_maxi</strong> (<em>float, optional (default 15)</em>) – value that takes the parameter maxi to begin the fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">nan</span></code> by default <code class="docutils literal notranslate"><span class="pre">15.</span></code></p>
+<li><p class="first"><strong>value_steady_state</strong> (<em>float, optional (default 15)</em>) – value that takes the parameter steady_state to begin the fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">nan</span></code> by default <code class="docutils literal notranslate"><span class="pre">15.</span></code></p>
 </li>
 <li><p class="first"><strong>value_anti</strong> (<em>float, optional (default 0)</em>) – value that takes the parameter a_anti to begin the fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">nan</span></code> by default <code class="docutils literal notranslate"><span class="pre">0.</span></code></p>
 </li>
@@ -551,7 +553,7 @@ It must be initialized with the parameters of the experiment
 <h3>Fit_trial<a class="headerlink" href="#Fit_trial" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="ANEMO.ANEMO.ANEMO.Fit.Fit_trial">
-<code class="descclassname">ANEMO.ANEMO.ANEMO.Fit.</code><code class="descname">Fit_trial</code><span class="sig-paren">(</span><em>self</em>, <em>data_trial</em>, <em>equation=’fct_velocity’</em>, <em>data_x=None</em>, <em>dir_target=None</em>, <em>trackertime=None</em>, <em>TargetOn=None</em>, <em>StimulusOf=None</em>, <em>saccades=None</em>, <em>time_sup=280</em>, <em>step_fit=2</em>, <em>do_whitening=False</em>, <em>param_fit=None</em>, <em>inde_vars=None</em>, <em>value_latency=None</em>, <em>value_maxi=15.0</em>, <em>value_anti=0.0</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>**opt</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Fit.Fit_trial" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ANEMO.ANEMO.ANEMO.Fit.</code><code class="descname">Fit_trial</code><span class="sig-paren">(</span><em>self</em>, <em>data_trial</em>, <em>equation=’fct_velocity’</em>, <em>data_x=None</em>, <em>dir_target=None</em>, <em>trackertime=None</em>, <em>TargetOn=None</em>, <em>StimulusOf=None</em>, <em>saccades=None</em>, <em>time_sup=280</em>, <em>step_fit=2</em>, <em>do_whitening=False</em>, <em>param_fit=None</em>, <em>inde_vars=None</em>, <em>value_latency=None</em>, <em>value_steady_state=15.0</em>, <em>value_anti=0.0</em>, <em>before_sacc=5</em>, <em>after_sacc=15</em>, <em>**opt</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Fit.Fit_trial" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the result of the fit of a trial</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -563,6 +565,8 @@ It must be initialized with the parameters of the experiment
 <dt>data for a trial :</dt>
 <dd><ul class="first last simple">
 <li>if <code class="docutils literal notranslate"><span class="pre">equation</span></code> is <code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code> : velocity data in deg/sec</li>
+<li>if <code class="docutils literal notranslate"><span class="pre">equation</span></code> is <code class="docutils literal notranslate"><span class="pre">'fct_velocity_sigmo'</span></code> : velocity data in deg/sec</li>
+<li>if <code class="docutils literal notranslate"><span class="pre">equation</span></code> is <code class="docutils literal notranslate"><span class="pre">'fct_velocity_line'</span></code> : velocity data in deg/sec</li>
 <li>if <code class="docutils literal notranslate"><span class="pre">equation</span></code> is <code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code> : position data in deg</li>
 <li>if <code class="docutils literal notranslate"><span class="pre">equation</span></code> is <code class="docutils literal notranslate"><span class="pre">'fct_saccades'</span></code> : position data in deg</li>
 <li>if <code class="docutils literal notranslate"><span class="pre">equation</span></code> is <code class="docutils literal notranslate"><span class="pre">function</span></code> : velocity or position</li>
@@ -575,6 +579,8 @@ It must be initialized with the parameters of the experiment
 <dt>function or name of the equation for the fit :</dt>
 <dd><ul class="first last simple">
 <li><code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code> : does a data fit with function <code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">'fct_velocity_sigmo'</span></code> : does a data fit with function <code class="docutils literal notranslate"><span class="pre">'fct_velocity_sigmo'</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">'fct_velocity_line'</span></code> : does a data fit with function <code class="docutils literal notranslate"><span class="pre">'fct_velocity_line'</span></code></li>
 <li><code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code> : does a data fit with function <code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code></li>
 <li><code class="docutils literal notranslate"><span class="pre">'fct_saccades'</span></code> : does a data fit with function <code class="docutils literal notranslate"><span class="pre">'fct_saccades'</span></code></li>
 <li><code class="docutils literal notranslate"><span class="pre">function</span></code> : does a data fit with function</li>
@@ -627,7 +633,7 @@ It must be initialized with the parameters of the experiment
 </li>
 <li><p class="first"><strong>value_latency</strong> (<em>int, optional (default None)</em>) – value that takes the parameter latency to begin the fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">nan</span></code> by default <code class="docutils literal notranslate"><span class="pre">TargetOn-t_0+100</span></code></p>
 </li>
-<li><p class="first"><strong>value_maxi</strong> (<em>float, optional (default 15)</em>) – value that takes the parameter maxi to begin the fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">nan</span></code> by default <code class="docutils literal notranslate"><span class="pre">15.</span></code></p>
+<li><p class="first"><strong>value_steady_state</strong> (<em>float, optional (default 15)</em>) – value that takes the parameter steady_state to begin the fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">nan</span></code> by default <code class="docutils literal notranslate"><span class="pre">15.</span></code></p>
 </li>
 <li><p class="first"><strong>value_anti</strong> (<em>float, optional (default 0)</em>) – value that takes the parameter a_anti to begin the fit – if <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">nan</span></code> by default <code class="docutils literal notranslate"><span class="pre">0.</span></code></p>
 </li>
@@ -762,6 +768,8 @@ do_whitening = False
 <dt>function or name of the equation for the fit :</dt>
 <dd><ul class="first last simple">
 <li><code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code> : does a data fit with function <code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">'fct_velocity_sigmo'</span></code> : does a data fit with function <code class="docutils literal notranslate"><span class="pre">'fct_velocity_sigmo'</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">'fct_velocity_line'</span></code> : does a data fit with function <code class="docutils literal notranslate"><span class="pre">'fct_velocity_line'</span></code></li>
 <li><code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code> : does a data fit with function <code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code></li>
 <li><code class="docutils literal notranslate"><span class="pre">'fct_saccades'</span></code> : does a data fit with function <code class="docutils literal notranslate"><span class="pre">'fct_saccades'</span></code></li>
 <li><code class="docutils literal notranslate"><span class="pre">function</span></code> : does a data fit with function</li>
@@ -796,9 +804,9 @@ do_whitening = False
 <dd><ul class="first last">
 <li><p class="first">if <code class="docutils literal notranslate"><span class="pre">equation</span></code> is <code class="docutils literal notranslate"><span class="pre">'fct_velocity'</span></code> or <code class="docutils literal notranslate"><span class="pre">'fct_position'</span></code> :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">list_param_enre</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;start_anti&#39;</span><span class="p">,</span> <span class="s1">&#39;a_anti&#39;</span><span class="p">,</span>
-                   <span class="s1">&#39;latency&#39;</span><span class="p">,</span> <span class="s1">&#39;tau&#39;</span><span class="p">,</span> <span class="s1">&#39;maxi&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;latency&#39;</span><span class="p">,</span> <span class="s1">&#39;tau&#39;</span><span class="p">,</span> <span class="s1">&#39;steady_state&#39;</span><span class="p">,</span>
                    <span class="s1">&#39;saccades&#39;</span><span class="p">,</span> <span class="s1">&#39;old_anti&#39;</span><span class="p">,</span>
-                   <span class="s1">&#39;old_max&#39;</span><span class="p">,</span> <span class="s1">&#39;old_latency&#39;</span><span class="p">]</span>
+                   <span class="s1">&#39;old_steady_state&#39;</span><span class="p">,</span> <span class="s1">&#39;old_latency&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </li>

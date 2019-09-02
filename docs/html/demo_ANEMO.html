@@ -585,9 +585,9 @@ the first saccade ends at the vertical position : 506.7
 To see the data, you could use:
 
 <ul>
-  <li><a href="Plot.html#plot-data">plot_data</a> : Returns the data figure</li>
-  <li><a href="Plot.html#plot-full-data">plot_Full_data</a> : Save the full data figure</li>
-  <li><a href="Plot.html#show-fig">show_fig</a> : Return the parameters of the fit present in list_param_enre</li>
+  <li><a href="7_Plot.html#plot-data">plot_data</a> : Returns the data figure</li>
+  <li><a href="7_Plot.html#plot-full-data">plot_Full_data</a> : Save the full data figure</li>
+  <li><a href="7_Plot.html#show-fig">show_fig</a> : Return the parameters of the fit present in list_param_enre</li>
 </ul><div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
@@ -610,15 +610,6 @@ To see the data, you could use:
 </div>
 <div class="section" id="Raw-Data">
 <h3>Raw Data<a class="headerlink" href="#Raw-Data" title="Permalink to this headline">¶</a></h3>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>
-</pre></div>
-</div>
-</div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
@@ -650,7 +641,7 @@ To see the data, you could use:
 </div>
 </div>
 <p><strong>velocity</strong></p>
-<a href="data_modification.html#velocity-deg">velocity_deg</a> : Return the velocity of the eye in deg/sec <br><div class="nbinput nblast docutils container">
+<a href="3_datamodification.html#velocity-deg">velocity_deg</a> : Return the velocity of the eye in deg/sec <br><div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
@@ -659,7 +650,7 @@ To see the data, you could use:
 </pre></div>
 </div>
 </div>
-<a href="data_modification.html#velocity-nan">velocity_NAN</a> : Returns velocity of the eye in deg / sec without the saccades<div class="nbinput nblast docutils container">
+<a href="3_datamodification.html#velocity-nan">velocity_NAN</a> : Returns velocity of the eye in deg / sec without the saccades<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
@@ -691,7 +682,7 @@ fct Plot_data
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_36_1.png" src="_images/demo_ANEMO_36_1.png" />
+<img alt="_images/demo_ANEMO_35_1.png" src="_images/demo_ANEMO_35_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -717,7 +708,7 @@ see pdf :<br/>
   <li><a href="_static/result/velocity_1.pdf">velocity_1.pdf</a></li>
   <li><a href="_static/result/velocity_2.pdf">velocity_2.pdf</a></li>
 </ul><p><strong>position</strong></p>
-<a href="data_modification.html#data-deg">data_deg</a> : Return the position of the eye in deg<div class="nbinput docutils container">
+<a href="3_datamodification.html#data-deg">data_deg</a> : Return the position of the eye in deg<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
@@ -739,7 +730,7 @@ fct Plot_data
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_40_1.png" src="_images/demo_ANEMO_40_1.png" />
+<img alt="_images/demo_ANEMO_39_1.png" src="_images/demo_ANEMO_39_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -765,7 +756,7 @@ see pdf :<br/>
   <li><a href="_static/result/position_1.pdf">position_1.pdf</a></li>
   <li><a href="_static/result/position_2.pdf">position_2.pdf</a></li>
 </ul><p><strong>saccade</strong></p>
-<a href="data_modification.html#data-deg">data_deg</a> : Return the position of the eye in deg<div class="nbinput docutils container">
+<a href="3_datamodification.html#data-deg">data_deg</a> : Return the position of the eye in deg<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
@@ -787,7 +778,7 @@ fct Plot_data
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_44_1.png" src="_images/demo_ANEMO_44_1.png" />
+<img alt="_images/demo_ANEMO_43_1.png" src="_images/demo_ANEMO_43_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -815,7 +806,7 @@ see pdf :<br/>
 </ul></div>
 <div class="section" id="Filter">
 <h3>Filter<a class="headerlink" href="#Filter" title="Permalink to this headline">¶</a></h3>
-Defines in : <a href="data_modification.html#filter-data">filter_data</a> <br/><p>the filt option allows you to apply a low-pass filter on the data,</p>
+Defines in : <a href="3_datamodification.html#filter-data">filter_data</a> <br/><p>the filt option allows you to apply a low-pass filter on the data,</p>
 <p>filt can be:</p>
 <ul class="simple">
 <li><code class="docutils literal notranslate"><span class="pre">'position'</span></code>: filter the position,</li>
@@ -826,14 +817,14 @@ Defines in : <a href="data_modification.html#filter-data">filter_data</a> <br/><
 can be used with functions : <br/>
 
 <ul>
-  <li><a href="data_modification.html#data-deg">data_deg</a></li>
-  <li><a href="data_modification.html#velocity-deg">velocity_deg</a></li>
-  <li><a href="data_modification.html#velocity-nan">velocity_NAN</a></li>
-  <li><a href="Fit.html#fit-full">Fit_full</a></li>
-  <li><a href="Plot.html#generate-fig">generate_fig</a></li>
-  <li><a href="Plot.html#plot-data">plot_data</a></li>
-  <li><a href="Plot.html#plot-fit">plot_fit</a></li>
-  <li><a href="Plot.html#plot-full-data">plot_Full_data</a></li>
+  <li><a href="3_datamodification.html#data-deg">data_deg</a></li>
+  <li><a href="3_datamodification.html#velocity-deg">velocity_deg</a></li>
+  <li><a href="3_datamodification.html#velocity-nan">velocity_NAN</a></li>
+  <li><a href="6_Fit.html#fit-full">Fit_full</a></li>
+  <li><a href="7_Plot.html#generate-fig">generate_fig</a></li>
+  <li><a href="7_Plot.html#plot-data">plot_data</a></li>
+  <li><a href="7_Plot.html#plot-fit">plot_fit</a></li>
+  <li><a href="7_Plot.html#plot-full-data">plot_Full_data</a></li>
 </ul><div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
@@ -861,28 +852,28 @@ can be used with functions : <br/>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_50_0.png" src="_images/demo_ANEMO_50_0.png" />
+<img alt="_images/demo_ANEMO_49_0.png" src="_images/demo_ANEMO_49_0.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_50_1.png" src="_images/demo_ANEMO_50_1.png" />
+<img alt="_images/demo_ANEMO_49_1.png" src="_images/demo_ANEMO_49_1.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_50_2.png" src="_images/demo_ANEMO_50_2.png" />
+<img alt="_images/demo_ANEMO_49_2.png" src="_images/demo_ANEMO_49_2.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_50_3.png" src="_images/demo_ANEMO_50_3.png" />
+<img alt="_images/demo_ANEMO_49_3.png" src="_images/demo_ANEMO_49_3.png" />
 </div>
 </div>
 </div>
@@ -895,7 +886,7 @@ can be used with functions : <br/>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">classical_lat</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">classical_method</span><span class="o">.</span><span class="n">latency</span><span class="p">(</span><span class="n">velocity_NAN</span><span class="p">)</span>
-<span class="n">classical_max</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">classical_method</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">velocity_NAN</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">TargetOn</span><span class="p">)</span>
+<span class="n">classical_max</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">classical_method</span><span class="o">.</span><span class="n">steady_state</span><span class="p">(</span><span class="n">velocity_NAN</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">TargetOn</span><span class="p">)</span>
 <span class="n">classical_anti</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">classical_method</span><span class="o">.</span><span class="n">anticipation</span><span class="p">(</span><span class="n">velocity_NAN</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">TargetOn</span><span class="p">)</span>
 
 <span class="c1"># or</span>
@@ -932,8 +923,8 @@ nan nan nan
 </div>
 <div class="section" id="Equation">
 <h2>Equation<a class="headerlink" href="#Equation" title="Permalink to this headline">¶</a></h2>
-see : <a href="Equation.html">Equation</a><p><strong>velocity</strong></p>
-<a href="Equation.html#fct-velocity">fct_velocity</a> : Function reproducing the velocity of the eye during the smooth pursuit of a moving target<div class="nbinput docutils container">
+see : <a href="5_Equation.html">Equation</a><p><strong>velocity</strong></p>
+<a href="5_Equation.html#fct-velocity">fct_velocity</a> : Function reproducing the velocity of the eye during the smooth pursuit of a moving target<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
@@ -946,11 +937,11 @@ see : <a href="Equation.html">Equation</a><p><strong>velocity</strong></p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_58_0.png" src="_images/demo_ANEMO_58_0.png" />
+<img alt="_images/demo_ANEMO_57_0.png" src="_images/demo_ANEMO_57_0.png" />
 </div>
 </div>
 <p><strong>position</strong></p>
-<a href="Equation.html#fct-position">fct_position</a> : Function reproducing the position of the eye during the smooth pursuit of a moving target<div class="nbinput docutils container">
+<a href="5_Equation.html#fct-position">fct_position</a> : Function reproducing the position of the eye during the smooth pursuit of a moving target<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
@@ -963,11 +954,11 @@ see : <a href="Equation.html">Equation</a><p><strong>velocity</strong></p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_61_0.png" src="_images/demo_ANEMO_61_0.png" />
+<img alt="_images/demo_ANEMO_60_0.png" src="_images/demo_ANEMO_60_0.png" />
 </div>
 </div>
 <p><strong>saccade</strong></p>
-<a href="Equation.html#fct-saccade">fct_saccade</a> : Function reproducing the position of the eye during the sacades<div class="nbinput docutils container">
+<a href="5_Equation.html#fct-saccade">fct_saccade</a> : Function reproducing the position of the eye during the sacades<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
@@ -980,13 +971,13 @@ see : <a href="Equation.html">Equation</a><p><strong>velocity</strong></p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_64_0.png" src="_images/demo_ANEMO_64_0.png" />
+<img alt="_images/demo_ANEMO_63_0.png" src="_images/demo_ANEMO_63_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="Fit">
 <h2>Fit<a class="headerlink" href="#Fit" title="Permalink to this headline">¶</a></h2>
-see : <a href="Fit.html">Fit</a><div class="nbinput nblast docutils container">
+see : <a href="6_Fit.html">Fit</a><div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
@@ -997,7 +988,7 @@ see : <a href="Fit.html">Fit</a><div class="nbinput nblast docutils container">
 </div>
 <div class="section" id="generation-param-fit">
 <h3>generation-param-fit<a class="headerlink" href="#generation-param-fit" title="Permalink to this headline">¶</a></h3>
-see : <a href="Fit.html#generation-param-fit">generation_param_fit</a><div class="nbinput nblast docutils container">
+see : <a href="6_Fit.html#generation-param-fit">generation_param_fit</a><div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
@@ -1023,7 +1014,7 @@ see : <a href="Fit.html#generation-param-fit">generation_param_fit</a><div class
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_72_0.png" src="_images/demo_ANEMO_72_0.png" />
+<img alt="_images/demo_ANEMO_71_0.png" src="_images/demo_ANEMO_71_0.png" />
 </div>
 </div>
 <p><strong>position</strong></p>
@@ -1040,7 +1031,7 @@ see : <a href="Fit.html#generation-param-fit">generation_param_fit</a><div class
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_74_0.png" src="_images/demo_ANEMO_74_0.png" />
+<img alt="_images/demo_ANEMO_73_0.png" src="_images/demo_ANEMO_73_0.png" />
 </div>
 </div>
 <p><strong>saccade</strong></p>
@@ -1057,7 +1048,7 @@ see : <a href="Fit.html#generation-param-fit">generation_param_fit</a><div class
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/demo_ANEMO_76_0.png" src="_images/demo_ANEMO_76_0.png" />
+<img alt="_images/demo_ANEMO_75_0.png" src="_images/demo_ANEMO_75_0.png" />
 </div>
 </div>
 </div>
@@ -1219,8 +1210,9 @@ see pdf :<br/>
 
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">For the first trial</span><span class="se">\n</span><span class="s1">---------------</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">param</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">:</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;fit&#39;</span> <span class="ow">and</span> <span class="n">name</span><span class="o">!=</span><span class="s1">&#39;observer&#39;</span> <span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">param</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">block</span><span class="p">][</span><span class="n">trial</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;observer&#39;</span> <span class="p">:</span>
+            <span class="k">try</span> <span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">param</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">block</span><span class="p">][</span><span class="n">trial</span><span class="p">])</span>
+            <span class="k">except</span> <span class="p">:</span> <span class="k">pass</span>
 </pre></div>
 </div>
 </div>
@@ -1243,19 +1235,19 @@ see pdf :<br/>
 Param recorded
 ---------------
 
-dict_keys([&#39;fit&#39;, &#39;old_anti&#39;, &#39;maxi&#39;, &#39;old_latency&#39;, &#39;old_max&#39;, &#39;tau&#39;, &#39;a_anti&#39;, &#39;latency&#39;, &#39;start_anti&#39;, &#39;observer&#39;])
+dict_keys([&#39;before_sacc&#39;, &#39;step_fit&#39;, &#39;start_anti&#39;, &#39;stop_search_misac&#39;, &#39;after_sacc&#39;, &#39;tau&#39;, &#39;a_anti&#39;, &#39;N_blocks&#39;, &#39;N_trials&#39;, &#39;cutoff&#39;, &#39;filt&#39;, &#39;observer&#39;, &#39;do_whitening&#39;, &#39;latency&#39;, &#39;sample_rate&#39;, &#39;old_steady_state&#39;, &#39;old_latency&#39;, &#39;steady_state&#39;, &#39;time_sup&#39;, &#39;goodness_of_fit&#39;, &#39;old_anti&#39;])
 
 For the first trial
 ---------------
 
-old_anti = -1.3691850291970993
-maxi = 11.575522298774453
+start_anti = 20.688310263805874
+tau = 63.31057077051977
+a_anti = 17.028343016304497
+latency = 147.25476635171822
+old_steady_state = 15.964697440438167
 old_latency = nan
-old_max = 15.964697440438167
-tau = 44.46237986617848
-a_anti = 29.60507534268035
-latency = 172.0243437211359
-start_anti = 37.30796543958502
+steady_state = 15.744887504770432
+old_anti = -1.3691850291970993
 </pre></div></div>
 </div>
 <p><strong>position</strong></p>
@@ -1277,19 +1269,19 @@ start_anti = 37.30796543958502
 Param recorded
 ---------------
 
-dict_keys([&#39;fit&#39;, &#39;old_anti&#39;, &#39;maxi&#39;, &#39;old_latency&#39;, &#39;old_max&#39;, &#39;tau&#39;, &#39;a_anti&#39;, &#39;latency&#39;, &#39;start_anti&#39;, &#39;observer&#39;])
+dict_keys([&#39;before_sacc&#39;, &#39;step_fit&#39;, &#39;start_anti&#39;, &#39;stop_search_misac&#39;, &#39;after_sacc&#39;, &#39;tau&#39;, &#39;a_anti&#39;, &#39;N_blocks&#39;, &#39;N_trials&#39;, &#39;cutoff&#39;, &#39;filt&#39;, &#39;observer&#39;, &#39;do_whitening&#39;, &#39;latency&#39;, &#39;sample_rate&#39;, &#39;old_steady_state&#39;, &#39;old_latency&#39;, &#39;steady_state&#39;, &#39;time_sup&#39;, &#39;goodness_of_fit&#39;, &#39;old_anti&#39;])
 
 For the first trial
 ---------------
 
-old_anti = -1.3691850291970993
-maxi = 13.78802850709372
+start_anti = -499.9999999459794
+tau = 79.99999997066728
+a_anti = 1.4408519098045431
+latency = 148.45294323732423
+old_steady_state = 15.964697440438167
 old_latency = nan
-old_max = 15.964697440438167
-tau = 79.99999998314709
-a_anti = 1.4408621174132605
-latency = 148.45772362188427
-start_anti = -499.9999999247895
+steady_state = 14.721703762990757
+old_anti = -1.3691850291970993
 </pre></div></div>
 </div>
 <p><strong>saccade</strong></p>
@@ -1311,29 +1303,20 @@ start_anti = -499.9999999247895
 Param recorded
 ---------------
 
-dict_keys([&#39;fit&#39;, &#39;t1&#39;, &#39;x_0&#39;, &#39;t2&#39;, &#39;x2&#39;, &#39;tau&#39;, &#39;T0&#39;, &#39;x1&#39;, &#39;observer&#39;, &#39;tr&#39;])
+dict_keys([&#39;before_sacc&#39;, &#39;step_fit&#39;, &#39;stop_search_misac&#39;, &#39;after_sacc&#39;, &#39;T0&#39;, &#39;tau&#39;, &#39;N_blocks&#39;, &#39;N_trials&#39;, &#39;cutoff&#39;, &#39;filt&#39;, &#39;observer&#39;, &#39;t2&#39;, &#39;x_0&#39;, &#39;do_whitening&#39;, &#39;sample_rate&#39;, &#39;tr&#39;, &#39;t1&#39;, &#39;x1&#39;, &#39;time_sup&#39;, &#39;goodness_of_fit&#39;, &#39;x2&#39;])
 
 For the first trial
 ---------------
 
-t1 = [15.16276130486827, 16.96637070499535, 18.63972853153373]
-x_0 = [0.46855696355797183, 0.5396706820719184, 3.5089493230647104]
-t2 = [12.235688420693895, 10.004496240964688, 11.975185769162906]
-x2 = [-0.3560474250618597, 1.7216828177047994, 1.7401891168262225]
-tau = [5.000009050719314, 39.77154744933177, 9.76791449789115]
 T0 = [1.6132224303592757, -0.23661991258591542, 5.283216003115783]
-x1 = [-0.7829317681654278, 1.049446192397463, 2.3550376614679625]
+tau = [5.000009050719314, 39.77154744933177, 9.76791449789115]
+t2 = [12.235688420693895, 10.004496240964688, 11.975185769162906]
+x_0 = [0.46855696355797183, 0.5396706820719184, 3.5089493230647104]
 tr = [0.40741936662850115, 6.26575283192556, 4.101861455973224]
+t1 = [15.16276130486827, 16.96637070499535, 18.63972853153373]
+x1 = [-0.7829317681654278, 1.049446192397463, 2.3550376614679625]
+x2 = [-0.3560474250618597, 1.7216828177047994, 1.7401891168262225]
 </pre></div></div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>
-</pre></div>
-</div>
 </div>
 </div>
 </div>
