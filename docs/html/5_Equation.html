@@ -56,6 +56,8 @@
 <li class="toctree-l2"><a class="reference internal" href="4_classicalmethod.html">classical_method</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Equation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#fct_velocity">fct_velocity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fct_velocity_sigmo">fct_velocity_sigmo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fct_velocity_line">fct_velocity_line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fct_position">fct_position</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fct_saccade">fct_saccade</a></li>
 </ul>
@@ -154,6 +156,70 @@
 
 <div style="margin-top:10px;">
   <iframe width="100%" height="500" src="_static/Fct_velocity.html" frameborder="0" allowfullscreen></iframe>
+</div></div>
+<div class="section" id="fct_velocity_sigmo">
+<h2>fct_velocity_sigmo<a class="headerlink" href="#fct_velocity_sigmo" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ANEMO.ANEMO.ANEMO.Equation.fct_velocity_sigmo">
+<code class="descclassname">ANEMO.ANEMO.ANEMO.Equation.</code><code class="descname">fct_velocity_sigmo</code><span class="sig-paren">(</span><em>x</em>, <em>dir_target</em>, <em>start_anti</em>, <em>a_anti</em>, <em>latency</em>, <em>ramp_pursuit</em>, <em>steady_state</em>, <em>do_whitening</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Equation.fct_velocity_sigmo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function reproducing the velocity of the eye during the smooth pursuit of a moving target</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>ndarray</em>) – time of the function</li>
+<li><strong>dir_target</strong> (<em>int</em>) – direction of the target -1 or 1</li>
+<li><strong>start_anti</strong> (<em>int</em>) – time when anticipation begins</li>
+<li><strong>a_anti</strong> (<em>float</em>) – velocity of anticipation in seconds</li>
+<li><strong>latency</strong> (<em>int</em>) – time when the movement begins</li>
+<li><strong>ramp_pursuit</strong> (<em>float</em>) – curve of the pursuit</li>
+<li><strong>steady_state</strong> (<em>float</em>) – steady_state velocity reached during the pursuit</li>
+<li><strong>do_whitening</strong> (<em>bool</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> return the whitened velocity</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>velocity</strong> (<em>list</em>) – velocity of the eye in deg/sec</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div style="margin-top:10px;">
+  <iframe width="100%" height="500" src="_static/Fct_velocity_sigmo.html" frameborder="0" allowfullscreen></iframe>
+</div></div>
+<div class="section" id="fct_velocity_line">
+<h2>fct_velocity_line<a class="headerlink" href="#fct_velocity_line" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ANEMO.ANEMO.ANEMO.Equation.fct_velocity_line">
+<code class="descclassname">ANEMO.ANEMO.ANEMO.Equation.</code><code class="descname">fct_velocity_line</code><span class="sig-paren">(</span><em>x</em>, <em>dir_target</em>, <em>start_anti</em>, <em>a_anti</em>, <em>latency</em>, <em>ramp_pursuit</em>, <em>steady_state</em>, <em>do_whitening</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.Equation.fct_velocity_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function reproducing the velocity of the eye during the smooth pursuit of a moving target</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>ndarray</em>) – time of the function</li>
+<li><strong>dir_target</strong> (<em>int</em>) – direction of the target -1 or 1</li>
+<li><strong>start_anti</strong> (<em>int</em>) – time when anticipation begins</li>
+<li><strong>a_anti</strong> (<em>float</em>) – velocity of anticipation in seconds</li>
+<li><strong>latency</strong> (<em>int</em>) – time when the movement begins</li>
+<li><strong>ramp_pursuit</strong> (<em>float</em>) – velocity of pursuit in seconds</li>
+<li><strong>steady_state</strong> (<em>float</em>) – steady_state velocity reached during the pursuit</li>
+<li><strong>do_whitening</strong> (<em>bool</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> return the whitened velocity</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>velocity</strong> (<em>list</em>) – velocity of the eye in deg/sec</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div style="margin-top:10px;">
+  <iframe width="100%" height="500" src="_static/Fct_velocity_line.html" frameborder="0" allowfullscreen></iframe>
 </div></div>
 <div class="section" id="fct_position">
 <h2>fct_position<a class="headerlink" href="#fct_position" title="Permalink to this headline">¶</a></h2>

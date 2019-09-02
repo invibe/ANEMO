@@ -1162,7 +1162,7 @@ class ANEMO(object) :
             -------
             **some parameters must be defined :**
 
-            - if ``equation`` is ``'fct_velocity'`` or ``'fct_position'`` :
+            - if ``equation`` is ``'fct_velocity'``, ``'fct_velocity_sigmo'``, ``'fct_velocity_line'`` or ``'fct_position'`` :
                 - dir_target
                 - trackertime
                 - TargetOn
@@ -1358,7 +1358,7 @@ class ANEMO(object) :
             - if ``param_fit`` is ``None`` or ``inde_vars`` is ``None`` :
                 - if ``equation`` is ``'fct_position'`` or ``'fct_saccades'`` :
                     - data_x
-                - if ``equation`` is ``'fct_velocity'`` or ``'fct_position'`` :
+                - if ``equation`` is ``'fct_velocity'``, ``'fct_velocity_sigmo'``, ``'fct_velocity_line'`` or ``'fct_position'`` :
                     - dir_target
                     - trackertime
                     - TargetOn
@@ -2067,12 +2067,12 @@ class ANEMO(object) :
 
             if show=='fit' :
 
-                if   equation == 'fct_velocity' :         eqt = ANEMO.Equation.fct_velocity
-                elif   equation == 'fct_velocity_sigmo' : eqt = ANEMO.Equation.fct_velocity_sigmo
-                elif   equation == 'fct_velocity_line' :  eqt = ANEMO.Equation.fct_velocity_line
-                elif equation == 'fct_position' :         eqt = ANEMO.Equation.fct_position
-                elif equation == 'fct_saccade' :          eqt = ANEMO.Equation.fct_saccade
-                else : eqt = equation
+                if   equation == 'fct_velocity' :       eqt = ANEMO.Equation.fct_velocity
+                elif equation == 'fct_velocity_sigmo' : eqt = ANEMO.Equation.fct_velocity_sigmo
+                elif equation == 'fct_velocity_line' :  eqt = ANEMO.Equation.fct_velocity_line
+                elif equation == 'fct_position' :       eqt = ANEMO.Equation.fct_position
+                elif equation == 'fct_saccade' :        eqt = ANEMO.Equation.fct_saccade
+                else :                                  eqt = equation
 
                 if equation in ['fct_velocity', 'fct_position'] :
                     list_param = ['start_anti', 'a_anti', 'latency', 'tau', 'steady_state']
@@ -2192,9 +2192,10 @@ class ANEMO(object) :
                 ax.set_title(title, fontsize=t_label, color=c)
 
                 if write_step_trial is True :
-                    ax.text(StimOf_s+(TarOn_s-StimOf_s)/2,            31*scale, "GAP",      color='k', size=t_label*.75, ha='center', va='center', alpha=0.5)
-                    ax.text((TarOn_s-700)+(StimOf_s-(TarOn_s-700))/2, 31*scale, "FIXATION", color='k', size=t_label*.75, ha='center', va='center', alpha=0.5)
-                    ax.text(TarOn_s+(TarOff_s-TarOn_s)/2,             31*scale, "PURSUIT",  color='k', size=t_label*.75, ha='center', va='center', alpha=0.5)
+                    opt_text = dict(color='k', size=t_label*.75, ha='center', va='center', alpha=0.5)
+                    ax.text(StimOf_s+(TarOn_s-StimOf_s)/2,            31*scale, "GAP",      **opt_text)
+                    ax.text((TarOn_s-700)+(StimOf_s-(TarOn_s-700))/2, 31*scale, "FIXATION", **opt_text)
+                    ax.text(TarOn_s+(TarOff_s-TarOn_s)/2,             31*scale, "PURSUIT",  **opt_text)
 
             if report is not None : result = []
 
@@ -2236,9 +2237,9 @@ class ANEMO(object) :
                         for name in list_param_enre : result_fit[name] = np.nan
                         if report is not None : result = np.nan
 
-                    if 'old_anti' in list_param_enre :    result_fit['old_anti'] = old_anti
-                    if 'old_steady_state' in list_param_enre :     result_fit['old_steady_state'] = old_steady_state
-                    if 'old_latency' in list_param_enre : result_fit['old_latency'] = old_latency-onset
+                    if 'old_anti' in list_param_enre :         result_fit['old_anti'] = old_anti
+                    if 'old_steady_state' in list_param_enre : result_fit['old_steady_state'] = old_steady_state
+                    if 'old_latency' in list_param_enre :      result_fit['old_latency'] = old_latency-onset
                     #-------------------------------------------------
 
                 else :
@@ -2446,33 +2447,39 @@ class ANEMO(object) :
                                     ax1.text(maxx+(maxx-minx)/3+(3*(maxx-minx)/t_text)*len(arg.saccades), (maxy+(maxy-miny)/20)-px, "%s : %0.2f"%(name, param_f[name]), color=c, ha='right', va='top', size=t_text)
                                     px = px + (maxy-miny)/(t_text/1.7)
 
+                            opt_lines = dict(ymin=miny, ymax=maxy, color='k', lw=1, linestyles='--', alpha=0.5)
+                            opt_text = dict(color='k', ha='center', va='top', size=t_text/1.5)
+
                             if 'T0' in param_f.keys() :
-                                ax1.vlines(param_f['T0']+time[0], miny, maxy, color='k', lw=1, linestyles='--', alpha=0.5)
-                                ax1.text(param_f['T0']+time[0], miny-(maxy-miny)/30, "T0", color='k', ha='center', va='top', size=t_text/1.5)
+                                ax1.vlines(param_f['T0']+time[0], **opt_lines)
+                                ax1.text(param_f['T0']+time[0], miny-(maxy-miny)/30, "T0", **opt_text)
 
                             if 't1' and 'T0' in param_f.keys() :
-                                ax1.vlines(param_f['t1']+param_f['T0']+time[0], miny, maxy, color='k', lw=1, linestyles='--', alpha=0.5)
-                                ax1.text(param_f['t1']+param_f['T0']+time[0], miny-(maxy-miny)/30, "t1", color='k', ha='center', va='top', size=t_text/1.5)
+                                ax1.vlines(param_f['t1']+param_f['T0']+time[0], **opt_lines)
+                                ax1.text(param_f['t1']+param_f['T0']+time[0], miny-(maxy-miny)/30, "t1", **opt_text)
 
                             if 't2' and 't1' and 'T0' in param_f.keys() :
-                                ax1.vlines(param_f['t2']+param_f['t1']+param_f['T0']+time[0], miny, maxy, color='k', lw=1, linestyles='--', alpha=0.5)
-                                ax1.text(param_f['t2']+param_f['t1']+param_f['T0']+time[0], miny-(maxy-miny)/30, "t2", color='k', ha='center', va='top', size=t_text/1.5)
+                                ax1.vlines(param_f['t2']+param_f['t1']+param_f['T0']+time[0], **opt_lines)
+                                ax1.text(param_f['t2']+param_f['t1']+param_f['T0']+time[0], miny-(maxy-miny)/30, "t2", **opt_text)
 
                             if 'tr' and 't2' and 't1' and 'T0' in param_f.keys() :
-                                ax1.vlines(param_f['tr']+param_f['t2']+param_f['t1']+param_f['T0']+time[0], miny, maxy, color='k', lw=1, linestyles='--', alpha=0.5)
-                                ax1.text(param_f['tr']+param_f['t2']+param_f['t1']+param_f['T0']+time[0], miny-(maxy-miny)/30, "tr", color='k', ha='center', va='top', size=t_text/1.5)
+                                ax1.vlines(param_f['tr']+param_f['t2']+param_f['t1']+param_f['T0']+time[0], **opt_lines)
+                                ax1.text(param_f['tr']+param_f['t2']+param_f['t1']+param_f['T0']+time[0], miny-(maxy-miny)/30, "tr", **opt_text)
+
+                            opt_lines = dict(xmin=minx, xmax=maxx, color='k', lw=1, linestyles='--', alpha=0.5)
+                            opt_text = dict(color='k', ha='right', va='center', size=t_text/1.5)
 
                             if 'x_0' in param_f.keys() :
-                                ax1.hlines(param_f['x_0'], minx, maxx, color='k', lw=1, linestyles='--', alpha=0.5)
-                                ax1.text(minx-(maxx-minx)/20, param_f['x_0'], "x_0", color='k', ha='right', va='center', size=t_text/1.5)
+                                ax1.hlines(param_f['x_0'], **opt_lines)
+                                ax1.text(minx-(maxx-minx)/20, param_f['x_0'], "x_0", **opt_text)
 
                             if 'x1' and 'x_0' in param_f.keys() :
-                                ax1.hlines(param_f['x1']+param_f['x_0'], minx, maxx, color='k', lw=1, linestyles='--', alpha=0.5)
-                                ax1.text(minx-(maxx-minx)/20, param_f['x1']+param_f['x_0'], "x1", color='k', ha='right', va='center', size=t_text/1.5)
+                                ax1.hlines(param_f['x1']+param_f['x_0'], **opt_lines)
+                                ax1.text(minx-(maxx-minx)/20, param_f['x1']+param_f['x_0'], "x1",**opt_text)
 
                             if 'x2' and 'x_0' in param_f.keys() :
-                                ax1.hlines(param_f['x2']+param_f['x_0'], minx, maxx, color='k', lw=1, linestyles='--', alpha=0.5)
-                                ax1.text(minx-(maxx-minx)/20, param_f['x2']+param_f['x_0'], "x2", color='k', ha='right', va='center', size=t_text/1.5)
+                                ax1.hlines(param_f['x2']+param_f['x_0'], **opt_lines)
+                                ax1.text(minx-(maxx-minx)/20, param_f['x2']+param_f['x_0'], "x2", **opt_text)
 
             if out is not None :
                 from IPython.display import display,clear_output
