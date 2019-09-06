@@ -1,0 +1,777 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Loading eye movement data &#8212; ANEMO 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ANEMO</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=invibe&repo=ANEMO&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="demo_ANEMO.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Comparison_synthetic_With_Classical_Methods.html">Comparison synthetic with Classical Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="0_ANEMO_doc.html">ANEMO</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 5ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<p>Goal:</p>
+<ul class="simple">
+<li>show that our fitting procedure is robust to noise</li>
+<li>that an incorrect choice of initial parameters may give wrong results</li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">ANEMO</span> <span class="k">import</span> <span class="n">ANEMO</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span> <span class="nn">lmfit</span>
+<span class="kn">from</span> <span class="nn">lmfit</span> <span class="k">import</span>  <span class="n">Model</span><span class="p">,</span> <span class="n">Parameters</span>
+<span class="n">lmfit</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>&#39;0.9.10&#39;
+</pre></div>
+</div>
+</div>
+<div class="section" id="Loading-eye-movement-data">
+<h1>Loading eye movement data<a class="headerlink" href="#Loading-eye-movement-data" title="Permalink to this headline">¶</a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pickle</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;../demo/result/param_Fit_AM.pkl&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fichier</span> <span class="p">:</span>
+    <span class="n">param</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fichier</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;latin1&#39;</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;../demo/data/enregistrement_AM_2017-10-23_100057.pkl&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fichier</span> <span class="p">:</span>
+    <span class="n">exp</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fichier</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;latin1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Creating-a-fitting-procedure">
+<h1>Creating a fitting procedure<a class="headerlink" href="#Creating-a-fitting-procedure" title="Permalink to this headline">¶</a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fig_width</span><span class="o">=</span><span class="mi">15</span><span class="o">/</span><span class="mi">3</span>
+<span class="n">t_titre</span><span class="o">=</span><span class="mi">35</span><span class="o">/</span><span class="mi">2</span>
+<span class="n">t_label</span><span class="o">=</span><span class="mi">20</span><span class="o">/</span><span class="mi">2</span>
+<span class="n">dpi</span><span class="o">=</span><span class="mi">400</span>
+<span class="n">block</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">def</span> <span class="nf">regress</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">minx</span><span class="p">,</span> <span class="n">miny</span><span class="p">,</span> <span class="n">maxx</span><span class="p">,</span> <span class="n">maxy</span><span class="p">,</span> <span class="n">t_label</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span> <span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">stats</span>
+    <span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="p">,</span> <span class="n">r_</span><span class="p">,</span> <span class="n">p_value</span><span class="p">,</span> <span class="n">std_err</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">linregress</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="n">x_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">fitLine</span> <span class="o">=</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">x_test</span> <span class="o">+</span> <span class="n">intercept</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">fitLine</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">maxx</span><span class="o">-</span><span class="p">((</span><span class="n">maxx</span><span class="o">-</span><span class="n">minx</span><span class="p">)</span><span class="o">/</span><span class="mf">16.180</span><span class="p">),</span><span class="n">miny</span><span class="o">+</span><span class="p">((</span><span class="n">maxy</span><span class="o">-</span><span class="n">miny</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span><span class="p">),</span> <span class="s1">&#39;r = </span><span class="si">%0.3f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">r_</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">t_label</span><span class="o">/</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ax</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">start_anti_fit</span><span class="p">,</span> <span class="n">a_anti_fit</span><span class="p">,</span> <span class="n">latency_fit</span><span class="p">,</span> <span class="n">tau_fit</span><span class="p">,</span> <span class="n">maxi_fit</span><span class="p">,</span> <span class="n">step_fit</span><span class="p">,</span> <span class="n">bruit</span><span class="p">,</span>
+        <span class="n">TargetOn</span><span class="p">,</span> <span class="n">StimulusOf</span><span class="p">,</span> <span class="n">start_sac</span><span class="o">=</span><span class="mi">770</span><span class="p">,</span> <span class="n">stop_sac</span><span class="o">=</span><span class="mi">820</span><span class="p">):</span>
+
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+
+    <span class="n">param_fit</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tau&#39;</span><span class="p">:</span><span class="n">tau_fit</span><span class="p">,</span> <span class="s1">&#39;maxi&#39;</span><span class="p">:</span><span class="n">maxi_fit</span><span class="p">,</span> <span class="s1">&#39;a_anti&#39;</span><span class="p">:</span><span class="n">a_anti_fit</span><span class="p">,</span> <span class="s1">&#39;latency&#39;</span><span class="p">:</span><span class="n">latency_fit</span><span class="p">,</span>
+               <span class="s1">&#39;start_anti&#39;</span><span class="p">:</span><span class="n">start_anti_fit</span><span class="p">}</span>
+
+    <span class="n">result_fit</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;old_a_anti&#39;</span><span class="p">:[],</span> <span class="s1">&#39;old_a_anti_true_50&#39;</span><span class="p">:[],</span> <span class="s1">&#39;old_a_anti_true_start&#39;</span><span class="p">:[],</span> <span class="s1">&#39;old_a_anti_fit&#39;</span><span class="p">:[]}</span>
+
+    <span class="k">for</span> <span class="n">N_trial</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span> <span class="p">:</span>
+        <span class="n">trial</span> <span class="o">=</span> <span class="n">N_trial</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="n">trial</span><span class="p">)</span>
+
+
+        <span class="n">bino</span> <span class="o">=</span> <span class="n">exp</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">][</span><span class="n">trial</span><span class="p">][</span><span class="n">block</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">start_anti_true</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s1">&#39;start_anti&#39;</span><span class="p">][</span><span class="n">block</span><span class="p">][</span><span class="n">trial</span><span class="p">]</span><span class="o">+</span><span class="n">TargetOn</span>
+        <span class="n">a_anti_true</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s1">&#39;a_anti&#39;</span><span class="p">][</span><span class="n">block</span><span class="p">][</span><span class="n">trial</span><span class="p">]</span>
+        <span class="n">latency_true</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s1">&#39;latency&#39;</span><span class="p">][</span><span class="n">block</span><span class="p">][</span><span class="n">trial</span><span class="p">]</span><span class="o">+</span><span class="n">TargetOn</span>
+        <span class="n">tau_true</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s1">&#39;tau&#39;</span><span class="p">][</span><span class="n">block</span><span class="p">][</span><span class="n">trial</span><span class="p">]</span>
+        <span class="n">maxi_true</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s1">&#39;maxi&#39;</span><span class="p">][</span><span class="n">block</span><span class="p">][</span><span class="n">trial</span><span class="p">]</span>
+
+        <span class="c1">#------------------------------------------------------------------------------------</span>
+        <span class="n">true_test</span> <span class="o">=</span> <span class="n">ANEMO</span><span class="o">.</span><span class="n">fct_velocity</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">bino</span><span class="p">,</span> <span class="n">start_anti_true</span><span class="p">,</span> <span class="n">a_anti_true</span><span class="p">,</span> <span class="n">latency_true</span><span class="p">,</span> <span class="n">tau_true</span><span class="p">,</span> <span class="n">maxi_true</span><span class="p">)</span>
+        <span class="n">test</span> <span class="o">=</span> <span class="n">ANEMO</span><span class="o">.</span><span class="n">fct_velocity</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">bino</span><span class="p">,</span> <span class="n">start_anti_true</span><span class="p">,</span> <span class="n">a_anti_true</span><span class="p">,</span> <span class="n">latency_true</span><span class="p">,</span> <span class="n">tau_true</span><span class="p">,</span> <span class="n">maxi_true</span><span class="p">)</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">*</span><span class="n">bruit</span>
+        <span class="n">test</span> <span class="o">=</span> <span class="n">test</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">*</span><span class="n">bruit</span>
+        <span class="c1">#test[start_sac:stop_sac] = np.arange(0, (stop_sac-start_sac), 1)*np.nan</span>
+
+        <span class="c1">#------------------------------------------------------------------------------------</span>
+        <span class="n">result_deg</span> <span class="o">=</span> <span class="n">ANEMO</span><span class="o">.</span><span class="n">Fit_velocity</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">bino</span><span class="p">,</span> <span class="n">param_fit</span><span class="o">=</span><span class="n">param_fit</span><span class="p">,</span> <span class="n">sup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step_fit</span><span class="p">)</span>
+
+
+        <span class="n">start_anti_fit</span> <span class="o">=</span> <span class="n">result_deg</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="s1">&#39;start_anti&#39;</span><span class="p">]</span>
+        <span class="n">a_anti_fit</span> <span class="o">=</span> <span class="n">result_deg</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="s1">&#39;a_anti&#39;</span><span class="p">]</span>
+        <span class="n">latency_fit</span> <span class="o">=</span> <span class="n">result_deg</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="s1">&#39;latency&#39;</span><span class="p">]</span>
+        <span class="n">tau_fit</span> <span class="o">=</span> <span class="n">result_deg</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="s1">&#39;tau&#39;</span><span class="p">]</span>
+        <span class="n">maxi_fit</span> <span class="o">=</span> <span class="n">result_deg</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="s1">&#39;maxi&#39;</span><span class="p">]</span>
+
+        <span class="n">best_fit</span> <span class="o">=</span> <span class="n">ANEMO</span><span class="o">.</span><span class="n">fct_velocity</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">bino</span><span class="p">,</span> <span class="n">start_anti_fit</span><span class="p">,</span> <span class="n">a_anti_fit</span><span class="p">,</span> <span class="n">latency_fit</span><span class="p">,</span> <span class="n">tau_fit</span><span class="p">,</span> <span class="n">maxi_fit</span><span class="p">)</span>
+        <span class="c1">#------------------------------------------------------------------------------------</span>
+        <span class="n">result_fit</span><span class="p">[</span><span class="s1">&#39;old_a_anti&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="n">TargetOn</span><span class="o">-</span><span class="mi">50</span><span class="p">:</span><span class="n">TargetOn</span><span class="o">+</span><span class="mi">50</span><span class="p">]))</span>
+        <span class="n">result_fit</span><span class="p">[</span><span class="s1">&#39;old_a_anti_true_50&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">true_test</span><span class="p">[</span><span class="n">TargetOn</span><span class="o">-</span><span class="mi">50</span><span class="p">:</span><span class="n">TargetOn</span><span class="o">+</span><span class="mi">50</span><span class="p">]))</span>
+        <span class="n">result_fit</span><span class="p">[</span><span class="s1">&#39;old_a_anti_fit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">best_fit</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">start_anti_fit</span><span class="p">):</span><span class="nb">int</span><span class="p">(</span><span class="n">latency_fit</span><span class="p">)]))</span>
+        <span class="n">result_fit</span><span class="p">[</span><span class="s1">&#39;old_a_anti_true_start&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">true_test</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">start_anti_true</span><span class="p">):</span><span class="nb">int</span><span class="p">(</span><span class="n">latency_true</span><span class="p">)]))</span>
+        <span class="c1">#------------------------------------------------------------------------------------</span>
+
+    <span class="k">return</span> <span class="n">result_fit</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1500</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">TargetOn</span><span class="p">,</span> <span class="n">StimulusOf</span> <span class="o">=</span> <span class="mi">750</span><span class="p">,</span> <span class="mi">750</span><span class="o">-</span><span class="mi">300</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">def</span> <span class="nf">defaut</span><span class="p">():</span>
+    <span class="n">start_anti_fit</span> <span class="o">=</span> <span class="p">[</span><span class="n">TargetOn</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="n">StimulusOf</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span> <span class="n">TargetOn</span><span class="o">+</span><span class="mi">75</span><span class="p">]</span>
+    <span class="n">latency_fit</span> <span class="o">=</span> <span class="p">[</span><span class="n">TargetOn</span><span class="o">+</span><span class="mi">100</span><span class="p">,</span> <span class="n">TargetOn</span><span class="o">+</span><span class="mi">75</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+    <span class="n">a_anti_fit</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="o">-</span><span class="mf">40.</span><span class="p">,</span> <span class="mf">40.</span><span class="p">]</span>
+    <span class="n">tau_fit</span> <span class="o">=</span> <span class="p">[</span><span class="mf">15.</span><span class="p">,</span> <span class="mf">13.</span><span class="p">,</span> <span class="mf">80.</span><span class="p">]</span>
+    <span class="n">maxi_fit</span> <span class="o">=</span> <span class="p">[</span><span class="mf">15.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">40.</span><span class="p">]</span>
+
+    <span class="k">return</span><span class="p">(</span><span class="n">start_anti_fit</span><span class="p">,</span> <span class="n">latency_fit</span><span class="p">,</span> <span class="n">a_anti_fit</span><span class="p">,</span> <span class="n">tau_fit</span><span class="p">,</span> <span class="n">maxi_fit</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">start_anti_fit</span><span class="p">,</span> <span class="n">latency_fit</span><span class="p">,</span> <span class="n">a_anti_fit</span><span class="p">,</span> <span class="n">tau_fit</span><span class="p">,</span> <span class="n">maxi_fit</span> <span class="o">=</span> <span class="n">defaut</span><span class="p">()</span>
+<span class="n">result_fit</span> <span class="o">=</span> <span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">start_anti_fit</span><span class="p">,</span> <span class="n">a_anti_fit</span><span class="p">,</span> <span class="n">latency_fit</span><span class="p">,</span> <span class="n">tau_fit</span><span class="p">,</span> <span class="n">maxi_fit</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span><span class="n">TargetOn</span><span class="p">,</span> <span class="n">StimulusOf</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+1 0
+1 1
+1 2
+1 3
+1 4
+1 5
+1 6
+1 7
+1 8
+1 9
+1 10
+1 11
+1 12
+1 13
+1 14
+1 15
+1 16
+1 17
+1 18
+1 19
+1 20
+1 21
+1 22
+1 23
+1 24
+1 25
+1 26
+1 27
+1 28
+1 29
+1 30
+1 31
+1 32
+1 33
+1 34
+1 35
+1 36
+1 37
+1 38
+1 39
+1 40
+1 41
+1 42
+1 43
+1 44
+1 45
+1 46
+1 47
+1 48
+1 49
+1 50
+1 51
+1 52
+1 53
+1 54
+1 55
+1 56
+1 57
+1 58
+1 59
+1 60
+1 61
+1 62
+1 63
+1 64
+1 65
+1 66
+1 67
+1 68
+1 69
+1 70
+1 71
+1 72
+1 73
+1 74
+1 75
+1 76
+1 77
+1 78
+1 79
+1 80
+1 81
+1 82
+1 83
+1 84
+1 85
+1 86
+1 87
+1 88
+1 89
+1 90
+1 91
+1 92
+1 93
+1 94
+1 95
+1 96
+1 97
+1 98
+1 99
+1 100
+1 101
+1 102
+1 103
+1 104
+1 105
+1 106
+1 107
+1 108
+1 109
+1 110
+1 111
+1 112
+1 113
+1 114
+1 115
+1 116
+1 117
+1 118
+1 119
+1 120
+1 121
+1 122
+1 123
+1 124
+1 125
+1 126
+1 127
+1 128
+1 129
+1 130
+1 131
+1 132
+1 133
+1 134
+1 135
+1 136
+1 137
+1 138
+1 139
+1 140
+1 141
+1 142
+1 143
+1 144
+1 145
+1 146
+1 147
+1 148
+1 149
+1 150
+1 151
+1 152
+1 153
+1 154
+1 155
+1 156
+1 157
+1 158
+1 159
+1 160
+1 161
+1 162
+1 163
+1 164
+1 165
+1 166
+1 167
+1 168
+1 169
+1 170
+1 171
+1 172
+1 173
+1 174
+1 175
+1 176
+1 177
+1 178
+1 179
+1 180
+1 181
+1 182
+1 183
+1 184
+1 185
+1 186
+1 187
+1 188
+1 189
+1 190
+1 191
+1 192
+1 193
+1 194
+1 195
+1 196
+1 197
+1 198
+1 199
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">def</span> <span class="nf">V_a</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">result_fit</span><span class="p">,</span> <span class="n">start_anti_fit</span><span class="p">,</span> <span class="n">a_anti_fit</span><span class="p">,</span> <span class="n">latency_fit</span><span class="p">,</span> <span class="n">tau_fit</span><span class="p">,</span> <span class="n">maxi_fit</span><span class="p">,</span> <span class="n">TargetOn</span><span class="p">,</span> <span class="n">StimulusOf</span><span class="p">)</span> <span class="p">:</span>
+    <span class="n">fig1</span><span class="p">,</span> <span class="n">axs1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">fig_width</span><span class="o">*</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">fig_width</span><span class="o">*</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mf">1.6180</span><span class="p">))</span>
+    <span class="n">fig2</span><span class="p">,</span> <span class="n">axs2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">fig_width</span><span class="o">*</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">fig_width</span><span class="o">*</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mf">1.6180</span><span class="p">))</span>
+    <span class="c1">#-----------------------------------------------------------------------------------</span>
+    <span class="n">axs1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;True V$_a$ onset (°/s)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">t_label</span><span class="p">)</span>
+    <span class="n">axs1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Fit V$_a$ (°/s)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">t_label</span><span class="p">)</span>
+    <span class="n">axs1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">result_fit</span><span class="p">[</span><span class="s1">&#39;old_a_anti_true_start&#39;</span><span class="p">],</span> <span class="n">result_fit</span><span class="p">[</span><span class="s1">&#39;old_a_anti_fit&#39;</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="c1">#-----------------------------------------------------------------------------------</span>
+    <span class="n">axs2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;True V$_a$ 50 (°/s)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">t_label</span><span class="p">)</span>
+    <span class="n">axs2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Classical V$_a$ (°/s)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">t_label</span><span class="p">)</span>
+    <span class="n">axs2</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">result_fit</span><span class="p">[</span><span class="s1">&#39;old_a_anti_true_50&#39;</span><span class="p">],</span> <span class="n">result_fit</span><span class="p">[</span><span class="s1">&#39;old_a_anti&#39;</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="c1">#-----------------------------------------------------------------------------------</span>
+    <span class="n">min_y1</span><span class="p">,</span> <span class="n">max_y1</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">result_fit</span><span class="p">[</span><span class="s1">&#39;old_a_anti_fit&#39;</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="n">result_fit</span><span class="p">[</span><span class="s1">&#39;old_a_anti_fit&#39;</span><span class="p">])</span>
+    <span class="n">min_y2</span><span class="p">,</span> <span class="n">max_y2</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">result_fit</span><span class="p">[</span><span class="s1">&#39;old_a_anti&#39;</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="n">result_fit</span><span class="p">[</span><span class="s1">&#39;old_a_anti&#39;</span><span class="p">])</span>
+    <span class="n">min_x1</span><span class="p">,</span> <span class="n">min_x2</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">result_fit</span><span class="p">[</span><span class="s1">&#39;old_a_anti_true_start&#39;</span><span class="p">]),</span>  <span class="nb">min</span><span class="p">(</span><span class="n">result_fit</span><span class="p">[</span><span class="s1">&#39;old_a_anti_true_50&#39;</span><span class="p">])</span>
+    <span class="n">max_x1</span><span class="p">,</span> <span class="n">max_x2</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">result_fit</span><span class="p">[</span><span class="s1">&#39;old_a_anti_true_start&#39;</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="n">result_fit</span><span class="p">[</span><span class="s1">&#39;old_a_anti_true_50&#39;</span><span class="p">])</span>
+
+    <span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">min_x1</span><span class="p">,</span> <span class="n">min_x2</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">min_y1</span><span class="p">,</span> <span class="n">min_y2</span><span class="p">)</span>
+    <span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_x1</span><span class="p">,</span> <span class="n">max_x2</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_y1</span><span class="p">,</span> <span class="n">max_y2</span><span class="p">)</span>
+
+    <span class="n">axs1</span> <span class="o">=</span> <span class="n">regress</span><span class="p">(</span><span class="n">axs1</span><span class="p">,</span> <span class="n">result_fit</span><span class="p">[</span><span class="s1">&#39;old_a_anti_true_start&#39;</span><span class="p">],</span> <span class="n">result_fit</span><span class="p">[</span><span class="s1">&#39;old_a_anti_fit&#39;</span><span class="p">],</span> <span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">t_label</span><span class="o">=</span><span class="n">t_titre</span><span class="o">/</span><span class="mf">1.5</span><span class="p">)</span>
+    <span class="n">axs2</span> <span class="o">=</span> <span class="n">regress</span><span class="p">(</span><span class="n">axs2</span><span class="p">,</span> <span class="n">result_fit</span><span class="p">[</span><span class="s1">&#39;old_a_anti_true_50&#39;</span><span class="p">],</span> <span class="n">result_fit</span><span class="p">[</span><span class="s1">&#39;old_a_anti&#39;</span><span class="p">],</span> <span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">t_label</span><span class="o">=</span><span class="n">t_titre</span><span class="o">/</span><span class="mf">1.5</span><span class="p">)</span>
+
+
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">[</span><span class="n">axs1</span><span class="p">,</span> <span class="n">axs2</span><span class="p">]</span> <span class="p">:</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="o">-</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">],</span> <span class="s1">&#39;--k&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Anticipatory velocity&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">t_titre</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.05</span><span class="p">)</span> <span class="c1">#Velocity of anticipation</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="n">min_x</span><span class="o">-</span><span class="p">((</span><span class="n">max_x</span><span class="o">-</span><span class="n">min_x</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span><span class="p">),</span> <span class="n">max_x</span><span class="o">+</span><span class="p">((</span><span class="n">max_x</span><span class="o">-</span><span class="n">min_x</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span><span class="p">),</span> <span class="n">min_y</span><span class="o">-</span><span class="p">((</span><span class="n">max_y</span><span class="o">-</span><span class="n">min_y</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span><span class="p">),</span> <span class="n">max_y</span><span class="o">+</span><span class="p">((</span><span class="n">max_y</span><span class="o">-</span><span class="n">min_y</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span><span class="p">)])</span>
+
+    <span class="n">fig1</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">fig2</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">fig1</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;../2018-05-04_Poster_Grenobe/figures/old_a_anti_fit_true_Full_2_</span><span class="si">%s</span><span class="s1">.png&#39;</span><span class="o">%</span><span class="k">block</span>, dpi=dpi)
+    <span class="n">fig2</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;../2018-05-04_Poster_Grenobe/figures/old_a_anti_true_classique_Full_2_</span><span class="si">%s</span><span class="s1">.png&#39;</span><span class="o">%</span><span class="k">block</span>, dpi=dpi)
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">V_a</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">result_fit</span><span class="p">,</span> <span class="n">start_anti_fit</span><span class="p">,</span> <span class="n">a_anti_fit</span><span class="p">,</span> <span class="n">latency_fit</span><span class="p">,</span> <span class="n">tau_fit</span><span class="p">,</span> <span class="n">maxi_fit</span><span class="p">,</span> <span class="n">TargetOn</span><span class="p">,</span> <span class="n">StimulusOf</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/xxx_2018-05-30_poster_Scatterplot_full_aa_12_0.png" src="_images/xxx_2018-05-30_poster_Scatterplot_full_aa_12_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/xxx_2018-05-30_poster_Scatterplot_full_aa_12_1.png" src="_images/xxx_2018-05-30_poster_Scatterplot_full_aa_12_1.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      
+      
+      
+      <a href="_sources/xxx_2018-05-30_poster_Scatterplot_full_aa.ipynb.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/invibe/ANEMO" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

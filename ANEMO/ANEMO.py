@@ -588,7 +588,7 @@ class ANEMO(object) :
                 - the anticipation of the pursuit, during smooth pursuit
         """
 
-        def latency(velocity_NAN, w1=300, w2=50, off=50, crit=0.17) :
+        def latency(velocity_NAN, w1=300, w2=50, off=50, crit=0.17, full_return=False, time=None) :
 
             '''
             Return the latency of the pursuit during a smooth pursuit calculated in a 'classic' way
@@ -606,16 +606,31 @@ class ANEMO(object) :
                 gap between the two windows
             crit : float, optional (default 0.17)
                 difference criterion between the two linregress detecting if the pursuit begins
+            full_return : bool
+                if ``True`` return : latency, slope1, intercept1, slope2, intercept2, t
+            time : ndarray (default None)
+                time of the trial. important that if full return is true for intercept1 and intercept2 to be correct
 
             Returns
             -------
             latency : int
                 the latency in ms
+
+            slope1 : float
+                slope of the first regression line
+            intercept1 : float
+                intercept of the first regression line
+            slope2 : float
+                slope of the second regression line
+            intercept2 : float
+                intercept of the first regression line
+            t : int
+                time when the first regression line starts from the start of the trial
             '''
 
             from scipy import stats
 
-            time = np.arange(len(velocity_NAN))
+            if time is None : time = np.arange(len(velocity_NAN))
             tps = time
 
             a = None
@@ -637,7 +652,8 @@ class ANEMO(object) :
 
             if a is None or len(old_latency)==0 : old_latency = [np.nan]
 
-            return old_latency[0]
+            if full_return is True : return (old_latency[0], slope1, intercept1, slope2, intercept2, t)
+            else :                   return old_latency[0]
 
         def steady_state(velocity_NAN, TargetOn_0) :
 
@@ -681,7 +697,7 @@ class ANEMO(object) :
 
             return np.nanmean(velocity_NAN[TargetOn_0-50:TargetOn_0+50])
 
-        def Full(velocity_NAN, TargetOn_0, w1=300, w2=50, off=50, crit=0.17) :
+        def Full(velocity_NAN, TargetOn_0, w1=300, w2=50, off=50, crit=0.17, full_return=False, time=None) :
 
             '''
             Return :
@@ -709,18 +725,31 @@ class ANEMO(object) :
             crit : float, optional (default 0.17)
                 difference criterion between the two linregress detecting if the pursuit begins to detect latency
 
+            full_return : bool
+                if ``True`` return : latency, slope1, intercept1, slope2, intercept2, t
+            time : ndarray (default None)
+                time of the trial. important that if full return is true for intercept1 and intercept2 to be correct
+
             Returns
             -------
-            latency : int
-                the latency in ms
+            latency : int (if full_return is False) or list (if full_return is True)
+                if full_return is False :
+                    the latency in ms (int)
+                if full_return is True :
+                    latency : latency the latency in ms (int)
+                    slope1 : slope of the first regression line (float)
+                    intercept1 : intercept of the first regression line (float)
+                    slope2 : slope of the second regression line (float)
+                    intercept2 : intercept of the first regression line (float)
+                    t : time when the first regression line starts from the start of the trial (int)
+
             steady_state : int
                 the steady_state velocity in deg/s
             anticipation : int
                 the anticipation in deg/s
             '''
 
-
-            latency      = ANEMO.classical_method.latency(velocity_NAN, w1, w2, off, crit)
+            latency      = ANEMO.classical_method.latency(velocity_NAN, w1, w2, off, crit, full_return=full_return, time=time)
             steady_state = ANEMO.classical_method.steady_state(velocity_NAN, TargetOn_0)
             anticipation = ANEMO.classical_method.anticipation(velocity_NAN, TargetOn_0)
 

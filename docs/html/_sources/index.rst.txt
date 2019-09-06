@@ -9,4 +9,5 @@ Summary
 .. toctree::
 
    demo_ANEMO
+   Comparison_synthetic_With_Classical_Methods
    0_ANEMO_doc

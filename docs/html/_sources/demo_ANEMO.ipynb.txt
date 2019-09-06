@@ -17,6 +17,23 @@
    ]
   },
   {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\u001b[31m\"red\"\u001b[0m\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(\"\\x1b[31m\\\"red\\\"\\x1b[0m\")"
+   ]
+  },
+  {
    "cell_type": "markdown",
    "metadata": {},
    "source": [

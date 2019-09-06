@@ -49,6 +49,7 @@
 <h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="demo_ANEMO.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Comparison_synthetic_With_Classical_Methods.html">Comparison synthetic with Classical Methods</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="0_ANEMO_doc.html">ANEMO</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="1_readedf.html">read_edf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_arg.html">arg</a></li>
@@ -423,7 +424,7 @@ div.rendered_html tbody tr:hover {
 <h3>latency<a class="headerlink" href="#latency" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="ANEMO.ANEMO.ANEMO.classical_method.latency">
-<code class="descclassname">ANEMO.ANEMO.ANEMO.classical_method.</code><code class="descname">latency</code><span class="sig-paren">(</span><em>velocity_NAN</em>, <em>w1=300</em>, <em>w2=50</em>, <em>off=50</em>, <em>crit=0.17</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.classical_method.latency" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ANEMO.ANEMO.ANEMO.classical_method.</code><code class="descname">latency</code><span class="sig-paren">(</span><em>velocity_NAN</em>, <em>w1=300</em>, <em>w2=50</em>, <em>off=50</em>, <em>crit=0.17</em>, <em>full_return=False</em>, <em>time=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.classical_method.latency" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the latency of the pursuit during a smooth pursuit calculated in a ‘classic’ way</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -435,10 +436,20 @@ div.rendered_html tbody tr:hover {
 <li><strong>w2</strong> (<em>int, optional (default 50)</em>) – size of the window 2 in ms</li>
 <li><strong>off</strong> (<em>int, optional (default 50)</em>) – gap between the two windows</li>
 <li><strong>crit</strong> (<em>float, optional (default 0.17)</em>) – difference criterion between the two linregress detecting if the pursuit begins</li>
+<li><strong>full_return</strong> (<em>bool</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> return : latency, slope1, intercept1, slope2, intercept2, t</li>
+<li><strong>time</strong> (<em>ndarray (default None)</em>) – time of the trial. important that if full return is true for intercept1 and intercept2 to be correct</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>latency</strong> (<em>int</em>) – the latency in ms</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>latency</strong> (<em>int</em>) – the latency in ms</li>
+<li><strong>slope1</strong> (<em>float</em>) – slope of the first regression line</li>
+<li><strong>intercept1</strong> (<em>float</em>) – intercept of the first regression line</li>
+<li><strong>slope2</strong> (<em>float</em>) – slope of the second regression line</li>
+<li><strong>intercept2</strong> (<em>float</em>) – intercept of the first regression line</li>
+<li><strong>t</strong> (<em>int</em>) – time when the first regression line starts from the start of the trial</li>
+</ul>
+</p>
 </td>
 </tr>
 </tbody>
@@ -579,7 +590,7 @@ div.rendered_html tbody tr:hover {
 <h3>Full<a class="headerlink" href="#Full" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="ANEMO.ANEMO.ANEMO.classical_method.Full">
-<code class="descclassname">ANEMO.ANEMO.ANEMO.classical_method.</code><code class="descname">Full</code><span class="sig-paren">(</span><em>velocity_NAN</em>, <em>TargetOn_0</em>, <em>w1=300</em>, <em>w2=50</em>, <em>off=50</em>, <em>crit=0.17</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.classical_method.Full" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ANEMO.ANEMO.ANEMO.classical_method.</code><code class="descname">Full</code><span class="sig-paren">(</span><em>velocity_NAN</em>, <em>TargetOn_0</em>, <em>w1=300</em>, <em>w2=50</em>, <em>off=50</em>, <em>crit=0.17</em>, <em>full_return=False</em>, <em>time=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ANEMO.ANEMO.ANEMO.classical_method.Full" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return :</p>
 <blockquote>
 <div><ul class="simple">
@@ -600,13 +611,31 @@ div.rendered_html tbody tr:hover {
 <li><strong>w2</strong> (<em>int, optional (default 50)</em>) – size of the window 2 to detect latency in ms</li>
 <li><strong>off</strong> (<em>int, optional (default 50)</em>) – gap between the two windows to detect latency</li>
 <li><strong>crit</strong> (<em>float, optional (default 0.17)</em>) – difference criterion between the two linregress detecting if the pursuit begins to detect latency</li>
+<li><strong>full_return</strong> (<em>bool</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> return : latency, slope1, intercept1, slope2, intercept2, t</li>
+<li><strong>time</strong> (<em>ndarray (default None)</em>) – time of the trial. important that if full return is true for intercept1 and intercept2 to be correct</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><strong>latency</strong> (<em>int</em>) – the latency in ms</li>
-<li><strong>steady_state</strong> (<em>int</em>) – the steady_state velocity in deg/s</li>
-<li><strong>anticipation</strong> (<em>int</em>) – the anticipation in deg/s</li>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul>
+<li><p class="first"><strong>latency</strong> (<em>int (if full_return is False) or list (if full_return is True)</em>) –</p>
+<dl class="docutils">
+<dt>if full_return is False :</dt>
+<dd><p class="first last">the latency in ms (int)</p>
+</dd>
+<dt>if full_return is True :</dt>
+<dd><p class="first last">latency : latency the latency in ms (int)
+slope1 : slope of the first regression line (float)
+intercept1 : intercept of the first regression line (float)
+slope2 : slope of the second regression line (float)
+intercept2 : intercept of the first regression line (float)
+t : time when the first regression line starts from the start of the trial (int)</p>
+</dd>
+</dl>
+</li>
+<li><p class="first"><strong>steady_state</strong> (<em>int</em>) – the steady_state velocity in deg/s</p>
+</li>
+<li><p class="first"><strong>anticipation</strong> (<em>int</em>) – the anticipation in deg/s</p>
+</li>
 </ul>
 </p>
 </td>
