@@ -6,6 +6,7 @@ Eye movements are crucial bio-markers for a wide range of cognitive behaviours. 
 
 <center><img src="https://raw.githubusercontent.com/invibe/ANEMO/master/2018-05-04_Poster_Grenoble/figures/Fit_simulation.png" width="100%"></center>
 
+ * see a poster presentation @ https://laurentperrinet.github.io/publication/pasturel-18-anemo/
 
 ---
 This work was supported by the Innovative Training Network "Perception and Action in Complex Environments" (PACE ITN), a Marie Skodowska-Curie program of the H2020 European Union program (grant agreement No 642961).
