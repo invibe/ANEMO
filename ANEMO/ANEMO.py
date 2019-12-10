@@ -1611,13 +1611,13 @@ class ANEMO(object) :
                 if fitted_data == 'saccade' : import matplotlib.gridspec as gridspec
 
             if equation in ['fct_velocity', 'fct_position'] :
-                list_param_enre = Test.test_None(list_param_enre, value=['start_anti', 'a_anti', 'latency', 'tau', 'steady_state', 'old_anti', 'old_steady_state', 'old_latency', 'goodness_of_fit'])
+                list_param_enre = Test.test_None(list_param_enre, value=['start_anti', 'a_anti', 'latency', 'tau', 'steady_state', 'old_anti', 'old_steady_state', 'old_latency', 'goodness_of_fit', 'fit_values'])
 
             if equation in ['fct_velocity_sigmo', 'fct_velocity_line'] :
-                list_param_enre = Test.test_None(list_param_enre, value=['start_anti', 'a_anti', 'latency', 'ramp_pursuit', 'steady_state', 'old_anti', 'old_steady_state', 'old_latency', 'goodness_of_fit'])
+                list_param_enre = Test.test_None(list_param_enre, value=['start_anti', 'a_anti', 'latency', 'ramp_pursuit', 'steady_state', 'old_anti', 'old_steady_state', 'old_latency', 'goodness_of_fit', 'fit_values'])
 
             if equation == 'fct_saccade' :
-                list_param_enre = Test.test_None(list_param_enre, value=['T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2', 'tau', 'goodness_of_fit'])
+                list_param_enre = Test.test_None(list_param_enre, value=['T0', 't1', 't2', 'tr', 'x_0', 'x1', 'x2', 'tau', 'goodness_of_fit', 'param_fit'])
 
             if list_param_enre is None :
                 print('Warning list_param_enre is None, no parameter will be returned !!!')
@@ -1707,6 +1707,7 @@ class ANEMO(object) :
                                         else :                                 val = f.values[name]
                                         param[name][block].append(val)
                                 if 'fit' in list_param_enre : param['fit'][block].append(f.best_fit)
+                                if 'fit_values' in list_param_enre :    param['fit_values'][block].append(f.params)
 
                                 if 'goodness_of_fit' in list_param_enre :
                                     param['goodness_of_fit']['nfev'][block].append(f.nfev)
@@ -1762,6 +1763,7 @@ class ANEMO(object) :
                                         for name in list_param_enre :
                                             if name in f.values.keys() : param[name][block][trial].append(f.values[name])
                                         if 'fit' in list_param_enre :    param['fit'][block][trial].append(f.best_fit)
+                                        if 'fit_values' in list_param_enre :    param['fit_values'][block][trial].append(f.params)
 
                                         if 'goodness_of_fit' in list_param_enre :
                                             param['goodness_of_fit']['nfev'][block][trial].append(f.nfev)
