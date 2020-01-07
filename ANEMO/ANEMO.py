@@ -3040,9 +3040,10 @@ class ANEMO(object) :
                     title, write_step_trial = '', False
 
                 if param_fit is not None :
-                    param_fit_trial = {}
-                    for name in param_fit.keys() :
-                        param_fit_trial[name] = param_fit[name][block][t]
+                    #param_fit_trial = {}
+                    #for name in param_fit.keys() :
+                    #    param_fit_trial[name] = param_fit[name][block][t]
+                    param_fit_trial = param_fit[block][trial]
                 else :  param_fit_trial = None
 
                 param_fct = dict(ax=ax, data=data, trial=t, block=block, fig=fig,
