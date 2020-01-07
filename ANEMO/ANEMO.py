@@ -1625,7 +1625,7 @@ class ANEMO(object) :
 
             opt_base = {'N_blocks':N_blocks,               'N_trials':N_trials,
                         'time_sup':time_sup,               'step_fit':step_fit,       'do_whitening':do_whitening,
-                        'list_param_enre':list_param_enre, 'param_fit':param_fit,     'inde_vars':inde_vars,
+                        'list_param_enre':list_param_enre, #'param_fit':param_fit,     'inde_vars':inde_vars,
                         'before_sacc':before_sacc,         'after_sacc':after_sacc,   'stop_search_misac':stop_search_misac,
                         'filt':filt, 'cutoff':cutoff,      'sample_rate':sample_rate,
                         'show_target':show_target,
@@ -1694,6 +1694,11 @@ class ANEMO(object) :
                             old_latency, old_steady_state, old_anti = ANEMO.classical_method.Full(velocity_NAN, arg.TargetOn-arg.t_0)
                             onset  = arg.TargetOn - arg.t_0
 
+                            try : opt['param_fit'] = param_fit[block][trial]
+                            except : opt['param_fit'] = param_fit
+                            try : opt['inde_vars'] = inde_vars[block][trial]
+                            except : opt['inde_vars'] = inde_vars
+
                             try :
                                 #-------------------------------------------------
                                 # FIT
@@ -1709,7 +1714,7 @@ class ANEMO(object) :
                                 if 'fit' in list_param_enre : param['fit'][block].append(f.best_fit)
                                 if 'fit_values' in list_param_enre :    param['fit_values'][block].append(f.params)
                                 if 'covar' in list_param_enre :    param['covar'][block].append([f.var_names, f.covar])
-                                
+
                                 if 'goodness_of_fit' in list_param_enre :
                                     param['goodness_of_fit']['nfev'][block].append(f.nfev)
                                     param['goodness_of_fit']['residual'][block].append(f.residual)
