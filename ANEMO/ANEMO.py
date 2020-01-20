@@ -1734,9 +1734,10 @@ class ANEMO(object) :
                             except:
                                 print('Warning : The fit did not work! The values saved for the fit parameters will be NaN!')
                                 for name in list_param_enre :
-                                    if name == 'goodness_of_fit' :
-                                        for g in list_goodness_of_fit : param[name][g][block].append(np.nan)
-                                    else : param[name][block].append(np.nan)
+                                    if name not in ['old_anti', 'old_steady_state', 'old_latency', 'nb_sacc'] :
+                                        if name == 'goodness_of_fit' :
+                                            for g in list_goodness_of_fit : param[name][g][block].append(np.nan)
+                                        else : param[name][block].append(np.nan)
 
                             if 'old_anti' in list_param_enre :         param['old_anti'][block].append(old_anti)
                             if 'old_steady_state' in list_param_enre : param['old_steady_state'][block].append(old_steady_state)
