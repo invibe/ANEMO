@@ -753,7 +753,7 @@ class ANEMO(object) :
             steady_state = ANEMO.classical_method.steady_state(velocity_NAN, TargetOn_0)
             anticipation = ANEMO.classical_method.anticipation(velocity_NAN, TargetOn_0)
 
-            return latency, steady_state, anticipation/0.1
+            return latency, steady_state, anticipation #/0.1
 
 
 
@@ -2347,7 +2347,9 @@ class ANEMO(object) :
                             else :                    y[y_pos] = fit[y_pos]
 
                         # V_a ------------------------------------------------------------------------
-                        ax.text((time_s[int(rv['start_anti'])]+time_s[int(rv['latency'])])/2, y[int(rv['start_anti'])]-15*scale, r"A$_a$ = %0.2f °/s$^2$"%(rv['a_anti']), color='r', size=t_label/1.5, ha='center')
+                        ax.text((time_s[int(rv['start_anti'])]+time_s[int(rv['latency'])])/2, y[int(rv['start_anti'])]-15*scale,
+                                 "A$_a$ = %0.2f °/s$^2$\n\nV$_a$ = %0.2f °/s"%(rv['a_anti'], rv['a_anti']*((rv['latency']-rv['start_anti'])/1000)),
+                                 color='r', size=t_label/1.5, ha='center', va='top')
 
                         # Start_a --------------------------------------------------------------------
                         ax.text(time_s[int(rv['start_anti'])]-25, -35*scale, "Start anticipation = %0.2f ms"%(rv['start_anti']-onset), color='k', alpha=0.7, size=t_label/1.5, ha='right')
