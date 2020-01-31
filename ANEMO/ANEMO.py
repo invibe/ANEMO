@@ -2348,8 +2348,16 @@ class ANEMO(object) :
 
                         # V_a ------------------------------------------------------------------------
                         ax.text((time_s[int(rv['start_anti'])]+time_s[int(rv['latency'])])/2, y[int(rv['start_anti'])]-15*scale,
-                                 "A$_a$ = %0.2f °/s$^2$\n\nV$_a$ = %0.2f °/s"%(rv['a_anti'], rv['a_anti']*((rv['latency']-rv['start_anti'])/1000)),
-                                 color='r', size=t_label/1.5, ha='center', va='top')
+                                 "A$_a$ = %0.2f °/s$^2$"%(rv['a_anti']), color='r', size=t_label/1.5, ha='center')
+
+                        ax.text(time_s[int(rv['latency'])]-50, -y[int(rv['latency'])+400],
+                                 "V$_a$ = %0.2f °/s"%(rv['a_anti']*((rv['latency']-rv['start_anti'])/1000)),
+                                 color='r', size=t_label/1.5, ha='right')
+
+                        ax.annotate('', xy=(time_s[int(rv['latency'])-5], y[int(rv['latency'])]+1), xycoords='data', size=t_label/1., color='r', va='bottom',
+                                    xytext=(time_s[int(rv['latency'])]-50, -y[int(rv['latency'])+400]), textcoords='data', arrowprops=dict(arrowstyle="->", color='r'))
+
+
 
                         # Start_a --------------------------------------------------------------------
                         ax.text(time_s[int(rv['start_anti'])]-25, -35*scale, "Start anticipation = %0.2f ms"%(rv['start_anti']-onset), color='k', alpha=0.7, size=t_label/1.5, ha='right')
@@ -2980,7 +2988,7 @@ class ANEMO(object) :
                 size x and y label
             t_text : int, optional (default 14)
                 size of the text of the figure
-                
+
             plot_detail : bool, optional (default None)
                 if ``True`` show the fit parameters on the data
 
