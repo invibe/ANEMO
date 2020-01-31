@@ -2872,7 +2872,7 @@ class ANEMO(object) :
                      before_sacc=5, after_sacc=15, stop_search_misac=None,
                      filt=None, cutoff=30, sample_rate=1000,
                      show_target=False, show_num_trial=False, report=None,
-                     title=None, fig_width=15, t_titre=35, t_label=20,  t_text=14) :
+                     title=None, fig_width=15, t_titre=35, t_label=20,  t_text=14, plot_detail=True) :
 
             '''
             Returns figure of data fits
@@ -2980,6 +2980,9 @@ class ANEMO(object) :
                 size x and y label
             t_text : int, optional (default 14)
                 size of the text of the figure
+                
+            plot_detail : bool, optional (default None)
+                if ``True`` show the fit parameters on the data
 
             Returns
             -------
@@ -3053,7 +3056,7 @@ class ANEMO(object) :
                                  title=title, N_blocks=N_blocks, N_trials=N_trials,
                                  show='fit', show_data=fitted_data, equation=equation,
                                  show_target=show_target, show_num_trial=show_num_trial, show_pos_sacc=True,
-                                 write_step_trial=write_step_trial, plot_detail=True,
+                                 write_step_trial=write_step_trial, plot_detail=plot_detail,
                                  list_param_enre=list_param_enre, param_fit=param_fit_trial, inde_vars=inde_vars,
                                  step_fit=step_fit, do_whitening=do_whitening, time_sup=time_sup, before_sacc=before_sacc, after_sacc=after_sacc,
                                  stop_search_misac=stop_search_misac,  report=report,
