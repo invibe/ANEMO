@@ -856,7 +856,7 @@ class ANEMO(object) :
                 velocity = []
 
                 e = np.exp(1)
-                time_r = np.arange(-e, len(time), 1)
+                time_r = np.arange(-e, time.max(), 1) # (-e, len(time), 1)
 
                 y = ((latency-1)-start_anti)*a_anti
                 maxi = (dir_target*steady_state) - y
