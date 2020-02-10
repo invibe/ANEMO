@@ -1146,7 +1146,7 @@ class ANEMO(object) :
         def generation_param_fit(self, equation='fct_velocity', data_x=None, dir_target=None,
                                  trackertime=None, TargetOn=None, StimulusOf=None, saccades=None,
                                  value_latency=None, value_steady_state=None, value_anti=None,
-                                 before_sacc=5, after_sacc=15, **opt) :
+                                 before_sacc=5, after_sacc=15, fit_anticipation=True, **opt) :
 
             '''
             Generates the parameters and independent variables of the fit
@@ -1220,9 +1220,15 @@ class ANEMO(object) :
 
                 if dir_target is None : dir_target = Test.test_value('dir_target', self.param_exp, value=None)
 
-                value_latency = Test.test_None(value_latency, value=TargetOn-t_0+100)
-                value_anti    = Test.test_None(value_anti, value=0.)
-                value_steady_state    = Test.test_None(value_steady_state, value=15.)
+                value_latency      = Test.test_None(value_latency, value=TargetOn-t_0+100)
+                value_steady_state = Test.test_None(value_steady_state, value=15.)
+
+                if fit_anticipation is True :
+                    value_anti  = Test.test_None(value_anti, value=0.)
+                    vary_anti, vary_start_anti = True, 'vary'
+                else :
+                    value_anti = 0
+                    vary_anti, vary_start_anti = False, False
 
                 #----------------------------------------------
                 max_latency = []
@@ -1235,11 +1241,12 @@ class ANEMO(object) :
                 if value_latency > 250 :             value_latency = TargetOn-t_0+100
                 #----------------------------------------------
 
+
                 param_fit=[{'name':'steady_state', 'value':value_steady_state, 'min':5.,                 'max':40.,             'vary':True  },
                            {'name':'dir_target',   'value':dir_target,         'min':None,               'max':None,            'vary':False },
-                           {'name':'a_anti',       'value':value_anti,         'min':-40.,               'max':40.,             'vary':True  },
+                           {'name':'a_anti',       'value':value_anti,         'min':-40.,               'max':40.,             'vary':vary_anti  },
                            {'name':'latency',      'value':value_latency,      'min':TargetOn-t_0+75,    'max':max_latency,     'vary':True  },
-                           {'name':'start_anti',   'value':TargetOn-t_0-100,   'min':StimulusOf-t_0-200, 'max':TargetOn-t_0+75, 'vary':'vary'}]
+                           {'name':'start_anti',   'value':TargetOn-t_0-100,   'min':StimulusOf-t_0-200, 'max':TargetOn-t_0+75, 'vary':vary_start_anti}]
 
                 inde_vars={'x':np.arange(len(trackertime))}
 
@@ -1304,7 +1311,7 @@ class ANEMO(object) :
                       time_sup=280, step_fit=2, do_whitening=False,
                       param_fit=None, inde_vars=None,
                       value_latency=None, value_steady_state=15., value_anti=0.,
-                      before_sacc=5, after_sacc=15, **opt) :
+                      before_sacc=5, after_sacc=15, fit_anticipation=True, **opt) :
 
             '''
             Returns the result of the fit of a trial
@@ -1430,7 +1437,7 @@ class ANEMO(object) :
                 opt = {'dir_target':dir_target,
                        'TargetOn':TargetOn,           'StimulusOf':StimulusOf, 'saccades':saccades,
                        'value_latency':value_latency, 'value_steady_state':value_steady_state, 'value_anti':value_anti,
-                       'before_sacc':before_sacc,     'after_sacc':after_sacc}
+                       'before_sacc':before_sacc,     'after_sacc':after_sacc, 'fit_anticipation':fit_anticipation}
 
             if param_fit is None : param_fit = ANEMO.Fit.generation_param_fit(self, equation=equation, trackertime=trackertime, data_x=data_x, **opt)[0]
             if inde_vars is None : inde_vars = ANEMO.Fit.generation_param_fit(self, equation=equation, trackertime=trackertime, data_x=data_x, **opt)[1]
@@ -1485,7 +1492,7 @@ class ANEMO(object) :
                      before_sacc=5, after_sacc=15, stop_search_misac=None,
                      filt=None, cutoff=30, sample_rate=1000,
                      plot=None, file_fig=None, show_target=False,
-                     fig_width=12, t_label=20, t_text=14) :
+                     fig_width=12, t_label=20, t_text=14, fit_anticipation=True) :
 
             '''
             Return the parameters of the fit present in list_param_enre
@@ -1629,7 +1636,8 @@ class ANEMO(object) :
                         'before_sacc':before_sacc,         'after_sacc':after_sacc,   'stop_search_misac':stop_search_misac,
                         'filt':filt, 'cutoff':cutoff,      'sample_rate':sample_rate,
                         'show_target':show_target,
-                        'fig_width':fig_width,             't_label':t_label,         't_text':t_text}
+                        'fig_width':fig_width,             't_label':t_label,         't_text':t_text,
+                        'fit_anticipation':fit_anticipation}
 
             param = {'N_blocks':N_blocks,       'N_trials':N_trials,
                      'time_sup':time_sup,       'step_fit':step_fit,     'do_whitening':do_whitening,
@@ -1810,7 +1818,7 @@ class ANEMO(object) :
                                                      show_data=fitted_data, equation=equation,
                                                      write_step_trial=write_step_trial,
                                                      show='fit', show_num_trial=True, show_pos_sacc=False,
-                                                     plot_detail=None,report=None,
+                                                     plot_detail=None,report=None, fit_anticipation=fit_anticipation,
                                                      title='', c='k', out=None, **opt)
 
                 if plot is not None :
@@ -1951,7 +1959,7 @@ class ANEMO(object) :
                          show_pos_sacc=True, plot_detail=None,
                          show_target=False, show_num_trial=None, write_step_trial=True,
                          title='', c='k', fig=None, out=None, report=None,
-                         fig_width=15, t_label=20, t_text=14, **opt) :
+                         fig_width=15, t_label=20, t_text=14, fit_anticipation=True, **opt) :
 
             '''
             Return the parameters of the fit present in list_param_enre
@@ -2138,7 +2146,7 @@ class ANEMO(object) :
                         'param_fit':param_fit,        'inde_vars':inde_vars,
                         'before_sacc':before_sacc,    'after_sacc':after_sacc, 'stop_search_misac':stop_search_misac,
                         'filt':filt,                  'cutoff':cutoff,         'sample_rate':sample_rate,
-                        't_label':t_label}
+                        't_label':t_label, 'fit_anticipation':fit_anticipation}
 
             if show_data != 'saccade' : show_pos_sacc=True
             if show_pos_sacc is not True : show_target=False
@@ -2880,7 +2888,8 @@ class ANEMO(object) :
                      before_sacc=5, after_sacc=15, stop_search_misac=None,
                      filt=None, cutoff=30, sample_rate=1000,
                      show_target=False, show_num_trial=False, report=None,
-                     title=None, fig_width=15, t_titre=35, t_label=20,  t_text=14, plot_detail=True) :
+                     title=None, fig_width=15, t_titre=35, t_label=20,  t_text=14, plot_detail=True,
+                     fit_anticipation=True) :
 
             '''
             Returns figure of data fits
@@ -3069,7 +3078,7 @@ class ANEMO(object) :
                                  step_fit=step_fit, do_whitening=do_whitening, time_sup=time_sup, before_sacc=before_sacc, after_sacc=after_sacc,
                                  stop_search_misac=stop_search_misac,  report=report,
                                  fig_width=fig_width, t_label=t_label, t_text=t_text,
-                                 filt=filt, cutoff=cutoff, sample_rate=sample_rate)
+                                 filt=filt, cutoff=cutoff, sample_rate=sample_rate, fit_anticipation=fit_anticipation)
 
                 if report is not None :
                     ax, result = ANEMO.Plot.generate_fig(self, **param_fct)
@@ -3181,7 +3190,7 @@ class ANEMO(object) :
                      before_sacc=5, after_sacc=15, stop_search_misac=None,
                      sample_rate=1000,
                      show_target=False,
-                     fig_width=15, t_label=20, t_text=14) :
+                     fig_width=15, t_label=20, t_text=14, fit_anticipation=True) :
 
             '''
             Return the parameters of the fit present in list_param_enre
@@ -3368,7 +3377,7 @@ class ANEMO(object) :
                                                   filt=filt, cutoff=cutoff, sample_rate=sample_rate,
                                                   show_target=show_target,
                                                   title=title, c=c, out=out,
-                                                  fig_width=fig_width, t_label=t_label, t_text=t_text)
+                                                  fig_width=fig_width, t_label=t_label, t_text=t_text, fit_anticipation=fit_anticipation)
 
                 if param_f is not None :
                     if type(Full_param_fit[fct][name][block][trial])!= list :
