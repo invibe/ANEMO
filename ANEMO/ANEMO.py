@@ -760,7 +760,7 @@ class ANEMO(object) :
     class Equation(object) :
         """ Function used to perform the Fits """
 
-        def fct_velocity(x, dir_target, start_anti, a_anti, latency, tau, steady_state, do_whitening) :
+        def fct_velocity(x, dir_target, baseline, start_anti, a_anti, latency, tau, steady_state, do_whitening) :
 
             '''
             Function reproducing the velocity of the eye during the smooth pursuit of a moving target
@@ -804,7 +804,7 @@ class ANEMO(object) :
                 for t in range(len(time)) :
 
                     if time[t] < start_anti :
-                        velocity.append(0)
+                        velocity.append(baseline)
                     else :
                         if time[t] < latency :
                             velocity.append((time[t]-start_anti)*a_anti)
@@ -815,7 +815,7 @@ class ANEMO(object) :
 
             return velocity
 
-        def fct_velocity_sigmo(x, dir_target, start_anti, a_anti, latency, ramp_pursuit, steady_state, do_whitening) :
+        def fct_velocity_sigmo(x, dir_target, baseline, start_anti, a_anti, latency, ramp_pursuit, steady_state, do_whitening) :
 
             '''
             Function reproducing the velocity of the eye during the smooth pursuit of a moving target
@@ -864,18 +864,18 @@ class ANEMO(object) :
 
                 for t in range(len(time)):
                     if time[t] < start_anti :
-                        velocity.append(0)
+                        velocity.append(baseline)
                     else :
                         if time[t] < latency :
-                            velocity.append((time[t]-start_anti)*a_anti)
+                            velocity.append(baseline + (time[t]-start_anti)*a_anti)
                         else :
-                            velocity.append((maxi/(1+np.exp(((ramp_pursuit*time_r[int(time[t]-latency)])+e))))+(y-start_rampe))
+                            velocity.append(baseline + (maxi/(1+np.exp(((ramp_pursuit*time_r[int(time[t]-latency)])+e))))+(y-start_rampe))
 
                 if do_whitening is True : velocity = whitening(velocity)
 
             return velocity
 
-        def fct_velocity_line(x, dir_target, start_anti, a_anti, latency, ramp_pursuit, steady_state, do_whitening) :
+        def fct_velocity_line(x, dir_target, baseline, start_anti, a_anti, latency, ramp_pursuit, steady_state, do_whitening) :
 
             '''
             Function reproducing the velocity of the eye during the smooth pursuit of a moving target
@@ -920,7 +920,7 @@ class ANEMO(object) :
 
                 for t in range(len(time)):
                     if time[t] < start_anti :
-                        vitesse.append(0)
+                        vitesse.append(baseline)
                     else :
                         if time[t] < latency :
                             vitesse.append((time[t]-start_anti)*a_anti)
@@ -1253,11 +1253,16 @@ class ANEMO(object) :
             if equation in ['fct_velocity', 'fct_position'] :
                 param_fit.extend([{'name':'tau',  'value':15., 'min':13., 'max':80., 'vary':'vary'}])
 
+            if equation == 'fct_velocity':
+                param_fit.extend([{'name':'baseline',     'value':0,  'min':-2,  'max':2,   'vary':True}])
+
             if equation == 'fct_velocity_sigmo' :
-                param_fit.extend([{'name':'ramp_pursuit', 'value':100, 'min':40., 'max':800., 'vary':'vary'}])
+                param_fit.extend([{'name':'ramp_pursuit', 'value':100, 'min':40., 'max':500., 'vary':'vary'},
+                                  {'name':'baseline',     'value':0,  'min':-2,  'max':2,   'vary':True}])
 
             if equation == 'fct_velocity_line' :
-                param_fit.extend([{'name':'ramp_pursuit', 'value':40, 'min':40., 'max':80., 'vary':'vary'}])
+                param_fit.extend([{'name':'ramp_pursuit', 'value':40, 'min':40., 'max':80., 'vary':'vary'},
+                                  {'name':'baseline',     'value':0,  'min':-2,  'max':2,   'vary':True}])
 
 
             if equation == 'fct_position' :
@@ -1444,7 +1449,7 @@ class ANEMO(object) :
 
             if equation == 'fct_velocity' :          equation = ANEMO.Equation.fct_velocity
             elif equation == 'fct_velocity_sigmo' :  equation = ANEMO.Equation.fct_velocity_sigmo
-            elif equation == 'fct_velocity_line' :  equation = ANEMO.Equation.fct_velocity_line
+            elif equation == 'fct_velocity_line' :   equation = ANEMO.Equation.fct_velocity_line
             elif equation == 'fct_position' :        equation = ANEMO.Equation.fct_position
             elif equation == 'fct_saccade' :         equation = ANEMO.Equation.fct_saccade
 
