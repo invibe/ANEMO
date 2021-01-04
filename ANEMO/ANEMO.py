@@ -1244,7 +1244,7 @@ class ANEMO(object) :
 
                 param_fit=[{'name':'steady_state', 'value':value_steady_state, 'min':5.,                 'max':40.,             'vary':True  },
                            {'name':'dir_target',   'value':dir_target,         'min':None,               'max':None,            'vary':False },
-                           {'name':'a_anti',       'value':value_anti,         'min':-40.,               'max':40.,             'vary':vary_anti  },
+                           {'name':'a_anti',       'value':value_anti,         'min':-40.,               'max':40.,             'vary':vary_anti,       'expr': 'a_anti if abs(a_anti) > .5 else .5*(abs(a_anti)/a_anti)' }, # (abs(a_anti)/a_anti) to get the signal, .5 = arbitrary threshold
                            {'name':'latency',      'value':value_latency,      'min':TargetOn-t_0+75,    'max':max_latency,     'vary':True  },
                            {'name':'start_anti',   'value':TargetOn-t_0-100,   'min':StimulusOf-t_0-200, 'max':TargetOn-t_0+75, 'vary':vary_start_anti}]
 
