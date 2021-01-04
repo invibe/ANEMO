@@ -1255,7 +1255,7 @@ class ANEMO(object) :
                 param_fit.extend([{'name':'tau',  'value':15., 'min':13., 'max':80., 'vary':'vary'}])
 
             if equation == 'fct_velocity':
-                param_fit.extend([{'name':'baseline',     'value':0,  'min':-2,  'max':2,   'vary':True}])
+                param_fit.extend([{'name':'baseline',     'value':0,  'min':-1,  'max':1,   'vary':True}])
 
             if equation == 'fct_velocity_sigmo' :
                 param_fit.extend([{'name':'ramp_pursuit', 'value':100, 'min':40., 'max':500., 'vary':'vary'},
