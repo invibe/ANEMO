@@ -1242,12 +1242,13 @@ class ANEMO(object) :
                 #----------------------------------------------
 
 
-                param_fit=[{'name':'steady_state', 'value':value_steady_state, 'min':5.,                 'max':40.,             'vary':True  },
-                           {'name':'dir_target',   'value':dir_target,         'min':None,               'max':None,            'vary':False },
-                           {'name':'a_anti_tmp',   'value':value_anti,         'min':-40.,               'max':40.,             'vary':vary_anti,},
-                           {'name':'a_anti',       'expr': 'a_anti_tmp if abs(a_anti_tmp) >= 1. else 0' }, # arbitrary threshold for valid acceleration
-                           {'name':'latency',      'value':value_latency,      'min':TargetOn-t_0+75,    'max':max_latency,     'vary':True  },
-                           {'name':'start_anti',   'value':TargetOn-t_0-100,   'min':StimulusOf-t_0-200, 'max':TargetOn-t_0+75, 'vary':vary_start_anti}]
+                param_fit=[{'name':'steady_state',      'value':value_steady_state, 'min':5.,                 'max':40.,             'vary':True  },
+                           {'name':'dir_target',        'value':dir_target,         'min':None,               'max':None,            'vary':False },
+                           {'name':'a_anti_tmp',        'value':value_anti,         'min':-40.,               'max':40.,             'vary':vary_anti,},
+                           {'name':'a_anti',            'expr': 'a_anti_tmp if abs(a_anti_tmp) >= 1. else 0' }, # arbitrary threshold for valid acceleration
+                           {'name':'latency',           'value':value_latency,      'min':TargetOn-t_0+75,    'max':max_latency,     'vary':True  },
+                           {'name':'start_anti_tmp',    'value':TargetOn-t_0-100,   'min':StimulusOf-t_0-200, 'max':TargetOn-t_0+75, 'vary':vary_start_anti},
+                           {'name':'start_anti',        'expr': 'start_anti_tmp if a_anti!=0 else latency'}]
 
                 inde_vars={'x':np.arange(len(trackertime))}
 
