@@ -1248,7 +1248,7 @@ class ANEMO(object) :
                            {'name':'a_anti',            'expr': 'a_anti_tmp if abs(a_anti_tmp) >= 1. else 0' }, # arbitrary threshold for valid acceleration
                            {'name':'latency',           'value':value_latency,      'min':TargetOn-t_0+75,    'max':max_latency,     'vary':True  },
                            {'name':'start_anti_tmp',    'value':TargetOn-t_0-100,   'min':StimulusOf-t_0-200, 'max':TargetOn-t_0+75, 'vary':vary_start_anti},
-                           {'name':'start_anti',        'expr': 'start_anti_tmp if a_anti!=0 else latency'}]
+                           {'name':'start_anti',        'expr': 'start_anti_tmp if a_anti!=0 else latency-1'}]
 
                 inde_vars={'x':np.arange(len(trackertime))}
 
