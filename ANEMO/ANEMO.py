@@ -1242,13 +1242,13 @@ class ANEMO(object) :
                 #----------------------------------------------
 
 
-                param_fit=[{'name':'steady_state',      'value':value_steady_state, 'min':5.,                 'max':40.,             'vary':True  },
-                           {'name':'dir_target',        'value':dir_target,         'min':None,               'max':None,            'vary':False },
-                           {'name':'a_anti_tmp',        'value':value_anti,         'min':-40.,               'max':40.,             'vary':vary_anti,},
-                           {'name':'a_anti',            'expr': 'a_anti_tmp if abs(a_anti_tmp) >= 1. else 0' }, # arbitrary threshold for valid acceleration
-                           {'name':'latency',           'value':value_latency,      'min':TargetOn-t_0+75,    'max':max_latency,     'vary':True  },
-                           {'name':'start_anti_tmp',    'value':TargetOn-t_0-100,   'min':StimulusOf-t_0-200, 'max':TargetOn-t_0+75, 'vary':vary_start_anti},
-                           {'name':'start_anti',        'expr': 'start_anti_tmp if a_anti!=0 else latency-1'}]
+                param_fit=[{'name':'steady_state',      'value':value_steady_state, 'min':3.,                   'max':40.,             'vary':True  },
+                           {'name':'dir_target',        'value':dir_target,         'min':None,                 'max':None,            'vary':False },
+                           {'name':'a_anti_tmp',        'value':value_anti,         'min':-40.,                 'max':40.,             'vary':vary_anti,},
+                           {'name':'a_anti',            'expr':'a_anti_tmp if abs(a_anti_tmp) >= .5 else 0'}, # arbitrary threshold for valid acceleration
+                           {'name':'latency',           'value':value_latency,      'min':TargetOn-t_0+75,      'max':max_latency,     'vary':True  },
+                           {'name':'start_anti_tmp',    'value':TargetOn-t_0-100,   'min':TargetOn-t_0-500,     'max':TargetOn-t_0+75, 'vary':vary_start_anti},
+                           {'name':'start_anti',        'expr':'start_anti_tmp if a_anti != 0 else latency-1'}]
 
                 inde_vars={'x':np.arange(len(trackertime))}
 
@@ -1256,15 +1256,15 @@ class ANEMO(object) :
                 param_fit.extend([{'name':'tau',  'value':15., 'min':13., 'max':80., 'vary':'vary'}])
 
             if equation == 'fct_velocity':
-                param_fit.extend([{'name':'baseline',     'value':0,  'min':-1,  'max':1,   'vary':True}])
+                param_fit.extend([{'name':'baseline',     'value':0,  'min':-.5,  'max':.5,   'vary':True}])
 
             if equation == 'fct_velocity_sigmo' :
                 param_fit.extend([{'name':'ramp_pursuit', 'value':100, 'min':40., 'max':500., 'vary':'vary'},
-                                  {'name':'baseline',     'value':0,  'min':-1,  'max':1,   'vary':True}])
+                                  {'name':'baseline',     'value':0,  'min':-.5,  'max':.5,   'vary':True}])
 
             if equation == 'fct_velocity_line' :
                 param_fit.extend([{'name':'ramp_pursuit', 'value':40, 'min':40., 'max':80., 'vary':'vary'},
-                                  {'name':'baseline',     'value':0,  'min':-1,  'max':1,   'vary':True}])
+                                  {'name':'baseline',     'value':0,  'min':-.5,  'max':.5,   'vary':True}])
 
 
             if equation == 'fct_position' :
