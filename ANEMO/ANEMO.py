@@ -1240,7 +1240,9 @@ class ANEMO(object) :
                 if value_latency >= max_latency-50 : value_latency = max_latency-150
                 if value_latency > 250 :             value_latency = TargetOn-t_0+100
                 #----------------------------------------------
-
+                
+                # test latency:
+                max_latency = TargetOn-t_0+200
 
                 param_fit=[{'name':'steady_state', 'value':value_steady_state, 'min':5.,                 'max':40.,             'vary':True  },
                            {'name':'dir_target',   'value':dir_target,         'min':None,               'max':None,            'vary':False },
@@ -1259,11 +1261,11 @@ class ANEMO(object) :
 
             if equation == 'fct_velocity_sigmo' :
                 param_fit.extend([{'name':'ramp_pursuit', 'value':100, 'min':40., 'max':500., 'vary':'vary'},
-                                  {'name':'baseline',     'value':0,  'min':-2,  'max':2,   'vary':True}])
+                                  {'name':'baseline',     'value':0,  'min':-1,  'max':1,   'vary':True}])
 
             if equation == 'fct_velocity_line' :
                 param_fit.extend([{'name':'ramp_pursuit', 'value':40, 'min':40., 'max':80., 'vary':'vary'},
-                                  {'name':'baseline',     'value':0,  'min':-2,  'max':2,   'vary':True}])
+                                  {'name':'baseline',     'value':0,  'min':-1,  'max':1,   'vary':True}])
 
 
             if equation == 'fct_position' :
