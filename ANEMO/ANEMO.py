@@ -815,7 +815,7 @@ class ANEMO(object) :
 
             return velocity
 
-        def fct_velocity_sigmo(x, dir_target, baseline, start_anti, a_anti, latency, ramp_pursuit, steady_state, do_whitening) :
+        def fct_velocity_sigmo(x, dir_target, baseline, start_anti, a_anti, latency, ramp_pursuit, steady_state, horizontal_shift, do_whitening) :
 
             '''
             Function reproducing the velocity of the eye during the smooth pursuit of a moving target
@@ -860,7 +860,7 @@ class ANEMO(object) :
 
                 y = ((latency-1)-start_anti)*a_anti
                 maxi = (dir_target*steady_state) - y
-                start_rampe = (maxi/(1+np.exp(((ramp_pursuit*time_r[0])+e))))
+                start_rampe = maxi / (1+np.exp((ramp_pursuit*time_r[0] + e + horizontal_shift)))
 
                 for t in range(len(time)):
                     if time[t] < start_anti :
@@ -869,7 +869,7 @@ class ANEMO(object) :
                         if time[t] < latency :
                             velocity.append(baseline + (time[t]-start_anti)*a_anti)
                         else :
-                            velocity.append(baseline + (maxi/(1+np.exp(((ramp_pursuit*time_r[int(time[t]-latency)])+e))))+(y-start_rampe))
+                            velocity.append(baseline + (y-start_rampe) + (maxi / (1 + np.exp(ramp_pursuit*time_r[int(time[t]-latency)] + e + horizontal_shift))))
 
                 if do_whitening is True : velocity = whitening(velocity)
 
@@ -1242,14 +1242,14 @@ class ANEMO(object) :
                 #----------------------------------------------
                 
                 # test latency:
-                max_latency = TargetOn-t_0+200
+                max_latency = TargetOn-t_0 + 100
 
                 param_fit=[{'name':'steady_state',      'value':value_steady_state, 'min':3.,                   'max':40.,             'vary':True  },
                            {'name':'dir_target',        'value':dir_target,         'min':None,                 'max':None,            'vary':False },
                            {'name':'a_anti_tmp',        'value':value_anti,         'min':-40.,                 'max':40.,             'vary':vary_anti,},
                            {'name':'a_anti',            'expr':'a_anti_tmp if abs(a_anti_tmp) >= .5 else 0'}, # arbitrary threshold for valid acceleration
                            {'name':'latency',           'value':value_latency,      'min':TargetOn-t_0+75,      'max':max_latency,     'vary':True  },
-                           {'name':'start_anti_tmp',    'value':TargetOn-t_0-100,   'min':TargetOn-t_0-500,     'max':TargetOn-t_0+75, 'vary':vary_start_anti},
+                           {'name':'start_anti_tmp',    'value':TargetOn-t_0-100,   'min':TargetOn-t_0-500,     'max':TargetOn-t_0,    'vary':vary_start_anti},
                            {'name':'start_anti',        'expr':'start_anti_tmp if a_anti != 0 else latency-1'}]
 
                 inde_vars={'x':np.arange(len(trackertime))}
@@ -1261,11 +1261,12 @@ class ANEMO(object) :
                 param_fit.extend([{'name':'baseline',     'value':0,  'min':-.5,  'max':.5,   'vary':True}])
 
             if equation == 'fct_velocity_sigmo' :
-                param_fit.extend([{'name':'ramp_pursuit', 'value':100, 'min':40., 'max':500., 'vary':'vary'},
-                                  {'name':'baseline',     'value':0,  'min':-1,  'max':1,   'vary':True}])
+                param_fit.extend([{'name':'ramp_pursuit',       'value':100, 'min':10., 'max':500., 'vary':'vary'},
+                                  {'name':'baseline',           'value':0,  'min':-1,  'max':1,   'vary':True},
+                                  {'name':'horizontal_shift',   'value':0,  'min':-5,  'max':25,   'vary':True}])
 
             if equation == 'fct_velocity_line' :
-                param_fit.extend([{'name':'ramp_pursuit', 'value':40, 'min':40., 'max':80., 'vary':'vary'},
+                param_fit.extend([{'name':'ramp_pursuit', 'value':40, 'min':10., 'max':80., 'vary':'vary'},
                                   {'name':'baseline',     'value':0,  'min':-1,  'max':1,   'vary':True}])
 
 
@@ -2135,7 +2136,7 @@ class ANEMO(object) :
                     list_param_enre = Test.test_None(list_param_enre, value=list_param+['fit', 'old_anti', 'old_steady_state', 'old_latency'])
 
                 if equation in ['fct_velocity_sigmo', 'fct_velocity_line'] :
-                    list_param = ['start_anti', 'a_anti', 'latency', 'ramp_pursuit', 'steady_state']
+                    list_param = ['start_anti', 'a_anti', 'latency', 'ramp_pursuit', 'steady_state', 'horizontal_shift']
                     list_param_enre = Test.test_None(list_param_enre, value=list_param+['fit', 'old_anti', 'old_steady_state', 'old_latency'])
 
 
