@@ -798,7 +798,7 @@ class ANEMO(object) :
                 a_anti = a_anti/1000 # to switch from sec to ms
                 time = x
                 velocity = []
-                y = ((latency-1)-start_anti)*a_anti
+                y = ((latency-1)-start_anti)*a_anti + baseline
                 maxi = (dir_target*steady_state) - y
 
                 for t in range(len(time)) :
@@ -807,7 +807,7 @@ class ANEMO(object) :
                         velocity.append(baseline)
                     else :
                         if time[t] < latency :
-                            velocity.append((time[t]-start_anti)*a_anti)
+                            velocity.append(baseline+((time[t]-start_anti)*a_anti))
                         else :
                             velocity.append(maxi*(1-np.exp(-1/tau*(time[t]-latency)))+y)
 
@@ -914,7 +914,7 @@ class ANEMO(object) :
                 time = x
                 vitesse = []
 
-                y = ((latency-1)-start_anti)*a_anti
+                y = ((latency-1)-start_anti)*a_anti + baseline
                 maxi = (dir_target*steady_state) - y
                 end_ramp_pursuit = (maxi/ramp_pursuit) + latency
 
@@ -923,7 +923,7 @@ class ANEMO(object) :
                         vitesse.append(baseline)
                     else :
                         if time[t] < latency :
-                            vitesse.append((time[t]-start_anti)*a_anti)
+                            vitesse.append((time[t]-start_anti)*a_anti + baseline)
 
                         else :
                             if latency >= end_ramp_pursuit :
