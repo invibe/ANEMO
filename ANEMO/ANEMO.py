@@ -815,7 +815,7 @@ class ANEMO(object) :
 
             return velocity
 
-        def fct_velocity_sigmo(x, dir_target, baseline, start_anti, a_anti, latency, ramp_pursuit, steady_state, horizontal_shift, do_whitening) :
+        def fct_velocity_sigmo(x, dir_target, baseline, start_anti, a_anti, latency, ramp_pursuit, steady_state, horizontal_shift, do_whitening, allow_baseline:bool=False, allow_horizontalShift:bool=False, allow_acceleration:bool=False) :
 
             '''
             Function reproducing the velocity of the eye during the smooth pursuit of a moving target
@@ -846,6 +846,11 @@ class ANEMO(object) :
                 velocity of the eye in deg/sec
             '''
 
+            if not allow_baseline:
+                baseline = 0
+            if not allow_horizontalShift:
+                horizontal_shift = 0
+
             if start_anti >= latency :
                 velocity = None
 
@@ -862,6 +867,7 @@ class ANEMO(object) :
                 maxi = (dir_target*steady_state) - y
                 start_rampe = maxi / (1+np.exp((ramp_pursuit*time_r[0] + e + horizontal_shift)))
 
+                first = True
                 for t in range(len(time)):
                     if time[t] < start_anti :
                         velocity.append(baseline)
@@ -869,7 +875,11 @@ class ANEMO(object) :
                         if time[t] < latency :
                             velocity.append(baseline + (time[t]-start_anti)*a_anti)
                         else :
-                            velocity.append(baseline + (y-start_rampe) + (maxi / (1 + np.exp(ramp_pursuit*time_r[int(time[t]-latency)] + e + horizontal_shift))))
+                            v = baseline + (y-start_rampe) + (maxi / (1 + np.exp(ramp_pursuit*time_r[int(time[t]-latency)] + e + horizontal_shift)))
+                            if v >= maxi:
+                                if first: start_maxi = time[t]; first = False
+                                v = maxi + (time[t]-start_maxi)*a_pur
+                            velocity.append(v)
 
                 if do_whitening is True : velocity = whitening(velocity)
 
