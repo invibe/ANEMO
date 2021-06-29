@@ -815,7 +815,7 @@ class ANEMO(object) :
 
             return velocity
 
-        def fct_velocity_sigmo(x, dir_target, baseline, start_anti, a_anti, latency, ramp_pursuit, steady_state, horizontal_shift, do_whitening, allow_baseline:bool=False, allow_horizontalShift:bool=False, allow_acceleration:bool=False) :
+        def fct_velocity_sigmo(x, dir_target, baseline, start_anti, a_anti, latency, ramp_pursuit, steady_state, horizontal_shift, a_pur, do_whitening, allow_baseline:bool=False, allow_horizontalShift:bool=False, allow_acceleration:bool=False) :
 
             '''
             Function reproducing the velocity of the eye during the smooth pursuit of a moving target
@@ -846,16 +846,15 @@ class ANEMO(object) :
                 velocity of the eye in deg/sec
             '''
 
-            if not allow_baseline:
-                baseline = 0
-            if not allow_horizontalShift:
-                horizontal_shift = 0
+            if not allow_baseline:          baseline = 0
+            if not allow_horizontalShift:   horizontal_shift = 0
 
             if start_anti >= latency :
                 velocity = None
 
             else :
                 a_anti = a_anti/1000 # to switch from sec to ms
+                a_pur = a_pur/1000 # to switch from sec to ms
                 ramp_pursuit = -ramp_pursuit/1000
                 time = x
                 velocity = []
@@ -876,9 +875,9 @@ class ANEMO(object) :
                             velocity.append(baseline + (time[t]-start_anti)*a_anti)
                         else :
                             v = baseline + (y-start_rampe) + (maxi / (1 + np.exp(ramp_pursuit*time_r[int(time[t]-latency)] + e + horizontal_shift)))
-                            if v >= maxi:
-                                if first: start_maxi = time[t]; first = False
-                                v = maxi + (time[t]-start_maxi)*a_pur
+                            if allow_acceleration:
+                                if (v >= maxi) & first: start_maxi = time[t]; first = False
+                                if not first: v = maxi + (time[t]-start_maxi)*a_pur
                             velocity.append(v)
 
                 if do_whitening is True : velocity = whitening(velocity)
@@ -1260,7 +1259,8 @@ class ANEMO(object) :
                            {'name':'a_anti',            'expr':'a_anti_tmp if abs(a_anti_tmp) >= .5 else 0'}, # arbitrary threshold for valid acceleration
                            {'name':'latency',           'value':value_latency,      'min':TargetOn-t_0+70,      'max':max_latency,     'vary':True  },
                            {'name':'start_anti_tmp',    'value':TargetOn-t_0-100,   'min':TargetOn-t_0-500,     'max':TargetOn-t_0,    'vary':vary_start_anti},
-                           {'name':'start_anti',        'expr':'start_anti_tmp if a_anti != 0 else latency-1'}]
+                           {'name':'start_anti',        'expr':'start_anti_tmp if a_anti != 0 else latency-1'},
+                           ]
 
                 inde_vars={'x':np.arange(len(trackertime))}
 
@@ -1273,7 +1273,9 @@ class ANEMO(object) :
             if equation == 'fct_velocity_sigmo' :
                 param_fit.extend([{'name':'ramp_pursuit',       'value':100, 'min':10., 'max':500., 'vary':'vary'},
                                   {'name':'baseline',           'value':0,  'min':-1,  'max':1,   'vary':True},
-                                  {'name':'horizontal_shift',   'value':0,  'min':-5,  'max':25,   'vary':True}])
+                                  {'name':'horizontal_shift',   'value':0,  'min':-5,  'max':25,   'vary':True},
+                                  {'name':'a_pur',              'value':0,  'min':-40., 'max':40., 'vary':True},
+                                  ])
 
             if equation == 'fct_velocity_line' :
                 param_fit.extend([{'name':'ramp_pursuit', 'value':40, 'min':10., 'max':80., 'vary':'vary'},
@@ -1331,7 +1333,8 @@ class ANEMO(object) :
                       time_sup=280, step_fit=2, do_whitening=False,
                       param_fit=None, inde_vars=None,
                       value_latency=None, value_steady_state=15., value_anti=0.,
-                      before_sacc=5, after_sacc=15, fit_anticipation=True, **opt) :
+                      before_sacc=5, after_sacc=15, fit_anticipation=True,
+                      allow_baseline:bool=False, allow_horizontalShift:bool=False, allow_acceleration:bool=False, **opt) :
 
             '''
             Returns the result of the fit of a trial
@@ -1485,6 +1488,9 @@ class ANEMO(object) :
                                vary=var)
 
             params.add('do_whitening', value=do_whitening, vary=False)
+            params.add('allow_baseline', value=allow_baseline, vary=False)
+            params.add('allow_horizontalShift', value=allow_horizontalShift, vary=False)
+            params.add('allow_acceleration', value=allow_acceleration, vary=False)
 
             if step_fit == 1 :
 
