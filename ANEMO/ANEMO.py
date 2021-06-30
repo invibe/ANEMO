@@ -876,7 +876,7 @@ class ANEMO(object) :
                         else :
                             v = baseline + (y-start_rampe) + (maxi / (1 + np.exp(ramp_pursuit*time_r[int(time[t]-latency)] + e + horizontal_shift)))
                             if allow_acceleration:
-                                if (v >= maxi) & first: start_maxi = time[t]; first = False
+                                if (v >= maxi) & (time[t]>latency+10) & first: start_maxi = time[t]; first = False
                                 if not first: v = maxi + (time[t]-start_maxi)*a_pur
                             velocity.append(v)
 
