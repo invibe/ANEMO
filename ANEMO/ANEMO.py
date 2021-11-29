@@ -477,6 +477,82 @@ class ANEMO(object) :
             s=s+1
 
         return misaccades
+    
+    def detec_sac(self, velocity_x, velocity_y, t_0=0, VFAC=5, mindur=5, maxdur=100, minsep=30) :
+
+        '''
+        Detection of saccades not detected by eyelink in the data
+
+        Parameters
+        ----------
+        velocity_x : ndarray
+            velocity x of the eye in deg/sec
+        velocity_y : ndarray
+            velocity y of the eye in deg/sec
+
+        t_0 : int, optional (default 0)
+            time 0 of the trial
+
+        VFAC : int, optional (default 5)
+            relative velocity threshold
+        mindur : int, optional (default 5)
+            minimal saccade duration (ms)
+        maxdur : int, optional (default 100)
+            maximal saccade duration (ms)
+        minsep : int, optional (default 30)
+            minimal time interval between two detected saccades (ms) - if the interval between two saccades is smaller than minsep, then merge the saccades
+
+        Returns
+        -------
+        saccades : list(list(int))
+            list of lists, each containing ``[start saccade, end saccade]``
+        '''
+
+        msdx = np.sqrt((np.nanmean(velocity_x**2))-((np.nanmean(velocity_x))**2))
+        msdy = np.sqrt((np.nanmean(velocity_y**2))-((np.nanmean(velocity_y))**2))
+
+        radiusx, radiusy = VFAC*msdx, VFAC*msdy
+
+        test = (velocity_x/radiusx)**2 + (velocity_y/radiusy)**2
+        index = [x for x in range(len(test)) if test[x] > 1]
+
+        dur, start_saccades, k = 0, 0, 0
+        saccades = []
+
+        for i in range(len(index)-1) :
+            if i == len(index)-1:
+                if dur > 1:
+                    end_saccades = i
+                    saccades.append([index[start_saccades], index[end_saccades]])
+            elif index[i+1]-index[i]==1 :
+                dur = dur + 1;
+            else :
+                if dur >= mindur and dur < maxdur :
+                    end_saccades = i
+                    saccades.append([index[start_saccades]+t_0, index[end_saccades]+t_0])
+                start_saccades = i+1
+                dur = 1
+            i = i + 1
+
+        if len(saccades) > 1 :
+            s=0
+            while s < len(saccades)-1 :
+                sep = saccades[s+1][0]-saccades[s][1] # temporal separation between onset of saccade s+1 and offset of saccade s
+                if sep < minsep :
+                    saccades[s][1] = saccades[s+1][1] #the two saccades are fused into one
+                    del(saccades[s+1])
+                    s=s-1
+                s=s+1
+
+        s=0
+        while s < len(saccades) :
+            dur = saccades[s][1]-saccades[s][0] # duration of sth saccade
+            if dur >= maxdur :
+                del(saccades[s])
+                s=s-1
+            s=s+1
+
+        return saccades
 
     def supp_sacc(self, velocity, saccades, trackertime, before_sacc, after_sacc) :
 
@@ -884,7 +960,8 @@ class ANEMO(object) :
 
             return velocity
 
-        def fct_velocity_line(x, dir_target, baseline, start_anti, a_anti, latency, ramp_pursuit, steady_state, do_whitening) :
+        def fct_velocity_line(x, dir_target, baseline, start_anti, a_anti, latency, ramp_pursuit, steady_state, do_whitening, fit_steadyState:bool=True) :
+
 
             '''
             Function reproducing the velocity of the eye during the smooth pursuit of a moving target
@@ -940,7 +1017,7 @@ class ANEMO(object) :
                             else :
                                 if time[t] < int(end_ramp_pursuit) :
                                     vitesse.append((time[t]-latency)*ramp_pursuit+y)
-                                else :
+                                elif fit_steadyState:
                                     vitesse.append(maxi+y)
 
                 if do_whitening is True : velocity = whitening(velocity)
@@ -1230,7 +1307,7 @@ class ANEMO(object) :
                 if dir_target is None : dir_target = Test.test_value('dir_target', self.param_exp, value=None)
 
                 value_latency      = Test.test_None(value_latency, value=TargetOn-t_0+100)
-                value_steady_state = Test.test_None(value_steady_state, value=15.)
+                value_steady_state = Test.test_None(value_steady_state, value=30.)
 
                 if fit_anticipation is True :
                     value_anti  = Test.test_None(value_anti, value=0.)
@@ -1334,7 +1411,8 @@ class ANEMO(object) :
                       param_fit=None, inde_vars=None,
                       value_latency=None, value_steady_state=15., value_anti=0.,
                       before_sacc=5, after_sacc=15, fit_anticipation=True,
-                      allow_baseline:bool=False, allow_horizontalShift:bool=False, allow_acceleration:bool=False, **opt) :
+                      allow_baseline:bool=False, allow_horizontalShift:bool=False, allow_acceleration:bool=False, fit_steadyState:bool=True, **opt) :
+
 
             '''
             Returns the result of the fit of a trial
