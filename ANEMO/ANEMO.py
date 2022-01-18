@@ -4,8 +4,8 @@
 import numpy as np
 
 
-N_freq = 1301
-def whitening_filt(N_freq, white_f_0, white_alpha, white_steepness) :
+# N_freq = 1301
+def whitening_filt(N_freq=1301, white_f_0, white_alpha, white_steepness) :
 
     """
     Returns the envelope of the whitening filter.
@@ -151,12 +151,14 @@ class Test(object) :
 
 class ANEMO(object) :
     """
-    ANEMO allows you to perform Fits on data of Smooth Pursuite Eyes Movements.
-    You could use the functions 'velocity', 'position' and 'saccades' already present, but also your own functions.
-    It must be initialized with the parameters of the experiment :
+    ANEMO allows you to fit a model on Smooth Pursuit Eye Movements data.
+    It has some pre-built models for eye velocity, position and saccades, but you can define your own model.
+    In order to run ANEMO, you need to provide a dictionary containing the experiment parameters:
 
     **param_exp** (dict) :
         dictionary containing the parameters of the experiment :
+        **'screen_width'** (int) - screen width in pixels
+        **'screen_height'** (int) - screen height in pixels
 
         **'px_per_deg'** (float) - number of px per degree for the experiment ::
 
@@ -164,12 +166,12 @@ class ANEMO(object) :
                 screen_width_deg = 2. * tan * 180/np.pi
                 px_per_deg = screen_width_px / screen_width_deg
 
-        **'dir_target'** (list(list(int))) - list of lists for each block containing the direction of the target for each trial ::
+        **'dir_target'** (list(list(int))) - list of blocks, each one containing a list of the target direction in each trial. Target direction is coded as 1 for right/up and -1 for left/down ::
 
                 #the direction of the target is to -1 for left 1 for right
                 dir_target = param_exp['dir_target'][block][trial]
 
-        or **'p'** (ndarray) - ndarray containing for each trial of each block the direction of the target, its probability of direction and the switches of this probability ::
+        or **'p'** (ndarray) - ndarray of shape (N_trials,N_blocks,3) containing for each trial of each block the direction of the target, its probability of direction and the switches of this probability ::
 
                 # the direction of the target is to 0 for left 1 for right
                 dir_target = param_exp['p'][trial, block, 0]
@@ -191,7 +193,7 @@ class ANEMO(object) :
                 list_events = ['StimulusOn\\n', 'StimulusOff\\n',
                                'TargetOn\\n', 'TargetOff\\n']
 
-        optional not obligatory, just to display the target in ANEMO.Plot :
+        Optional parameters, for target visualization in ANEMO.Plot :
 
             **'V_X_deg'** (float, optional) - target velocity in deg/s
 
@@ -306,7 +308,7 @@ class ANEMO(object) :
         return filt_data
 
 
-    def data_deg(self, data, StimulusOf, t_0, saccades, before_sacc, after_sacc, filt=None, cutoff=30, sample_rate=1000, **opt) :
+    def data_deg(self, data, axis=None, StimulusOf, t_0, saccades, before_sacc, after_sacc, filt=None, cutoff=30, sample_rate=1000, change_coord=None **opt) :
 
         '''
         Return the position of the eye in deg
@@ -314,18 +316,24 @@ class ANEMO(object) :
         Parameters
         ----------
         data : ndarray
+            position data in pixels
             position for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
+        axis : str {'x', 'y'}
+            indicates to which axis the data corresponds. necessary for changing data coordinates 
 
         StimulusOf : int
-            time when the stimulus disappears
+            fixation offset (index of the data array)
         t_0 : int
-            time 0 of the trial
+            trial onset (index of the data array)
 
         saccades : list
+            list of saccades, each one containing at least saccade onset and saccade offset
             list of edf saccades for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
         before_sacc : int
+            indicates how many data points (i.e. miliseconds when sampling rate is 1000Hz) to cut-off before the saccade onset
             time to delete before saccades
         after_sacc : int
+            indicates how many data points (i.e. miliseconds when sampling rate is 1000Hz) to cut-off after the saccade offset
             time to delete after saccades
 
         filt : str {'position', 'velocity-position'} or None (default None)
@@ -334,31 +342,48 @@ class ANEMO(object) :
                 - ``'velocity-position'`` : filter the position then the speed
                 - ``None`` : the data will not be filtered
         cutoff : int, optional (default 30)
+            Upperbound frequency for the lowpass filter
             the critical frequencies for cutoff of filter
         sample_rate : int, optional (default 1000)
             sampling rate of the recording for the filtre
+            
+        change_coord: str {'screen', 'data'} or None
+            change data coordinates:
+                - ``screen`` : the coordinate (0,0) is set to the center of the screen; considers that originally the coordinates (0,0) were the bottom-left of the screen
+                - ``data`` : the coordinate (0,0) is defined by the eye position at the fixation offset; if data is missing, sets to the closest data point available
+                - ``None`` : does not change the coordinates system
 
         Returns
         -------
         data_deg : ndarray
-            position of the eye in deg
+            eye position in deg
         '''
 
-        px_per_deg = Test.test_value('px_per_deg', self.param_exp, print_crash="px_per_deg is not defined in param_exp")
+        px_per_deg    = Test.test_value('px_per_deg', self.param_exp, print_crash="px_per_deg is not defined in param_exp")
+        screen_width  = Test.test_value('screen_width', self.param_exp, print_crash="screen_width is not defined in param_exp")
+        screen_height = Test.test_value('screen_height', self.param_exp, print_crash="screen_height is not defined in param_exp")
 
         if filt in ['position', 'velocity-position'] :
             data = ANEMO.filter_data(self, data, cutoff, sample_rate)
 
-        t_data_0 = StimulusOf-t_0
-        for s in range(len(saccades)) :
-            for x_data in np.arange((saccades[s][0]-t_0-before_sacc), (saccades[s][1]-t_0+after_sacc)) :
-                if x_data == StimulusOf-t_0 :
-                    if (saccades[s][0]-t_0-before_sacc)-t_data_0 <= (saccades[s][1]-t_0+after_sacc)-t_data_0 :
-                        t_data_0 = saccades[s][0]-t_0-before_sacc-1
-                    else :
-                        t_data_0 = saccades[s][1]-t_0+after_sacc+1
+        if change_coord == 'screen':
+            transl = screen_width/2 if axis == 'x' else screen_height/2
+            data_deg = (data - transl) / px_per_deg
+            
+        elif change_coord == 'data':
+            t_data_0 = StimulusOf-t_0
+            for s in range(len(saccades)) :
+                for x_data in np.arange((saccades[s][0]-t_0-before_sacc), (saccades[s][1]-t_0+after_sacc)) :
+                    if x_data == StimulusOf-t_0 :
+                        if (saccades[s][0]-t_0-before_sacc)-t_data_0 <= (saccades[s][1]-t_0+after_sacc)-t_data_0 :
+                            t_data_0 = saccades[s][0]-t_0-before_sacc-1
+                        else :
+                            t_data_0 = saccades[s][1]-t_0+after_sacc+1
 
-        data_deg = (data - (data[t_data_0]))/px_per_deg
+            data_deg = (data - (data[t_data_0]))/px_per_deg
+            
+        else:
+            data_deg = data / px_per_deg
 
         return data_deg
 
@@ -516,43 +541,43 @@ class ANEMO(object) :
         test = (velocity_x/radiusx)**2 + (velocity_y/radiusy)**2
         index = [x for x in range(len(test)) if test[x] > 1]
 
-        dur, start_saccades, k = 0, 0, 0
-        saccades = []
+        dur, start_misaccades, k = 0, 0, 0
+        misaccades = []
 
-        for i in range(len(index)-1) :
+        for i in range(len(index)) :
             if i == len(index)-1:
                 if dur > 1:
-                    end_saccades = i
-                    saccades.append([index[start_saccades], index[end_saccades]])
+                    end_misaccades = i
+                    misaccades.append([index[start_misaccades]+t_0, index[end_misaccades]+t_0])
             elif index[i+1]-index[i]==1 :
                 dur = dur + 1;
             else :
                 if dur >= mindur and dur < maxdur :
-                    end_saccades = i
-                    saccades.append([index[start_saccades]+t_0, index[end_saccades]+t_0])
-                start_saccades = i+1
-                dur = 1
-            i = i + 1
+                    end_misaccades = i
+                    misaccades.append([index[start_misaccades]+t_0, index[end_misaccades]+t_0])
 
-        if len(saccades) > 1 :
+                i = i + 1
+                start_misaccades = i
+                dur = 1
+
+            if len(misaccades) > 1 :
+                s=0
+                while s < len(misaccades)-1 :
+                    sep = misaccades[s+1][0]-misaccades[s][1] # temporal separation between onset of saccade s+1 and offset of saccade s
+                    if (sep < minsep) and ((misaccades[s][1]-misaccades[s][0] + misaccades[s+1][1]-misaccades[s+1][0]) < maxdur) :
+                        misaccades[s][1] = misaccades[s+1][1] #the two saccades are fused into one
+                        del(misaccades[s+1])
+                        s=s-1
+                    s=s+1
             s=0
-            while s < len(saccades)-1 :
-                sep = saccades[s+1][0]-saccades[s][1] # temporal separation between onset of saccade s+1 and offset of saccade s
-                if sep < minsep :
-                    saccades[s][1] = saccades[s+1][1] #the two saccades are fused into one
-                    del(saccades[s+1])
+            while s < len(misaccades) :
+                dur = misaccades[s][1]-misaccades[s][0] # duration of sth saccade
+                if dur >= maxdur :
+                    del(misaccades[s])
                     s=s-1
                 s=s+1
 
-        s=0
-        while s < len(saccades) :
-            dur = saccades[s][1]-saccades[s][0] # duration of sth saccade
-            if dur >= maxdur :
-                del(saccades[s])
-                s=s-1
-            s=s+1
-
-        return saccades
+        return misaccades
 
     def supp_sacc(self, velocity, saccades, trackertime, before_sacc, after_sacc) :
 
