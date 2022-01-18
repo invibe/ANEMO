@@ -4,8 +4,8 @@
 import numpy as np
 
 
-# N_freq = 1301
-def whitening_filt(N_freq=1301, white_f_0, white_alpha, white_steepness) :
+N_freq = 1301
+def whitening_filt(N_freq, white_f_0, white_alpha, white_steepness) :
 
     """
     Returns the envelope of the whitening filter.
@@ -308,7 +308,7 @@ class ANEMO(object) :
         return filt_data
 
 
-    def data_deg(self, data, axis=None, StimulusOf, t_0, saccades, before_sacc, after_sacc, filt=None, cutoff=30, sample_rate=1000, change_coord=None **opt) :
+    def data_deg(self, data, StimulusOf, t_0, axis=None, saccades=[], before_sacc=0, after_sacc=0,  filt=None, cutoff=30, sample_rate=1000, change_coord=None, **opt) :
 
         '''
         Return the position of the eye in deg
@@ -337,9 +337,9 @@ class ANEMO(object) :
             time to delete after saccades
 
         filt : str {'position', 'velocity-position'} or None (default None)
-            to filter the data can be :
-                - ``'position'`` : filter the position,
-                - ``'velocity-position'`` : filter the position then the speed
+            filter data in different domains :
+                - ``'position'`` : filter the eye position,
+                - ``'velocity-position'`` : filter the eye position, transforms it into eye velocity and then apply the filter once again
                 - ``None`` : the data will not be filtered
         cutoff : int, optional (default 30)
             Upperbound frequency for the lowpass filter
@@ -391,23 +391,25 @@ class ANEMO(object) :
     def velocity_deg(self, data_x, filt=None, cutoff=30, sample_rate=1000) :
 
         '''
-        Return the velocity of the eye in deg/sec
+        Return the eye velocity in deg/sec (assumes sampling rate=1000Hz)
 
         Parameters
         ----------
         data_x : ndarray
+            eye position in pixels 
             x position for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
 
         filt : str {'position', 'velocity', 'velocity-position'} or None (default None)
-            to filter the data can be :
-                - ``'position'`` : filter the position,
-                - ``'velocity'`` : filter the speed,
-                - ``'velocity-position'`` : filter the position then the speed
+            filter data in different domains :
+                - ``'position'`` : filter the eye position,
+                - ``'velocity'`` : filter the eye velocity,
+                - ``'velocity-position'`` : filter the eye position, transforms it into eye velocity and then apply the filter once again
                 - ``None`` : the data will not be filtered
         cutoff : int, optional (default 30)
+            Upperbound frequency for the lowpass filter
             the critical frequencies for cutoff of filter
         sample_rate : int, optional (default 1000)
-            sampling rate of the recording for the filtre
+            sampling rate of the recording for the filter
 
 
         Returns
@@ -625,9 +627,10 @@ class ANEMO(object) :
 
         Parameters
         ----------
-        data_x : ndarray
+        data_x : array
+            x position in pixels
             x position for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
-        data_y : ndarray
+        data_y : array
             y position for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
 
         saccades : list
