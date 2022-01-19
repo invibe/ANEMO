@@ -600,7 +600,7 @@ class ANEMO(object) :
         return velocity
 
     def velocity_NAN(self, velocity_x, velocity_y, saccades, trackertime, 
-                     before_sacc=5, after_sacc=15 **opt) :
+                     before_sacc=5, after_sacc=15, **opt) :
 
         '''
         Returns velocity of the eye in deg / sec without the saccades
@@ -625,7 +625,7 @@ class ANEMO(object) :
             velocity of the eye in deg / sec without the saccades
         '''
 
-        return = ANEMO.supp_sacc(self, velocity=velocity_x, saccades=new_saccades, trackertime=trackertime, before_sacc=before_sacc, after_sacc=after_sacc)
+        return ANEMO.supp_sacc(self, velocity=velocity_x, saccades=new_saccades, trackertime=trackertime, before_sacc=before_sacc, after_sacc=after_sacc)
 
 
     class classical_method(object) :
