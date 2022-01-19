@@ -409,9 +409,9 @@ class ANEMO(object) :
         gradient = np.gradient(data) * 1000 # gradient in pix/sec
 
         if filt :
-            gradient_deg = ANEMO.filter_data(self, gradient, cutoff=cutoff, sample_rate=sample_rate)
+            gradient = ANEMO.filter_data(self, gradient, cutoff=cutoff, sample_rate=sample_rate)
 
-        return gradient_deg
+        return gradient
 
 
     def detec_misac(self, velocity_x, velocity_y, t_0=0, VFAC=5, mindur=5, maxdur=100, minsep=30) :
