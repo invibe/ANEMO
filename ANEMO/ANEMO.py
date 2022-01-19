@@ -308,24 +308,21 @@ class ANEMO(object) :
         return filt_data
 
 
-    def data_deg(self, data, StimulusOf, t_0, axis=None, saccades=[], before_sacc=0, after_sacc=0,  filt=None, cutoff=30, sample_rate=1000, change_coord=None, **opt) :
+    def data_deg(self, data, StimulusOf, t_0, axis=None, saccades=[], before_sacc=0, after_sacc=0,  filt=False, cutoff=30, sample_rate=1000, change_coord=None, **opt) :
 
         '''
-        Return the position of the eye in deg
+        Return the position/velocity of the eye in deg
 
         Parameters
         ----------
         data : ndarray
-            position data in pixels
-            position for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
-        axis : str {'x', 'y'}
-            indicates to which axis the data corresponds. necessary for changing data coordinates 
-
+            position or velocity data in pixels
         StimulusOf : int
             fixation offset (index of the data array)
         t_0 : int
             trial onset (index of the data array)
-
+        axis : str {'x', 'y'}
+            indicates to which axis the data corresponds. necessary for changing data coordinates 
         saccades : list
             list of saccades, each one containing at least saccade onset and saccade offset
             list of edf saccades for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
@@ -336,11 +333,8 @@ class ANEMO(object) :
             indicates how many data points (i.e. miliseconds when sampling rate is 1000Hz) to cut-off after the saccade offset
             time to delete after saccades
 
-        filt : str {'position', 'velocity-position'} or None (default None)
-            filter data in different domains :
-                - ``'position'`` : filter the eye position,
-                - ``'velocity-position'`` : filter the eye position, transforms it into eye velocity and then apply the filter once again
-                - ``None`` : the data will not be filtered
+        filt : bool 
+            filter data before transforming
         cutoff : int, optional (default 30)
             Upperbound frequency for the lowpass filter
             the critical frequencies for cutoff of filter
@@ -356,14 +350,14 @@ class ANEMO(object) :
         Returns
         -------
         data_deg : ndarray
-            eye position in deg
+            eye data in deg
         '''
 
         px_per_deg    = Test.test_value('px_per_deg', self.param_exp, print_crash="px_per_deg is not defined in param_exp")
         screen_width  = Test.test_value('screen_width', self.param_exp, print_crash="screen_width is not defined in param_exp")
         screen_height = Test.test_value('screen_height', self.param_exp, print_crash="screen_height is not defined in param_exp")
 
-        if filt in ['position', 'velocity-position'] :
+        if filt :
             data = ANEMO.filter_data(self, data, cutoff, sample_rate)
 
         if change_coord == 'screen':
@@ -388,26 +382,20 @@ class ANEMO(object) :
         return data_deg
 
 
-    def velocity_deg(self, data_x, filt=None, cutoff=30, sample_rate=1000) :
+    def velocity(self, data, filt=False, cutoff=30, sample_rate=1000) :
 
         '''
-        Return the eye velocity in deg/sec (assumes sampling rate=1000Hz)
+        Return the eye velocity in pix/sec
 
         Parameters
         ----------
-        data_x : ndarray
-            eye position in pixels 
-            x position for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
+        data : ndarray
+            eye position in pixels
 
-        filt : str {'position', 'velocity', 'velocity-position'} or None (default None)
-            filter data in different domains :
-                - ``'position'`` : filter the eye position,
-                - ``'velocity'`` : filter the eye velocity,
-                - ``'velocity-position'`` : filter the eye position, transforms it into eye velocity and then apply the filter once again
-                - ``None`` : the data will not be filtered
+        filt : bool
+            filter data after transforming
         cutoff : int, optional (default 30)
             Upperbound frequency for the lowpass filter
-            the critical frequencies for cutoff of filter
         sample_rate : int, optional (default 1000)
             sampling rate of the recording for the filter
 
@@ -415,20 +403,13 @@ class ANEMO(object) :
         Returns
         -------
         gradient_deg : ndarray
-            velocity of the eye in deg/sec
+            velocity of the eye in pix/sec
         '''
 
+        gradient = np.gradient(data) * 1000 # gradient in pix/sec
 
-        px_per_deg = Test.test_value('px_per_deg', self.param_exp, print_crash="px_per_deg is not defined in param_exp")
-
-        if filt in ['position', 'velocity-position'] :
-            data_x = ANEMO.filter_data(self, data_x, cutoff=cutoff, sample_rate=sample_rate)
-
-        gradient_x = np.gradient(data_x)
-        gradient_deg = gradient_x * 1/px_per_deg * 1000 # gradient in deg/sec
-
-        if filt in ['velocity', 'velocity-position'] :
-            gradient_deg = ANEMO.filter_data(self, gradient_deg, cutoff=cutoff, sample_rate=sample_rate)
+        if filt :
+            gradient_deg = ANEMO.filter_data(self, gradient, cutoff=cutoff, sample_rate=sample_rate)
 
         return gradient_deg
 
@@ -618,46 +599,31 @@ class ANEMO(object) :
 
         return velocity
 
-    def velocity_NAN(self, data_x, data_y, saccades, trackertime, TargetOn,
-                     before_sacc=5, after_sacc=15, stop_search_misac=None,
-                     filt=None, cutoff=30, sample_rate=1000, **opt) :
+    def velocity_NAN(self, velocity_x, velocity_y, saccades, trackertime, TargetOn,
+                     before_sacc=5, after_sacc=15, stop_search_misac=None, **opt) :
 
         '''
         Returns velocity of the eye in deg / sec without the saccades
 
         Parameters
         ----------
-        data_x : array
-            x position in pixels
-            x position for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
-        data_y : array
-            y position for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
-
+        velocity_x : array
+            velocity in the x axis in deg/s
+        velocity_y : array
+            velocity in the y axis in deg/s
         saccades : list
+            list of saccades, each one containing at least saccade onset and offset
             list of edf saccades for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
         trackertime : ndarray
             the time of the tracker
         TargetOn : int
-            time when the target to follow appears
-
+            target onset
         before_sacc : int, optional (default 5)
             time to delete before saccades
         after_sacc : int, optional (default 15)
             time to delete after saccades
         stop_search_misac : int, optional (default None)
             stop search of micro_saccade -- if ``None`` stops searching at the ``end of fixation + 100ms``
-
-        filt : str {'position', 'velocity', 'velocity-position'} or None (default None)
-            to filter the data can be :
-                - ``'position'`` : filter the position,
-                - ``'velocity'`` : filter the speed,
-                - ``'velocity-position'`` : filter the position then the speed
-                - ``None`` : the data will not be filtered
-        cutoff : int, optional (default 30)
-            the critical frequencies for cutoff of filter
-        sample_rate : int, optional (default 1000)
-            sampling rate of the recording for the filtre
-
 
         Returns
         -------
@@ -666,16 +632,10 @@ class ANEMO(object) :
         '''
 
         stop_search_misac = Test.test_None(stop_search_misac, value=TargetOn-trackertime[0]+100)
-
-        velocity   = ANEMO.velocity_deg(self, data_x=data_x, filt=None)
-        velocity_y = ANEMO.velocity_deg(self, data_x=data_y, filt=None)
-
+            
         new_saccades = saccades.copy()
-        misac = ANEMO.detec_misac(self, velocity_x=velocity[:stop_search_misac], velocity_y=velocity_y[:stop_search_misac], t_0=trackertime[0])
+        misac = ANEMO.detec_misac(self, velocity_x=velocity_x[:stop_search_misac], velocity_y=velocity_y[:stop_search_misac], t_0=trackertime[0])
         new_saccades.extend(misac)
-
-        if filt != False :
-            velocity = ANEMO.velocity_deg(self, data_x=data_x, filt=filt, cutoff=cutoff, sample_rate=sample_rate)
 
         velocity_NAN = ANEMO.supp_sacc(self, velocity=velocity, saccades=new_saccades, trackertime=trackertime, before_sacc=before_sacc, after_sacc=after_sacc)
 
