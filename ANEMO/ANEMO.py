@@ -599,31 +599,25 @@ class ANEMO(object) :
 
         return velocity
 
-    def velocity_NAN(self, velocity_x, velocity_y, saccades, trackertime, TargetOn,
-                     before_sacc=5, after_sacc=15, stop_search_misac=None, **opt) :
+    def velocity_NAN(self, velocity_x, velocity_y, saccades, trackertime, 
+                     before_sacc=5, after_sacc=15 **opt) :
 
         '''
         Returns velocity of the eye in deg / sec without the saccades
 
         Parameters
         ----------
-        velocity_x : array
-            velocity in the x axis in deg/s
-        velocity_y : array
-            velocity in the y axis in deg/s
+        velocity : array
+            velocity in deg/s
         saccades : list
             list of saccades, each one containing at least saccade onset and offset
             list of edf saccades for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
         trackertime : ndarray
             the time of the tracker
-        TargetOn : int
-            target onset
         before_sacc : int, optional (default 5)
             time to delete before saccades
         after_sacc : int, optional (default 15)
             time to delete after saccades
-        stop_search_misac : int, optional (default None)
-            stop search of micro_saccade -- if ``None`` stops searching at the ``end of fixation + 100ms``
 
         Returns
         -------
@@ -631,16 +625,7 @@ class ANEMO(object) :
             velocity of the eye in deg / sec without the saccades
         '''
 
-        stop_search_misac = Test.test_None(stop_search_misac, value=TargetOn-trackertime[0]+100)
-            
-        new_saccades = saccades.copy()
-        misac = ANEMO.detec_misac(self, velocity_x=velocity_x[:stop_search_misac], velocity_y=velocity_y[:stop_search_misac], t_0=trackertime[0])
-        new_saccades.extend(misac)
-
-        velocity_NAN = ANEMO.supp_sacc(self, velocity=velocity, saccades=new_saccades, trackertime=trackertime, before_sacc=before_sacc, after_sacc=after_sacc)
-
-        return velocity_NAN
-
+        return = ANEMO.supp_sacc(self, velocity=velocity_x, saccades=new_saccades, trackertime=trackertime, before_sacc=before_sacc, after_sacc=after_sacc)
 
 
     class classical_method(object) :
