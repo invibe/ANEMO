@@ -489,7 +489,7 @@ class ANEMO(object) :
 
         return misaccades
     
-    def ranges(self, nums):
+    def ranges(nums):
         '''
         Goal: to return start/end of continuous subsequences in an array
         Input: array of integers
@@ -506,7 +506,7 @@ class ANEMO(object) :
         return list(zip(edges, edges))
  
     
-    def detec_sac(self, velocity_x, velocity_y, t_0=0, VFAC=5, mindur=3, maxdur=150, minsep=30) :
+    def detec_sac(self, velocity_x, velocity_y, t_0=0, VFAC=5, mindur=1, maxdur=150, minsep=30) :
         '''
         Detection of saccades not detected by eyelink in the data
 
@@ -538,16 +538,14 @@ class ANEMO(object) :
         grad_x = np.gradient(velocity_x)
         grad_y = np.gradient(velocity_y)
 
-        msdx = np.sqrt((np.nanmean(grad_x**2))-((np.nanmean(grad_x))**2))
-        msdy = np.sqrt((np.nanmean(grad_y**2))-((np.nanmean(grad_y))**2))
+        high_x = np.where(np.abs(grad_x) > 2.5*np.nanstd(grad_x))[0]
+        high_y = np.where(np.abs(grad_y) > 2.5*np.nanstd(grad_y))[0]
 
-        radiusx, radiusy = VFAC*msdx, VFAC*msdy
+        index = np.unique(list(set(high_x) or set(high_y)))
 
-        test = (grad_x/radiusx)**2 + (grad_y/radiusy)**2
-        index = [x for x in range(len(test)) if test[x] > 1]
-
-        misaccades = A.ranges(index)
+        misaccades = ANEMO.ranges(index)
         misaccades = [misac for misac in misaccades if not ((misac[1]-misac[0] < mindur) or (misac[1]-misac[0] > maxdur))]
+        misaccades = [list(x) for x in misaccades]
 
         if len(misaccades) > 1 :
             s = 0
@@ -559,7 +557,7 @@ class ANEMO(object) :
                     s=s-1
                 s=s+1
 
-        return [list(x) for x in misaccades]
+        return misaccades
 
     def supp_sacc(self, velocity, saccades, trackertime, before_sacc, after_sacc) :
 
