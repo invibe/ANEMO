@@ -382,7 +382,7 @@ class ANEMO(object) :
         return data_deg
 
 
-    def velocity(self, data, filt=False, cutoff=30, sample_rate=1000) :
+    def velocity(self, data, filter_before=False, filter_after=False, cutoff=30, sample_rate=1000) :
 
         '''
         Return the eye velocity in pix/sec
@@ -406,9 +406,12 @@ class ANEMO(object) :
             velocity of the eye in pix/sec
         '''
 
+        if filter_before :
+            data = ANEMO.filter_data(self, data, cutoff=cutoff, sample_rate=sample_rate)
+
         gradient = np.gradient(data) * 1000 # gradient in pix/sec
 
-        if filt :
+        if filter_after :
             gradient = ANEMO.filter_data(self, gradient, cutoff=cutoff, sample_rate=sample_rate)
 
         return gradient
@@ -486,8 +489,24 @@ class ANEMO(object) :
 
         return misaccades
     
-    def detec_sac(self, velocity_x, velocity_y, t_0=0, VFAC=5, mindur=5, maxdur=100, minsep=30) :
+    def ranges(self, nums):
+        '''
+        Goal: to return start/end of continuous subsequences in an array
+        Input: array of integers
+        Output: array of tuples
 
+        Example:
+        input: [1, 2, 3, 50, 55, 56, 57, 58, 59]
+        output: [(1,3), (50,50), (55,57)]
+        '''
+        nums = sorted(set(nums))
+        gaps = [[s, e] for s, e in zip(nums, nums[1:]) if s+1 < e]
+        edges = iter(nums[:1] + sum(gaps, []) + nums[-1:])
+        
+        return list(zip(edges, edges))
+ 
+    
+    def detec_sac(self, velocity_x, velocity_y, t_0=0, VFAC=5, mindur=3, maxdur=150, minsep=30) :
         '''
         Detection of saccades not detected by eyelink in the data
 
@@ -499,7 +518,7 @@ class ANEMO(object) :
             velocity y of the eye in deg/sec
 
         t_0 : int, optional (default 0)
-            time 0 of the trial
+            trial onset
 
         VFAC : int, optional (default 5)
             relative velocity threshold
@@ -513,54 +532,34 @@ class ANEMO(object) :
         Returns
         -------
         saccades : list(list(int))
-            list of lists, each containing ``[start saccade, end saccade]``
+            list of saccades, each containing ``[start saccade, end saccade]``
         '''
+        
+        grad_x = np.gradient(velocity_x)
+        grad_y = np.gradient(velocity_y)
 
-        msdx = np.sqrt((np.nanmean(velocity_x**2))-((np.nanmean(velocity_x))**2))
-        msdy = np.sqrt((np.nanmean(velocity_y**2))-((np.nanmean(velocity_y))**2))
+        msdx = np.sqrt((np.nanmean(grad_x**2))-((np.nanmean(grad_x))**2))
+        msdy = np.sqrt((np.nanmean(grad_y**2))-((np.nanmean(grad_y))**2))
 
         radiusx, radiusy = VFAC*msdx, VFAC*msdy
 
-        test = (velocity_x/radiusx)**2 + (velocity_y/radiusy)**2
+        test = (grad_x/radiusx)**2 + (grad_y/radiusy)**2
         index = [x for x in range(len(test)) if test[x] > 1]
 
-        dur, start_misaccades, k = 0, 0, 0
-        misaccades = []
+        misaccades = A.ranges(index)
+        misaccades = [misac for misac in misaccades if not ((misac[1]-misac[0] < mindur) or (misac[1]-misac[0] > maxdur))]
 
-        for i in range(len(index)) :
-            if i == len(index)-1:
-                if dur > 1:
-                    end_misaccades = i
-                    misaccades.append([index[start_misaccades]+t_0, index[end_misaccades]+t_0])
-            elif index[i+1]-index[i]==1 :
-                dur = dur + 1;
-            else :
-                if dur >= mindur and dur < maxdur :
-                    end_misaccades = i
-                    misaccades.append([index[start_misaccades]+t_0, index[end_misaccades]+t_0])
-
-                i = i + 1
-                start_misaccades = i
-                dur = 1
-
-            if len(misaccades) > 1 :
-                s=0
-                while s < len(misaccades)-1 :
-                    sep = misaccades[s+1][0]-misaccades[s][1] # temporal separation between onset of saccade s+1 and offset of saccade s
-                    if (sep < minsep) and ((misaccades[s][1]-misaccades[s][0] + misaccades[s+1][1]-misaccades[s+1][0]) < maxdur) :
-                        misaccades[s][1] = misaccades[s+1][1] #the two saccades are fused into one
-                        del(misaccades[s+1])
-                        s=s-1
-                    s=s+1
-            s=0
-            while s < len(misaccades) :
-                dur = misaccades[s][1]-misaccades[s][0] # duration of sth saccade
-                if dur >= maxdur :
-                    del(misaccades[s])
+        if len(misaccades) > 1 :
+            s = 0
+            while s < len(misaccades)-1 :
+                sep = misaccades[s+1][0]-misaccades[s][1] # temporal separation between onset of saccade s+1 and offset of saccade s
+                if (sep < minsep) and ((misaccades[s+1][1]-misaccades[s][0]) < maxdur) :
+                    misaccades[s][1] = misaccades[s+1][1] #the two saccades are fused into one
+                    del(misaccades[s+1])
                     s=s-1
                 s=s+1
 
-        return misaccades
+        return [list(x) for x in misaccades]
 
     def supp_sacc(self, velocity, saccades, trackertime, before_sacc, after_sacc) :
 
@@ -599,7 +598,7 @@ class ANEMO(object) :
 
         return velocity
 
-    def velocity_NAN(self, velocity_x, velocity_y, saccades, trackertime, 
+    def velocity_NAN(self, velocity, saccades, trackertime, 
                      before_sacc=5, after_sacc=15, **opt) :
 
         '''
@@ -625,7 +624,7 @@ class ANEMO(object) :
             velocity of the eye in deg / sec without the saccades
         '''
 
-        return ANEMO.supp_sacc(self, velocity=velocity_x, saccades=new_saccades, trackertime=trackertime, before_sacc=before_sacc, after_sacc=after_sacc)
+        return ANEMO.supp_sacc(self, velocity=velocity, saccades=saccades, trackertime=trackertime, before_sacc=before_sacc, after_sacc=after_sacc)
 
 
     class classical_method(object) :
