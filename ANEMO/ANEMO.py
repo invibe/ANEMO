@@ -385,12 +385,12 @@ class ANEMO(object) :
     def velocity(self, data, filter_before=False, filter_after=False, cutoff=30, sample_rate=1000) :
 
         '''
-        Return the eye velocity in pix/sec
+        Return the eye velocity in _unit_/sec
 
         Parameters
         ----------
         data : ndarray
-            eye position in pixels
+            eye position in _unit_ (pixels or degrees)
 
         filt : bool
             filter data after transforming
@@ -559,15 +559,15 @@ class ANEMO(object) :
 
         return misaccades
 
-    def supp_sacc(self, velocity, saccades, trackertime, before_sacc, after_sacc) :
+    def supp_sacc(self, data, saccades, trackertime, before_sacc, after_sacc) :
 
         '''
         Eliminates saccades detected
 
         Parameters
         ----------
-        velocity : ndarray
-            velocity of the eye in deg/sec
+        data : ndarray
+            position or velocity
         saccades : list
             list of edf saccades for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
 
@@ -580,8 +580,8 @@ class ANEMO(object) :
 
         Returns
         -------
-        new_velocity : ndarray
-            velocity of the eye in deg/sec without saccades
+        data : ndarray
+            data without saccades
         '''
 
         t_0 = trackertime[0]
@@ -589,23 +589,23 @@ class ANEMO(object) :
         for s in range(len(saccades)) :
             if saccades[s][1]-t_0+after_sacc <= (len(trackertime)) :
                 for x_data in np.arange((saccades[s][0]-t_0-before_sacc), (saccades[s][1]-t_0+after_sacc)) :
-                    velocity[x_data] = np.nan
+                    data[x_data] = np.nan
             else :
                 for x_data in np.arange((saccades[s][0]-t_0-before_sacc), (len(trackertime))) :
-                    velocity[x_data] = np.nan
+                    data[x_data] = np.nan
 
-        return velocity
+        return data
 
-    def velocity_NAN(self, velocity, saccades, trackertime, 
+    def data_NAN(self, data, saccades, trackertime, 
                      before_sacc=5, after_sacc=15, **opt) :
 
         '''
-        Returns velocity of the eye in deg / sec without the saccades
+        Returns data without the saccades
 
         Parameters
         ----------
-        velocity : array
-            velocity in deg/s
+        data : array
+            position or velocity
         saccades : list
             list of saccades, each one containing at least saccade onset and offset
             list of edf saccades for the trial recorded by the eyetracker transformed by :func:`~ANEMO.read_edf`
@@ -618,11 +618,11 @@ class ANEMO(object) :
 
         Returns
         -------
-        velocity : ndarray
-            velocity of the eye in deg / sec without the saccades
+        data : ndarray
+            data without the saccades
         '''
 
-        return ANEMO.supp_sacc(self, velocity=velocity, saccades=saccades, trackertime=trackertime, before_sacc=before_sacc, after_sacc=after_sacc)
+        return ANEMO.supp_sacc(self, data=data, saccades=saccades, trackertime=trackertime, before_sacc=before_sacc, after_sacc=after_sacc)
 
 
     class classical_method(object) :
