@@ -366,9 +366,9 @@ class ANEMO(object) :
             
         elif change_coord == 'data':
             t_data_0 = StimulusOf-t_0
-            for s in range(len(saccades)) :
-                for x_data in np.arange((saccades[s][0]-t_0-before_sacc), (saccades[s][1]-t_0+after_sacc)) :
-                    if x_data == StimulusOf-t_0 :
+            if data[t_data_0] == np.nan:
+                for s in range(len(saccades)) :
+                    if (t_data_0 >= (saccades[s][0]-t_0-before_sacc)) and (t_data_0 <= (saccades[s][1]-t_0+after_sacc)):
                         if (saccades[s][0]-t_0-before_sacc)-t_data_0 <= (saccades[s][1]-t_0+after_sacc)-t_data_0 :
                             t_data_0 = saccades[s][0]-t_0-before_sacc-1
                         else :
@@ -532,7 +532,7 @@ class ANEMO(object) :
         Returns
         -------
         saccades : list(list(int))
-            list of saccades, each containing ``[start saccade, end saccade]``
+            list of saccades, each containing ``[start saccade, end saccade]``, in the "trackertime space/unit" (i.e., not relatively to trial/fixation/target onset/offset)
         '''
         
         grad_x = np.gradient(velocity_x)
@@ -557,6 +557,8 @@ class ANEMO(object) :
                     s=s-1
                 s=s+1
 
+        misaccades = [[x[0]+t_0, x[1]+t_0] for x in misaccades]
+        
         return misaccades
 
     def supp_sacc(self, data, saccades, trackertime, before_sacc, after_sacc) :
