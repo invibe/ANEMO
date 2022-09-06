@@ -952,7 +952,7 @@ class ANEMO(object) :
             latency : int
                 time when the movement begins
             ramp_pursuit : float
-                velocity of pursuit in seconds
+                pursuit acceleration in deg/seconds^2
             steady_state : float
                 steady_state velocity reached during the pursuit
             do_whitening : bool
@@ -1307,7 +1307,7 @@ class ANEMO(object) :
                            {'name':'a_anti_tmp',        'value':value_anti,         'min':-40.,                 'max':40.,             'vary':vary_anti,},
                            {'name':'a_anti',            'expr':'a_anti_tmp if abs(a_anti_tmp) >= .5 else 0'}, # arbitrary threshold for valid acceleration
                            {'name':'latency',           'value':value_latency,      'min':TargetOn-t_0+70,      'max':max_latency,     'vary':True  },
-                           {'name':'start_anti_tmp',    'value':TargetOn-t_0-100,   'min':TargetOn-t_0-500,     'max':TargetOn-t_0,    'vary':vary_start_anti},
+                           {'name':'start_anti_tmp',    'value':TargetOn-t_0-100,   'min':t_0-200,     'max':TargetOn-t_0,    'vary':vary_start_anti},
                            {'name':'start_anti',        'expr':'start_anti_tmp if a_anti != 0 else latency-1'},
                            ]
 
