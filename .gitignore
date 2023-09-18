@@ -99,3 +99,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+demo/result/velocity_1.pdf
+demo/result/velocity_2.pdf
+demo/result/velocity_1.pdf
+demo/result/velocity_2.pdf
