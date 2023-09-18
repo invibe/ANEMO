@@ -2250,7 +2250,7 @@ class ANEMO(object) :
 
                 no_fit = False
 
-                from inspect import getargspec
+                from inspect import getfullargspec
                 #-----------------------------------------------------------------------------
                 onset  = arg.TargetOn - arg.t_0
                 result_fit = {}
@@ -2273,7 +2273,7 @@ class ANEMO(object) :
                         if report is not None : result = f.fit_report()
 
                         rv = {}
-                        for name in getargspec(eqt).args :
+                        for name in getfullargspec(eqt).args :
                             if name in f.values.keys() : rv[name] = f.values[name]
 
                         if 'fit' in list_param_enre :         result_fit['fit'] = f.best_fit
@@ -2294,7 +2294,7 @@ class ANEMO(object) :
                         param_f[name] = param_fit[name]
 
                     rv = {}
-                    for name in getargspec(eqt).args :
+                    for name in getfullargspec(eqt).args :
                         if name in param_fit.keys() :
                             if np.isnan(param_fit[name]) :
                                 print('The parameter %s is missing ! The fit will not be displayed on the figure'%name)
@@ -2320,7 +2320,7 @@ class ANEMO(object) :
                     #-----------------------------------------------------------------------------
                     inde_v = Test.test_None(inde_vars, ANEMO.Fit.generation_param_fit(self, equation=equation, **opt)[1])
 
-                    if 'do_whitening' in getargspec(eqt).args : rv['do_whitening'] = False
+                    if 'do_whitening' in getfullargspec(eqt).args : rv['do_whitening'] = False
                     rv.update(inde_v)
 
                     #-----------------------------------------------------------------------------
