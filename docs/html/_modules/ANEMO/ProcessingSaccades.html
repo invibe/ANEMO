@@ -1,0 +1,707 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ANEMO.ProcessingSaccades &#8212; ANEMO 2.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/_static/custom.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">ANEMO</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=invibe&repo=ANEMO&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+
+<h3><a href="../../index.html">Table of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../1__init.html">init</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2__Data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3.0__PreProcessing.html">PreProcessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../4.0__ProcessingSaccades.html">ProcessingSaccades</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../5.0__ProcessingSmoothPursuit.html">ProcessingSmoothPursuit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../DEMO.html">DEMO</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ANEMO.ProcessingSaccades</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">from</span> <span class="nn">.various_functions</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.Init</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.Data_loop</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.GenerateParams</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="ProcessingSaccades"><a class="viewcode-back" href="../../4.0__ProcessingSaccades.html#ANEMO.ProcessingSaccades">[docs]</a><span class="k">class</span> <span class="nc">ProcessingSaccades</span><span class="p">:</span>
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    ``ProcessingSaccades`` is used to perform saccade-related processing on eye</span>
+<span class="sd">    data.</span>
+
+<span class="sd">        - Use ``ProcessingSaccades.Trial`` to test on a trial the different</span>
+<span class="sd">          parameters of the functions present in ``ProcessingSaccades`` in</span>
+<span class="sd">          order to adjust them as well as possible</span>
+
+<span class="sd">        - Once the right parameters are found, you can use</span>
+<span class="sd">          ``ProcessingSaccades.Data`` to apply the function to a set of data</span>
+<span class="sd">          and save it.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dirpath: str</span>
+<span class="sd">        Data directory path</span>
+
+<span class="sd">    sub: str, or None (default None)</span>
+<span class="sd">        Participant identifier</span>
+<span class="sd">    task: str, or None (default None)</span>
+<span class="sd">        Name of the Task</span>
+<span class="sd">    ses: str, or None (default None)</span>
+<span class="sd">        Name of the Session</span>
+<span class="sd">    acq: str, or None (default None)</span>
+<span class="sd">        Name of the Aquisition</span>
+<span class="sd">    run: str, or None (default None)</span>
+<span class="sd">        IndexRun</span>
+<span class="sd">    RawData: bool (default False)</span>
+<span class="sd">        If ``True`` open RawData,</span>
+<span class="sd">        if ``False`` open DataAnemo</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dirpath</span><span class="p">,</span> <span class="n">sub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">acq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">run</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">RawData</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirpath</span> <span class="o">=</span> <span class="n">dirpath</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sub</span> <span class="o">=</span> <span class="n">sub</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="n">task</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ses</span> <span class="o">=</span> <span class="n">ses</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">acq</span> <span class="o">=</span> <span class="n">acq</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run</span> <span class="o">=</span> <span class="n">run</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RawData</span> <span class="o">=</span> <span class="n">RawData</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dirpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ses</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">acq</span><span class="p">,</span>
+                              <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RawData</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Trial</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Trial</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ProcessingSaccades.Trial"><a class="viewcode-back" href="../../4.0__ProcessingSaccades.html#ANEMO.ProcessingSaccades.Trial">[docs]</a>    <span class="k">class</span> <span class="nc">Trial</span><span class="p">:</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Allows you to perform saccade-related processing on a eye data from a</span>
+<span class="sd">        trial.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">_</span><span class="o">.</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">_</span><span class="o">.</span><span class="n">sub</span><span class="p">,</span> <span class="n">_</span><span class="o">.</span><span class="n">ses</span><span class="p">,</span> <span class="n">_</span><span class="o">.</span><span class="n">acq</span><span class="p">,</span>  <span class="n">_</span><span class="o">.</span><span class="n">run</span><span class="p">,</span>
+                                  <span class="n">_</span><span class="o">.</span><span class="n">RawData</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ProcessingSaccades.Trial.detect_misacc"><a class="viewcode-back" href="../../4.1__ProcessingSaccades_detect_misacc.html#ANEMO.ProcessingSaccades.Trial.detect_misacc">[docs]</a>        <span class="k">def</span> <span class="nf">detect_misacc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vxname</span><span class="p">,</span> <span class="n">vyname</span><span class="p">,</span> <span class="n">trial</span><span class="p">,</span> <span class="n">expname</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                          <span class="n">mint</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">maxt</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">minstep</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">toxname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">return_</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">arg</span><span class="p">):</span>
+
+            <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            Detects microsaccades of the eye during the ``trial`` not</span>
+<span class="sd">            previously detected by your eye-tracker.</span>
+
+<span class="sd">            With the parameter ``return_=True`` this function returns the</span>
+<span class="sd">            calculated data and allows you to test the different parameters.</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            vxname : str</span>
+<span class="sd">                Name of the velocity data by degrees in x</span>
+<span class="sd">            vyname : str</span>
+<span class="sd">                Name of the velocity data by degrees in y</span>
+<span class="sd">            trial: int</span>
+<span class="sd">                Number of the trial to be transformed</span>
+<span class="sd">            expname: str</span>
+<span class="sd">                Name of the particular experience to be transformed</span>
+
+<span class="sd">            threshold : int (default 5)</span>
+<span class="sd">                Relative velocity threshold</span>
+<span class="sd">            mint : int (default 5)</span>
+<span class="sd">                Minimal saccade duration (ms)</span>
+<span class="sd">            maxt : int (default 100)</span>
+<span class="sd">                Maximal saccade duration (ms)</span>
+<span class="sd">            minstep : int (default 30)</span>
+<span class="sd">                Minimal time interval between two detected saccades (ms)</span>
+
+<span class="sd">            toxname: str (default None)</span>
+<span class="sd">                Name of the data to be saved</span>
+
+<span class="sd">            return_: bool (default True)</span>
+<span class="sd">                If ``True`` returns the value,</span>
+<span class="sd">                else saves it in ``events``</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            MISACC: dict</span>
+<span class="sd">                the calculated data if ``return_=True``</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Data</span> <span class="c1"># data</span>
+            <span class="n">trial_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">trial</span><span class="o">==</span><span class="n">trial</span><span class="p">]</span>
+
+            <span class="n">settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Settings</span> <span class="c1"># settings data</span>
+
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="c1"># converts the time variables into the sampling frequency</span>
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="n">mint</span>    <span class="o">=</span> <span class="p">(</span><span class="n">mint</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span>    <span class="o">*</span> <span class="n">settings</span><span class="o">.</span><span class="n">SamplingFrequency</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">maxt</span>    <span class="o">=</span> <span class="p">(</span><span class="n">maxt</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span>    <span class="o">*</span> <span class="n">settings</span><span class="o">.</span><span class="n">SamplingFrequency</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">minstep</span> <span class="o">=</span> <span class="p">(</span><span class="n">minstep</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span> <span class="o">*</span> <span class="n">settings</span><span class="o">.</span><span class="n">SamplingFrequency</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="c1"># time detection of micro-saccades</span>
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="n">vx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">trial_data</span><span class="p">[</span><span class="n">vxname</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">())</span> <span class="c1"># velocity x trial data</span>
+            <span class="n">msdx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">nanmedian</span><span class="p">(</span><span class="n">vx</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">-</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmedian</span><span class="p">(</span><span class="n">vx</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+            <span class="n">radiusx</span> <span class="o">=</span> <span class="n">threshold</span><span class="o">*</span><span class="n">msdx</span>
+
+            <span class="n">vy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">trial_data</span><span class="p">[</span><span class="n">vyname</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">())</span> <span class="c1"># velocity y trial data</span>
+            <span class="n">msdy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">nanmedian</span><span class="p">(</span><span class="n">vy</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">-</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmedian</span><span class="p">(</span><span class="n">vy</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+            <span class="n">radiusy</span> <span class="o">=</span> <span class="n">threshold</span><span class="o">*</span><span class="n">msdy</span>
+
+            <span class="n">test</span> <span class="o">=</span> <span class="p">(</span><span class="n">vx</span><span class="o">/</span><span class="n">radiusx</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">vy</span><span class="o">/</span><span class="n">radiusy</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+
+            <span class="c1"># time of micro-saccades</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="n">trial_data</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="c1"># trial data time</span>
+            <span class="n">time_misacc</span> <span class="o">=</span> <span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">test</span><span class="p">))</span> <span class="k">if</span> <span class="n">test</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="c1"># test if the misacc are well within the defined time interval</span>
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="n">misacc</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">time_misacc</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+
+                <span class="k">if</span> <span class="n">time_misacc</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">time_misacc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">+</span><span class="mi">1</span>
+
+                <span class="k">else</span> <span class="p">:</span>
+
+                    <span class="c1"># end micro-saccade</span>
+                    <span class="k">if</span> <span class="n">t</span><span class="o">&gt;=</span><span class="n">mint</span> <span class="ow">and</span> <span class="n">t</span><span class="o">&lt;</span><span class="n">maxt</span><span class="p">:</span>
+                        <span class="n">misacc</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">time_misacc</span><span class="p">[</span><span class="n">start</span><span class="p">],</span> <span class="n">time_misacc</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+
+                    <span class="n">t</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="n">start</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
+
+            <span class="c1"># end of the last micro-saccade</span>
+            <span class="k">if</span> <span class="n">t</span><span class="o">&gt;=</span><span class="n">mint</span> <span class="ow">and</span> <span class="n">t</span><span class="o">&lt;</span><span class="n">maxt</span><span class="p">:</span>
+                <span class="n">misacc</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">time_misacc</span><span class="p">[</span><span class="n">start</span><span class="p">],</span> <span class="n">time_misacc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="c1"># test if the different misacc are separated enough otherwise merge</span>
+            <span class="c1"># them</span>
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">misacc</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+
+                <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">while</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">misacc</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+
+                    <span class="c1"># temporal separation between onset of saccade s+1 and</span>
+                    <span class="c1"># offset of saccade s</span>
+                    <span class="n">step</span> <span class="o">=</span> <span class="n">misacc</span><span class="p">[</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">misacc</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+
+                    <span class="k">if</span> <span class="n">step</span> <span class="o">&lt;</span> <span class="n">minstep</span> <span class="p">:</span>
+                        <span class="c1"># the two saccades are fused into one</span>
+                        <span class="n">misacc</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">misacc</span><span class="p">[</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="k">del</span><span class="p">(</span><span class="n">misacc</span><span class="p">[</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">-</span><span class="mi">1</span>
+
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">+</span><span class="mi">1</span>
+
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="c1"># retest if the misacc are well within the defined time interval</span>
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">misacc</span><span class="p">):</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">misacc</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">misacc</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># duration of sth saccade</span>
+                <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;=</span> <span class="n">maxt</span><span class="p">:</span>
+                    <span class="k">del</span><span class="p">(</span><span class="n">misacc</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">-</span><span class="mi">1</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">+</span><span class="mi">1</span>
+            <span class="c1">#------------------------------------------------------------------</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">misacc</span><span class="p">)</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">toxname</span><span class="p">:</span> <span class="n">toxname</span><span class="o">=</span><span class="s1">&#39;MISSACC&#39;</span>
+                <span class="n">Sname</span> <span class="o">=</span> <span class="s1">&#39;S&#39;</span><span class="o">+</span><span class="n">toxname</span>
+                <span class="n">Ename</span> <span class="o">=</span> <span class="s1">&#39;E&#39;</span><span class="o">+</span><span class="n">toxname</span>
+
+                <span class="n">MISACC</span> <span class="o">=</span> <span class="p">{</span><span class="n">Sname</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">misacc</span><span class="p">)[:,</span> <span class="mi">0</span><span class="p">])),</span>
+                          <span class="n">Ename</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">misacc</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]))}</span>
+
+                <span class="k">if</span> <span class="n">return_</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">MISACC</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># add trial to the settings data</span>
+                    <span class="k">if</span> <span class="n">trial</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">Data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">toxname</span><span class="p">][</span><span class="s1">&#39;trial&#39;</span><span class="p">]:</span>
+                        <span class="n">settings</span><span class="o">.</span><span class="n">Data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">toxname</span><span class="p">][</span><span class="s1">&#39;trial&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trial</span><span class="p">)</span>
+
+                    <span class="c1"># add MISSAC to the events data</span>
+                    <span class="n">events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Events</span> <span class="c1"># events data</span>
+                    <span class="n">events</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">events</span><span class="o">.</span><span class="n">trial</span><span class="o">==</span><span class="n">trial</span><span class="p">),</span> <span class="n">Sname</span><span class="p">]</span> <span class="o">=</span> <span class="n">MISACC</span><span class="p">[</span><span class="n">Sname</span><span class="p">]</span>
+                    <span class="n">events</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">events</span><span class="o">.</span><span class="n">trial</span><span class="o">==</span><span class="n">trial</span><span class="p">),</span> <span class="n">Ename</span><span class="p">]</span> <span class="o">=</span> <span class="n">MISACC</span><span class="p">[</span><span class="n">Ename</span><span class="p">]</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">return_</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No microsacades were detected in the trial&quot;</span><span class="p">,</span> <span class="n">trial</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="ProcessingSaccades.Trial.Fit"><a class="viewcode-back" href="../../4.4.1__ProcessingSaccades__Fit_function.html#ANEMO.ProcessingSaccades.Trial.Fit">[docs]</a>        <span class="k">def</span> <span class="nf">Fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xname</span><span class="p">,</span> <span class="n">trial</span><span class="p">,</span> <span class="n">expname</span><span class="p">,</span>  <span class="n">model</span><span class="p">,</span>
+                <span class="n">generate_params</span><span class="o">=</span><span class="n">GenerateParams</span><span class="o">.</span><span class="n">saccade</span><span class="p">,</span>
+                <span class="n">stime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">etime</span><span class="o">=-</span><span class="mi">280</span><span class="p">,</span> <span class="n">step_fit</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="n">arg_generate_params</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">do_whitening</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                <span class="n">toxname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">opt</span><span class="p">):</span>
+
+            <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            Allows you to fit the parameters of a model defined by an</span>
+<span class="sd">            ``model`` to the ``xname`` data of a trial</span>
+
+<span class="sd">            With the parameter ``return_=True`` this function returns</span>
+<span class="sd">            the calculated data and allows you to test the different</span>
+<span class="sd">            parameters.</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            xname: str</span>
+<span class="sd">                Name of the data to be transformed</span>
+<span class="sd">            trial: int</span>
+<span class="sd">                Number of the trial to be transformed</span>
+<span class="sd">            expname: str</span>
+<span class="sd">                Name of the particular experience to be transformed</span>
+
+<span class="sd">            model: function</span>
+<span class="sd">                Model equation</span>
+<span class="sd">            generate_params: function (default GenerateParams.saccade)</span>
+<span class="sd">                Function generating parameters to perform the fitting</span>
+
+<span class="sd">            stime: int, or None (default None)</span>
+<span class="sd">                Start time of the fitting</span>
+<span class="sd">            etime: int, or None (default -280)</span>
+<span class="sd">                End time of the fitting</span>
+<span class="sd">            step_fit: int, optional (default 2)</span>
+<span class="sd">                Number of steps for the fit</span>
+<span class="sd">            arg_generate_params: dict</span>
+<span class="sd">                Dictionary containing the parameters for the generate_params</span>
+<span class="sd">                function,</span>
+<span class="sd">                its default value is : ``dict(do_whitening=False)``</span>
+
+<span class="sd">            toxname: str (default None)</span>
+<span class="sd">                Name of the data to be saved</span>
+
+<span class="sd">            return_: bool (default True)</span>
+<span class="sd">                If ``True`` returns the value,</span>
+<span class="sd">                else saves it in ``results`` and ``data``</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            fit: dict</span>
+<span class="sd">                the calculated data if ``return_=True``</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Data</span> <span class="c1"># data</span>
+            <span class="n">trial_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">trial</span><span class="o">==</span><span class="n">trial</span><span class="p">]</span> <span class="c1"># trial data</span>
+
+            <span class="n">events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Events</span> <span class="c1"># events data</span>
+            <span class="n">trial_events</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">events</span><span class="o">.</span><span class="n">trial</span><span class="o">==</span><span class="n">trial</span><span class="p">]</span> <span class="c1"># trial events</span>
+
+            <span class="n">settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Settings</span> <span class="c1"># settings data</span>
+            <span class="n">results</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Results</span> <span class="c1"># results data</span>
+
+            <span class="k">def</span> <span class="nf">fitting</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">inde_vars</span><span class="p">,</span> <span class="n">step_fit</span><span class="p">):</span>
+
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># checks if the function parameters are correct</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="kn">import</span> <span class="nn">inspect</span>
+                <span class="n">arg_fct</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">args</span>
+                <span class="n">arg</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">inde_vars</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">arg_fct</span><span class="p">)</span><span class="o">==</span><span class="nb">sorted</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="n">ParamsError</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">arg_fct</span><span class="p">)</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+
+                <span class="kn">from</span> <span class="nn">lmfit</span> <span class="kn">import</span>  <span class="n">Model</span><span class="p">,</span> <span class="n">Parameters</span>
+
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># parameters of the model to be fitted</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="n">params_</span> <span class="o">=</span> <span class="n">Parameters</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+                    <span class="k">if</span> <span class="s1">&#39;expr&#39;</span> <span class="ow">in</span> <span class="n">params</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="n">params_</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">expr</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="s1">&#39;expr&#39;</span><span class="p">])</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">vary</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="s1">&#39;vary&#39;</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="s1">&#39;vary&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;vary&#39;</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">step_fit</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+                                <span class="n">vary</span><span class="o">=</span><span class="kc">True</span>
+                            <span class="k">elif</span> <span class="n">step_fit</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+                                <span class="n">vary</span><span class="o">=</span><span class="kc">False</span>
+
+                        <span class="n">params_</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">p</span><span class="p">,</span>
+                                    <span class="n">value</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">],</span>
+                                    <span class="nb">min</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="s1">&#39;min&#39;</span><span class="p">],</span>
+                                    <span class="nb">max</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="s1">&#39;max&#39;</span><span class="p">],</span>
+                                    <span class="n">vary</span><span class="o">=</span><span class="n">vary</span><span class="p">)</span>
+
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># the model to be fitted</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="n">model_</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">independent_vars</span><span class="o">=</span><span class="n">inde_vars</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># fitting the model to the data</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="k">if</span> <span class="n">step_fit</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">model_</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">params_</span><span class="p">,</span> <span class="n">nan_policy</span><span class="o">=</span><span class="s1">&#39;omit&#39;</span><span class="p">,</span>
+                                        <span class="o">**</span><span class="n">inde_vars</span><span class="p">)</span>
+
+                <span class="k">elif</span> <span class="n">step_fit</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+                    <span class="n">out</span> <span class="o">=</span> <span class="n">model_</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">params_</span><span class="p">,</span> <span class="n">nan_policy</span><span class="o">=</span><span class="s1">&#39;omit&#39;</span><span class="p">,</span>
+                                     <span class="o">**</span><span class="n">inde_vars</span><span class="p">)</span>
+
+                    <span class="c1"># make the other parameters vary now</span>
+                    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="s1">&#39;vary&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;vary&#39;</span><span class="p">:</span>
+                            <span class="n">out</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">vary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">model_</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;nelder&#39;</span><span class="p">,</span>
+                                        <span class="n">nan_policy</span><span class="o">=</span><span class="s1">&#39;omit&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">inde_vars</span><span class="p">)</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+
+                <span class="k">return</span> <span class="n">result</span>
+
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="c1"># adds parameters to the dictionary containing the parameters for</span>
+            <span class="c1"># the generate_params function</span>
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="k">for</span> <span class="n">arg_name</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;xname&#39;</span><span class="p">,</span> <span class="s1">&#39;trial&#39;</span><span class="p">,</span> <span class="s1">&#39;expname&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;modelName&#39;</span><span class="p">,</span> <span class="s1">&#39;stime&#39;</span><span class="p">,</span> <span class="s1">&#39;etime&#39;</span><span class="p">],</span>
+                                      <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">xname</span><span class="p">,</span> <span class="n">trial</span><span class="p">,</span> <span class="n">expname</span><span class="p">,</span>
+                                       <span class="n">model</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">stime</span><span class="p">,</span> <span class="n">etime</span><span class="p">]):</span>
+
+                <span class="k">if</span> <span class="n">arg_name</span> <span class="ow">in</span> <span class="n">generate_params</span><span class="o">.</span><span class="vm">__code__</span><span class="o">.</span><span class="n">co_varnames</span><span class="p">:</span>
+                    <span class="n">arg_generate_params</span><span class="p">[</span><span class="n">arg_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">arg</span>
+            <span class="c1">#------------------------------------------------------------------</span>
+
+            <span class="n">data_x</span> <span class="o">=</span> <span class="n">trial_data</span><span class="p">[</span><span class="n">xname</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="c1"># trial data x</span>
+            <span class="n">fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">data_x</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+            <span class="k">if</span> <span class="n">return_</span><span class="p">:</span>
+                <span class="n">return_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;fit&#39;</span><span class="p">:[],</span> <span class="s1">&#39;values_fit&#39;</span><span class="p">:[],</span> <span class="s1">&#39;FitStatistics&#39;</span><span class="p">:[]}</span>
+
+            <span class="n">data_x</span> <span class="o">=</span> <span class="n">data_x</span><span class="p">[</span><span class="n">stime</span><span class="p">:</span><span class="n">etime</span><span class="p">]</span> <span class="c1"># trial data x for fitting</span>
+
+            <span class="n">ssacc</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_x</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data_x</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data_x</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">])]</span>
+            <span class="n">esacc</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_x</span><span class="p">))</span>
+                     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data_x</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data_x</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">])]</span>
+
+            <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ssacc</span><span class="p">,</span> <span class="n">esacc</span><span class="p">)):</span>
+
+                <span class="n">arg_generate_params</span><span class="p">[</span><span class="s1">&#39;stime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>
+                <span class="n">arg_generate_params</span><span class="p">[</span><span class="s1">&#39;etime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span>
+                <span class="n">data_s</span> <span class="o">=</span> <span class="n">data_x</span><span class="p">[</span><span class="n">s</span><span class="p">:</span><span class="n">e</span><span class="p">]</span> <span class="c1"># trial data x of saccade</span>
+
+                <span class="c1">#----------------------------------------------------------</span>
+                <span class="c1"># fitting</span>
+                <span class="c1">#----------------------------------------------------------</span>
+                <span class="n">params</span><span class="p">,</span> <span class="n">inde_vars</span> <span class="o">=</span> <span class="n">generate_params</span><span class="p">(</span><span class="o">**</span><span class="n">arg_generate_params</span><span class="p">)</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">fitting</span><span class="p">(</span><span class="n">data_s</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">inde_vars</span><span class="p">,</span> <span class="n">step_fit</span><span class="p">)</span>
+
+                <span class="c1">#----------------------------------------------------------</span>
+                <span class="c1"># results of fitting</span>
+                <span class="c1">#----------------------------------------------------------</span>
+                <span class="c1"># fitted values</span>
+                <span class="n">values_fit</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">values</span>
+                <span class="n">fit</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">e</span><span class="p">)]</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">inde_vars</span><span class="p">,</span> <span class="o">**</span><span class="n">values_fit</span><span class="p">)</span>
+                <span class="c1"># fit statistics</span>
+                <span class="n">FitStatistics</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;nfev&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">nfev</span><span class="p">,</span> <span class="c1"># number of function evals</span>
+                                 <span class="s1">&#39;chisqr&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">chisqr</span><span class="p">,</span> <span class="c1"># chi-sqr</span>
+                                 <span class="s1">&#39;redchi&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">redchi</span><span class="p">,</span> <span class="c1"># reduce chi-sqr</span>
+                                 <span class="s1">&#39;aic&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">aic</span><span class="p">,</span> <span class="c1"># Akaike info crit</span>
+                                 <span class="s1">&#39;bic&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">bic</span><span class="p">}</span> <span class="c1"># Bayesian info crit</span>
+                <span class="c1">#----------------------------------------------------------</span>
+
+                <span class="k">if</span> <span class="n">return_</span><span class="p">:</span>
+                    <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;values_fit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">values_fit</span><span class="p">)</span>
+                    <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;FitStatistics&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FitStatistics</span><span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+                    <span class="c1"># add results of fitting to the results</span>
+                    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="n">n</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="n">n</span><span class="o">+</span><span class="s1">&#39;_FitStatistics&#39;</span><span class="p">],</span>
+                                    <span class="p">[[</span><span class="n">values_fit</span><span class="p">],</span> <span class="p">[</span><span class="n">FitStatistics</span><span class="p">]]):</span>
+                        <span class="n">results</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">results</span><span class="o">.</span><span class="n">trial</span><span class="o">==</span><span class="n">trial</span><span class="p">),</span> <span class="n">toxname</span><span class="o">+</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+            <span class="k">if</span> <span class="n">return_</span><span class="p">:</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit</span>
+                <span class="k">return</span> <span class="n">return_dict</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># add trial to the settings data</span>
+                <span class="k">if</span> <span class="n">trial</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">Data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">toxname</span><span class="p">][</span><span class="s1">&#39;trial&#39;</span><span class="p">]:</span>
+                    <span class="n">settings</span><span class="o">.</span><span class="n">Data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">toxname</span><span class="p">][</span><span class="s1">&#39;trial&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trial</span><span class="p">)</span>
+                <span class="c1"># add trial to the settings results</span>
+                <span class="k">if</span> <span class="n">trial</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">Results</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">toxname</span><span class="p">][</span><span class="s1">&#39;trial&#39;</span><span class="p">]:</span>
+                    <span class="n">settings</span><span class="o">.</span><span class="n">Results</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">toxname</span><span class="p">][</span><span class="s1">&#39;trial&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trial</span><span class="p">)</span>
+
+                <span class="c1"># add fit to the data</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">data</span><span class="o">.</span><span class="n">trial</span><span class="o">==</span><span class="n">trial</span><span class="p">),</span> <span class="n">toxname</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit</span></div></div>
+
+<div class="viewcode-block" id="ProcessingSaccades.Data"><a class="viewcode-back" href="../../4.0__ProcessingSaccades.html#ANEMO.ProcessingSaccades.Data">[docs]</a>    <span class="k">class</span> <span class="nc">Data</span><span class="p">:</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Allows you to perform saccade-related processing on a set of data.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_</span> <span class="o">=</span> <span class="n">_</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">dirpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">dirpath</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dirpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">sub</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">ses</span><span class="p">,</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">acq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">run</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">RawData</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ProcessingSaccades.Data.detect_misacc"><a class="viewcode-back" href="../../4.1__ProcessingSaccades_detect_misacc.html#ANEMO.ProcessingSaccades.Data.detect_misacc">[docs]</a>        <span class="k">def</span> <span class="nf">detect_misacc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vxname</span><span class="p">,</span> <span class="n">vyname</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">mint</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">maxt</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                          <span class="n">minstep</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">toxname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">expnames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">trials</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">recalculate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+            <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            Detects microsaccades of the eye not previously detected by your</span>
+<span class="sd">            eye-tracker and saves it in ``events``.</span>
+
+<span class="sd">            Allows you to perform this transformation on a data set.</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            vxname : str</span>
+<span class="sd">                Name of the velocity data by degrees in x</span>
+<span class="sd">            vyname : str</span>
+<span class="sd">                Name of the velocity data by degrees in y</span>
+
+<span class="sd">            threshold : int (default 5)</span>
+<span class="sd">                Relative velocity threshold</span>
+<span class="sd">            mint : int (default 5)</span>
+<span class="sd">                Minimal saccade duration (ms)</span>
+<span class="sd">            maxt : int (default 100)</span>
+<span class="sd">                Maximal saccade duration (ms)</span>
+<span class="sd">            minstep : int (default 30)</span>
+<span class="sd">                Minimal time interval between two detected saccades (ms)</span>
+
+<span class="sd">            toxname: str (default None)</span>
+<span class="sd">                Name of the data to be saved,</span>
+<span class="sd">                if ``None``, ``toxname`` will take the value ``MISACC``</span>
+<span class="sd">            expnames: str, or list(str)</span>
+<span class="sd">                Name or list of names of the particular experience to be</span>
+<span class="sd">                transformed,</span>
+<span class="sd">                if ``None`` all experiences will be transformed</span>
+<span class="sd">            trials: int, or list(int), or None (default None)</span>
+<span class="sd">                Number or list of the trial to be transformed,</span>
+<span class="sd">                if ``None``, all the trials will be transformed</span>
+
+<span class="sd">            recalculate: bool (default False)</span>
+<span class="sd">                Allows you to indicate if you want to force the calculation on</span>
+<span class="sd">                the trials already processed</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">toxname</span><span class="p">:</span> <span class="n">toxname</span> <span class="o">=</span> <span class="s1">&#39;MISACC&#39;</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dirpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">sub</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">ses</span><span class="p">,</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">acq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">run</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">RawData</span><span class="p">)</span>
+
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="c1"># argument for the loop applying the function on all trials</span>
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="n">arg</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;trials&#39;</span><span class="p">]</span>    <span class="o">=</span> <span class="n">trials</span> <span class="c1"># the trials to be transformed</span>
+            <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;expnames&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">expnames</span> <span class="c1"># the expnames to be transformed</span>
+            <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;toxname&#39;</span><span class="p">]</span>   <span class="o">=</span> <span class="n">toxname</span> <span class="c1"># name of the data to be saved</span>
+
+            <span class="c1"># function to execute</span>
+            <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;fct&#39;</span><span class="p">]</span>       <span class="o">=</span> <span class="n">ProcessingSaccades</span><span class="o">.</span><span class="n">Trial</span><span class="o">.</span><span class="n">detect_misacc</span>
+            <span class="c1"># function name</span>
+            <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;name_fct&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="s1">&#39;ProcessingSaccades.Data.detect_misacc&#39;</span>
+            <span class="c1"># argument of the function</span>
+            <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;arg_fct&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s1">&#39;vxname&#39;</span><span class="p">,</span> <span class="s1">&#39;vyname&#39;</span><span class="p">,</span> <span class="s1">&#39;threshold&#39;</span><span class="p">,</span> <span class="s1">&#39;mint&#39;</span><span class="p">,</span> <span class="s1">&#39;maxt&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;minstep&#39;</span><span class="p">,</span> <span class="s1">&#39;return_&#39;</span><span class="p">],</span> <span class="p">[</span><span class="n">vxname</span> <span class="p">,</span> <span class="n">vyname</span><span class="p">,</span>
+                             <span class="n">threshold</span><span class="p">,</span> <span class="n">mint</span><span class="p">,</span> <span class="n">maxt</span><span class="p">,</span> <span class="n">minstep</span><span class="p">,</span> <span class="kc">False</span><span class="p">]):</span>
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;arg_fct&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+            <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;recalculate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">recalculate</span>
+            <span class="c1">#------------------------------------------------------------------</span>
+
+            <span class="c1"># the loop applying the function on all trials</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="s1">&#39;PreProcessing&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">arg</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ProcessingSaccades.Data.Fit"><a class="viewcode-back" href="../../4.4.1__ProcessingSaccades__Fit_function.html#ANEMO.ProcessingSaccades.Data.Fit">[docs]</a>        <span class="k">def</span> <span class="nf">Fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xname</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">generate_params</span><span class="o">=</span><span class="n">GenerateParams</span><span class="o">.</span><span class="n">saccade</span><span class="p">,</span>
+                <span class="n">stime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">etime</span><span class="o">=-</span><span class="mi">280</span><span class="p">,</span> <span class="n">step_fit</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="n">arg_generate_params</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">do_whitening</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                <span class="n">toxname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">expnames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">trials</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">recalculate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+            <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            Allows you to fit the parameters of a model defined by an</span>
+<span class="sd">            ``model`` to the ``xname`` data.</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            xname: str</span>
+<span class="sd">                Name of the data to be transformed</span>
+<span class="sd">            model: function</span>
+<span class="sd">                Model equation</span>
+<span class="sd">            generate_params: function (default GenerateParams.saccade)</span>
+<span class="sd">                Function generating parameters to perform the fitting</span>
+
+<span class="sd">            stime: int, or None (defaut None)</span>
+<span class="sd">                Start time of the fitting</span>
+<span class="sd">            etime: int, or None (default -280)</span>
+<span class="sd">                End time of the fitting</span>
+<span class="sd">            step_fit: int, optional (default 2)</span>
+<span class="sd">                Number of steps for the fit</span>
+
+<span class="sd">            arg_generate_params: dict</span>
+<span class="sd">                Dictionary containing the parameters for the generate_params</span>
+<span class="sd">                function,</span>
+<span class="sd">                its default value is :</span>
+<span class="sd">                ``dict(do_whitening=False)``</span>
+
+<span class="sd">            toxname: str (default None)</span>
+<span class="sd">                Name of the data to be saved,</span>
+<span class="sd">                if ``None`` ``toxname`` will take the value</span>
+<span class="sd">                ``&#39;Fit_&#39;+Name_of_model_equation``</span>
+<span class="sd">            expnames: str, or list(str)</span>
+<span class="sd">                Name or list of names of the particular experience to be</span>
+<span class="sd">                transformed,</span>
+<span class="sd">                if ``None`` all experiences will be transformed</span>
+<span class="sd">            trials: int, or list(int), or None (default None)</span>
+<span class="sd">                Number or list of the trial to be transformed,</span>
+<span class="sd">                if ``None`` all the trials will be transformed</span>
+
+<span class="sd">            recalculate: bool (default False)</span>
+<span class="sd">                Allows you to indicate if you want to force the calculation on</span>
+<span class="sd">                the trials already processed</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">toxname</span><span class="p">:</span> <span class="n">toxname</span> <span class="o">=</span> <span class="s1">&#39;Fit_</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">model</span><span class="o">.</span><span class="vm">__name__</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dirpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">sub</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">ses</span><span class="p">,</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">acq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">run</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">RawData</span><span class="p">)</span>
+
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="c1"># argument for the loop applying the function on all trials</span>
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="n">arg</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;trials&#39;</span><span class="p">]</span>    <span class="o">=</span> <span class="n">trials</span> <span class="c1"># the trials to be transformed</span>
+            <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;expnames&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">expnames</span> <span class="c1"># the expnames to be transformed</span>
+            <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;toxname&#39;</span><span class="p">]</span>   <span class="o">=</span> <span class="n">toxname</span> <span class="c1"># name of the data to be saved</span>
+
+            <span class="c1"># function to execute</span>
+            <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;fct&#39;</span><span class="p">]</span>       <span class="o">=</span> <span class="n">ProcessingSaccades</span><span class="o">.</span><span class="n">Trial</span><span class="o">.</span><span class="n">Fit</span>
+            <span class="c1"># function name</span>
+            <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;name_fct&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="s1">&#39;ProcessingSaccades.Data.Fit&#39;</span>
+            <span class="c1"># argument of the function</span>
+            <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;arg_fct&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s1">&#39;xname&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;generate_params&#39;</span><span class="p">,</span> <span class="s1">&#39;stime&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;etime&#39;</span><span class="p">,</span> <span class="s1">&#39;step_fit&#39;</span><span class="p">,</span> <span class="s1">&#39;arg_generate_params&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;return_&#39;</span><span class="p">],</span> <span class="p">[</span><span class="n">xname</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">generate_params</span><span class="p">,</span>
+                             <span class="n">stime</span><span class="p">,</span> <span class="n">etime</span><span class="p">,</span> <span class="n">step_fit</span><span class="p">,</span> <span class="n">arg_generate_params</span><span class="p">,</span>
+                             <span class="kc">False</span><span class="p">]):</span>
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;arg_fct&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+            <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;recalculate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">recalculate</span>
+            <span class="c1">#------------------------------------------------------------------</span>
+
+            <span class="c1"># the loop applying the function on all trials</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">arg</span><span class="p">)</span></div></div></div>
+</pre></div>
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

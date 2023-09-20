@@ -1,0 +1,148 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Saccades fitting function"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "metadata": {
+    "raw_mimetype": "text/html"
+   },
+   "source": [
+    "<br>"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "raw_mimetype": "text/html"
+   },
+   "source": [
+    "Allows you to **fit the parameters of a model** defined by an ``equation`` to the data"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "raw_mimetype": "text/html"
+   },
+   "source": [
+    "## Test the parameters\n",
+    "\n",
+    "------------------------------"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "metadata": {
+    "raw_mimetype": "text/restructuredtext"
+   },
+   "source": [
+    ".. autofunction:: ANEMO.ProcessingSaccades::ProcessingSaccades.Trial.Fit\n",
+    "  :noindex:"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "metadata": {
+    "raw_mimetype": "text/html"
+   },
+   "source": [
+    "<br>"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "metadata": {
+    "raw_mimetype": "text/restructuredtext"
+   },
+   "source": [
+    "**example of code:**\n",
+    "\n",
+    "    - :ref:`saccade </4.4.2__ProcessingSaccades__Model.ipynb#Test-the-parameters>`\n",
+    "    - :ref:`example_of_a_user-defined_model </4.4.4__ProcessingSaccades__Fit_example_of_a_user-defined_model.ipynb#Test-the-parameters>`"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "raw_mimetype": "text/html"
+   },
+   "source": [
+    "## Run it on a data set\n",
+    "\n",
+    "------------------------------"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "metadata": {
+    "raw_mimetype": "text/restructuredtext"
+   },
+   "source": [
+    ".. autofunction:: ANEMO.ProcessingSaccades::ProcessingSaccades.Data.Fit\n",
+    "  :noindex:"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "metadata": {
+    "raw_mimetype": "text/html"
+   },
+   "source": [
+    "<br>"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "metadata": {
+    "raw_mimetype": "text/restructuredtext"
+   },
+   "source": [
+    "**example of code:**\n",
+    "\n",
+    "    - :ref:`saccade </4.4.2__ProcessingSaccades__Model.ipynb#Run-it-on-a-data-set>`\n",
+    "    - :ref:`example_of_a_user-defined_model </4.4.4__ProcessingSaccades__Fit_example_of_a_user-defined_model.ipynb#Run-it-on-a-data-set>`"
+   ]
+  }
+ ],
+ "metadata": {
+  "celltoolbar": "Raw Cell Format",
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.6"
+  },
+  "toc": {
+   "base_numbering": 1,
+   "nav_menu": {},
+   "number_sections": true,
+   "sideBar": true,
+   "skip_h1_title": false,
+   "title_cell": "Table of Contents",
+   "title_sidebar": "Contents",
+   "toc_cell": false,
+   "toc_position": {},
+   "toc_section_display": true,
+   "toc_window_display": false
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

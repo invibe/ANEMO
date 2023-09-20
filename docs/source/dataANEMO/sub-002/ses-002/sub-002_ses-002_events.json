@@ -1,0 +1,41 @@
+{
+    "EFIX":{
+        "Description":"End of fixation"
+    },
+    "ESACC":{
+        "Description":"End of saccade"
+    },
+    "SFIX":{
+        "Description":"Start of fixation"
+    },
+    "SSACC":{
+        "Description":"Start of saccade"
+    },
+    "StimulusOff":{
+        "Description":"disappearance of the fixation point"
+    },
+    "StimulusOn":{
+        "Description":"appearance of the fixation point"
+    },
+    "TargetOff":{
+        "Description":"disappearance of the moving target"
+    },
+    "TargetOn":{
+        "Description":"appearance of the moving target"
+    },
+    "dir_target":{
+        "Description":"direction of the Target"
+    },
+    "num_block":{
+        "Description":"numero of block"
+    },
+    "num_trial":{
+        "Description":"numero of the trial"
+    },
+    "proba":{
+        "Description":"probability that the movement of the target is to the right"
+    },
+    "switch":{
+        "Description":"switch of the probability"
+    }
+}

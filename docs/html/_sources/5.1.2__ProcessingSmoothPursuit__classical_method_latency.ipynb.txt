@@ -1,0 +1,272 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# latency"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "metadata": {
+    "raw_mimetype": "text/html"
+   },
+   "source": [
+    "<br>\n",
+    "Calculates the pursuit latency during the smooth pursuit of the trial.\n",
+    "<br>\n",
+    "This latency corresponds to the interception of two regression lines.\n",
+    "<br>"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "This function extracts different parameters:\n",
+    "\n",
+    "- `t_0` - corresponds to the start time of the first regression line\n",
+    "- `slope1` - corresponds to the slope of the first regression line\n",
+    "- `intercept1` - corresponds to the intercept of the first regression line\n",
+    "- `slope2` - corresponds to the slope of the second regression line\n",
+    "- `intercept2` - corresponds to the intercept of the second regression line\n",
+    "- `latency` - corresponds to the intercept of the two regression lines"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "metadata": {
+    "raw_mimetype": "text/html"
+   },
+   "source": [
+    "<br>"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "metadata": {
+    "raw_mimetype": "text/restructuredtext"
+   },
+   "source": [
+    ".. image:: _static/classical_method_latency.svg"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Test the parameters\n",
+    "\n",
+    "-----------------------------"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "metadata": {
+    "raw_mimetype": "text/restructuredtext"
+   },
+   "source": [
+    ".. autofunction:: ANEMO.ProcessingSmoothPursuit::ProcessingSmoothPursuit.Trial.classical_method.latency\n",
+    "  :noindex:"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "metadata": {
+    "raw_mimetype": "text/html"
+   },
+   "source": [
+    "<br><br>"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "metadata": {
+    "raw_mimetype": "text/restructuredtext"
+   },
+   "source": [
+    "**example of code:** test the parameters of the function to ``the velocity of the eye de-saccade in deg/sec`` (see :ref:`/4.2__ProcessingSaccades_remove_saccades.ipynb#remove-saccades-from-the-velocity-data-in-deg/sec`)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{'latency': 1080.0, 't0': 719, 'slope1': 0.0009776089731687821, 'intercept1': -0.5980361378442425, 'slope2': 0.11229618390727653, 'intercept2': -120.8242506605627}\n"
+     ]
+    }
+   ],
+   "source": [
+    "import ANEMO\n",
+    "\n",
+    "Processing = ANEMO.ProcessingSmoothPursuit(dirpath='dataANEMO', sub='002')\n",
+    "classical_method = Processing.Trial.classical_method\n",
+    "\n",
+    "#------------------------------------------------------------------------------\n",
+    "# Parameters:\n",
+    "#------------------------------------------------------------------------------\n",
+    "xname = 'vx_NaN' # The velocity of the eye de-saccade in deg/sec\n",
+    "trial = 8 # Number of the trial to be transformed\n",
+    "expname = 'sub-002_task-aSPEM' # Name of the particular experience to be\n",
+    "                               # transformed\n",
+    "                               # or list(PreProcessing.data.keys())[0]\n",
+    "w1 = 300 # Size of the window 1 in ms\n",
+    "w2 = 50 # Size of the window 2 in ms\n",
+    "off = 50 # Gap between the two windows\n",
+    "crit = 0.1 # Difference criterion between the two linregress detecting if the\n",
+    "           # pursuit begins\n",
+    "eventName_TargetOn = 'TargetOn' # Name of the event marking the appearance of\n",
+    "                                # the target\n",
+    "toxname = None # Name of the data to be saved\n",
+    "return_ = True # If True returns the value, else saves it in results\n",
+    "\n",
+    "#------------------------------------------------------------------------------\n",
+    "# to apply the function:\n",
+    "#------------------------------------------------------------------------------\n",
+    "latency = classical_method.latency(xname,\n",
+    "                                   trial,\n",
+    "                                   expname,\n",
+    "                                   w1,\n",
+    "                                   w2,\n",
+    "                                   off,\n",
+    "                                   crit,\n",
+    "                                   eventName_TargetOn,\n",
+    "                                   toxname,\n",
+    "                                   return_)\n",
+    "\n",
+    "print(latency)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Run it on a data set\n",
+    "\n",
+    "----------------------------"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "metadata": {
+    "raw_mimetype": "text/restructuredtext"
+   },
+   "source": [
+    ".. autofunction:: ANEMO.ProcessingSmoothPursuit::ProcessingSmoothPursuit.Data.classical_method.latency\n",
+    "  :noindex:"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "metadata": {
+    "raw_mimetype": "text/html"
+   },
+   "source": [
+    "<br><br>"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "metadata": {
+    "raw_mimetype": "text/restructuredtext"
+   },
+   "source": [
+    "**example of code:** run this function on ``the full data of velocity of the eye de-saccade in deg/sec`` (see :ref:`/4.2__ProcessingSaccades_remove_saccades.ipynb#remove-saccades-from-the-velocity-data-in-deg/sec`)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "calculates classical_latency from the file sub-002_task-aSPEM... finished\n"
+     ]
+    }
+   ],
+   "source": [
+    "import ANEMO\n",
+    "\n",
+    "Processing = ANEMO.ProcessingSmoothPursuit(dirpath='dataANEMO', sub='002')\n",
+    "classical_method = Processing.Data.classical_method\n",
+    "\n",
+    "#------------------------------------------------------------------------------\n",
+    "# Parameters:\n",
+    "#------------------------------------------------------------------------------\n",
+    "xname = 'vx_NaN' # The velocity of the eye de-saccade in deg/sec\n",
+    "w1 = 300 # Size of the window 1 in ms\n",
+    "w2 = 50 # Size of the window 2 in ms\n",
+    "off = 50 # Gap between the two windows\n",
+    "crit = 0.1 # Difference criterion between the two linregress detecting if the\n",
+    "           # pursuit begins\n",
+    "eventName_TargetOn = 'TargetOn' # Name of the event marking the appearance of\n",
+    "                                # the target\n",
+    "toxname = None # Name of the data to be saved\n",
+    "expnames = 'sub-002_task-aSPEM' # Name of the particular experience to be\n",
+    "                                # transformed\n",
+    "                                # or list(PreProcessing.data.keys())[0] \n",
+    "trials = trials = list(range(1, 16)) # List of the trial to be transformed\n",
+    "recalculate = False # Allows you to indicate if you want to force the\n",
+    "                    # calculation on the trials already processed\n",
+    "    \n",
+    "#------------------------------------------------------------------------------\n",
+    "# to apply the function:\n",
+    "#------------------------------------------------------------------------------\n",
+    "classical_method.latency(xname,\n",
+    "                         w1,\n",
+    "                         w2,\n",
+    "                         off,\n",
+    "                         crit,\n",
+    "                         eventName_TargetOn,\n",
+    "                         toxname,\n",
+    "                         expnames,\n",
+    "                         trials,\n",
+    "                         recalculate)"
+   ]
+  }
+ ],
+ "metadata": {
+  "celltoolbar": "Raw Cell Format",
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.6"
+  },
+  "toc": {
+   "base_numbering": 1,
+   "nav_menu": {},
+   "number_sections": true,
+   "sideBar": true,
+   "skip_h1_title": false,
+   "title_cell": "Table of Contents",
+   "title_sidebar": "Contents",
+   "toc_cell": false,
+   "toc_position": {},
+   "toc_section_display": true,
+   "toc_window_display": false
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

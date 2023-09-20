@@ -1,0 +1,661 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ANEMO.Model &#8212; ANEMO 2.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/_static/custom.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">ANEMO</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=invibe&repo=ANEMO&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+
+<h3><a href="../../index.html">Table of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../1__init.html">init</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2__Data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3.0__PreProcessing.html">PreProcessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../4.0__ProcessingSaccades.html">ProcessingSaccades</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../5.0__ProcessingSmoothPursuit.html">ProcessingSmoothPursuit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../DEMO.html">DEMO</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ANEMO.Model</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">.various_functions</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">class</span> <span class="nc">Model</span><span class="p">:</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Predefined models to fit the data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Model.SmoothPursuit"><a class="viewcode-back" href="../../5.2.2.0__ProcessingSmoothPursuit__Model.html#ANEMO.Model.Model.SmoothPursuit">[docs]</a>    <span class="k">class</span> <span class="nc">SmoothPursuit</span><span class="p">:</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Predefined models to fit the eye data during the smooth pursuit of a</span>
+<span class="sd">        moving target.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Model.SmoothPursuit.velocity_line"><a class="viewcode-back" href="../../5.2.2.1__ProcessingSmoothPursuit__Model_velocity_line.html#ANEMO.Model.Model.SmoothPursuit.velocity_line">[docs]</a>        <span class="k">def</span> <span class="nf">velocity_line</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dir_target</span><span class="p">,</span> <span class="n">start_anti</span><span class="p">,</span> <span class="n">a_anti</span><span class="p">,</span> <span class="n">latency</span><span class="p">,</span>
+                          <span class="n">ramp_pursuit</span><span class="p">,</span> <span class="n">steady_state</span><span class="p">,</span> <span class="n">do_whitening</span><span class="p">):</span>
+
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Model reproducing the velocity of the eye during the smooth pursuit</span>
+<span class="sd">            of a moving target.</span>
+
+<span class="sd">            This model includes different parts:</span>
+
+<span class="sd">                - ``FIXATION`` - corresponding to a fixation of the eye on a</span>
+<span class="sd">                  fixation point</span>
+<span class="sd">                - ``ANTICIPATION`` - corresponding to an anticipatory movement</span>
+<span class="sd">                  of the eye before the moving target appears</span>
+<span class="sd">                - ``PURSUIT`` - corresponding to the movement of the eye when</span>
+<span class="sd">                  tracking a moving target.</span>
+<span class="sd">                  This part corresponds to a linear ``acceleration`` at the</span>
+<span class="sd">                  beginning of the pursuit followed by a ``steady state`` of</span>
+<span class="sd">                  the pursuit.</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            x: ndarray</span>
+<span class="sd">                Time of the function</span>
+
+<span class="sd">            dir_target: int</span>
+<span class="sd">                Direction of the target -1 or 1</span>
+<span class="sd">            start_anti: int</span>
+<span class="sd">                Time when anticipation begins</span>
+<span class="sd">            a_anti: float</span>
+<span class="sd">                Acceleration of anticipation in deg/(s**2)</span>
+<span class="sd">            latency: int</span>
+<span class="sd">                Time when the movement begins</span>
+<span class="sd">            ramp_pursuit: float</span>
+<span class="sd">                Acceleration of pursuit in seconds</span>
+<span class="sd">            steady_state: float</span>
+<span class="sd">                Steady_state velocity reached during the pursuit</span>
+<span class="sd">            do_whitening: bool</span>
+<span class="sd">                If ``True`` return the whitened velocity</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            velocity: list</span>
+<span class="sd">                Velocity of the eye in deg/sec</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="c1"># check that the start time of the anticipation is not above the</span>
+            <span class="c1"># start time of the pursuit.</span>
+            <span class="k">if</span> <span class="n">start_anti</span><span class="o">&gt;=</span><span class="n">latency</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># acceleration of anticipation to switch from sec to ms</span>
+                <span class="n">a_anti</span> <span class="o">=</span> <span class="n">a_anti</span><span class="o">/</span><span class="mi">1000</span>
+                <span class="c1"># acceleration of pursuit to switch from sec to ms</span>
+                <span class="n">r_pursuit</span> <span class="o">=</span> <span class="p">(</span><span class="n">dir_target</span><span class="o">*</span><span class="n">ramp_pursuit</span><span class="p">)</span><span class="o">/</span><span class="mi">1000</span>
+                <span class="c1"># velocity at pursuit latency</span>
+                <span class="n">v_latency</span> <span class="o">=</span> <span class="p">((</span><span class="n">latency</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="n">start_anti</span><span class="p">)</span><span class="o">*</span><span class="n">a_anti</span>
+                <span class="c1"># steady state of the pursuit</span>
+                <span class="n">s_pursuit</span> <span class="o">=</span> <span class="p">(</span><span class="n">dir_target</span><span class="o">*</span><span class="n">steady_state</span><span class="p">)</span> <span class="o">-</span> <span class="n">v_latency</span>
+
+                <span class="c1"># time of the end of the acceleration of the pursuit</span>
+                <span class="n">end_a</span> <span class="o">=</span> <span class="p">(</span><span class="n">s_pursuit</span><span class="o">/</span><span class="n">r_pursuit</span><span class="p">)</span> <span class="o">+</span> <span class="n">latency</span>
+
+                <span class="c1"># check that the start time of the pursuit is not above the</span>
+                <span class="c1"># time of the end of the acceleration of the pursuit</span>
+                <span class="k">if</span> <span class="n">latency</span><span class="o">&gt;=</span><span class="n">end_a</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+
+                <span class="k">else</span><span class="p">:</span>
+
+                    <span class="n">velocity</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+
+                        <span class="c1">#------------------------------------------------------</span>
+                        <span class="c1"># FIXATION</span>
+                        <span class="c1">#------------------------------------------------------</span>
+                        <span class="k">if</span> <span class="n">t</span><span class="o">&lt;</span><span class="n">start_anti</span><span class="p">:</span>
+                            <span class="c1"># velocity during the fixation</span>
+                            <span class="n">v_fixation</span> <span class="o">=</span> <span class="mi">0</span>
+                            <span class="n">velocity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v_fixation</span><span class="p">)</span>
+
+                        <span class="k">else</span><span class="p">:</span>
+
+                            <span class="c1">#--------------------------------------------------</span>
+                            <span class="c1"># ANTICIPATION</span>
+                            <span class="c1">#--------------------------------------------------</span>
+                            <span class="k">if</span> <span class="n">t</span><span class="o">&lt;</span><span class="n">latency</span><span class="p">:</span>
+                                <span class="c1"># velocity during the anticipation</span>
+                                <span class="n">v_anti</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">start_anti</span><span class="p">)</span> <span class="o">*</span> <span class="n">a_anti</span>
+                                <span class="n">velocity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v_anti</span><span class="p">)</span>
+
+                            <span class="k">else</span><span class="p">:</span>
+
+                                <span class="c1">#----------------------------------------------</span>
+                                <span class="c1"># PURSUIT</span>
+                                <span class="c1">#----------------------------------------------</span>
+                                <span class="c1"># acceleration of the pursuit</span>
+                                <span class="k">if</span> <span class="n">t</span><span class="o">&lt;</span><span class="nb">int</span><span class="p">(</span><span class="n">end_a</span><span class="p">):</span>
+                                    <span class="c1"># velocity during the acceleration</span>
+                                    <span class="n">v_a</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">latency</span><span class="p">)</span><span class="o">*</span><span class="n">r_pursuit</span> <span class="o">+</span> <span class="n">v_latency</span>
+                                    <span class="n">velocity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v_a</span><span class="p">)</span>
+                                <span class="c1"># steady state of the pursuit</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="c1"># velocity during the steady state</span>
+                                    <span class="n">v_steady</span> <span class="o">=</span> <span class="n">s_pursuit</span>
+                                    <span class="n">v_steady</span> <span class="o">+=</span> <span class="n">v_latency</span>
+                                    <span class="n">velocity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v_steady</span><span class="p">)</span>
+
+
+                    <span class="c1"># the whitened function</span>
+                    <span class="k">if</span> <span class="n">do_whitening</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="n">velocity</span> <span class="o">=</span> <span class="n">whitening</span><span class="p">(</span><span class="n">velocity</span><span class="p">)</span>
+
+
+                    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">velocity</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Model.SmoothPursuit.velocity"><a class="viewcode-back" href="../../5.2.2.2__ProcessingSmoothPursuit__Model_velocity.html#ANEMO.Model.Model.SmoothPursuit.velocity">[docs]</a>        <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dir_target</span><span class="p">,</span> <span class="n">start_anti</span><span class="p">,</span> <span class="n">a_anti</span><span class="p">,</span> <span class="n">latency</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span>
+                     <span class="n">steady_state</span><span class="p">,</span> <span class="n">do_whitening</span><span class="p">):</span>
+
+            <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Model reproducing the velocity of the eye during the smooth pursuit</span>
+<span class="sd">            of a moving target.</span>
+
+<span class="sd">            This model includes different parts:</span>
+
+<span class="sd">                - ``FIXATION`` - corresponding to a fixation of the eye on a</span>
+<span class="sd">                  fixation point</span>
+<span class="sd">                - ``ANTICIPATION`` - corresponding to an anticipatory movement</span>
+<span class="sd">                  of the eye before the moving target appears</span>
+<span class="sd">                - ``PURSUIT`` - corresponding to the movement of the eye when</span>
+<span class="sd">                  tracking a moving target</span>
+<span class="sd">                  This part corresponds to an exponential whose function is:</span>
+<span class="sd">                  :math:`\mathtt{velocity = \</span>
+<span class="sd">                  {\color{darkred}\text{steady_state}}\</span>
+<span class="sd">                  \cdot (1 - e^{-\frac{t}{{\color{darkred}tau}}})}`</span>
+
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            x: ndarray</span>
+<span class="sd">                Time of the function</span>
+
+<span class="sd">            dir_target: int</span>
+<span class="sd">                Direction of the target -1 or 1</span>
+<span class="sd">            start_anti: int</span>
+<span class="sd">                Time when anticipation begins</span>
+<span class="sd">            a_anti: float</span>
+<span class="sd">                Acceleration of anticipation in °/s²</span>
+<span class="sd">            latency: int</span>
+<span class="sd">                Time when the movement begins</span>
+<span class="sd">            tau: float</span>
+<span class="sd">                Curve of the pursuit</span>
+<span class="sd">            steady_state: float</span>
+<span class="sd">                Steady_state velocity reached during the pursuit</span>
+<span class="sd">            do_whitening: bool</span>
+<span class="sd">                If ``True`` return the whitened velocity</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            velocity: list</span>
+<span class="sd">                Velocity of the eye in deg/sec</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="c1"># check that the start time of the anticipation is not above the</span>
+            <span class="c1"># start time of the pursuit.</span>
+            <span class="k">if</span> <span class="n">start_anti</span><span class="o">&gt;=</span><span class="n">latency</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># acceleration of anticipation to switch from sec to ms</span>
+                <span class="n">a_anti</span> <span class="o">=</span> <span class="n">a_anti</span><span class="o">/</span><span class="mi">1000</span>
+                <span class="c1"># velocity at pursuit latency</span>
+                <span class="n">v_latency</span> <span class="o">=</span> <span class="p">((</span><span class="n">latency</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="n">start_anti</span><span class="p">)</span><span class="o">*</span><span class="n">a_anti</span>
+                <span class="c1"># steady state of the pursuit</span>
+                <span class="n">s_pursuit</span> <span class="o">=</span> <span class="p">(</span><span class="n">dir_target</span><span class="o">*</span><span class="n">steady_state</span><span class="p">)</span> <span class="o">-</span> <span class="n">v_latency</span>
+
+                <span class="n">velocity</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+
+                    <span class="c1">#----------------------------------------------------------</span>
+                    <span class="c1"># FIXATION</span>
+                    <span class="c1">#----------------------------------------------------------</span>
+                    <span class="k">if</span> <span class="n">t</span><span class="o">&lt;</span><span class="n">start_anti</span><span class="p">:</span>
+                        <span class="c1"># velocity during the fixation</span>
+                        <span class="n">v_fixation</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">velocity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v_fixation</span><span class="p">)</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+
+                        <span class="c1">#------------------------------------------------------</span>
+                        <span class="c1"># ANTICIPATION</span>
+                        <span class="c1">#------------------------------------------------------</span>
+                        <span class="k">if</span> <span class="n">t</span><span class="o">&lt;</span><span class="n">latency</span><span class="p">:</span>
+                            <span class="c1"># velocity during the anticipation</span>
+                            <span class="n">v_anti</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">start_anti</span><span class="p">)</span> <span class="o">*</span> <span class="n">a_anti</span>
+                            <span class="n">velocity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v_anti</span><span class="p">)</span>
+
+                        <span class="c1">#------------------------------------------------------</span>
+                        <span class="c1"># PURSUIT</span>
+                        <span class="c1">#------------------------------------------------------</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1"># velocity during the pursuit</span>
+                            <span class="n">v_pursuit</span> <span class="o">=</span> <span class="n">s_pursuit</span>
+                            <span class="n">v_pursuit</span> <span class="o">*=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">tau</span><span class="o">*</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">latency</span><span class="p">)))</span>
+                            <span class="n">v_pursuit</span> <span class="o">+=</span> <span class="n">v_latency</span>
+
+                            <span class="n">velocity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v_pursuit</span><span class="p">)</span>
+
+
+                <span class="c1"># the whitened function</span>
+                <span class="k">if</span> <span class="n">do_whitening</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">velocity</span><span class="o">=</span><span class="n">whitening</span><span class="p">(</span><span class="n">velocity</span><span class="p">)</span>
+
+
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">velocity</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Model.SmoothPursuit.velocity_sigmo"><a class="viewcode-back" href="../../5.2.2.3__ProcessingSmoothPursuit__Model_velocity_sigmo.html#ANEMO.Model.Model.SmoothPursuit.velocity_sigmo">[docs]</a>        <span class="k">def</span> <span class="nf">velocity_sigmo</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dir_target</span><span class="p">,</span> <span class="n">start_anti</span><span class="p">,</span> <span class="n">a_anti</span><span class="p">,</span> <span class="n">latency</span><span class="p">,</span>
+                           <span class="n">ramp_pursuit</span><span class="p">,</span> <span class="n">steady_state</span><span class="p">,</span> <span class="n">do_whitening</span><span class="p">):</span>
+
+            <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Model reproducing the velocity of the eye during the smooth pursuit</span>
+<span class="sd">            of a moving target</span>
+
+<span class="sd">            This model includes different parts:</span>
+
+<span class="sd">                - ``FIXATION`` - corresponding to a fixation of the eye on a</span>
+<span class="sd">                  fixation point</span>
+<span class="sd">                - ``ANTICIPATION`` - corresponding to an anticipatory movement</span>
+<span class="sd">                  of the eye before the moving target appears</span>
+<span class="sd">                - ``PURSUIT`` - corresponding to the movement of the eye when</span>
+<span class="sd">                  tracking a moving target.</span>
+<span class="sd">                  This part corresponds to an sigmoid whose function is:</span>
+<span class="sd">                  :math:`\mathtt{velocity = \</span>
+<span class="sd">                  \frac{{\color{darkred}\text{steady_state}}} \</span>
+<span class="sd">                  {1 + e^{t \cdot {\color{darkred}\text{ramp_pursuit}}}}}`</span>
+
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            x: ndarray</span>
+<span class="sd">                Time of the function</span>
+
+<span class="sd">            dir_target: int</span>
+<span class="sd">                Direction of the target -1 or 1</span>
+<span class="sd">            start_anti: int</span>
+<span class="sd">                Time when anticipation begins</span>
+<span class="sd">            a_anti: float</span>
+<span class="sd">                Acceleration of anticipation in deg/(s**2)</span>
+<span class="sd">            latency: int</span>
+<span class="sd">                Time when the movement begins</span>
+<span class="sd">            ramp_pursuit: float</span>
+<span class="sd">                Curve of the pursuit</span>
+<span class="sd">            steady_state: float</span>
+<span class="sd">                Steady_state velocity reached during the pursuit</span>
+<span class="sd">            do_whitening: bool</span>
+<span class="sd">                If ``True`` return the whitened velocity</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            velocity: list</span>
+<span class="sd">                Velocity of the eye in deg/sec</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="c1"># check that the start time of the anticipation is not above the</span>
+            <span class="c1"># start time of the pursuit.</span>
+            <span class="k">if</span> <span class="n">start_anti</span><span class="o">&gt;=</span><span class="n">latency</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># acceleration of anticipation to switch from sec to ms</span>
+                <span class="n">a_anti</span> <span class="o">=</span> <span class="n">a_anti</span><span class="o">/</span><span class="mi">1000</span>
+                <span class="c1"># curve of the pursuit to switch from sec to ms</span>
+                <span class="n">r_pursuit</span> <span class="o">=</span> <span class="o">-</span><span class="n">ramp_pursuit</span><span class="o">/</span><span class="mi">1000</span>
+                <span class="c1"># velocity at pursuit latency</span>
+                <span class="n">v_latency</span> <span class="o">=</span> <span class="p">((</span><span class="n">latency</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="n">start_anti</span><span class="p">)</span><span class="o">*</span><span class="n">a_anti</span>
+                <span class="c1"># steady state of the pursuit</span>
+                <span class="n">s_pursuit</span> <span class="o">=</span> <span class="p">(</span><span class="n">dir_target</span><span class="o">*</span><span class="n">steady_state</span><span class="p">)</span> <span class="o">-</span> <span class="n">v_latency</span>
+
+                <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="c1"># time of the sigmoid representing pursuit</span>
+                <span class="n">time_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">e</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="c1"># start of the sigmoid representing pursuit</span>
+                <span class="n">start_s</span> <span class="o">=</span> <span class="n">s_pursuit</span>
+                <span class="n">start_s</span> <span class="o">/=</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(((</span><span class="n">r_pursuit</span><span class="o">*</span><span class="n">time_s</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="n">e</span><span class="p">)))</span>
+
+                <span class="n">velocity</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+
+                    <span class="c1">#----------------------------------------------------------</span>
+                    <span class="c1"># FIXATION</span>
+                    <span class="c1">#----------------------------------------------------------</span>
+                    <span class="k">if</span> <span class="n">t</span><span class="o">&lt;</span><span class="n">start_anti</span><span class="p">:</span>
+                        <span class="c1"># velocity during the fixation</span>
+                        <span class="n">v_fixation</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">velocity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v_fixation</span><span class="p">)</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+
+                        <span class="c1">#------------------------------------------------------</span>
+                        <span class="c1"># ANTICIPATION</span>
+                        <span class="c1">#------------------------------------------------------</span>
+                        <span class="k">if</span> <span class="n">t</span><span class="o">&lt;</span><span class="n">latency</span><span class="p">:</span>
+                            <span class="c1"># velocity during the anticipation</span>
+                            <span class="n">v_anti</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">start_anti</span><span class="p">)</span> <span class="o">*</span> <span class="n">a_anti</span>
+                            <span class="n">velocity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v_anti</span><span class="p">)</span>
+
+                        <span class="c1">#------------------------------------------------------</span>
+                        <span class="c1"># PURSUIT</span>
+                        <span class="c1">#------------------------------------------------------</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1"># velocity during the pursuit</span>
+                            <span class="n">exp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="n">r_pursuit</span><span class="o">*</span><span class="n">time_s</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">latency</span><span class="p">)])</span><span class="o">+</span><span class="n">e</span><span class="p">)</span>
+
+                            <span class="n">v_pursuit</span> <span class="o">=</span> <span class="n">s_pursuit</span>
+                            <span class="n">v_pursuit</span> <span class="o">/=</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">exp</span><span class="p">)</span>
+                            <span class="n">v_pursuit</span> <span class="o">+=</span> <span class="p">(</span><span class="n">v_latency</span><span class="o">-</span><span class="n">start_s</span><span class="p">)</span>
+
+                            <span class="n">velocity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v_pursuit</span><span class="p">)</span>
+
+                <span class="c1"># the whitened function</span>
+                <span class="k">if</span> <span class="n">do_whitening</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">velocity</span> <span class="o">=</span> <span class="n">whitening</span><span class="p">(</span><span class="n">velocity</span><span class="p">)</span>
+
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">velocity</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Model.SmoothPursuit.position"><a class="viewcode-back" href="../../5.2.2.4__ProcessingSmoothPursuit__Model_position.html#ANEMO.Model.Model.SmoothPursuit.position">[docs]</a>        <span class="k">def</span> <span class="nf">position</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_nan</span><span class="p">,</span> <span class="n">dir_target</span><span class="p">,</span> <span class="n">start_anti</span><span class="p">,</span> <span class="n">a_anti</span><span class="p">,</span> <span class="n">latency</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span>
+                     <span class="n">steady_state</span><span class="p">,</span> <span class="n">do_whitening</span><span class="p">):</span>
+
+            <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Model reproducing the position of the eye during the smooth pursuit</span>
+<span class="sd">            of a moving target.</span>
+<span class="sd">            It corresponds to the derivative of the ``velocity`` model.</span>
+
+<span class="sd">            This model of ``velocity`` includes different parts:</span>
+
+<span class="sd">                - ``FIXATION`` - corresponding to a fixation of the eye on a</span>
+<span class="sd">                  fixation point</span>
+<span class="sd">                - ``ANTICIPATION`` - corresponding to an anticipatory movement</span>
+<span class="sd">                  of the eye before the moving target appears</span>
+<span class="sd">                - ``PURSUIT`` - corresponding to the movement of the eye when</span>
+<span class="sd">                  tracking a moving target.</span>
+<span class="sd">                  This part corresponds to an exponential whose function is:</span>
+<span class="sd">                  :math:`\mathtt{velocity = \</span>
+<span class="sd">                  {\color{darkred}\text{steady_state}} \cdot \</span>
+<span class="sd">                  (1 - e^{-\frac{t}{{\color{darkred}tau}}})}`</span>
+
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            x: ndarray</span>
+<span class="sd">                Time of the function</span>
+<span class="sd">            x_nan: ndarray</span>
+<span class="sd">                Unsaccade data, containing NaN instead of saccades</span>
+
+<span class="sd">            dir_target: int</span>
+<span class="sd">                Direction of the target -1 or 1</span>
+<span class="sd">            start_anti: int</span>
+<span class="sd">                Time when anticipation begins</span>
+<span class="sd">            a_anti: float</span>
+<span class="sd">                Acceleration of anticipation in deg/(s**2)</span>
+<span class="sd">            latency: int</span>
+<span class="sd">                Time when the movement begins</span>
+<span class="sd">            tau: float</span>
+<span class="sd">                Curve of the pursuit</span>
+<span class="sd">            steady_state: float</span>
+<span class="sd">                Steady_state velocity reached during the pursuit</span>
+<span class="sd">            do_whitening: bool</span>
+<span class="sd">                If ``True`` return the whitened position</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            position: list</span>
+<span class="sd">                Position of the eye in deg</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="c1"># check that the start time of the anticipation is not above the</span>
+            <span class="c1"># start time of the pursuit.</span>
+            <span class="k">if</span> <span class="n">start_anti</span><span class="o">&gt;=</span><span class="n">latency</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># acceleration of anticipation to switch from sec to ms</span>
+                <span class="n">a_anti</span> <span class="o">=</span> <span class="n">a_anti</span><span class="o">/</span><span class="mi">1000</span>
+                <span class="c1"># steady state of the pursuit to switch from sec to ms</span>
+                <span class="n">steady_state</span> <span class="o">=</span> <span class="n">steady_state</span><span class="o">/</span><span class="mi">1000</span>
+
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># velocity model</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="n">velocity</span> <span class="o">=</span> <span class="n">Model</span><span class="o">.</span><span class="n">SmoothPursuit</span><span class="o">.</span><span class="n">velocity</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dir_target</span><span class="p">,</span>
+                                                           <span class="n">start_anti</span><span class="p">,</span> <span class="n">a_anti</span><span class="p">,</span>
+                                                           <span class="n">latency</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span>
+                                                           <span class="n">steady_state</span><span class="p">,</span>
+                                                           <span class="n">do_whitening</span><span class="p">)</span>
+
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># position model</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="n">position</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">velocity</span><span class="p">)</span>
+
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># loop allowing the model to be readjusted according to the</span>
+                <span class="c1"># saccades present in the data</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># list of saccade start times in the data</span>
+                <span class="n">ssacc</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_nan</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> \
+                         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x_nan</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x_nan</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">])]</span>
+                <span class="c1"># list of saccade end times in the data</span>
+                <span class="n">esacc</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_nan</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> \
+                         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x_nan</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x_nan</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">])]</span>
+
+                <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ssacc</span><span class="p">)):</span>
+
+                    <span class="k">if</span> <span class="n">do_whitening</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">ssacc</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">):</span>
+                            <span class="n">p</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="n">ssacc</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">p</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">esacc</span><span class="p">)</span><span class="o">&gt;</span><span class="n">s</span><span class="p">:</span>
+
+                        <span class="k">if</span> <span class="n">esacc</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+                            <span class="n">position</span><span class="p">[</span><span class="n">ssacc</span><span class="p">[</span><span class="n">s</span><span class="p">]:</span><span class="n">esacc</span><span class="p">[</span><span class="n">s</span><span class="p">]]</span> <span class="o">=</span> <span class="n">p</span>
+                            <span class="k">if</span> <span class="n">ssacc</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">latency</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+
+                                <span class="c1"># difference in position between the end of the</span>
+                                <span class="c1"># saccade and the beginning of the previous</span>
+                                <span class="c1"># saccade</span>
+                                <span class="n">diff_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_nan</span><span class="p">[</span><span class="n">esacc</span><span class="p">[</span><span class="n">s</span><span class="p">]]</span><span class="o">-</span><span class="n">x_nan</span><span class="p">[</span><span class="n">ssacc</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                                <span class="c1"># average velocity during the saccade</span>
+                                <span class="n">m_vsacc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">velocity</span><span class="p">[</span><span class="n">ssacc</span><span class="p">[</span><span class="n">s</span><span class="p">]:</span><span class="n">esacc</span><span class="p">[</span><span class="n">s</span><span class="p">]])</span>
+                                <span class="c1"># duration of the saccade</span>
+                                <span class="n">t_sacc</span> <span class="o">=</span> <span class="p">(</span><span class="n">esacc</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">-</span><span class="n">ssacc</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
+
+                                <span class="n">position</span><span class="p">[</span><span class="n">esacc</span><span class="p">[</span><span class="n">s</span><span class="p">]:]</span> <span class="o">+=</span> <span class="n">diff_pos</span>
+                                <span class="n">position</span><span class="p">[</span><span class="n">esacc</span><span class="p">[</span><span class="n">s</span><span class="p">]:]</span> <span class="o">-=</span> <span class="n">m_vsacc</span> <span class="o">*</span> <span class="n">t_sacc</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">position</span><span class="p">[</span><span class="n">ssacc</span><span class="p">[</span><span class="n">s</span><span class="p">]:]</span> <span class="o">=</span> <span class="n">p</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">position</span><span class="p">[</span><span class="n">ssacc</span><span class="p">[</span><span class="n">s</span><span class="p">]:]</span> <span class="o">=</span> <span class="n">p</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+
+                <span class="c1"># the whitened function</span>
+                <span class="k">if</span> <span class="n">do_whitening</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">position</span> <span class="o">=</span> <span class="n">whitening</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+
+                <span class="k">return</span> <span class="n">position</span></div></div>
+
+
+<div class="viewcode-block" id="Model.saccade"><a class="viewcode-back" href="../../4.4.2__ProcessingSaccades__Model.html#ANEMO.Model.Model.saccade">[docs]</a>    <span class="k">def</span> <span class="nf">saccade</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">T0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">tr</span><span class="p">,</span> <span class="n">do_whitening</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Model reproducing the position of the eye during the sacades.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x: ndarray</span>
+<span class="sd">            Time of the function</span>
+
+<span class="sd">        x_0: float</span>
+<span class="sd">            Initial position of the beginning of the saccade in deg</span>
+<span class="sd">        tau: float</span>
+<span class="sd">            Curvature of the saccade</span>
+<span class="sd">        x1: float</span>
+<span class="sd">            Maximum of the first curvature in deg</span>
+<span class="sd">        x2: float</span>
+<span class="sd">            Maximum of the second curvature in deg</span>
+<span class="sd">        T0: float</span>
+<span class="sd">            Time of the beginning of the first curvature after x_0 in ms</span>
+<span class="sd">        t1: float</span>
+<span class="sd">            Maximum time of the first curvature after T0 in ms</span>
+<span class="sd">        t2: float</span>
+<span class="sd">            Time of the maximum of the second curvature after t1 in ms</span>
+<span class="sd">        tr: float</span>
+<span class="sd">            Time of the end of the second curvature after t2 in ms</span>
+<span class="sd">        do_whitening: bool</span>
+<span class="sd">            If ``True`` return the whitened position</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        position: list</span>
+<span class="sd">            Position of the eye during the sacades in deg</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">time</span> <span class="o">=</span> <span class="n">x</span><span class="o">-</span><span class="n">T0</span>
+        <span class="n">T1</span> <span class="o">=</span> <span class="n">t1</span>
+        <span class="n">T2</span> <span class="o">=</span> <span class="n">t1</span><span class="o">+</span><span class="n">t2</span>
+        <span class="n">TR</span> <span class="o">=</span> <span class="n">T2</span><span class="o">+</span><span class="n">tr</span>
+
+        <span class="n">rho</span> <span class="o">=</span> <span class="p">(</span><span class="n">tau</span><span class="o">/</span><span class="n">T1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">T1</span><span class="o">/</span><span class="n">tau</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">rhoT</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">T1</span><span class="o">*</span><span class="n">rho</span><span class="p">))</span>
+
+        <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="n">tau</span><span class="o">/</span><span class="n">T2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">T1</span><span class="o">/</span><span class="n">tau</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">T2</span><span class="o">/</span><span class="n">tau</span><span class="p">))</span> <span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">rT</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">T2</span><span class="o">*</span><span class="n">r</span><span class="p">))</span>
+
+        <span class="n">exp1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">rho</span><span class="o">*</span><span class="n">T1</span><span class="p">)</span><span class="o">/</span><span class="n">tau</span><span class="p">)</span>
+        <span class="n">exp2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">rho</span><span class="p">)</span><span class="o">*</span><span class="n">T1</span><span class="o">/</span><span class="n">tau</span><span class="p">)</span>
+
+        <span class="n">Umax1</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">tau</span><span class="p">)</span>
+        <span class="n">Umax1</span> <span class="o">*=</span> <span class="n">x1</span>
+        <span class="n">Umax1</span> <span class="o">/=</span> <span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="n">rho</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">T1</span> <span class="o">-</span> <span class="n">tau</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">-</span><span class="n">exp1</span><span class="o">-</span><span class="n">exp2</span><span class="p">))</span>
+
+        <span class="n">Umax2</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">tau</span><span class="p">)</span>
+        <span class="n">Umax2</span> <span class="o">*=</span> <span class="p">(</span><span class="n">x2</span><span class="o">-</span><span class="n">x1</span><span class="p">)</span>
+        <span class="n">Umax2</span> <span class="o">/=</span> <span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="n">r</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">T2</span> <span class="o">-</span> <span class="n">T1</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">curvature</span><span class="p">(</span><span class="n">Umax</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">Umax</span> <span class="o">*</span> <span class="n">tau</span>
+            <span class="n">c</span> <span class="o">*=</span> <span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">orientation</span><span class="o">*</span><span class="n">tau</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">orientation</span><span class="o">*</span><span class="n">t</span><span class="o">/</span><span class="n">tau</span><span class="p">)))</span>
+            <span class="k">return</span>  <span class="n">c</span>
+
+        <span class="n">saccade</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">time</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">saccade</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">rhoT</span><span class="p">:</span>
+                <span class="n">saccade</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_0</span> <span class="o">+</span> <span class="n">curvature</span><span class="p">(</span><span class="n">Umax1</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">T1</span><span class="p">:</span>
+                <span class="n">saccade</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_0</span> <span class="o">+</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">curvature</span><span class="p">(</span><span class="n">Umax1</span><span class="p">,</span> <span class="p">(</span><span class="n">T1</span><span class="o">-</span><span class="n">t</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">rT</span><span class="p">:</span>
+                <span class="n">saccade</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_0</span> <span class="o">+</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">curvature</span><span class="p">(</span><span class="n">Umax2</span><span class="p">,</span> <span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">T1</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">TR</span><span class="p">:</span>
+                <span class="n">saccade</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_0</span> <span class="o">+</span> <span class="n">x2</span> <span class="o">+</span> <span class="n">curvature</span><span class="p">(</span><span class="n">Umax2</span><span class="p">,</span> <span class="p">(</span><span class="n">T2</span><span class="o">-</span><span class="n">t</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">saccade</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">saccade</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="c1"># the whitened function</span>
+        <span class="k">if</span> <span class="n">do_whitening</span><span class="p">:</span>
+            <span class="n">saccade</span> <span class="o">=</span> <span class="n">whitening</span><span class="p">(</span><span class="n">saccade</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">saccade</span></div>
+</pre></div>
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

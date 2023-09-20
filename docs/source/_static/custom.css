@@ -5,27 +5,10 @@
 body,h1,h2,h3,h4,h5,h5,h6,div.body h1, div.body h2, div.body h3, div.body h4, div.body h5, div.body h6, div.admonition p.admonition-title {
     font-family: 'Open Sans', sans-serif!important;
 }
-div.body pre, div.body tt, div.body code {
-    font-family: 'Source Code Pro', monospace!important;
-}
-
-div.document {
-    width: auto;
-    margin: 30px auto 0 auto;
-    max-width: 1024px;
-}
-div.sphinxsidebar #searchbox form.search {
-    margin-right: 100px;
-}
-nav#rellinks {
-    margin-right: 100px;
-}
-iframe[Attributes Style] {
-    width: auto;
-    height: 700px;
-}
 
 
+
+/* -- body --------------------------------------------------------- */
 div.body {
     padding: 0 0 0 0;
 }
@@ -40,10 +23,70 @@ div.body h2 {
     font-size: 130%;
 }
 
+div.body h3 {
+    margin: 0px 0px 0px 0px!important;
+    font-weight: bold!important;
+    font-size: 105%;
+}
 
 
+div.body pre, div.body tt, div.body code {
+    font-family: 'Source Code Pro', monospace!important;
+}
+
+div.body {
+    max-width: 1280px;
+}
+
+/* ----------------------------------------------------------------- */
+
+div.document {
+    width: auto;
+    margin: 30px 30px 0 30px;
+    max-width: auto;
+}
+
+/* -- sphinxsidebar ------------------------------------------------ */
+div.sphinxsidebar h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 50px 0 0 0;
+}
+
+
+div.sphinxsidebar #searchbox form.search {
+    margin-right: 100px;
+}
+/* ----------------------------------------------------------------- */
+
+nav#rellinks {
+    margin-right: 100px;
+}
+iframe[Attributes Style] {
+    width: auto;
+    height: 700px;
+}
+
+/* -- code --------------------------------------------------------- */
+span.sig-prename.descclassname, span.sig-name.descname {
+    color: #1E1E1E;
+}
+
+span.sig-prename.descclassname {
+   font-size: 0.9em;
+}
+
+span.sig-name.descname {
+   font-size: 1.2em;
+}
+
+.sig {
+   margin-top: 2em;
+}
+
+/*
 tt.descname, tt.descclassname, code.descname, code.descclassname {
-    font-size: 1.1em;
+    font-size: 1.2em;
 }
 code.xref {
     color: #640000;
@@ -51,8 +94,8 @@ code.xref {
 code.xref:hover {
     color: #FF0000;
 }
-
-
+*/
+/* ----------------------------------------------------------------- */
 
 em {
     font-style: normal;
@@ -63,18 +106,20 @@ em {
     font-size: 0.9em;
 }
 
-
-
+/* -- admonition --------------------------------------------------- */
 div.admonition {
     margin: 0px 0px;
     padding: 10px 30px;
 }
+
 p.admonition-title{
     color:#C80000;
     margin: 0px 0px 0px -15px!important;
     font-size: 1em!important;
     font-weight: bold!important;
 }
+/* ----------------------------------------------------------------- */
+
 div.note {
     background-color: #EEE;
     border: 1px solid #CCC;
@@ -85,6 +130,37 @@ div.warning {
 }
 
 
+/* -- code notebook ------------------------------------------------- */
+div.nbinput.container, div.nboutput.container {
+  width: 100%;
+  max-width: 752px;
+}
+
+div.output_area {
+  max-height: 333px;
+  background: #FFFABF;
+  margin: 10px auto;
+  border: 1px solid #FFF480;
+}
+
+div.output_area img {
+  padding: 0px !important;
+  width: auto !important;
+  max-width: 712px !important;
+}
+
+div.output_area.stderr {
+  border: none !important;
+}
+
+/* --- img ----------------------------------------------------------- */
+
+img {
+  max-width: 1080px;
+  width: 100%;
+}
+
+/* -- table --------------------------------------------------------- */
 
 table.field-list th {
     padding: 10px 30px 0px 0px;
@@ -94,4 +170,9 @@ table.field-list th {
 table.field-list td {
     padding: 10px 0 0 0;
 }
+
+div.rendered_html tbody tr:nth-child(2n+1) {
+  background: #fffefe7a !important;
+}
+/* ----------------------------------------------------------------- */
 

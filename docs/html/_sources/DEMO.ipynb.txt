@@ -1,0 +1,611 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "f25f256d",
+   "metadata": {},
+   "source": [
+    "# DEMO"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4605dbf0",
+   "metadata": {},
+   "source": [
+    "You will find here two examples of code allowing you to process your **saccade data** but also your **smooth pursuit data** from your raw data"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "id": "e8cd53a5",
+   "metadata": {
+    "raw_mimetype": "text/html"
+   },
+   "source": [
+    "<br>"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "cdd0a687",
+   "metadata": {},
+   "source": [
+    "## 1. init\n",
+    "\n",
+    "-----------------------------"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "id": "9d74224d",
+   "metadata": {
+    "raw_mimetype": "text/restructuredtext"
+   },
+   "source": [
+    "| The first step is to initialise the folder that will contain the results *with the* ``init function`` *(see its* :doc:`doc <1__init>` *for more details on this function and its different parameters).*\n",
+    "| **Once this folder is created, you will not need to run this function again.**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "251a30f7",
+   "metadata": {
+    "raw_mimetype": "text/x-python"
+   },
+   "outputs": [],
+   "source": [
+    "import ANEMO # import the ANEMO package\n",
+    "\n",
+    "#------------------------------------------------------------------------------\n",
+    "# Parameters you can change\n",
+    "#------------------------------------------------------------------------------\n",
+    "RawDatadirpath = 'data' # Raw data directory path\n",
+    "Datadirpath = 'dataDEMO' # Processed data directory path\n",
+    "sub = '001' # Participant identifier\n",
+    "task = None # Name of the Task\n",
+    "ses = '1' # Name of the Session\n",
+    "acq = None # Name of the Aquisition\n",
+    "run = None # IndexRun\n",
+    "\n",
+    "#------------------------------------------------------------------------------\n",
+    "# Initialization\n",
+    "#------------------------------------------------------------------------------\n",
+    "ANEMO.init(RawDatadirpath=RawDatadirpath, Datadirpath=Datadirpath, sub=sub,\n",
+    "           task=task, ses=ses, acq=acq, run=run)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "83dc2977",
+   "metadata": {},
+   "source": [
+    "## 2. Processing Saccades\n",
+    "\n",
+    "-----------------------------"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "id": "674f3b8e",
+   "metadata": {
+    "raw_mimetype": "text/restructuredtext"
+   },
+   "source": [
+    "This code set allows you to :doc:`extract saccades <4.3__ProcessingSaccades_extract_saccades>` from your raw data and then extract their parameters by :doc:`fitting <4.4.1__ProcessingSaccades__Fit_function>` the pre-defined :doc:`saccade model <4.4.2__ProcessingSaccades__Model>`"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "id": "6e9ff702",
+   "metadata": {
+    "raw_mimetype": "text/html"
+   },
+   "source": [
+    "<br>"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "id": "4b074057",
+   "metadata": {
+    "raw_mimetype": "text/restructuredtext"
+   },
+   "source": [
+    "Once your file is :ref:`initialized </DEMO.ipynb#1.-init>` you can run this code to start processing your saccade data.\n",
+    "\n",
+    "This code is composed of different steps:\n",
+    "\n",
+    "1. | Transforming your raw data into degrees *with the* ``to_deg function``\n",
+    "   | *(see its* :doc:`doc <3.1__PreProcessing_to_deg>` *for more details on this function and how to test its different parameters)*\n",
+    "2. | Filter your data *with the* ``filter function``\n",
+    "   | *(see its* :doc:`doc <3.3__PreProcessing_filter>` *for more details on this function and how to test its different parameters)*\n",
+    "3. | Extract saccades from your data set *(see this* :doc:`exemple <4.3__ProcessingSaccades_extract_saccades>` *of code) with the* ``extract_events function``\n",
+    "   | *(see its* :doc:`doc <3.5__PreProcessing_extract_events>` *for more details on this function and how to test its various parameters)*\n",
+    "4. | Extracting the different parameters of saccades by fitting the parameters of a pre-defined model to your data.\n",
+    "   | *For this we will use the* ``Fit function`` *(see its* :doc:`doc <4.4.1__ProcessingSaccades__Fit_function>` *for more details on this function and how to test its parameters)*\n",
+    "   | *with the* ``saccade model`` *(see its* :doc:`doc <4.4.2__ProcessingSaccades__Model>` *for more details on this model).*"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "9de83a3f",
+   "metadata": {
+    "raw_mimetype": "text/x-python"
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "calculates xdeg from the file sub-001_task-aSPEM_ses-1_acq-9_run-4... finished\n",
+      "calculates xdeg_filter from the file sub-001_task-aSPEM_ses-1_acq-9_run-4... finished\n",
+      "calculates saccade_deg from the file sub-001_task-aSPEM_ses-1_acq-9_run-4... finished\n",
+      "calculates fit_saccade from the file sub-001_task-aSPEM_ses-1_acq-9_run-4... finished\n"
+     ]
+    }
+   ],
+   "source": [
+    "import ANEMO\n",
+    "\n",
+    "Datadirpath = 'dataDEMO'\n",
+    "\n",
+    "PreProcessing = ANEMO.PreProcessing(Datadirpath).Data\n",
+    "ProcessingSaccades = ANEMO.ProcessingSaccades(Datadirpath).Data\n",
+    "\n",
+    "# Parameters common to all functions you can change:\n",
+    "#------------------------------------------------------------------------------\n",
+    "expnames = None # Name of the particular experience to be transformed\n",
+    "                # if None all experiences will be transformed\n",
+    "trials = None # Number or list of the trial to be transformed\n",
+    "              # if None, all the trials will be transformed\n",
+    "recalculate=False # Allows you to indicate if you want to force the calculation\n",
+    "                  # on the trials already processed\n",
+    "#------------------------------------------------------------------------------\n",
+    "\n",
+    "###############################################################################\n",
+    "# 1. Transforming your raw data into degrees\n",
+    "###############################################################################\n",
+    "\n",
+    "# Parameters of the function you can change:\n",
+    "#------------------------------------------------------------------------------\n",
+    "events_start = 'StimulusOff' # Event marking the start of the trial\n",
+    "before_sacc = 5 # Time to delete before saccades\n",
+    "after_sacc = 15 # Time to delete after saccades\n",
+    "#------------------------------------------------------------------------------\n",
+    "\n",
+    "PreProcessing.to_deg(xname='xpr', toxname='xdeg', events_start=events_start,\n",
+    "                     before_sacc=before_sacc, after_sacc=after_sacc,\n",
+    "                     expnames=expnames, trials=trials, recalculate=recalculate)\n",
+    "\n",
+    "###############################################################################\n",
+    "# 2. Filter your data\n",
+    "###############################################################################\n",
+    "\n",
+    "# Parameters of the function you can change:\n",
+    "#------------------------------------------------------------------------------\n",
+    "order_filter = 2 # The order of the filter\n",
+    "type_filter = 'lowpass' # The type of filter\n",
+    "cutoff = 30 # The critical frequencies for cutoff of filter\n",
+    "sample_rate = 1000 # Sampling rate of the recording\n",
+    "#------------------------------------------------------------------------------\n",
+    "\n",
+    "PreProcessing.filter(xname='xdeg', toxname='xdeg_filter',\n",
+    "                     order_filter=order_filter, type_filter=type_filter,\n",
+    "                     cutoff=cutoff, sample_rate=sample_rate,\n",
+    "                     expnames=expnames, trials=trials,\n",
+    "                     recalculate=recalculate)\n",
+    "\n",
+    "###############################################################################\n",
+    "# 3. Extrat saccades from your data set\n",
+    "###############################################################################\n",
+    "\n",
+    "# Parameters of the function you can change:\n",
+    "#------------------------------------------------------------------------------\n",
+    "Sevents = 'SSACC' # Name of the start of the event saccades\n",
+    "Eevents = 'ESACC' # Name of the end of the event saccades\n",
+    "add_stime = -5 # Add time at the start of the event saccades\n",
+    "add_etime = 15 # Add time at the end of the event saccades\n",
+    "#------------------------------------------------------------------------------\n",
+    "\n",
+    "PreProcessing.extract_events(xname='xdeg', toxname='saccade_deg',\n",
+    "                             stop_event=None, Sevents=Sevents, Eevents=Eevents,\n",
+    "                             add_stime=add_stime, add_etime=add_etime,\n",
+    "                             expnames=expnames, trials=trials,\n",
+    "                             recalculate=recalculate)\n",
+    "\n",
+    "###############################################################################\n",
+    "# 4. Extracting the different parameters of saccades\n",
+    "#    by fitting the parameters of a pre-defined model to your data.\n",
+    "###############################################################################\n",
+    "\n",
+    "# Parameters of the function you can change:\n",
+    "#------------------------------------------------------------------------------\n",
+    "stime = None # Start time of the fitting\n",
+    "etime = -280 # End time of the fitting\n",
+    "step_fit = 2 # Number of steps for the fit\n",
+    "\n",
+    "# Dictionary containing the parameters for the generate_params function\n",
+    "arg_generate_params = dict(do_whitening=False)\n",
+    "#------------------------------------------------------------------------------\n",
+    "\n",
+    "ProcessingSaccades.Fit(xname='saccade_deg', toxname='fit_saccade',\n",
+    "                       model=ANEMO.Model.saccade, stime=stime, etime=etime,\n",
+    "                       step_fit=step_fit, \n",
+    "                       arg_generate_params=arg_generate_params,\n",
+    "                       expnames=expnames, trials=trials,\n",
+    "                       recalculate=recalculate)\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "d7f6e98b",
+   "metadata": {},
+   "source": [
+    "## 3. Processing Smooth Pursuit\n",
+    "\n",
+    "-----------------------------"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "id": "1b54dd5b",
+   "metadata": {
+    "raw_mimetype": "text/restructuredtext"
+   },
+   "source": [
+    "This code set allowing the extraction of smooth pursuit parameters with the \":doc:`5.1.0__ProcessingSmoothPursuit__classical_method`\" and the :doc:`fit <5.2.0__ProcessingSmoothPursuit__Fit>` of the :doc:`velocity_sigmo <5.2.2.3__ProcessingSmoothPursuit__Model_velocity_sigmo>` function to your :doc:`velocity data <3.2__PreProcessing_to_velocity_deg>` :ref:`de-saccadated </4.2__ProcessingSaccades_remove_saccades.ipynb#remove-saccades-from-the-velocity-data-in-deg/sec>` starting from your raw data"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "id": "623eb922",
+   "metadata": {
+    "raw_mimetype": "text/html"
+   },
+   "source": [
+    "<br>"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "id": "04caa8da",
+   "metadata": {
+    "raw_mimetype": "text/restructuredtext"
+   },
+   "source": [
+    "Once your file is :ref:`initialized </DEMO.ipynb#1.-init>` you can run this code to start processing your saccade data.\n",
+    "\n",
+    "This code is composed of different steps:\n",
+    "\n",
+    "1. | Transforming your raw data into velocity in degrees per second *with the* ``to_velocity_deg function``\n",
+    "   | *(see its* :doc:`doc <3.2__PreProcessing_to_velocity_deg>` *for more details on this function and how to test its different parameters)*\n",
+    "2. | Filter your data *with the* ``filter function``\n",
+    "   | *(see its* :doc:`doc <3.3__PreProcessing_filter>` *for more details on this function and how to test its different parameters)*\n",
+    "3. | Remove saccades from your data set and remove microsaccades during fixation. *(see this* :doc:`exemple <4.2__ProcessingSaccades_remove_saccades>` *of code)*\n",
+    "   | This includes:\n",
+    "   \n",
+    "    a. | Detecting the microsaccades present in your data *with the* ``detect_misacc function``\n",
+    "       | *(see its* :doc:`doc <4.1__ProcessingSaccades_detect_misacc>` *for more details on this function and how to test its various parameters)*\n",
+    "    b. | Adding a new event to your data to indicate when you want to stop removing microsaccades\n",
+    "       | *(see this* :ref:`exemple </2__Data.ipynb#add-new-events-to-the-Events>` *of code)*\n",
+    "    c. | Removing saccades and then microsaccades *with the* ``remove_events function``\n",
+    "       | *(see its* :doc:`doc <3.4__PreProcessing_remove_events>` *for more details on this function and how to test its various parameters)*\n",
+    "4. | Extracting the different parameters of smooth pursuit with the ``classical method class``\n",
+    "   | *(see its* :doc:`doc <5.1.0__ProcessingSmoothPursuit__classical_method>` *for more details on this class and how to test its different parameters)*\n",
+    "   \n",
+    "    a. | The anticipation velocity *with the* ``anticipation function``\n",
+    "       | *(see its* :doc:`doc <5.1.1__ProcessingSmoothPursuit__classical_method_anticipation>` *for more details on this function and how to test its different parameters)*\n",
+    "    b. | The pursuit latency *with the* ``latency function``\n",
+    "       | *(see its* :doc:`doc <5.1.2__ProcessingSmoothPursuit__classical_method_latency>` *for more details on this function and how to test its various parameters)*\n",
+    "    c. | The velocity of the steady state of the pursuit *with the* ``steady_state function``\n",
+    "       | *(see its* :doc:`doc <5.1.3__ProcessingSmoothPursuit__classical_method_steady_state>` *for more details on this function and how to test its various parameters)*\n",
+    "5. | Extracting the different parameters of smooth pursuit by fitting the parameters of a pre-defined model to your data.\n",
+    "   | *For this we will use the* ``Fit function`` *(see its* :doc:`doc <5.2.1__ProcessingSmoothPursuit__Fit_function>` *for more details on this function and how to test its parameters)*\n",
+    "   | *with the* ``velocity_sigmo model`` *(see its* :doc:`doc <5.2.2.3__ProcessingSmoothPursuit__Model_velocity_sigmo>` *for more details on this model).*\n",
+    "   | *Other pre-defined smooth pursuit models can be used (see* :doc:`5.2.2.0__ProcessingSmoothPursuit__Model` *for more models)*"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "b69b6987",
+   "metadata": {
+    "raw_mimetype": "text/x-python"
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "calculates vx from the file sub-001_task-aSPEM_ses-1_acq-9_run-4... finished\n",
+      "calculates vy from the file sub-001_task-aSPEM_ses-1_acq-9_run-4... finished\n",
+      "calculates Vx_filter from the file sub-001_task-aSPEM_ses-1_acq-9_run-4... finished\n",
+      "calculates Vy_filter from the file sub-001_task-aSPEM_ses-1_acq-9_run-4... finished\n",
+      "calculates MISACC from the file sub-001_task-aSPEM_ses-1_acq-9_run-4... finished\n",
+      "calculates Vx_no_sacc from the file sub-001_task-aSPEM_ses-1_acq-9_run-4... finished\n",
+      "calculates Vx_NaN from the file sub-001_task-aSPEM_ses-1_acq-9_run-4... finished\n",
+      "calculates classical_anticipation from the file sub-001_task-aSPEM_ses-1_acq-9_run-4... "
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/home/drone/Bureau/ANEMO2LeRetour/docs/source/ANEMO/ProcessingSmoothPursuit.py:152: RuntimeWarning: Mean of empty slice\n",
+      "  anticipation = np.nanmean(data_anti_x)\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "finished\n",
+      "calculates classical_latency from the file sub-001_task-aSPEM_ses-1_acq-9_run-4... finished\n",
+      "calculates classical_steady_state from the file sub-001_task-aSPEM_ses-1_acq-9_run-4... "
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/home/drone/Bureau/ANEMO2LeRetour/docs/source/ANEMO/ProcessingSmoothPursuit.py:393: RuntimeWarning: Mean of empty slice\n",
+      "  steady_state = abs(np.nanmean(data_steady_x))\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "finished\n",
+      "calculates fit_smooth_pursuit from the file sub-001_task-aSPEM_ses-1_acq-9_run-4... finished\n"
+     ]
+    }
+   ],
+   "source": [
+    "import ANEMO\n",
+    "\n",
+    "Datadirpath = 'dataDEMO'\n",
+    "\n",
+    "PreProcessing = ANEMO.PreProcessing(Datadirpath).Data\n",
+    "ProcessingSaccades = ANEMO.ProcessingSaccades(Datadirpath).Data\n",
+    "ProcessingSmoothPursuit = ANEMO.ProcessingSmoothPursuit(Datadirpath).Data\n",
+    "\n",
+    "# Parameters common to all functions you can change:\n",
+    "#------------------------------------------------------------------------------\n",
+    "expnames = None # Name of the particular experience to be transformed\n",
+    "                # if None all experiences will be transformed\n",
+    "trials = None # Number or list of the trial to be transformed\n",
+    "              # if None, all the trials will be transformed\n",
+    "recalculate=False # Allows you to indicate if you want to force the calculation\n",
+    "                  # on the trials already processed\n",
+    "#------------------------------------------------------------------------------\n",
+    "\n",
+    "\n",
+    "###############################################################################\n",
+    "# 1. Transforming your raw data\n",
+    "#    into velocity in degrees per second\n",
+    "###############################################################################\n",
+    "PreProcessing.to_velocity_deg(xname='xpr', toxname='vx', expnames=expnames,\n",
+    "                              trials=trials, recalculate=recalculate)\n",
+    "\n",
+    "PreProcessing.to_velocity_deg(xname='ypr', toxname='vy', expnames=expnames,\n",
+    "                              trials=trials, recalculate=recalculate)\n",
+    "\n",
+    "###############################################################################\n",
+    "# 2. Filter your data\n",
+    "###############################################################################\n",
+    "\n",
+    "# Parameters of the function you can change:\n",
+    "#------------------------------------------------------------------------------\n",
+    "order_filter = 2 # The order of the filter\n",
+    "type_filter = 'lowpass' # The type of filter\n",
+    "cutoff = 30 # The critical frequencies for cutoff of filter\n",
+    "sample_rate = 1000 # Sampling rate of the recording\n",
+    "#------------------------------------------------------------------------------\n",
+    "\n",
+    "PreProcessing.filter(xname='vx', toxname='Vx_filter',\n",
+    "                     order_filter=order_filter, type_filter=type_filter,\n",
+    "                     cutoff=cutoff, sample_rate=sample_rate,\n",
+    "                     expnames=expnames, trials=trials,\n",
+    "                     recalculate=recalculate)\n",
+    "\n",
+    "PreProcessing.filter(xname='vy', toxname='Vy_filter',\n",
+    "                     order_filter=order_filter, type_filter=type_filter,\n",
+    "                     cutoff=cutoff, sample_rate=sample_rate,\n",
+    "                     expnames=expnames, trials=trials,\n",
+    "                     recalculate=recalculate)\n",
+    "\n",
+    "###############################################################################\n",
+    "# 3. Remove saccades from your data set\n",
+    "#    and remove microsaccades during fixation\n",
+    "###############################################################################\n",
+    "\n",
+    "#==============================================================================\n",
+    "# a. Detecting the microsaccades present in your data \n",
+    "#==============================================================================\n",
+    "\n",
+    "# Parameters of the function you can change:\n",
+    "#------------------------------------------------------------------------------\n",
+    "threshold = 5 # Relative velocity threshold\n",
+    "mint = 5 # Minimal saccade duration (ms)\n",
+    "maxt = 100 # Maximal saccade duration (ms)\n",
+    "minstep = 30 # Minimal time interval between two detected saccades (ms)\n",
+    "#------------------------------------------------------------------------------\n",
+    "\n",
+    "ProcessingSaccades.detect_misacc(vxname='Vx_filter', vyname='Vy_filter',\n",
+    "                                 toxname='MISACC', threshold=threshold,\n",
+    "                                 mint=mint, maxt=maxt, minstep=minstep,\n",
+    "                                 expnames=expnames, trials=trials,\n",
+    "                                 recalculate=recalculate)\n",
+    "\n",
+    "#==============================================================================\n",
+    "# b. Adding a new event to your data\n",
+    "#    to indicate when you want to stop removing microsaccades\n",
+    "#==============================================================================\n",
+    "\n",
+    "# Parameters:\n",
+    "#------------------------------------------------------------------------------\n",
+    "eventName = 'TargetOn' # Name of the event marking\n",
+    "                       # the appearance of the target\n",
+    "add_time = 100 # Add time at the end of the appearance of the target\n",
+    "#------------------------------------------------------------------------------\n",
+    "\n",
+    "data = ANEMO.Data.open(Datadirpath)\n",
+    "for exp in data.keys():\n",
+    "    data_exp = data[exp] # Dictionary correspond to particular experiment\n",
+    "    events = data_exp['Events'] # Events to particular experiment\n",
+    "    events['Stop_MiSacc'] = events[eventName]+add_time # add new events\n",
+    "\n",
+    "ANEMO.Data.save(Datadirpath, data)\n",
+    "\n",
+    "#==============================================================================\n",
+    "# c. Removing saccades and then microsaccades\n",
+    "#==============================================================================\n",
+    "\n",
+    "# Remove Saccades\n",
+    "\n",
+    "# Parameters of the function you can change:\n",
+    "#------------------------------------------------------------------------------\n",
+    "Sevents = 'SSACC' # Name of the start of the event saccades\n",
+    "Eevents = 'ESACC' # Name of the end of the event saccades\n",
+    "add_stime = -5 # Add time at the start of the event saccades\n",
+    "add_etime = 15 # Add time at the end of the event saccades\n",
+    "#------------------------------------------------------------------------------\n",
+    "\n",
+    "PreProcessing.remove_events(xname='Vx_filter', toxname='Vx_no_sacc',\n",
+    "                            stop_event=None, Sevents=Sevents, Eevents=Eevents,\n",
+    "                            add_stime=add_stime, add_etime=add_etime,\n",
+    "                            expnames=expnames, trials=trials,\n",
+    "                            recalculate=recalculate)\n",
+    "\n",
+    "\n",
+    "# Remove Micro-Saccades\n",
+    "\n",
+    "# Parameters of the function you can change:\n",
+    "#------------------------------------------------------------------------------\n",
+    "add_stime = 0 # Add time at the start of the event micro-saccades\n",
+    "add_etime = 0 # Add time at the end of the event micro-saccades\n",
+    "#------------------------------------------------------------------------------\n",
+    "\n",
+    "PreProcessing.remove_events(xname='Vx_no_sacc', Sevents='SMISACC',\n",
+    "                            Eevents='EMISACC', stop_event='Stop_MiSacc',\n",
+    "                            toxname='Vx_NaN', add_stime=add_stime,\n",
+    "                            add_etime=add_etime, expnames=expnames,\n",
+    "                            trials=trials, recalculate=recalculate)\n",
+    "\n",
+    "###############################################################################\n",
+    "# 4. Extracting the different parameters of smooth pursuit\n",
+    "#    with the classical method\n",
+    "###############################################################################\n",
+    "classical_method = ProcessingSmoothPursuit.classical_method\n",
+    "\n",
+    "# Parameters common to all functions in the classic method you can change:\n",
+    "#------------------------------------------------------------------------------\n",
+    "eventName_TargetOn = 'TargetOn' # Name of the event marking the appearance of\n",
+    "                                # the target\n",
+    "\n",
+    "#==============================================================================\n",
+    "# a. The anticipation velocity\n",
+    "#==============================================================================\n",
+    "\n",
+    "# Parameters of the function you can change:\n",
+    "#------------------------------------------------------------------------------\n",
+    "add_stime = -50 # Add time at the start of the event\n",
+    "add_etime = 50 # Add time at the end of the event\n",
+    "#------------------------------------------------------------------------------\n",
+    "\n",
+    "classical_method.anticipation(xname='Vx_NaN', toxname='classical_anticipation',\n",
+    "                              add_stime=add_stime, add_etime=add_etime,\n",
+    "                              eventName_TargetOn=eventName_TargetOn,\n",
+    "                              expnames=expnames, trials=trials,\n",
+    "                              recalculate=recalculate)\n",
+    "\n",
+    "#==============================================================================\n",
+    "# b. The pursuit latency\n",
+    "#==============================================================================\n",
+    "\n",
+    "# Parameters of the function you can change:\n",
+    "#------------------------------------------------------------------------------\n",
+    "w1 = 300 # Size of the window 1 in ms\n",
+    "w2 = 50 # Size of the window 2 in ms\n",
+    "off = 50 # Gap between the two windows\n",
+    "crit = 0.1 # Difference criterion between the two linregress detecting if the\n",
+    "           # pursuit begins\n",
+    "#------------------------------------------------------------------------------\n",
+    "\n",
+    "classical_method.latency(xname='Vx_NaN', toxname='classical_latency',\n",
+    "                         w1=w1, w2=w2, off=off, crit=crit,\n",
+    "                         eventName_TargetOn=eventName_TargetOn,\n",
+    "                         expnames=expnames, trials=trials,\n",
+    "                         recalculate=recalculate)\n",
+    "\n",
+    "#==============================================================================\n",
+    "# c. The velocity of the steady state of the pursuit\n",
+    "#==============================================================================\n",
+    "\n",
+    "# Parameters of the function you can change:\n",
+    "#------------------------------------------------------------------------------\n",
+    "add_stime = 400 # Add time at the start of the event\n",
+    "add_etime = 600 # Add time at the end of the event\n",
+    "#------------------------------------------------------------------------------\n",
+    "\n",
+    "classical_method.steady_state(xname='Vx_NaN', toxname='classical_steady_state',\n",
+    "                              add_stime=add_stime, add_etime=add_etime,\n",
+    "                              eventName_TargetOn=eventName_TargetOn,\n",
+    "                              expnames=expnames, trials=trials,\n",
+    "                              recalculate=recalculate)\n",
+    "\n",
+    "###############################################################################\n",
+    "# 5. Extracting the different parameters of smooth pursuit\n",
+    "#    by fitting the parameters of a pre-defined model to your data.\n",
+    "###############################################################################\n",
+    "\n",
+    "# Parameters of the function you can change:\n",
+    "#------------------------------------------------------------------------------\n",
+    "model = ANEMO.Model.SmoothPursuit.velocity_sigmo # Model equation\n",
+    "stime = None # Start time of the fitting\n",
+    "etime = -280 # End time of the fitting\n",
+    "step_fit = 2 # Number of steps for the fit\n",
+    "\n",
+    "# Dictionary containing the parameters for the generate_params function\n",
+    "arg_generate_params = dict(eventName_TargetOn='TargetOn',\n",
+    "                           eventName_StimulusOff='StimulusOff',\n",
+    "                           eventName_dir_target='dir_target',\n",
+    "                           do_whitening=False)\n",
+    "#------------------------------------------------------------------------------\n",
+    "\n",
+    "ProcessingSmoothPursuit.Fit(xname='Vx_NaN', toxname='fit_smooth_pursuit',\n",
+    "                            model=model, stime=stime, etime=etime,\n",
+    "                            step_fit=step_fit,\n",
+    "                            arg_generate_params=arg_generate_params,\n",
+    "                            expnames=expnames, trials=trials,\n",
+    "                            recalculate=recalculate)\n"
+   ]
+  }
+ ],
+ "metadata": {
+  "celltoolbar": "Raw Cell Format",
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.6"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

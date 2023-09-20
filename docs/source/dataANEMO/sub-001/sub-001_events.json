@@ -1,0 +1,123 @@
+{
+    "EBLINK":{
+        "Description":"End of blink",
+        "fonction":null,
+        "arg":null,
+        "trial":null
+    },
+    "EFIX":{
+        "Description":"End of fixation",
+        "fonction":null,
+        "arg":null,
+        "trial":null
+    },
+    "ESACC":{
+        "Description":"End of saccade",
+        "fonction":null,
+        "arg":null,
+        "trial":null
+    },
+    "SBLINK":{
+        "Description":"Start of blink",
+        "fonction":null,
+        "arg":null,
+        "trial":null
+    },
+    "SFIX":{
+        "Description":"Start of fixation",
+        "fonction":null,
+        "arg":null,
+        "trial":null
+    },
+    "SSACC":{
+        "Description":"Start of saccade",
+        "fonction":null,
+        "arg":null,
+        "trial":null
+    },
+    "StimulusOff":{
+        "Description":"disappearance of the fixation point",
+        "fonction":null,
+        "arg":null,
+        "trial":null
+    },
+    "StimulusOn":{
+        "Description":"appearance of the fixation point",
+        "fonction":null,
+        "arg":null,
+        "trial":null
+    },
+    "TargetOff":{
+        "Description":"disappearance of the moving target",
+        "fonction":null,
+        "arg":null,
+        "trial":null
+    },
+    "TargetOn":{
+        "Description":"appearance of the moving target",
+        "fonction":null,
+        "arg":null,
+        "trial":null
+    },
+    "dir_target":{
+        "Description":"direction of the Target",
+        "fonction":null,
+        "arg":null,
+        "trial":null
+    },
+    "num_block":{
+        "Description":"numero of block",
+        "fonction":null,
+        "arg":null,
+        "trial":null
+    },
+    "num_trial":{
+        "Description":"numero of the trial",
+        "fonction":null,
+        "arg":null,
+        "trial":null
+    },
+    "proba":{
+        "Description":"probability that the movement of the target is to the right",
+        "fonction":null,
+        "arg":null,
+        "trial":null
+    },
+    "switch":{
+        "Description":"switch of the probability",
+        "fonction":null,
+        "arg":null,
+        "trial":null
+    },
+    "MISACC":{
+        "Description":"new ANEMO data",
+        "fonction":"ProcessingSaccades.Data.detect_misacc",
+        "arg":{
+            "vxname":"xpr_vdeg",
+            "vyname":"ypr_vdeg",
+            "ref_time":"time",
+            "threshold":5,
+            "mint":5,
+            "maxt":100,
+            "minstep":30,
+            "return_":false
+        },
+        "trial":[
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+        ]
+    }
+}

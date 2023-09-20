@@ -14,25 +14,24 @@
 
 import os
 import sys
+#sys.path.insert(0, os.path.abspath('../..'))
 sys.path.insert(0, os.path.abspath('../..'))
-
 
 # -- Project information -----------------------------------------------------
 
 project = 'ANEMO'
-copyright = '2019, chloe'
+copyright = '2023, chloe pasturel'
 author = 'Chloe Pasturel'
 
 # The short X.Y version
-version = ''
+version = '2.0.0'
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = '2.0.0'
 
 
 # -- General configuration ---------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
-#
 # needs_sphinx = '1.0'
 
 # Add any Sphinx extension module names here, as strings. They can be
@@ -49,13 +48,14 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'nbsphinx',
+    'sphinx_copybutton',
     #'numpydoc',
     'sphinx.ext.napoleon',
     'sphinx.ext.autosectionlabel',
 ]
 
-def setup(app):
-    app.add_stylesheet('custom.css')
+html_css_files = ['_static/custom.css',]
+
 
 napoleon_use_param=False
 napoleon_use_rtype=False
@@ -65,8 +65,6 @@ templates_path = ['_templates']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
-#
-# source_suffix = ['.rst', '.md']
 source_suffix = ['.rst']
 
 # The master toctree document.
@@ -77,7 +75,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -86,17 +84,6 @@ exclude_patterns = ['_build', '**.ipynb_checkpoints']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'trac'
-
-
-#### Run notebook configuration
-###
-#### The template used when exporting from nbconvert
-####   full  - Outputs the full HTML document [Default]
-####   basic - Outputs a single div (with no additional resources)
-###run_notebook_export_template = 'basic'  # Default: 'full'
-###
-#### Display the source links to the generated evaluated files
-###run_notebook_display_source_links = False  # Default: True
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -114,7 +101,7 @@ html_theme_options = {
     'show_powered_by': False,
     'github_user': 'invibe',
     'github_repo': 'ANEMO',
-    'github_banner': True,
+    'github_banner': False,
     'github_button': True,
     'github_type': 'watch',
     'github_count': False,
@@ -131,7 +118,7 @@ html_theme_options = {
     'sidebar_header': '#4D4D4D',
     'sidebar_link': '#7F7F7F',
 
-    'code_font_size': '15px',
+    'code_font_size': '13px',
     'font_size': '15px',}
 
 
@@ -145,92 +132,39 @@ html_static_path = ['_static']
 #
 # The default sidebars (for documents that don't match any pattern) are
 # defined by theme itself.  Builtin themes are using these templates by
-# default: ``['localtoc.html', 'relations.html', 'sourcelink.html',
-# 'searchbox.html']``.
-#
+# default: ``['localtoc.html', 'relations.html', 'sourcelink.html', 'searchbox.html']``.
+
 #html_sidebars = {'**': ['globaltoc.html','relations.html',  'searchbox.html']}
-html_show_copyright = False
-html_show_sphinx = False
-
-# -- Options for HTMLHelp output ---------------------------------------------
-
-# Output file base name for HTML help builder.
-htmlhelp_basename = 'ANEMOdoc'
-
-
-# -- Options for LaTeX output ------------------------------------------------
-
-latex_elements = {
-    # The paper size ('letterpaper' or 'a4paper').
-    'papersize': 'letterpaper',
-
-    # The font size ('10pt', '11pt' or '12pt').
-    'pointsize': '10pt',
-
-    # Additional stuff for the LaTeX preamble.
-    'preamble': '',
-
-    # Latex figure (float) alignment
-    'figure_align': 'htbp',
+html_sidebars = {
+    '**': [
+        'about.html',
+        #'navigation.html',
+        'globaltoc.html',
+        'searchbox.html',
+        #'relations.html',
+        #'donate.html',
+    ]
 }
 
-# Grouping the document tree into LaTeX files. List of tuples
-# (source start file, target name, title,
-#  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    (master_doc, 'ANEMO.tex', 'ANEMO Documentation',
-     'chloe', 'manual'),
-]
-
-
-# -- Options for manual page output ------------------------------------------
-
-# One entry per manual page. List of tuples
-# (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'anemo', 'ANEMO Documentation',
-     [author], 1)
-]
-
-
-# -- Options for Texinfo output ----------------------------------------------
-
-# Grouping the document tree into Texinfo files. List of tuples
-# (source start file, target name, title, author,
-#  dir menu entry, description, category)
-texinfo_documents = [
-    (master_doc, 'ANEMO', 'ANEMO Documentation',
-     author, 'ANEMO', 'One line description of project.',
-     'Miscellaneous'),
-]
-
-
-# -- Options for Epub output -------------------------------------------------
-
-# Bibliographic Dublin Core info.
-epub_title = project
-
-# The unique identifier of the text. This can be a ISBN number
-# or the project homepage.
-#
-# epub_identifier = ''
-
-# A unique identification for the text.
-#
-# epub_uid = ''
-
-# A list of files that should not be packed into the epub file.
-#epub_exclude_files = ['search.html']
-
-
-# -- Extension configuration -------------------------------------------------
-
-# -- Options for intersphinx extension ---------------------------------------
-
-# Example configuration for intersphinx: refer to the Python standard library.
-#intersphinx_mapping = {'https://docs.python.org/': None}
+html_show_copyright = False
+html_show_sphinx = False
+html_show_sourcelink = False
 
 # -- Options for todo extension ----------------------------------------------
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
+
+
+# -- Extension configuration -------------------------------------------------
+
+#### Run notebook configuration
+###
+#### The template used when exporting from nbconvert
+####   full  - Outputs the full HTML document [Default]
+####   basic - Outputs a single div (with no additional resources)
+###run_notebook_export_template = 'basic'  # Default: 'full'
+###
+#### Display the source links to the generated evaluated files
+###run_notebook_display_source_links = False  # Default: True
+

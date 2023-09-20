@@ -1,0 +1,1106 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ANEMO.ProcessingSmoothPursuit &#8212; ANEMO 2.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/_static/custom.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">ANEMO</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=invibe&repo=ANEMO&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+
+<h3><a href="../../index.html">Table of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../1__init.html">init</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2__Data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3.0__PreProcessing.html">PreProcessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../4.0__ProcessingSaccades.html">ProcessingSaccades</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../5.0__ProcessingSmoothPursuit.html">ProcessingSmoothPursuit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../DEMO.html">DEMO</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ANEMO.ProcessingSmoothPursuit</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">from</span> <span class="nn">.various_functions</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.Init</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.Data_loop</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.GenerateParams</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="ProcessingSmoothPursuit"><a class="viewcode-back" href="../../5.0__ProcessingSmoothPursuit.html#ANEMO.ProcessingSmoothPursuit">[docs]</a><span class="k">class</span> <span class="nc">ProcessingSmoothPursuit</span><span class="p">:</span>
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    ``ProcessingSmoothPursuit`` allows you to apply certain calculations</span>
+<span class="sd">    to the data in order to extract parameters, including the latency of</span>
+<span class="sd">    pursuite, the anticipation speed or the steady state speed.</span>
+
+<span class="sd">        - Use ``ProcessingSmoothPursuit.Trial`` to test on a trial the</span>
+<span class="sd">          different parameters of the functions present in</span>
+<span class="sd">          ``ProcessingSmoothPursuit`` in order to adjust them as well as</span>
+<span class="sd">          possible</span>
+
+<span class="sd">        - Once the right parameters are found, you can use</span>
+<span class="sd">          ``ProcessingSmoothPursuit.Data`` to apply the function to a set of</span>
+<span class="sd">          data and save it.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dirpath: str</span>
+<span class="sd">        Data directory path</span>
+
+<span class="sd">    sub: str, or None (default None)</span>
+<span class="sd">        Participant identifier</span>
+<span class="sd">    task: str, or None (default None)</span>
+<span class="sd">        Name of the Task</span>
+<span class="sd">    ses: str, or None (default None)</span>
+<span class="sd">        Name of the Session</span>
+<span class="sd">    acq: str, or None (default None)</span>
+<span class="sd">        Name of the Aquisition</span>
+<span class="sd">    run: str, or None (default None)</span>
+<span class="sd">        IndexRun</span>
+<span class="sd">    RawData: bool (default False)</span>
+<span class="sd">        If ``True`` open RawData,</span>
+<span class="sd">        if ``False`` open DataAnemo</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dirpath</span><span class="p">,</span> <span class="n">sub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">acq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">run</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">RawData</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirpath</span> <span class="o">=</span> <span class="n">dirpath</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sub</span> <span class="o">=</span> <span class="n">sub</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="n">task</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ses</span> <span class="o">=</span> <span class="n">ses</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">acq</span> <span class="o">=</span> <span class="n">acq</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run</span> <span class="o">=</span> <span class="n">run</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RawData</span> <span class="o">=</span> <span class="n">RawData</span>
+
+        <span class="c1">#self.data = Data.open(self.dirpath, self.sub, self.ses, self.acq,</span>
+        <span class="c1">#                      self.run, self.RawData)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Trial</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Trial</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Trial</span><span class="o">.</span><span class="n">data</span>
+
+<div class="viewcode-block" id="ProcessingSmoothPursuit.Trial"><a class="viewcode-back" href="../../5.0__ProcessingSmoothPursuit.html#ANEMO.ProcessingSmoothPursuit.Trial">[docs]</a>    <span class="k">class</span> <span class="nc">Trial</span><span class="p">:</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Allows you to perform smooth pursuit-related processing of eye data</span>
+<span class="sd">        from a trial.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data: dict, or None (default None)</span>
+<span class="sd">            Dictionary containing for each file the ``Data``, the ``Results``,</span>
+<span class="sd">            the ``Events``, and the ``Settings``</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">_</span><span class="o">.</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">_</span><span class="o">.</span><span class="n">sub</span><span class="p">,</span> <span class="n">_</span><span class="o">.</span><span class="n">ses</span><span class="p">,</span> <span class="n">_</span><span class="o">.</span><span class="n">acq</span><span class="p">,</span>  <span class="n">_</span><span class="o">.</span><span class="n">run</span><span class="p">,</span>
+                                  <span class="n">_</span><span class="o">.</span><span class="n">RawData</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">classical_method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">classical_method</span><span class="p">(</span><span class="n">_</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ProcessingSmoothPursuit.Trial.classical_method"><a class="viewcode-back" href="../../5.1.0__ProcessingSmoothPursuit__classical_method.html#ANEMO.ProcessingSmoothPursuit.Trial.classical_method">[docs]</a>        <span class="k">class</span> <span class="nc">classical_method</span><span class="p">:</span>
+
+            <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            Allows you to extract some smooth pursuit parameters of eye data</span>
+<span class="sd">            from trial using &quot;classical methods&quot;.</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+
+            <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">_</span><span class="o">.</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">_</span><span class="o">.</span><span class="n">sub</span><span class="p">,</span> <span class="n">_</span><span class="o">.</span><span class="n">ses</span><span class="p">,</span> <span class="n">_</span><span class="o">.</span><span class="n">acq</span><span class="p">,</span>  <span class="n">_</span><span class="o">.</span><span class="n">run</span><span class="p">,</span>
+                                      <span class="n">_</span><span class="o">.</span><span class="n">RawData</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ProcessingSmoothPursuit.Trial.classical_method.anticipation"><a class="viewcode-back" href="../../5.1.1__ProcessingSmoothPursuit__classical_method_anticipation.html#ANEMO.ProcessingSmoothPursuit.Trial.classical_method.anticipation">[docs]</a>            <span class="k">def</span> <span class="nf">anticipation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xname</span><span class="p">,</span> <span class="n">trial</span><span class="p">,</span> <span class="n">expname</span><span class="p">,</span> <span class="n">add_stime</span><span class="o">=-</span><span class="mi">50</span><span class="p">,</span>
+                             <span class="n">add_etime</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">eventName_TargetOn</span><span class="o">=</span><span class="s1">&#39;TargetOn&#39;</span><span class="p">,</span>
+                             <span class="n">toxname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">arg</span><span class="p">):</span>
+
+                <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">                Calculates the velocity of the anticipation during the smooth</span>
+<span class="sd">                pursuit of the trial.</span>
+<span class="sd">                This velocity is the average of the velocity of the eye in a</span>
+<span class="sd">                100ms window around the target appearance.</span>
+
+<span class="sd">                With the parameter ``return_=True`` this function returns</span>
+<span class="sd">                the calculated data and allows you to test the different</span>
+<span class="sd">                parameters.</span>
+
+<span class="sd">                Parameters</span>
+<span class="sd">                ----------</span>
+<span class="sd">                xname: str</span>
+<span class="sd">                    Name of the data to be transformed</span>
+<span class="sd">                trial: int</span>
+<span class="sd">                    Number of the trial to be transformed</span>
+<span class="sd">                expname: str</span>
+<span class="sd">                    Name of the particular experience to be transformed</span>
+
+<span class="sd">                add_stime: int (default -50)</span>
+<span class="sd">                    Add time at the start of the event</span>
+<span class="sd">                add_etime: int (default 50)</span>
+<span class="sd">                    Add time at the end of the event</span>
+
+<span class="sd">                eventName_TargetOn: str (default &#39;TargetOn&#39;)</span>
+<span class="sd">                    Name of the event marking the appearance of the target</span>
+
+<span class="sd">                toxname: str (default None)</span>
+<span class="sd">                    Name of the data to be saved</span>
+
+<span class="sd">                return_: bool (default True)</span>
+<span class="sd">                    If ``True`` returns the value,</span>
+<span class="sd">                    else saves it in ``results``</span>
+
+<span class="sd">                Returns</span>
+<span class="sd">                -------</span>
+<span class="sd">                anticipation: float</span>
+<span class="sd">                    the calculated data if ``return_=True``</span>
+<span class="sd">                &#39;&#39;&#39;</span>
+
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Data</span> <span class="c1"># data</span>
+
+                <span class="n">events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Events</span> <span class="c1"># events data</span>
+                <span class="n">trial_events</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">events</span><span class="o">.</span><span class="n">trial</span><span class="o">==</span><span class="n">trial</span><span class="p">]</span> <span class="c1"># trial events</span>
+
+                <span class="c1"># start of the time for the average</span>
+                <span class="n">t_start</span> <span class="o">=</span> <span class="n">trial_events</span><span class="p">[</span><span class="n">eventName_TargetOn</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">add_stime</span>
+                <span class="c1"># end of the time for the average</span>
+                <span class="n">t_end</span> <span class="o">=</span> <span class="n">trial_events</span><span class="p">[</span><span class="n">eventName_TargetOn</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">add_etime</span>
+
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># calculation of the anticipation</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># data for time in anticipation</span>
+                <span class="n">data_anti</span> <span class="o">=</span> <span class="n">data</span><span class="p">[(</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="o">&gt;=</span><span class="n">t_start</span> <span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="o">&lt;=</span><span class="n">t_end</span><span class="p">)]</span>
+                <span class="c1"># data x for time in anticipation</span>
+                <span class="n">data_anti_x</span> <span class="o">=</span> <span class="n">data_anti</span><span class="p">[</span><span class="n">xname</span><span class="p">]</span>
+
+                <span class="n">anticipation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">data_anti_x</span><span class="p">)</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+
+                <span class="k">if</span> <span class="n">return_</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">anticipation</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># add trial to the settings data</span>
+                    <span class="c1"># settings data</span>
+                    <span class="n">settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Settings</span>
+                    <span class="k">if</span> <span class="n">trial</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">Results</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">toxname</span><span class="p">][</span><span class="s1">&#39;trial&#39;</span><span class="p">]:</span>
+                        <span class="n">settings</span><span class="o">.</span><span class="n">Results</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">toxname</span><span class="p">][</span><span class="s1">&#39;trial&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trial</span><span class="p">)</span>
+
+                    <span class="c1"># add anticipation to the results data</span>
+                    <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Results</span> <span class="c1"># results data</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">results</span><span class="o">.</span><span class="n">trial</span><span class="o">==</span><span class="n">trial</span><span class="p">),</span> <span class="n">toxname</span><span class="p">]</span> <span class="o">=</span> <span class="n">anticipation</span></div>
+
+<div class="viewcode-block" id="ProcessingSmoothPursuit.Trial.classical_method.latency"><a class="viewcode-back" href="../../5.1.2__ProcessingSmoothPursuit__classical_method_latency.html#ANEMO.ProcessingSmoothPursuit.Trial.classical_method.latency">[docs]</a>            <span class="k">def</span> <span class="nf">latency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xname</span><span class="p">,</span> <span class="n">trial</span><span class="p">,</span> <span class="n">expname</span><span class="p">,</span> <span class="n">w1</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">w2</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">off</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+                        <span class="n">crit</span><span class="o">=</span><span class="mf">0.17</span><span class="p">,</span> <span class="n">eventName_TargetOn</span><span class="o">=</span><span class="s1">&#39;TargetOn&#39;</span><span class="p">,</span> <span class="n">toxname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">return_</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">arg</span><span class="p">):</span>
+
+                <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">                Calculates the pursuit latency during the smooth pursuit of the</span>
+<span class="sd">                trial.</span>
+<span class="sd">                This latency corresponds to the interception of two regression</span>
+<span class="sd">                lines.</span>
+
+<span class="sd">                This function extracts different parameters:</span>
+<span class="sd">                    - ``t_0`` - corresponds to the start time of the first</span>
+<span class="sd">                      regression line</span>
+<span class="sd">                    - ``slope1`` - corresponds to the slope of the first</span>
+<span class="sd">                      regression line</span>
+<span class="sd">                    - ``intercept1`` - corresponds to the intercept of the</span>
+<span class="sd">                      first regression line</span>
+<span class="sd">                    - ``slope2`` - corresponds to the slope of the second</span>
+<span class="sd">                      regression line</span>
+<span class="sd">                    - ``intercept2`` - corresponds to the intercept of the</span>
+<span class="sd">                      second regression line</span>
+<span class="sd">                    - ``latency`` - corresponds to the intercept of the two</span>
+<span class="sd">                      regression lines</span>
+
+<span class="sd">                With the parameter ``return_=True`` this function returns</span>
+<span class="sd">                the calculated data and allows you to test the different</span>
+<span class="sd">                parameters.</span>
+
+<span class="sd">                Parameters</span>
+<span class="sd">                ----------</span>
+<span class="sd">                xname: str</span>
+<span class="sd">                    Name of the data to be transformed</span>
+<span class="sd">                trial: int</span>
+<span class="sd">                    Number of the trial to be transformed</span>
+<span class="sd">                expname: str</span>
+<span class="sd">                    Name of the particular experience to be transformed</span>
+
+<span class="sd">                w1 : int, optional (default 300)</span>
+<span class="sd">                    Size of the window 1 in ms</span>
+<span class="sd">                w2 : int, optional (default 50)</span>
+<span class="sd">                    Size of the window 2 in ms</span>
+<span class="sd">                off : int, optional (default 50)</span>
+<span class="sd">                    Gap between the two windows</span>
+<span class="sd">                crit : float, optional (default 0.17)</span>
+<span class="sd">                    Difference criterion between the two linregress detecting</span>
+<span class="sd">                    if the pursuit begins</span>
+
+<span class="sd">                eventName_TargetOn: str (default &#39;TargetOn&#39;)</span>
+<span class="sd">                    Name of the event marking the appearance of the target</span>
+
+<span class="sd">                toxname: str (default None)</span>
+<span class="sd">                    Name of the data to be saved</span>
+
+<span class="sd">                return_: bool (default True)</span>
+<span class="sd">                    If ``True`` returns the value,</span>
+<span class="sd">                    else saves it in ``results``</span>
+
+<span class="sd">                Returns</span>
+<span class="sd">                -------</span>
+<span class="sd">                latency: dict</span>
+<span class="sd">                    the calculated data if ``return_=True``</span>
+<span class="sd">                &#39;&#39;&#39;</span>
+
+
+                <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
+
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Data</span> <span class="c1"># data</span>
+                <span class="n">trial_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">trial</span><span class="o">==</span><span class="n">trial</span><span class="p">]</span> <span class="c1"># trial data</span>
+
+                <span class="n">events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Events</span> <span class="c1"># events data</span>
+                <span class="n">trial_events</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">events</span><span class="o">.</span><span class="n">trial</span><span class="o">==</span><span class="n">trial</span><span class="p">]</span> <span class="c1"># trial events</span>
+
+
+                <span class="n">time</span> <span class="o">=</span> <span class="n">trial_data</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="c1"># trial data time</span>
+                <span class="k">if</span> <span class="n">time</span> <span class="o">!=</span> <span class="p">[]:</span>
+
+                    <span class="c1"># time marking the appearance of the target</span>
+                    <span class="n">TargetOn</span> <span class="o">=</span> <span class="n">trial_events</span><span class="p">[</span><span class="n">eventName_TargetOn</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">TargetOn</span> <span class="o">-=</span> <span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                    <span class="n">velocity</span> <span class="o">=</span> <span class="n">trial_data</span><span class="p">[</span><span class="n">xname</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="c1"># trial data velocity</span>
+                    <span class="n">time</span> <span class="o">=</span> <span class="n">time</span> <span class="o">-</span> <span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                    <span class="c1">#---------------------------------------------------</span>
+                    <span class="c1"># loop to find the pursuit latency</span>
+                    <span class="c1">#---------------------------------------------------</span>
+                    <span class="n">latency_found</span> <span class="o">=</span> <span class="kc">None</span>
+
+                    <span class="n">t</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">while</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="n">w1</span><span class="o">+</span><span class="n">off</span><span class="o">+</span><span class="n">w2</span><span class="p">)</span><span class="o">-</span><span class="mi">300</span><span class="p">):</span>
+
+                        <span class="c1"># first regression</span>
+                        <span class="n">regress1</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">linregress</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">t</span><span class="p">:</span><span class="n">t</span><span class="o">+</span><span class="n">w1</span><span class="p">],</span>
+                                                    <span class="n">velocity</span><span class="p">[</span><span class="n">t</span><span class="p">:</span><span class="n">t</span><span class="o">+</span><span class="n">w1</span><span class="p">])</span>
+                        <span class="n">slope1</span><span class="p">,</span> <span class="n">intercept1</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">regress1</span>
+
+                        <span class="c1"># second regression</span>
+                        <span class="n">regress2</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">linregress</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="n">w1</span><span class="o">+</span><span class="n">off</span><span class="p">:</span><span class="n">t</span><span class="o">+</span><span class="n">w1</span><span class="o">+</span><span class="n">off</span><span class="o">+</span><span class="n">w2</span><span class="p">],</span>
+                                                <span class="n">velocity</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="n">w1</span><span class="o">+</span><span class="n">off</span><span class="p">:</span><span class="n">t</span><span class="o">+</span><span class="n">w1</span><span class="o">+</span><span class="n">off</span><span class="o">+</span><span class="n">w2</span><span class="p">])</span>
+                        <span class="n">slope2</span><span class="p">,</span> <span class="n">intercept2</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">regress2</span>
+
+                        <span class="c1"># difference between the first slope and the second</span>
+                        <span class="n">diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">slope2</span><span class="p">)</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">slope1</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">crit</span><span class="p">:</span>
+
+                            <span class="c1"># time of the two windows</span>
+                            <span class="n">tw</span> <span class="o">=</span> <span class="n">time</span><span class="p">[</span><span class="n">t</span><span class="p">:</span><span class="n">t</span><span class="o">+</span><span class="n">w1</span><span class="o">+</span><span class="n">off</span><span class="o">+</span><span class="n">w2</span><span class="p">]</span>
+                            <span class="n">timew</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">tw</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">tw</span><span class="p">),</span>
+                                                <span class="nb">len</span><span class="p">(</span><span class="n">tw</span><span class="p">))</span>
+
+                            <span class="c1"># first regression line</span>
+                            <span class="n">fitLine1</span> <span class="o">=</span> <span class="n">slope1</span><span class="o">*</span><span class="n">timew</span> <span class="o">+</span> <span class="n">intercept1</span>
+                            <span class="c1"># second regression line</span>
+                            <span class="n">fitLine2</span> <span class="o">=</span> <span class="n">slope2</span><span class="o">*</span><span class="n">timew</span> <span class="o">+</span> <span class="n">intercept2</span>
+
+                            <span class="c1"># index where the two regression lines cross</span>
+                            <span class="n">idxlat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">fitLine1</span><span class="p">,</span> <span class="n">fitLine2</span><span class="p">,</span>
+                                                         <span class="n">atol</span><span class="o">=</span><span class="mf">0.1</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+                            <span class="c1">#Latency of the pursuit</span>
+                            <span class="n">latency</span> <span class="o">=</span> <span class="n">timew</span><span class="p">[</span><span class="n">idxlat</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">latency</span><span class="p">)</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+                                <span class="c1"># checks if the pursuit latency found is above</span>
+                                <span class="c1"># TargetOn+80ms</span>
+                                <span class="k">if</span> <span class="n">latency</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">TargetOn</span><span class="o">+</span><span class="mi">80</span><span class="p">):</span>
+                                    <span class="n">latency_found</span> <span class="o">=</span> <span class="kc">True</span>
+                                    <span class="n">lat</span> <span class="o">=</span> <span class="n">latency</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                                    <span class="n">s1</span> <span class="o">=</span> <span class="n">slope1</span>
+                                    <span class="n">i1</span> <span class="o">=</span> <span class="n">intercept1</span>
+                                    <span class="n">s2</span> <span class="o">=</span> <span class="n">slope2</span>
+                                    <span class="n">i2</span><span class="o">=</span> <span class="n">intercept2</span>
+                                    <span class="n">t0</span> <span class="o">=</span> <span class="n">t</span>
+
+                        <span class="k">if</span> <span class="n">latency_found</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">t</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="n">w1</span><span class="o">+</span><span class="n">off</span><span class="o">+</span><span class="n">w2</span><span class="p">)</span><span class="o">-</span><span class="mi">300</span><span class="p">)</span> <span class="o">+</span><span class="mi">1</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="n">latency_found</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">latency</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">):</span>
+                    <span class="n">lat</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">s1</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">i1</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">s2</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">i2</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">t0</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+                <span class="k">if</span> <span class="n">return_</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;latency&#39;</span><span class="p">:</span>    <span class="n">lat</span><span class="p">,</span>
+                            <span class="s1">&#39;t0&#39;</span><span class="p">:</span>         <span class="n">t0</span><span class="p">,</span>
+                            <span class="s1">&#39;slope1&#39;</span><span class="p">:</span>     <span class="n">s1</span><span class="p">,</span>
+                            <span class="s1">&#39;intercept1&#39;</span><span class="p">:</span> <span class="n">i1</span><span class="p">,</span>
+                            <span class="s1">&#39;slope2&#39;</span><span class="p">:</span>     <span class="n">s2</span><span class="p">,</span>
+                            <span class="s1">&#39;intercept2&#39;</span><span class="p">:</span> <span class="n">i2</span><span class="p">}</span>
+
+                <span class="k">else</span><span class="p">:</span>
+
+                    <span class="c1"># add trial to the settings data</span>
+                    <span class="c1"># settings data</span>
+                    <span class="n">settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Settings</span><span class="o">.</span><span class="n">Results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">trial</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">[</span><span class="n">toxname</span><span class="p">][</span><span class="s1">&#39;trial&#39;</span><span class="p">]:</span>
+                        <span class="n">settings</span><span class="p">[</span><span class="n">toxname</span><span class="p">][</span><span class="s1">&#39;trial&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trial</span><span class="p">)</span>
+
+                    <span class="c1"># add anticipation to the results data</span>
+                    <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Results</span> <span class="c1"># results data</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">results</span><span class="o">.</span><span class="n">trial</span><span class="o">==</span><span class="n">trial</span><span class="p">),</span> <span class="n">toxname</span><span class="p">]</span> <span class="o">=</span> <span class="n">lat</span>
+                    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s1">&#39;__t0&#39;</span><span class="p">,</span> <span class="s1">&#39;__slope1&#39;</span><span class="p">,</span> <span class="s1">&#39;__intercept1&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;__slope2&#39;</span><span class="p">,</span> <span class="s1">&#39;__intercept2&#39;</span><span class="p">],</span>
+                                     <span class="p">[</span><span class="n">t0</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">i1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">i2</span><span class="p">]):</span>
+                        <span class="n">results</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">results</span><span class="o">.</span><span class="n">trial</span><span class="o">==</span><span class="n">trial</span><span class="p">),</span> <span class="n">toxname</span><span class="o">+</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="ProcessingSmoothPursuit.Trial.classical_method.steady_state"><a class="viewcode-back" href="../../5.1.3__ProcessingSmoothPursuit__classical_method_steady_state.html#ANEMO.ProcessingSmoothPursuit.Trial.classical_method.steady_state">[docs]</a>            <span class="k">def</span> <span class="nf">steady_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xname</span><span class="p">,</span> <span class="n">trial</span><span class="p">,</span> <span class="n">expname</span><span class="p">,</span> <span class="n">add_stime</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
+                             <span class="n">add_etime</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">eventName_TargetOn</span><span class="o">=</span><span class="s1">&#39;TargetOn&#39;</span><span class="p">,</span>
+                             <span class="n">toxname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">arg</span><span class="p">):</span>
+
+                <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">                Calculates the velocity of the steady-state during the smooth</span>
+<span class="sd">                pursuit of the trial.</span>
+<span class="sd">                This velocity is the average of the eye velocity during target</span>
+<span class="sd">                tracking after the target has appeared.</span>
+
+<span class="sd">                With the parameter ``return_=True`` this function returns</span>
+<span class="sd">                the calculated data and allows you to test the different</span>
+<span class="sd">                parameters.</span>
+
+<span class="sd">                Parameters</span>
+<span class="sd">                ----------</span>
+<span class="sd">                xname: str</span>
+<span class="sd">                    Name of the data to be transformed</span>
+<span class="sd">                trial: int</span>
+<span class="sd">                    Number of the trial to be transformed</span>
+<span class="sd">                expname: str</span>
+<span class="sd">                    Name of the particular experience to be transformed</span>
+
+<span class="sd">                add_stime: int (default 400)</span>
+<span class="sd">                    Add time at the start of the event</span>
+<span class="sd">                add_etime: int (default 600)</span>
+<span class="sd">                    Add time at the end of the event</span>
+
+<span class="sd">                eventName_TargetOn: str (default &#39;TargetOn&#39;)</span>
+<span class="sd">                    Name of the event marking the appearance of the target</span>
+
+<span class="sd">                toxname: str (default None)</span>
+<span class="sd">                    Name of the data to be saved</span>
+
+<span class="sd">                return_: bool (default True)</span>
+<span class="sd">                    If ``True`` returns the value,</span>
+<span class="sd">                    else saves it in ``results``</span>
+
+<span class="sd">                Returns</span>
+<span class="sd">                -------</span>
+<span class="sd">                steady_state: float</span>
+<span class="sd">                    the calculated data if ``return_=True``</span>
+<span class="sd">                &#39;&#39;&#39;</span>
+
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Data</span> <span class="c1"># data</span>
+
+                <span class="n">events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Events</span> <span class="c1"># events data</span>
+                <span class="n">trial_events</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">events</span><span class="o">.</span><span class="n">trial</span><span class="o">==</span><span class="n">trial</span><span class="p">]</span> <span class="c1"># trial events</span>
+
+                <span class="c1"># start of the time for the average</span>
+                <span class="n">t_start</span> <span class="o">=</span> <span class="n">trial_events</span><span class="p">[</span><span class="n">eventName_TargetOn</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">add_stime</span>
+                <span class="c1"># end of the time for the average</span>
+                <span class="n">t_end</span> <span class="o">=</span> <span class="n">trial_events</span><span class="p">[</span><span class="n">eventName_TargetOn</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">add_etime</span>
+
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># calculation of the steady state</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># data for time in steady state</span>
+                <span class="n">data_steady</span> <span class="o">=</span> <span class="n">data</span><span class="p">[(</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="o">&gt;=</span><span class="n">t_start</span> <span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="o">&lt;=</span><span class="n">t_end</span><span class="p">)]</span>
+                <span class="c1"># data x for time in steady state</span>
+                <span class="n">data_steady_x</span> <span class="o">=</span> <span class="n">data_steady</span><span class="p">[</span><span class="n">xname</span><span class="p">]</span>
+
+                <span class="n">steady_state</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">data_steady_x</span><span class="p">))</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+
+                <span class="k">if</span> <span class="n">return_</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">steady_state</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># add trial to the settings data</span>
+                    <span class="c1"># settings data</span>
+                    <span class="n">settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Settings</span><span class="o">.</span><span class="n">Results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">trial</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">[</span><span class="n">toxname</span><span class="p">][</span><span class="s1">&#39;trial&#39;</span><span class="p">]:</span>
+                        <span class="n">settings</span><span class="p">[</span><span class="n">toxname</span><span class="p">][</span><span class="s1">&#39;trial&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trial</span><span class="p">)</span>
+
+                    <span class="c1"># add anticipation to the results data</span>
+                    <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Results</span> <span class="c1"># results data</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">results</span><span class="o">.</span><span class="n">trial</span><span class="o">==</span><span class="n">trial</span><span class="p">),</span> <span class="n">toxname</span><span class="p">]</span> <span class="o">=</span> <span class="n">steady_state</span></div></div>
+
+
+<div class="viewcode-block" id="ProcessingSmoothPursuit.Trial.Fit"><a class="viewcode-back" href="../../5.2.1__ProcessingSmoothPursuit__Fit_function.html#ANEMO.ProcessingSmoothPursuit.Trial.Fit">[docs]</a>        <span class="k">def</span> <span class="nf">Fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xname</span><span class="p">,</span> <span class="n">trial</span><span class="p">,</span> <span class="n">expname</span><span class="p">,</span>  <span class="n">model</span><span class="p">,</span>
+                <span class="n">generate_params</span><span class="o">=</span><span class="n">GenerateParams</span><span class="o">.</span><span class="n">SmoothPursuit</span><span class="p">,</span>
+                <span class="n">stime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">etime</span><span class="o">=-</span><span class="mi">280</span><span class="p">,</span> <span class="n">step_fit</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="n">arg_generate_params</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">xNanName</span><span class="o">=</span><span class="s1">&#39;px_NaN&#39;</span><span class="p">,</span>
+                                         <span class="n">eventName_TargetOn</span><span class="o">=</span><span class="s1">&#39;TargetOn&#39;</span><span class="p">,</span>
+                                         <span class="n">eventName_StimulusOff</span><span class="o">=</span><span class="s1">&#39;StimulusOff&#39;</span><span class="p">,</span>
+                                         <span class="n">eventName_dir_target</span><span class="o">=</span><span class="s1">&#39;dir_target&#39;</span><span class="p">,</span>
+                                         <span class="n">do_whitening</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                <span class="n">toxname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">opt</span><span class="p">):</span>
+
+            <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            Allows you to fit the parameters of a model defined by an</span>
+<span class="sd">            ``model`` to the ``xname`` data of a trial</span>
+
+<span class="sd">            With the parameter ``return_=True`` this function returns</span>
+<span class="sd">            the calculated data and allows you to test the different</span>
+<span class="sd">            parameters.</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            xname: str</span>
+<span class="sd">                Name of the data to be transformed</span>
+<span class="sd">            trial: int</span>
+<span class="sd">                Number of the trial to be transformed</span>
+<span class="sd">            expname: str</span>
+<span class="sd">                Name of the particular experience to be transformed</span>
+
+<span class="sd">            model: function</span>
+<span class="sd">                Model equation</span>
+<span class="sd">            generate_params: function (default GenerateParams.SmoothPursuit)</span>
+<span class="sd">                Function generating parameters to perform the fitting</span>
+
+<span class="sd">            stime: int, or None (default None)</span>
+<span class="sd">                Start time of the fitting</span>
+<span class="sd">            etime: int, or None (default -280)</span>
+<span class="sd">                End time of the fitting</span>
+<span class="sd">            step_fit: int, optional (default 2)</span>
+<span class="sd">                Number of steps for the fit</span>
+<span class="sd">            arg_generate_params: dict</span>
+<span class="sd">                Dictionary containing the parameters for the generate_params</span>
+<span class="sd">                function,</span>
+<span class="sd">                its default value is :</span>
+<span class="sd">                ``dict(xNanName=&#39;px_NaN&#39;, TargetOn=&#39;TargetOn&#39;,</span>
+<span class="sd">                StimulusOff=&#39;StimulusOff&#39;, dir_target=&#39;dir_target&#39;,</span>
+<span class="sd">                do_whitening=False)``</span>
+
+<span class="sd">            toxname: str (default None)</span>
+<span class="sd">                Name of the data to be saved</span>
+
+<span class="sd">            return_: bool (default True)</span>
+<span class="sd">                If ``True`` returns the value,</span>
+<span class="sd">                else saves it in ``results`` and ``data``</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            fit: dict</span>
+<span class="sd">                the calculated data if ``return_=True``</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Data</span> <span class="c1"># data</span>
+            <span class="n">trial_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">trial</span><span class="o">==</span><span class="n">trial</span><span class="p">]</span> <span class="c1"># trial data</span>
+
+            <span class="n">events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Events</span> <span class="c1"># events data</span>
+            <span class="n">trial_events</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">events</span><span class="o">.</span><span class="n">trial</span><span class="o">==</span><span class="n">trial</span><span class="p">]</span> <span class="c1"># trial events</span>
+
+            <span class="n">settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Settings</span> <span class="c1"># settings data</span>
+            <span class="n">results</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Results</span> <span class="c1"># results data</span>
+
+            <span class="k">def</span> <span class="nf">fitting</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">inde_vars</span><span class="p">,</span> <span class="n">step_fit</span><span class="p">):</span>
+
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># checks if the function parameters are correct</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="kn">import</span> <span class="nn">inspect</span>
+                <span class="n">arg_fct</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">args</span>
+                <span class="n">arg</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">inde_vars</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">arg_fct</span><span class="p">)</span><span class="o">==</span><span class="nb">sorted</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="n">ParamsError</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">arg_fct</span><span class="p">)</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+
+                <span class="kn">from</span> <span class="nn">lmfit</span> <span class="kn">import</span>  <span class="n">Model</span><span class="p">,</span> <span class="n">Parameters</span>
+
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># parameters of the model to be fitted</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="n">params_</span> <span class="o">=</span> <span class="n">Parameters</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+                    <span class="k">if</span> <span class="s1">&#39;expr&#39;</span> <span class="ow">in</span> <span class="n">params</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="n">params_</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">expr</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="s1">&#39;expr&#39;</span><span class="p">])</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">vary</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="s1">&#39;vary&#39;</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="s1">&#39;vary&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;vary&#39;</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">step_fit</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+                                <span class="n">vary</span><span class="o">=</span><span class="kc">True</span>
+                            <span class="k">elif</span> <span class="n">step_fit</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+                                <span class="n">vary</span><span class="o">=</span><span class="kc">False</span>
+
+                        <span class="n">params_</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">p</span><span class="p">,</span>
+                                    <span class="n">value</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">],</span>
+                                    <span class="nb">min</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="s1">&#39;min&#39;</span><span class="p">],</span>
+                                    <span class="nb">max</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="s1">&#39;max&#39;</span><span class="p">],</span>
+                                    <span class="n">vary</span><span class="o">=</span><span class="n">vary</span><span class="p">)</span>
+
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># the model to be fitted</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="n">model_</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">independent_vars</span><span class="o">=</span><span class="n">inde_vars</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># fitting the model to the data</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="k">if</span> <span class="n">step_fit</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">model_</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">params_</span><span class="p">,</span> <span class="n">nan_policy</span><span class="o">=</span><span class="s1">&#39;omit&#39;</span><span class="p">,</span>
+                                        <span class="o">**</span><span class="n">inde_vars</span><span class="p">)</span>
+
+                <span class="k">elif</span> <span class="n">step_fit</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+                    <span class="n">out</span> <span class="o">=</span> <span class="n">model_</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">params_</span><span class="p">,</span> <span class="n">nan_policy</span><span class="o">=</span><span class="s1">&#39;omit&#39;</span><span class="p">,</span>
+                                     <span class="o">**</span><span class="n">inde_vars</span><span class="p">)</span>
+
+                    <span class="c1"># make the other parameters vary now</span>
+                    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="s1">&#39;vary&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;vary&#39;</span><span class="p">:</span>
+                            <span class="n">out</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">vary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">model_</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;nelder&#39;</span><span class="p">,</span>
+                                        <span class="n">nan_policy</span><span class="o">=</span><span class="s1">&#39;omit&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">inde_vars</span><span class="p">)</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+
+                <span class="k">return</span> <span class="n">result</span>
+
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="c1"># adds parameters to the dictionary containing the parameters for</span>
+            <span class="c1"># the generate_params function</span>
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="k">for</span> <span class="n">arg_name</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;xname&#39;</span><span class="p">,</span> <span class="s1">&#39;trial&#39;</span><span class="p">,</span> <span class="s1">&#39;expname&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;modelName&#39;</span><span class="p">,</span> <span class="s1">&#39;stime&#39;</span><span class="p">,</span> <span class="s1">&#39;etime&#39;</span><span class="p">],</span>
+                                      <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">xname</span><span class="p">,</span> <span class="n">trial</span><span class="p">,</span> <span class="n">expname</span><span class="p">,</span>
+                                       <span class="n">model</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">stime</span><span class="p">,</span> <span class="n">etime</span><span class="p">]):</span>
+
+                <span class="k">if</span> <span class="n">arg_name</span> <span class="ow">in</span> <span class="n">generate_params</span><span class="o">.</span><span class="vm">__code__</span><span class="o">.</span><span class="n">co_varnames</span><span class="p">:</span>
+                    <span class="n">arg_generate_params</span><span class="p">[</span><span class="n">arg_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">arg</span>
+            <span class="c1">#------------------------------------------------------------------</span>
+
+            <span class="n">data_x</span> <span class="o">=</span> <span class="n">trial_data</span><span class="p">[</span><span class="n">xname</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="c1"># trial data x</span>
+            <span class="n">fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">data_x</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+            <span class="n">data_x</span> <span class="o">=</span> <span class="n">data_x</span><span class="p">[</span><span class="n">stime</span><span class="p">:</span><span class="n">etime</span><span class="p">]</span> <span class="c1"># trial data x for fitting</span>
+
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data_x</span><span class="p">)):</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;There is no </span><span class="si">%s</span><span class="s1"> data for the trial </span><span class="si">%s</span><span class="s1">,&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">xname</span><span class="p">,</span> <span class="n">trial</span><span class="p">),</span>
+                      <span class="s1">&#39;the fitting cannot be done for this trial&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">return_</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># fitting</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="n">params</span><span class="p">,</span> <span class="n">inde_vars</span> <span class="o">=</span> <span class="n">generate_params</span><span class="p">(</span><span class="o">**</span><span class="n">arg_generate_params</span><span class="p">)</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">fitting</span><span class="p">(</span><span class="n">data_x</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">inde_vars</span><span class="p">,</span> <span class="n">step_fit</span><span class="p">)</span>
+
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># results of fitting</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># fitted values</span>
+                <span class="n">values_fit</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">values</span>
+                <span class="k">if</span> <span class="n">etime</span> <span class="ow">or</span> <span class="n">stime</span><span class="p">:</span>
+                    <span class="n">fit</span><span class="p">[</span><span class="n">stime</span><span class="p">:</span><span class="n">etime</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">inde_vars</span><span class="p">,</span> <span class="o">**</span><span class="n">values_fit</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">fit</span><span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">inde_vars</span><span class="p">,</span> <span class="o">**</span><span class="n">values_fit</span><span class="p">)</span>
+
+                <span class="c1"># fit statistics</span>
+                <span class="n">FitStatistics</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;nfev&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">nfev</span><span class="p">,</span> <span class="c1"># number of function evals</span>
+                                 <span class="s1">&#39;chisqr&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">chisqr</span><span class="p">,</span> <span class="c1"># chi-sqr</span>
+                                 <span class="s1">&#39;redchi&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">redchi</span><span class="p">,</span> <span class="c1"># reduce chi-sqr</span>
+                                 <span class="s1">&#39;aic&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">aic</span><span class="p">,</span> <span class="c1"># Akaike info crit</span>
+                                 <span class="s1">&#39;bic&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">bic</span><span class="p">}</span> <span class="c1"># Bayesian info crit</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+
+                <span class="k">if</span> <span class="n">return_</span><span class="p">:</span>
+
+                    <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                    <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;values_fit&#39;</span><span class="p">]</span><span class="o">=</span> <span class="n">values_fit</span>
+                    <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;FitStatistics&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FitStatistics</span>
+                    <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit</span>
+
+                    <span class="k">return</span> <span class="n">return_dict</span>
+
+                <span class="k">else</span><span class="p">:</span>
+
+                    <span class="c1"># add results of fitting to the results</span>
+                    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;_FitStatistics&#39;</span><span class="p">],</span>
+                                    <span class="p">[[</span><span class="n">values_fit</span><span class="p">],</span> <span class="p">[</span><span class="n">FitStatistics</span><span class="p">]]):</span>
+                        <span class="n">results</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">results</span><span class="o">.</span><span class="n">trial</span><span class="o">==</span><span class="n">trial</span><span class="p">),</span> <span class="n">toxname</span><span class="o">+</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+                    <span class="c1"># add trial to the settings data</span>
+                    <span class="k">if</span> <span class="n">trial</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">Data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">toxname</span><span class="p">][</span><span class="s1">&#39;trial&#39;</span><span class="p">]:</span>
+                        <span class="n">settings</span><span class="o">.</span><span class="n">Data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">toxname</span><span class="p">][</span><span class="s1">&#39;trial&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trial</span><span class="p">)</span>
+
+                    <span class="c1"># add trial to the settings results</span>
+                    <span class="k">if</span> <span class="n">trial</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">Results</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">toxname</span><span class="p">][</span><span class="s1">&#39;trial&#39;</span><span class="p">]:</span>
+                        <span class="n">settings</span><span class="o">.</span><span class="n">Results</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">toxname</span><span class="p">][</span><span class="s1">&#39;trial&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trial</span><span class="p">)</span>
+
+                    <span class="c1"># add fit to the data</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">data</span><span class="o">.</span><span class="n">trial</span><span class="o">==</span><span class="n">trial</span><span class="p">),</span> <span class="n">toxname</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit</span></div></div>
+
+<div class="viewcode-block" id="ProcessingSmoothPursuit.Data"><a class="viewcode-back" href="../../5.0__ProcessingSmoothPursuit.html#ANEMO.ProcessingSmoothPursuit.Data">[docs]</a>    <span class="k">class</span> <span class="nc">Data</span><span class="p">:</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Allows you to perform smooth pursuit-related processing on a set of</span>
+<span class="sd">        data.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_</span> <span class="o">=</span> <span class="n">_</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">dirpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">dirpath</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dirpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">sub</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">ses</span><span class="p">,</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">acq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">run</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">RawData</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">classical_method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">classical_method</span><span class="p">(</span><span class="n">_</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ProcessingSmoothPursuit.Data.classical_method"><a class="viewcode-back" href="../../5.1.0__ProcessingSmoothPursuit__classical_method.html#ANEMO.ProcessingSmoothPursuit.Data.classical_method">[docs]</a>        <span class="k">class</span> <span class="nc">classical_method</span><span class="p">:</span>
+
+            <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            Allows you to extract some smooth pursuit parameters on a set of</span>
+<span class="sd">            data using &quot;classical methods&quot;.</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+
+            <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_</span> <span class="o">=</span> <span class="n">_</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">dirpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">dirpath</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dirpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">sub</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">ses</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">acq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">run</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">RawData</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ProcessingSmoothPursuit.Data.classical_method.anticipation"><a class="viewcode-back" href="../../5.1.1__ProcessingSmoothPursuit__classical_method_anticipation.html#ANEMO.ProcessingSmoothPursuit.Data.classical_method.anticipation">[docs]</a>            <span class="k">def</span> <span class="nf">anticipation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xname</span><span class="p">,</span> <span class="n">add_stime</span><span class="o">=-</span><span class="mi">50</span><span class="p">,</span> <span class="n">add_etime</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+                             <span class="n">eventName_TargetOn</span><span class="o">=</span><span class="s1">&#39;TargetOn&#39;</span><span class="p">,</span> <span class="n">toxname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">expnames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">trials</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">recalculate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+                <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">                Calculates the velocity of the anticipation during the smooth</span>
+<span class="sd">                pursuit and saves it in ``results``.</span>
+<span class="sd">                This velocity is the average of the velocity of the eye in a</span>
+<span class="sd">                100ms window around the target appearance.</span>
+
+<span class="sd">                Allows you to perform this fonction on a data set.</span>
+
+<span class="sd">                Parameters</span>
+<span class="sd">                ----------</span>
+<span class="sd">                xname: str</span>
+<span class="sd">                    Name of the data to be transformed</span>
+
+<span class="sd">                add_stime: int (default -50)</span>
+<span class="sd">                    Add time at the start of the event</span>
+<span class="sd">                add_etime: int (default 50)</span>
+<span class="sd">                    Add time at the end of the event</span>
+
+<span class="sd">                eventName_TargetOn: str (default &#39;TargetOn&#39;)</span>
+<span class="sd">                    Name of the event marking the appearance of the target</span>
+
+<span class="sd">                toxname: str (default None)</span>
+<span class="sd">                    Name of the data to be saved,</span>
+<span class="sd">                    if ``None`` ``toxname`` will take the value</span>
+<span class="sd">                    ``&#39;classical_anticipation&#39;``</span>
+<span class="sd">                expnames: str, or list(str)</span>
+<span class="sd">                    Name or list of names of the particular experience to be</span>
+<span class="sd">                    transformed,</span>
+<span class="sd">                    if ``None`` all experiences will be transformed</span>
+<span class="sd">                trials: int, or list(int), or None (default None)</span>
+<span class="sd">                    Number or list of the trial to be transformed,</span>
+<span class="sd">                    if ``None`` all the trials will be transformed</span>
+
+<span class="sd">                recalculate: bool (default False)</span>
+<span class="sd">                    Allows you to indicate if you want to force the calculation</span>
+<span class="sd">                    on the trials already processed</span>
+<span class="sd">                &#39;&#39;&#39;</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">toxname</span><span class="p">:</span> <span class="n">toxname</span> <span class="o">=</span> <span class="s1">&#39;classical_anticipation&#39;</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dirpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">sub</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">ses</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">acq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">run</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">RawData</span><span class="p">)</span>
+
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># argument for the loop applying the function on all trials</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="n">arg</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;trials&#39;</span><span class="p">]</span>    <span class="o">=</span> <span class="n">trials</span> <span class="c1"># the trials to be transformed</span>
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;expnames&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">expnames</span> <span class="c1"># the expnames to be transformed</span>
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;toxname&#39;</span><span class="p">]</span>   <span class="o">=</span> <span class="n">toxname</span> <span class="c1"># name of the data to be saved</span>
+
+                <span class="c1"># function to execute</span>
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;fct&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ProcessingSmoothPursuit</span><span class="o">.</span><span class="n">Trial</span>\
+                            <span class="o">.</span><span class="n">classical_method</span><span class="o">.</span><span class="n">anticipation</span>
+                <span class="c1"># function name</span>
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;name_fct&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ProcessingSmoothPursuit.Data.&#39;</span> <span class="o">+</span> \
+                                  <span class="s1">&#39;classical_method.anticipation&#39;</span>
+
+                <span class="c1"># argument of the function</span>
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;arg_fct&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s1">&#39;xname&#39;</span><span class="p">,</span> <span class="s1">&#39;add_stime&#39;</span><span class="p">,</span> <span class="s1">&#39;add_etime&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;eventName_TargetOn&#39;</span><span class="p">,</span> <span class="s1">&#39;return_&#39;</span><span class="p">],</span> <span class="p">[</span><span class="n">xname</span><span class="p">,</span>
+                                 <span class="n">add_stime</span><span class="p">,</span> <span class="n">add_etime</span><span class="p">,</span> <span class="n">eventName_TargetOn</span><span class="p">,</span>
+                                 <span class="kc">False</span><span class="p">]):</span>
+                    <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;arg_fct&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;recalculate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">recalculate</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+
+                <span class="c1"># the loop applying the function on all trials</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="s1">&#39;Processing&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">arg</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ProcessingSmoothPursuit.Data.classical_method.latency"><a class="viewcode-back" href="../../5.1.2__ProcessingSmoothPursuit__classical_method_latency.html#ANEMO.ProcessingSmoothPursuit.Data.classical_method.latency">[docs]</a>            <span class="k">def</span> <span class="nf">latency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xname</span><span class="p">,</span> <span class="n">w1</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">w2</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">off</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">crit</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                        <span class="n">eventName_TargetOn</span><span class="o">=</span><span class="s1">&#39;TargetOn&#39;</span><span class="p">,</span> <span class="n">toxname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">expnames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">trials</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">recalculate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+                <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">                Calculates the pursuit latency during the smooth pursuit and</span>
+<span class="sd">                saves it in ``results``.</span>
+<span class="sd">                This latency corresponds to the interception of two regression</span>
+<span class="sd">                lines.</span>
+
+<span class="sd">                This function extracts different parameters:</span>
+<span class="sd">                    - ``t_0`` - corresponds to the start time of the first</span>
+<span class="sd">                      regression line</span>
+<span class="sd">                    - ``slope1`` - corresponds to the slope of the first</span>
+<span class="sd">                      regression line</span>
+<span class="sd">                    - ``intercept1`` - corresponds to the intercept of the</span>
+<span class="sd">                      first regression line</span>
+<span class="sd">                    - ``slope2`` - corresponds to the slope of the second</span>
+<span class="sd">                      regression line</span>
+<span class="sd">                    - ``intercept2`` - corresponds to the intercept of the</span>
+<span class="sd">                      second regression line</span>
+<span class="sd">                    - ``latency`` - corresponds to the intercept of the two</span>
+<span class="sd">                      regression lines</span>
+
+<span class="sd">                Allows you to perform this fonction on a data set.</span>
+
+<span class="sd">                Parameters</span>
+<span class="sd">                ----------</span>
+<span class="sd">                xname: str</span>
+<span class="sd">                    Name of the data to be transformed</span>
+
+<span class="sd">                w1 : int, optional (default 300)</span>
+<span class="sd">                    Size of the window 1 in ms</span>
+<span class="sd">                w2 : int, optional (default 50)</span>
+<span class="sd">                    Size of the window 2 in ms</span>
+<span class="sd">                off : int, optional (default 50)</span>
+<span class="sd">                    Gap between the two windows</span>
+<span class="sd">                crit : float, optional (default 0.17)</span>
+<span class="sd">                    Difference criterion between the two linregress detecting</span>
+<span class="sd">                    if the pursuit begins</span>
+
+<span class="sd">                eventName_TargetOn: str (default &#39;TargetOn&#39;)</span>
+<span class="sd">                    Name of the event marking the appearance of the target</span>
+
+<span class="sd">                toxname: str (default None)</span>
+<span class="sd">                    Name of the data to be saved,</span>
+<span class="sd">                    if ``None`` ``toxname`` will take the value</span>
+<span class="sd">                    ``&#39;classical_latency&#39;``</span>
+<span class="sd">                expnames: str, or list(str)</span>
+<span class="sd">                    Name or list of names of the particular experience to be</span>
+<span class="sd">                    transformed,</span>
+<span class="sd">                    if ``None`` all experiences will be transformed</span>
+<span class="sd">                trials: int, or list(int), or None (default None)</span>
+<span class="sd">                    Number or list of the trial to be transformed,</span>
+<span class="sd">                    if ``None`` all the trials will be transformed</span>
+
+<span class="sd">                recalculate: bool (default False)</span>
+<span class="sd">                    Allows you to indicate if you want to force the calculation</span>
+<span class="sd">                    on the trials already processed</span>
+<span class="sd">                &#39;&#39;&#39;</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">toxname</span><span class="p">:</span> <span class="n">toxname</span> <span class="o">=</span> <span class="s1">&#39;classical_latency&#39;</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dirpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">sub</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">ses</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">acq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">run</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">RawData</span><span class="p">)</span>
+
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># argument for the loop applying the function on all trials</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="n">arg</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;trials&#39;</span><span class="p">]</span>    <span class="o">=</span> <span class="n">trials</span> <span class="c1"># the trials to be transformed</span>
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;expnames&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">expnames</span> <span class="c1"># the expnames to be transformed</span>
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;toxname&#39;</span><span class="p">]</span>   <span class="o">=</span> <span class="n">toxname</span> <span class="c1"># name of the data to be saved</span>
+
+                <span class="c1"># function to execute</span>
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;fct&#39;</span><span class="p">]</span>       <span class="o">=</span> <span class="n">ProcessingSmoothPursuit</span><span class="o">.</span><span class="n">Trial</span>\
+                                   <span class="o">.</span><span class="n">classical_method</span><span class="o">.</span><span class="n">latency</span>
+                <span class="c1"># function name</span>
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;name_fct&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="s1">&#39;ProcessingSmoothPursuit.Data.&#39;</span> <span class="o">+</span> \
+                                   <span class="s1">&#39;classical_method.latency&#39;</span>
+
+                <span class="c1"># argument of the function</span>
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;arg_fct&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s1">&#39;xname&#39;</span><span class="p">,</span> <span class="s1">&#39;w1&#39;</span><span class="p">,</span> <span class="s1">&#39;w2&#39;</span><span class="p">,</span> <span class="s1">&#39;off&#39;</span><span class="p">,</span> <span class="s1">&#39;crit&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;eventName_TargetOn&#39;</span><span class="p">,</span> <span class="s1">&#39;return_&#39;</span><span class="p">],</span> <span class="p">[</span><span class="n">xname</span><span class="p">,</span> <span class="n">w1</span><span class="p">,</span>
+                                 <span class="n">w2</span><span class="p">,</span> <span class="n">off</span><span class="p">,</span> <span class="n">crit</span><span class="p">,</span> <span class="n">eventName_TargetOn</span><span class="p">,</span> <span class="kc">False</span><span class="p">]):</span>
+                    <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;arg_fct&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;recalculate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">recalculate</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+
+                <span class="c1"># the loop applying the function on all trials</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="s1">&#39;Processing&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">arg</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ProcessingSmoothPursuit.Data.classical_method.steady_state"><a class="viewcode-back" href="../../5.1.3__ProcessingSmoothPursuit__classical_method_steady_state.html#ANEMO.ProcessingSmoothPursuit.Data.classical_method.steady_state">[docs]</a>            <span class="k">def</span> <span class="nf">steady_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xname</span><span class="p">,</span> <span class="n">add_stime</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">add_etime</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>
+                             <span class="n">eventName_TargetOn</span><span class="o">=</span><span class="s1">&#39;TargetOn&#39;</span><span class="p">,</span> <span class="n">toxname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">expnames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">trials</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">recalculate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+                <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">                Calculates the velocity of the steady-state during the smooth</span>
+<span class="sd">                pursuit and saves it in ``results``.</span>
+<span class="sd">                This velocity is the average of the eye velocity during target</span>
+<span class="sd">                tracking after the target has appeared.</span>
+
+<span class="sd">                Allows you to perform this fonction on a data set.</span>
+
+<span class="sd">                Parameters</span>
+<span class="sd">                ----------</span>
+<span class="sd">                xname: str</span>
+<span class="sd">                    Name of the data to be transformed</span>
+
+<span class="sd">                add_stime: int (default 400)</span>
+<span class="sd">                    Add time at the start of the event</span>
+<span class="sd">                add_etime: int (default 600)</span>
+<span class="sd">                    Add time at the end of the event</span>
+
+<span class="sd">                eventName_TargetOn: str (default &#39;TargetOn&#39;)</span>
+<span class="sd">                    Name of the event marking the appearance of the target</span>
+
+<span class="sd">                toxname: str (default None)</span>
+<span class="sd">                    Name of the data to be saved</span>
+<span class="sd">                    if ``None`` ``toxname`` will take the value</span>
+<span class="sd">                    ``&#39;classical_steady_state&#39;``</span>
+<span class="sd">                expnames: str, or list(str)</span>
+<span class="sd">                    Name or list of names of the particular experience to be</span>
+<span class="sd">                    transformed,</span>
+<span class="sd">                    if ``None`` all experiences will be transformed</span>
+<span class="sd">                trials: int, or list(int), or None (default None)</span>
+<span class="sd">                    Number or list of the trial to be transformed,</span>
+<span class="sd">                    if ``None`` all the trials will be transformed</span>
+
+<span class="sd">                recalculate: bool (default False)</span>
+<span class="sd">                    Allows you to indicate if you want to force the calculation</span>
+<span class="sd">                    on the trials already processed</span>
+<span class="sd">                &#39;&#39;&#39;</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">toxname</span><span class="p">:</span> <span class="n">toxname</span> <span class="o">=</span> <span class="s1">&#39;classical_steady_state&#39;</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dirpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">sub</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">ses</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">acq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">run</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">RawData</span><span class="p">)</span>
+
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="c1"># argument for the loop applying the function on all trials</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+                <span class="n">arg</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;trials&#39;</span><span class="p">]</span>    <span class="o">=</span> <span class="n">trials</span> <span class="c1"># the trials to be transformed</span>
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;expnames&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">expnames</span> <span class="c1"># the expnames to be transformed</span>
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;toxname&#39;</span><span class="p">]</span>   <span class="o">=</span> <span class="n">toxname</span> <span class="c1"># name of the data to be saved</span>
+
+                <span class="c1"># function to execute</span>
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;fct&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ProcessingSmoothPursuit</span><span class="o">.</span><span class="n">Trial</span>\
+                             <span class="o">.</span><span class="n">classical_method</span><span class="o">.</span><span class="n">steady_state</span>
+                <span class="c1"># function name</span>
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;name_fct&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ProcessingSmoothPursuit.Data.&#39;</span> <span class="o">+</span> \
+                                  <span class="s1">&#39;classical_method.steady_state&#39;</span>
+
+                <span class="c1"># argument of the function</span>
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;arg_fct&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s1">&#39;xname&#39;</span><span class="p">,</span> <span class="s1">&#39;add_stime&#39;</span><span class="p">,</span> <span class="s1">&#39;add_etime&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;eventName_TargetOn&#39;</span><span class="p">,</span> <span class="s1">&#39;return_&#39;</span><span class="p">],</span> <span class="p">[</span><span class="n">xname</span><span class="p">,</span>
+                                 <span class="n">add_stime</span><span class="p">,</span> <span class="n">add_etime</span><span class="p">,</span> <span class="n">eventName_TargetOn</span><span class="p">,</span>
+                                 <span class="kc">False</span><span class="p">]):</span>
+                    <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;arg_fct&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;recalculate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">recalculate</span>
+                <span class="c1">#--------------------------------------------------------------</span>
+
+                <span class="c1"># the loop applying the function on all trials</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="s1">&#39;Processing&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">arg</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="ProcessingSmoothPursuit.Data.Fit"><a class="viewcode-back" href="../../5.2.1__ProcessingSmoothPursuit__Fit_function.html#ANEMO.ProcessingSmoothPursuit.Data.Fit">[docs]</a>        <span class="k">def</span> <span class="nf">Fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xname</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span>
+                <span class="n">generate_params</span><span class="o">=</span><span class="n">GenerateParams</span><span class="o">.</span><span class="n">SmoothPursuit</span><span class="p">,</span>
+                <span class="n">stime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">etime</span><span class="o">=-</span><span class="mi">280</span><span class="p">,</span> <span class="n">step_fit</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="n">arg_generate_params</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">xNanName</span><span class="o">=</span><span class="s1">&#39;px_NaN&#39;</span><span class="p">,</span>
+                                         <span class="n">eventName_TargetOn</span><span class="o">=</span><span class="s1">&#39;TargetOn&#39;</span><span class="p">,</span>
+                                         <span class="n">eventName_StimulusOff</span><span class="o">=</span><span class="s1">&#39;StimulusOff&#39;</span><span class="p">,</span>
+                                         <span class="n">eventName_dir_target</span><span class="o">=</span><span class="s1">&#39;dir_target&#39;</span><span class="p">,</span>
+                                         <span class="n">do_whitening</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                <span class="n">toxname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">expnames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">trials</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">recalculate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+            <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            Allows you to fit the parameters of a model defined by an</span>
+<span class="sd">            ``model`` to the ``xname`` data.</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            xname: str</span>
+<span class="sd">                Name of the data to be transformed</span>
+<span class="sd">            model: function</span>
+<span class="sd">                Model equation</span>
+<span class="sd">            generate_params: function (default GenerateParams.SmoothPursuit)</span>
+<span class="sd">                Function generating parameters to perform the fitting</span>
+
+<span class="sd">            stime: int, or None (defaut None)</span>
+<span class="sd">                Start time of the fitting</span>
+<span class="sd">            etime: int, or None (default -280)</span>
+<span class="sd">                End time of the fitting</span>
+<span class="sd">            step_fit: int, optional (default 2)</span>
+<span class="sd">                Number of steps for the fit</span>
+<span class="sd">            arg_generate_params: dict</span>
+<span class="sd">                Dictionary containing the parameters for the generate_params</span>
+<span class="sd">                function,</span>
+<span class="sd">                its default value is :</span>
+<span class="sd">                ``dict(xNanName=&#39;px_NaN&#39;, TargetOn=&#39;TargetOn&#39;,</span>
+<span class="sd">                StimulusOff=&#39;StimulusOff&#39;, dir_target=&#39;dir_target&#39;,</span>
+<span class="sd">                do_whitening=False)``</span>
+
+<span class="sd">            toxname: str (default None)</span>
+<span class="sd">                Name of the data to be saved,</span>
+<span class="sd">                if ``None`` ``toxname`` will take the value</span>
+<span class="sd">                ``&#39;Fit_&#39;+Name_of_model_equation``</span>
+<span class="sd">            expnames: str, or list(str)</span>
+<span class="sd">                Name or list of names of the particular experience to be</span>
+<span class="sd">                transformed,</span>
+<span class="sd">                if ``None`` all experiences will be transformed</span>
+<span class="sd">            trials: int, or list(int), or None (default None)</span>
+<span class="sd">                Number or list of the trial to be transformed,</span>
+<span class="sd">                if ``None`` all the trials will be transformed</span>
+
+<span class="sd">            recalculate: bool (default False)</span>
+<span class="sd">                Allows you to indicate if you want to force the calculation on</span>
+<span class="sd">                the trials already processed</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">toxname</span><span class="p">:</span> <span class="n">toxname</span> <span class="o">=</span> <span class="s1">&#39;Fit_</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">model</span><span class="o">.</span><span class="vm">__name__</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dirpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">sub</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">ses</span><span class="p">,</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">acq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">run</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">RawData</span><span class="p">)</span>
+
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="c1"># argument for the loop applying the function on all trials</span>
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="n">arg</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;trials&#39;</span><span class="p">]</span>    <span class="o">=</span> <span class="n">trials</span> <span class="c1"># the trials to be transformed</span>
+            <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;expnames&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">expnames</span> <span class="c1"># the expnames to be transformed</span>
+            <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;toxname&#39;</span><span class="p">]</span>   <span class="o">=</span> <span class="n">toxname</span> <span class="c1"># name of the data to be saved</span>
+            <span class="c1"># function to execute</span>
+            <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;fct&#39;</span><span class="p">]</span>       <span class="o">=</span> <span class="n">ProcessingSmoothPursuit</span><span class="o">.</span><span class="n">Trial</span><span class="o">.</span><span class="n">Fit</span>
+            <span class="c1"># function name</span>
+            <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;name_fct&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="s1">&#39;ProcessingSmoothPursuit.Data.Fit&#39;</span>
+
+            <span class="c1"># argument of the function</span>
+            <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;arg_fct&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s1">&#39;xname&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;generate_params&#39;</span><span class="p">,</span> <span class="s1">&#39;stime&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;etime&#39;</span><span class="p">,</span> <span class="s1">&#39;step_fit&#39;</span><span class="p">,</span> <span class="s1">&#39;arg_generate_params&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;return_&#39;</span><span class="p">],</span> <span class="p">[</span><span class="n">xname</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">generate_params</span><span class="p">,</span>
+                             <span class="n">stime</span><span class="p">,</span> <span class="n">etime</span><span class="p">,</span> <span class="n">step_fit</span><span class="p">,</span> <span class="n">arg_generate_params</span><span class="p">,</span>
+                             <span class="kc">False</span><span class="p">]):</span>
+                <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;arg_fct&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+            <span class="n">arg</span><span class="p">[</span><span class="s1">&#39;recalculate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">recalculate</span>
+            <span class="c1">#------------------------------------------------------------------</span>
+
+            <span class="c1"># the loop applying the function on all trials</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">arg</span><span class="p">)</span></div></div></div>
+</pre></div>
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,410 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ANEMO.Init &#8212; ANEMO 2.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/_static/custom.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">ANEMO</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=invibe&repo=ANEMO&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+
+<h3><a href="../../index.html">Table of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../1__init.html">init</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2__Data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3.0__PreProcessing.html">PreProcessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../4.0__ProcessingSaccades.html">ProcessingSaccades</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../5.0__ProcessingSmoothPursuit.html">ProcessingSmoothPursuit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../DEMO.html">DEMO</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ANEMO.Init</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">from</span> <span class="nn">.various_functions</span> <span class="kn">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../1__init.html#ANEMO.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">RawDatadirpath</span><span class="p">,</span> <span class="n">Datadirpath</span><span class="p">,</span> <span class="n">sub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">acq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+         <span class="n">run</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Allows to create from a folder containing **BIDSified data**</span>
+<span class="sd">    ``RawDatadirpath`` a new folder ``Datadirpath`` which will contain the</span>
+<span class="sd">    results of ANEMO, this new folder will contain four files per subject:</span>
+
+<span class="sd">        - ``*_data.tsv`` - contains the raw data, those calculated from</span>
+<span class="sd">          :ref:`PreProcessing`, and the **Fit** calculated from</span>
+<span class="sd">          :ref:`ProcessingSaccades` and :ref:`ProcessingSmoothPursuit`</span>
+<span class="sd">        - ``*_results.tsv`` - contains the results calculated from</span>
+<span class="sd">          :ref:`ProcessingSaccades` and :ref:`ProcessingSmoothPursuit`</span>
+<span class="sd">        - ``*_events.tsv`` - contains the raw events, and those calculated from</span>
+<span class="sd">          :ref:`ProcessingSaccades`</span>
+<span class="sd">        - ``*_settings.tsv`` - contains the settings of the experiment, and</span>
+<span class="sd">          function names and their parameters used for ``data``, ``events`` and</span>
+<span class="sd">          ``results`` calculated from **ANEMO**</span>
+
+<span class="sd">    You can choose to create this file only for a subject, a session, a task,</span>
+<span class="sd">    an acquisition or a particular run by changing the parameters.</span>
+<span class="sd">    ``None`` by default means that all files will be taken into account.</span>
+
+<span class="sd">    .. Warning::</span>
+<span class="sd">       Attention the RawDatadirpath directory must contain the **raw BIDSified</span>
+<span class="sd">       data**.</span>
+
+<span class="sd">       To BIDSify your data we invite you to use the</span>
+<span class="sd">       `BIDSification_eyetrackingData</span>
+<span class="sd">       &lt;https://chloepasturel.github.io/BIDSification_eyetrackingData&gt;`_</span>
+<span class="sd">       package.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    RawDatadirpath: str</span>
+<span class="sd">        Raw data directory path</span>
+<span class="sd">    Datadirpath: str</span>
+<span class="sd">        Processed data directory path</span>
+
+<span class="sd">    sub: str, or None (default None)</span>
+<span class="sd">        Participant identifier</span>
+<span class="sd">    task: str, or None (default None)</span>
+<span class="sd">        Name of the Task</span>
+<span class="sd">    ses: str, or None (default None)</span>
+<span class="sd">        Name of the Session</span>
+<span class="sd">    acq: str, or None (default None)</span>
+<span class="sd">        Name of the Aquisition</span>
+<span class="sd">    run: str, or None (default None)</span>
+<span class="sd">        IndexRun</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># open the raw data</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">RawDatadirpath</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">ses</span><span class="p">,</span> <span class="n">acq</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">RawData</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1">#--------------------------------------------------------------------------</span>
+    <span class="c1"># loop allowing to create a data ANEMO</span>
+    <span class="c1">#--------------------------------------------------------------------------</span>
+    <span class="k">for</span> <span class="n">expname</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+        <span class="k">if</span> <span class="s1">&#39;trial&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="c1"># add trial data</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span> <span class="o">=</span> <span class="n">add_trial_Data</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="s1">&#39;px_per_deg&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">Settings</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="c1"># add px-per_deg in settings data</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span> <span class="o">=</span> <span class="n">add_px_per_deg_Settings</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">])</span>
+    <span class="c1">#--------------------------------------------------------------------------</span>
+
+    <span class="c1"># save the new data</span>
+    <span class="n">Data</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">Datadirpath</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div>
+
+
+<span class="k">class</span> <span class="nc">Data</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Data.dirtree"><a class="viewcode-back" href="../../2__Data.html#ANEMO.Data.dirtree">[docs]</a>    <span class="k">def</span> <span class="nf">dirtree</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">return_</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Allows to display the tree structure of a ``dirpath`` data folder.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dirpath: str</span>
+<span class="sd">            Data directory path</span>
+<span class="sd">        return_: bool (default False)</span>
+<span class="sd">            If ``False`` prints the path tree in the console,</span>
+<span class="sd">            if ``True`` does not print the dirpath tree but returns a variable</span>
+<span class="sd">            containing it</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tree: str</span>
+<span class="sd">            Return a variable containing tree of dirpath if ``return_=True``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># creation of the tree structure</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="c1"># allows you to add indentation to the text to make it easier to read</span>
+        <span class="n">indent</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">*</span><span class="mi">4</span>
+
+        <span class="c1">#----------------------------------------------------------------------</span>
+        <span class="c1"># loop allowing to add in the tree variable the tree of the folder</span>
+        <span class="c1">#----------------------------------------------------------------------</span>
+        <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">dirpath</span><span class="p">):</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span>
+            <span class="n">tree</span> <span class="o">+=</span> <span class="n">indent</span><span class="o">*</span><span class="n">level</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">root</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="n">tree</span> <span class="o">+=</span> <span class="n">indent</span><span class="o">*</span><span class="p">(</span><span class="n">level</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">f</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="c1">#----------------------------------------------------------------------</span>
+
+        <span class="k">if</span> <span class="n">return_</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">tree</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Data.open"><a class="viewcode-back" href="../../2__Data.html#ANEMO.Data.open">[docs]</a>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">sub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">acq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">run</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">RawData</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Allows you to open a data folder.</span>
+
+<span class="sd">        This function returns a python dictionary containing all the data in</span>
+<span class="sd">        the directory.</span>
+
+<span class="sd">        The keys in this dictionary correspond to each particular experiment in</span>
+<span class="sd">        the directory, and for each experiment, this dictionary contains a</span>
+<span class="sd">        sub-dictionary containing ``DataFrame pandas``:</span>
+
+<span class="sd">            - ``Data`` - contains the raw data, those calculated from</span>
+<span class="sd">              :ref:`PreProcessing`, and the **Fit** calculated from</span>
+<span class="sd">              :ref:`ProcessingSaccades` and :ref:`ProcessingSmoothPursuit`</span>
+<span class="sd">            - ``Results`` - contains the results calculated from</span>
+<span class="sd">              :ref:`ProcessingSaccades` and :ref:`ProcessingSmoothPursuit`</span>
+<span class="sd">            - ``Events`` - contains the raw events and those calculated from</span>
+<span class="sd">              :ref:`ProcessingSaccades`</span>
+<span class="sd">            - ``Settings`` - contains the settings of the experiment, and</span>
+<span class="sd">              function names and their parameters used for ``Data``, ``Events``</span>
+<span class="sd">              and ``Results`` calculated from **ANEMO**.</span>
+
+<span class="sd">              The *Data_column* contains the characteristics of the</span>
+<span class="sd">              functions used to calculate the data contained in ``Data``</span>
+<span class="sd">              and ``Events``,</span>
+<span class="sd">              the *Results column* those used to calculate the data</span>
+<span class="sd">              contained in ``Results``.</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dirpath: str</span>
+<span class="sd">            Data directory path</span>
+
+<span class="sd">        sub: str, or None (default None)</span>
+<span class="sd">            Participant identifier</span>
+<span class="sd">        ses: str, or None (default None)</span>
+<span class="sd">            Name of the Session</span>
+<span class="sd">        task: str, or None (default None)</span>
+<span class="sd">            Name of the Task</span>
+<span class="sd">        acq: str, or None (default None)</span>
+<span class="sd">            Name of the Aquisition</span>
+<span class="sd">        run: str, or None (default None)</span>
+<span class="sd">            IndexRun</span>
+<span class="sd">        RawData: bool (default False)</span>
+<span class="sd">            If ``True`` open RawData,</span>
+<span class="sd">            if ``False`` open DataAnemo</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        data: dict</span>
+<span class="sd">            Dictionary containing for each experiment the ``Data``,</span>
+<span class="sd">            the ``Results``, the ``Events``, and the ``Settings``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">arg</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()</span> <span class="c1"># retrieves the parameters of the function</span>
+
+        <span class="c1">#----------------------------------------------------------------------</span>
+        <span class="c1"># creation of a list of files present in the data folder corresponding</span>
+        <span class="c1"># to the requested parameters</span>
+        <span class="c1">#----------------------------------------------------------------------</span>
+        <span class="n">filesnameprop</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="nb">str</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">if</span> <span class="n">arg</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;sub&#39;</span><span class="p">,</span>
+                                                                   <span class="s1">&#39;ses&#39;</span><span class="p">,</span>
+                                                                   <span class="s1">&#39;acq&#39;</span><span class="p">,</span>
+                                                                   <span class="s1">&#39;run&#39;</span><span class="p">]}</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">list_filesname</span><span class="p">(</span><span class="n">filesnameprop</span><span class="p">,</span> <span class="n">dirpath</span><span class="p">)</span>
+        <span class="c1">#----------------------------------------------------------------------</span>
+
+        <span class="c1"># dictionnary of the data</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1">#----------------------------------------------------------------------</span>
+        <span class="c1"># loop to open all files in the files list</span>
+        <span class="c1">#----------------------------------------------------------------------</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="c1"># creation of a sub-dictionary in the data for each expname</span>
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="n">expname</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> \
+                       <span class="k">if</span> <span class="s1">&#39;-&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> \
+                       <span class="k">else</span> <span class="n">f</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">expname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="c1">#------------------------------------------------------------------</span>
+
+            <span class="c1"># extract Data</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">open_data</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">RawData</span><span class="p">,</span> <span class="n">return_error</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">!=</span><span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">][</span><span class="s1">&#39;Data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+
+            <span class="c1"># extract Settings</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">open_settings</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">RawData</span><span class="p">,</span> <span class="n">dirpath</span><span class="p">,</span> <span class="n">return_error</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">!=</span><span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">][</span><span class="s1">&#39;Settings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+
+            <span class="c1"># extract Events</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">open_events</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">return_error</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">!=</span><span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">][</span><span class="s1">&#39;Events&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+
+            <span class="c1"># extrat Results</span>
+            <span class="k">if</span> <span class="n">RawData</span><span class="p">:</span>
+                <span class="n">ext</span> <span class="o">=</span> <span class="s1">&#39;events.tsv&#39;</span>
+                <span class="k">if</span> <span class="n">f</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">ext</span><span class="p">):]</span><span class="o">==</span><span class="n">ext</span><span class="p">:</span>
+                    <span class="n">events</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">][</span><span class="s1">&#39;Events&#39;</span><span class="p">]</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;trial&#39;</span><span class="p">:</span> <span class="n">events</span><span class="p">[</span><span class="s1">&#39;trial&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">})</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">][</span><span class="s1">&#39;Results&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">open_results</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">return_error</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">!=</span><span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">][</span><span class="s1">&#39;Results&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="c1">#----------------------------------------------------------------------</span>
+
+        <span class="kn">import</span> <span class="nn">easydict</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">easydict</span><span class="o">.</span><span class="n">EasyDict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="Data.save"><a class="viewcode-back" href="../../2__Data.html#ANEMO.Data.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Allows you to save a data folder.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dirpath: str</span>
+<span class="sd">            Data directory path</span>
+
+<span class="sd">        data: dict</span>
+<span class="sd">            Dictionary containing for each experiment the ``Data``,</span>
+<span class="sd">            the ``Results``, the ``Events``, and the ``Settings``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1">#----------------------------------------------------------------------</span>
+        <span class="c1"># loop to save all files in the data</span>
+        <span class="c1">#----------------------------------------------------------------------</span>
+        <span class="k">for</span> <span class="n">expname</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+            <span class="c1"># creation of filepath or will save data</span>
+            <span class="c1">#------------------------------------------------------------------</span>
+            <span class="n">sub</span><span class="p">,</span> <span class="n">ses</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">expname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;sub&#39;</span><span class="p">:</span>
+                    <span class="n">sub</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;ses&#39;</span><span class="p">:</span>
+                    <span class="n">ses</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="n">create_filepath</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">ses</span><span class="p">)</span>
+            <span class="c1">#------------------------------------------------------------------</span>
+
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+                <span class="c1"># save Data</span>
+                <span class="k">if</span> <span class="n">d</span><span class="o">==</span><span class="s1">&#39;Data&#39;</span><span class="p">:</span>
+                    <span class="n">save_file</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">][</span><span class="n">d</span><span class="p">],</span> <span class="n">expname</span><span class="o">+</span><span class="s1">&#39;_data.tsv&#39;</span><span class="p">,</span>
+                              <span class="n">filepath</span><span class="p">)</span>
+
+                <span class="c1"># save Settings</span>
+                <span class="k">elif</span> <span class="n">d</span><span class="o">==</span><span class="s1">&#39;Settings&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;Data&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">][</span><span class="n">d</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">][</span><span class="n">d</span><span class="p">][</span><span class="s1">&#39;Data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[{}]</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;Results&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">][</span><span class="n">d</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">][</span><span class="n">d</span><span class="p">][</span><span class="s1">&#39;Results&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[{}]</span>
+
+                    <span class="n">save_file</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">][</span><span class="n">d</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">expname</span><span class="o">+</span><span class="s1">&#39;_settings.json&#39;</span><span class="p">,</span>
+                              <span class="n">filepath</span><span class="p">)</span>
+
+                <span class="c1"># save Events</span>
+                <span class="k">elif</span> <span class="n">d</span><span class="o">==</span><span class="s1">&#39;Events&#39;</span><span class="p">:</span>
+                    <span class="n">save_file</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">][</span><span class="n">d</span><span class="p">],</span> <span class="n">expname</span><span class="o">+</span><span class="s1">&#39;_events.tsv&#39;</span><span class="p">,</span>
+                              <span class="n">filepath</span><span class="p">)</span>
+
+                <span class="c1"># save Results</span>
+                <span class="k">elif</span> <span class="n">d</span><span class="o">==</span><span class="s1">&#39;Results&#39;</span><span class="p">:</span>
+                    <span class="n">save_file</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">expname</span><span class="p">][</span><span class="n">d</span><span class="p">],</span> <span class="n">expname</span><span class="o">+</span><span class="s1">&#39;_results.tsv&#39;</span><span class="p">,</span>
+                              <span class="n">filepath</span><span class="p">)</span></div>
+        <span class="c1">#----------------------------------------------------------------------</span>
+</pre></div>
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
