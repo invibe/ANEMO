@@ -1,0 +1,10 @@
+pip
+matplotlib
+easydict
+numpy
+scipy
+jupyter
+nbconvert
+lmfit
+ipython
+ipywidgets

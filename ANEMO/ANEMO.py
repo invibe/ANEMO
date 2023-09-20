@@ -1,8 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from inspect import getfullargspec
 
 import numpy as np
+from lmfit import  Model, Parameters
+import easydict
+from scipy import signal, stats
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 
+import ipywidgets as widgets
+from IPython.display import display, clear_output
 
 N_freq = 1301
 def whitening_filt(N_freq, white_f_0, white_alpha, white_steepness) :
@@ -241,7 +249,7 @@ class ANEMO(object) :
             dictionary of the parameters of the trial
         '''
 
-        import easydict
+        
 
         list_events = Test.test_value('list_events', self.param_exp, value=['StimulusOn\n', 'StimulusOff\n', 'TargetOn\n', 'TargetOff\n'])
         kwargs = {}
@@ -294,7 +302,7 @@ class ANEMO(object) :
             Filtered position or filtered velocity of the eye
         '''
 
-        from scipy import signal
+        
 
         nyq_rate = sample_rate/2                # The Nyquist rate of the signal.
         Wn = cutoff/nyq_rate
@@ -628,7 +636,7 @@ class ANEMO(object) :
                 time when the first regression line starts from the start of the trial
             '''
 
-            from scipy import stats
+            
 
             if time is None : time = np.arange(len(velocity_NAN))
             tps = time
@@ -1406,7 +1414,7 @@ class ANEMO(object) :
             result : lmfit.model.ModelResult
             '''
 
-            from lmfit import  Model, Parameters
+            
 
             #-----------------------------------------------------------------------------
             if equation in ['fct_position'] : data_x = Test.crash_None('data_x', data_x)
@@ -1613,9 +1621,7 @@ class ANEMO(object) :
             if equation == 'fct_saccade' :        fitted_data = 'saccade'
 
 
-            if plot is not None :
-                import matplotlib.pyplot as plt
-                if fitted_data == 'saccade' : import matplotlib.gridspec as gridspec
+
 
             if equation in ['fct_velocity', 'fct_position'] :
                 list_param_enre = Test.test_None(list_param_enre, value=['start_anti', 'a_anti', 'latency', 'tau', 'steady_state', 'old_anti', 'old_steady_state', 'old_latency', 'goodness_of_fit', 'fit_values', 'covar'])
@@ -1673,7 +1679,6 @@ class ANEMO(object) :
 
                     trial_data = trial + N_trials*block
                     arg = ANEMO.arg(self, data[trial_data], trial=trial, block=block)
-
                     if arg.trackertime[-1] < arg.TargetOn + 500 :
                         print('Warning : Not Data! The values saved for the fit parameters will be NaN!')
                         for name in list_param_enre :
@@ -1818,7 +1823,7 @@ class ANEMO(object) :
                                                      show_data=fitted_data, equation=equation,
                                                      write_step_trial=write_step_trial,
                                                      show='fit', show_num_trial=True, show_pos_sacc=False,
-                                                     plot_detail=None,report=None, fit_anticipation=fit_anticipation,
+                                                     plot_detail=None,report=None, # fit_anticipation=fit_anticipation,
                                                      title='', c='k', out=None, **opt)
 
                 if plot is not None :
@@ -2107,8 +2112,6 @@ class ANEMO(object) :
             if equation == 'fct_position' :                                              show_data = 'position'
             if equation == 'fct_saccade' :                                               show_data = 'saccade'
 
-            import matplotlib.pyplot as plt
-            if show_data=='saccade' : import matplotlib.gridspec as gridspec
 
             if out is not None : plt.close('all')
 
@@ -2250,7 +2253,6 @@ class ANEMO(object) :
 
                 no_fit = False
 
-                from inspect import getfullargspec
                 #-----------------------------------------------------------------------------
                 onset  = arg.TargetOn - arg.t_0
                 result_fit = {}
@@ -2258,7 +2260,7 @@ class ANEMO(object) :
 
                 if param_fit is None :
 
-                    try :
+                    if True: #try :
                         #-------------------------------------------------
                         # FIT
                         #-------------------------------------------------
@@ -2278,7 +2280,7 @@ class ANEMO(object) :
 
                         if 'fit' in list_param_enre :         result_fit['fit'] = f.best_fit
 
-                    except:
+                    else: #except:
                         print('Warning : The fit did not work!  The fit will not be displayed on the figure!')
                         no_fit = True
                         for name in list_param_enre : result_fit[name] = np.nan
@@ -2539,7 +2541,6 @@ class ANEMO(object) :
                                 ax1.text(minx-(maxx-minx)/20, param_f['x2']+param_f['x_0'], "x2", **opt_text)
 
             if out is not None :
-                from IPython.display import display,clear_output
                 with out : clear_output(wait=True) ; display(ax.figure)
                 if show=='fit' : return result_fit
 
@@ -2688,7 +2689,7 @@ class ANEMO(object) :
 
                 fit = ANEMO.Equation.fct_saccade(time, x_0, tau, x1, x2, T0, t1, t2, tr,do_whitening=False)
 
-                ax.plot(time, fit, c='R')
+                ax.plot(time, fit, c='red')
 
                 minx, maxx = min(time[0], T0 + time[0]), max(time[-1], T0+t1+t2+tr + time[0])# time[0], time[-1]
                 miny, maxy = min(fit), max(fit)
@@ -2818,13 +2819,10 @@ class ANEMO(object) :
             if fig_width < 15 : lw = 1
             else : lw = 1.5
 
-            import matplotlib.pyplot as plt
-
             if type(trials) is not list : trials = [trials]
 
 
             if show == 'saccade' :
-                import matplotlib.gridspec as gridspec
                 fig = plt.figure(figsize=(fig_width, (fig_width*(len(trials))/1.6180)))
                 axs = gridspec.GridSpec(len(trials), 1)
             else :
@@ -3028,10 +3026,7 @@ class ANEMO(object) :
             elif equation=='fct_saccade' :        fitted_data, eqt = 'saccade',  ANEMO.Equation.fct_saccade
             else : eqt = equation
 
-            import matplotlib.pyplot as plt
-
             if fitted_data=='saccade' :
-                import matplotlib.gridspec as gridspec
                 fig = plt.figure(figsize=(fig_width, (fig_width*(len(trials))/1.6180)))
                 axs = gridspec.GridSpec(len(trials), 1)
             else :
@@ -3162,7 +3157,6 @@ class ANEMO(object) :
             save the figure
             '''
 
-            import matplotlib.pyplot as plt
 
             if N_blocks is None : N_blocks = Test.test_value('N_blocks', self.param_exp)
             if N_trials is None : N_trials = Test.test_value('N_trials', self.param_exp)
@@ -3268,9 +3262,7 @@ class ANEMO(object) :
             '''
 
 
-            import matplotlib.pyplot as plt
-            import ipywidgets as widgets
-            from IPython.display import display,clear_output
+
 
 
             if N_blocks is None :
