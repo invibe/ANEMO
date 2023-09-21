@@ -43,6 +43,15 @@ Then, the library:
 pip install -e  git+https://github.com/invibe/ANEMO#egg=ANEMO
 ```
 
+Alternatively, you can download the code and then install it:
+
+
+```
+git clone https://github.com/invibe/ANEMO/
+cd ANEMO
+pip install -e  .
+```
+
 ---
 
 This work was supported by the Innovative Training Network "Perception and Action in Complex Environments" (PACE ITN), a Marie Skodowska-Curie program of the H2020 European Union program (grant agreement No 642961).
