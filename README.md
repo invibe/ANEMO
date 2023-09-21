@@ -7,6 +7,44 @@ Eye movements are crucial bio-markers for a wide range of cognitive behaviours. 
 <center><img src="https://laurentperrinet.github.io/publication/pasturel-18-anemo/featured.png" width="100%"></center>
 
  * see a poster presentation @ https://laurentperrinet.github.io/publication/pasturel-18-anemo/
+ * report [Issues on GitHub](https://github.com/invibe/ANEMO/issues) 
+ * maintainer: Laurent Perrinet <laurent.perrinet@univ-amu.fr>
 
+
+````
+
+@inproceedings{Pasturel18anemo,
+ author = {Pasturel, Chloé and Montagnini, Anna and Perrinet, Laurent U},
+ bdsk-url-1 = {https://laurentperrinet.github.io/publication/pasturel-18-anemo},
+ booktitle = {Grenoble Workshop on Models and Analysis of Eye Movements, Grenoble, France},
+ date-added = {2019-02-25 23:41:40 +0100},
+ date-modified = {2020-03-31 11:07:30 +0200},
+ grants = {pace-itn},
+ keywords = {motion anticipation},
+ projects = {open-science},
+ title = {ANEMO: Quantitative tools for the ANalysis of Eye MOvements},
+ url = {https://laurentperrinet.github.io/publication/pasturel-18-anemo},
+ url_hal = {https://hal.science/hal-04157003},
+ year = {2018}
+}
+      
+````
+
+## installation
+
+First install dependencies:
+
+```
+pip install -U -r requirements.txt
+```
+
+Then, the library:
+```
+pip install -e  git+https://github.com/invibe/ANEMO#egg=ANEMO
+```
+
+
+---
+This work was supported by the Innovative Training Network "Perception and Action in Complex Environments" (PACE ITN), a Marie Skodowska-Curie program of the H2020 European Union program (grant agreement No 642961).
 ---
 This work was supported by the Innovative Training Network "Perception and Action in Complex Environments" (PACE ITN), a Marie Skodowska-Curie program of the H2020 European Union program (grant agreement No 642961).
