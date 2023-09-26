@@ -7,7 +7,7 @@ import ANEMO
 
 setup(
     name='ANEMO',
-    version=ANEMO.__version__,
+    version=2.0,
     packages=find_packages(),
     author="",
     author_email="",
