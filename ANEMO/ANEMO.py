@@ -133,19 +133,12 @@ class Test(object) :
         value
         '''
 
-        None_or_nan = False
-
-        if type(var) in [float, np.float64, np.float32, np.float16] :
-            if np.isnan(var) :
-                None_or_nan = True
-                return value
-
-        elif var is None :
-            None_or_nan = True
+        if var is None :
+            return value
+        elif np.isnan(var).all() :
             return value
 
-        if None_or_nan is False :
-            return var
+        return var
 
 
 
@@ -987,15 +980,15 @@ class ANEMO(object) :
                             if latency >= end_ramp_pursuit :
                                 vitesse.append(maxi)
                             else :
-                                if time[t] < int(end_ramp_pursuit) :
-                                    vitesse.append((time[t]-latency)*ramp_pursuit+y)
-                                elif fit_steadyState:
+                                if fit_steadyState:
                                     vitesse.append(maxi+y)
+                                else:
+                                    vitesse.append((time[t]-latency)*ramp_pursuit+y)
 
                 if do_whitening is True : velocity = whitening(velocity)
 
             return vitesse
-
+        
         def fct_position(x, data_x, saccades, nb_sacc, dir_target, start_anti, a_anti, latency, tau, steady_state, t_0, px_per_deg, before_sacc, after_sacc, do_whitening) :
 
             '''
@@ -1203,7 +1196,7 @@ class ANEMO(object) :
 
         def generation_param_fit(self, equation='fct_velocity', data_x=None, dir_target=None,
                                  trackertime=None, TargetOn=None, StimulusOf=None, saccades=None,
-                                 value_latency=None, value_steady_state=None, value_anti=None,
+                                 value_latency:int=None, value_steady_state:float=15., value_anti:float=0.,
                                  before_sacc=5, after_sacc=15, fit_anticipation=True, **opt) :
 
             '''
@@ -1279,11 +1272,11 @@ class ANEMO(object) :
                 if dir_target is None : dir_target = Test.test_value('dir_target', self.param_exp, value=None)
 
                 value_latency      = Test.test_None(value_latency, value=TargetOn-t_0+100)
-                value_steady_state = Test.test_None(value_steady_state, value=30.)
+                # value_steady_state = Test.test_None(value_steady_state, value=30.)
 
                 if fit_anticipation is True :
-                    value_anti  = Test.test_None(value_anti, value=0.)
-                    vary_anti, vary_start_anti = True, 'vary'
+                    # value_anti  = Test.test_None(value_anti, value=0.)
+                    vary_anti, vary_start_anti = 'vary', 'vary'
                 else :
                     value_anti = 0
                     vary_anti, vary_start_anti = False, False
@@ -1292,21 +1285,18 @@ class ANEMO(object) :
                 max_latency = []
                 for s in range(len(saccades)) :
                     if (saccades[s][0]-t_0) >= (TargetOn-t_0+100) : max_latency.append((saccades[s][0]-t_0))
-                if max_latency == [] :                              max_latency.append(len(trackertime))
+                if max_latency == [] :                              max_latency.append(TargetOn-t_0 + 150)
                 max_latency = max_latency[0]
 
                 if value_latency >= max_latency-50 : value_latency = max_latency-150
                 if value_latency > 250 :             value_latency = TargetOn-t_0+100
                 #----------------------------------------------
-                
-                # test latency:
-                max_latency = TargetOn-t_0 + 150
 
                 param_fit=[{'name':'steady_state',      'value':value_steady_state, 'min':3.,                   'max':40.,             'vary':True  },
                            {'name':'dir_target',        'value':dir_target,         'min':None,                 'max':None,            'vary':False },
                            {'name':'a_anti_tmp',        'value':value_anti,         'min':-40.,                 'max':40.,             'vary':vary_anti,},
                            {'name':'a_anti',            'expr':'a_anti_tmp if abs(a_anti_tmp) >= .5 else 0'}, # arbitrary threshold for valid acceleration
-                           {'name':'latency',           'value':value_latency,      'min':TargetOn-t_0+70,      'max':max_latency,     'vary':True  },
+                           {'name':'latency',           'value':value_latency,      'min':TargetOn-t_0+80,      'max':max_latency,     'vary':True  },
                            {'name':'start_anti_tmp',    'value':TargetOn-t_0-100,   'min':t_0-200,     'max':TargetOn-t_0,    'vary':vary_start_anti},
                            {'name':'start_anti',        'expr':'start_anti_tmp if a_anti != 0 else latency-1'},
                            ]
@@ -1327,10 +1317,9 @@ class ANEMO(object) :
                                   ])
 
             if equation == 'fct_velocity_line' :
-                param_fit.extend([{'name':'ramp_pursuit', 'value':40, 'min':10., 'max':80., 'vary':'vary'},
+                param_fit.extend([{'name':'ramp_pursuit', 'value':40., 'min':10., 'max':80., 'vary':True},
                                   {'name':'baseline',     'value':0,  'min':-1,  'max':1,   'vary':True}])
-
-
+               
             if equation == 'fct_position' :
 
                 data_x = Test.crash_None('data_x', data_x)
@@ -1425,8 +1414,8 @@ class ANEMO(object) :
 
             time_sup : int, optional (default 280)
                 time that will be deleted to perform the fit (for data that is less good at the end of the test)
-            step_fit : int, optional (default 2)
-                number of steps for the fit
+            step_fit : int between 1 and 2, optional (default 2)
+                do the fit in one (1) step or two (2) 
             do_whitening : bool, optional (default False)
                 if ``True`` return the whitened fit
 
@@ -1487,8 +1476,8 @@ class ANEMO(object) :
             trackertime = Test.test_None(trackertime, value=np.arange(len(data_trial)))
             #-----------------------------------------------------------------------------
 
-            if   step_fit == 1 : vary = True
-            elif step_fit == 2 : vary = False
+            if   step_fit == 1 : vary = True # if fit in one step, vary=True
+            elif step_fit == 2 : vary = False # if fit in two steps, vary starts with false
 
             if equation == 'fct_saccade' : time_sup = None ; data_x = data_trial
 
