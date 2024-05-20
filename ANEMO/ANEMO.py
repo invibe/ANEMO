@@ -801,7 +801,7 @@ class ANEMO(object) :
     class Equation(object) :
         """ Function used to perform the Fits """
 
-        def fct_velocity(x, dir_target, baseline, start_anti, a_anti, latency, tau, steady_state, do_whitening) :
+        def fct_velocity(x, t_0, t_end, dir_target, baseline, start_anti, a_anti, latency, tau, steady_state) :
 
             '''
             Function reproducing the velocity of the eye during the smooth pursuit of a moving target
@@ -809,22 +809,23 @@ class ANEMO(object) :
             Parameters
             ----------
             x : ndarray
-                time of the function
-
+                time in milliseconds
+            t_0 : int 
+                fixation offset
+            t_end : int 
+                trial offset
             dir_target : int
                 direction of the target -1 or 1
             start_anti : int
-                time when anticipation begins
+                onset of the anticipatory phase
             a_anti : float
-                velocity of anticipation in seconds
+                slope of the anticipatory phase (acceleration) in degrees/second^2
             latency : int
-                time when the movement begins
+                latency of the visually-guided pursuit / offset of the anticipatry phase
             tau : float
-                curve of the pursuit
+                pursuit acceleration in deg/second^2
             steady_state : float
-                steady_state velocity reached during the pursuit
-            do_whitening : bool
-                if ``True`` return the whitened velocity
+                steady_state velocity reached at later phase of the pursuit
 
             Returns
             -------
@@ -832,31 +833,100 @@ class ANEMO(object) :
                 velocity of the eye in deg/sec
             '''
 
-            if start_anti >= latency :
-                velocity = None
+            a_anti       = a_anti/1000 # to switch from deg/sec to deg/ms
+            steady_state = steady_state*dir_target
+            start_anti   = np.floor(start_anti)
+            latency      = np.floor(latency)
+            x            = list(x)
+            time         = np.arange(t_0, t_end+1, 1)
 
-            else :
-                a_anti = a_anti/1000 # to switch from sec to ms
-                time = x
-                velocity = []
-                y = ((latency-1)-start_anti)*a_anti + baseline
-                maxi = (dir_target*steady_state) - y
+            idx_baseline     = np.where(time < start_anti)[0]
+            idx_anticipation = np.where((time >= start_anti)&(time < latency))[0]
+            idx_pursuit      = np.where(time >= latency)[0]
+                
+            x_anticipation = np.arange(0,len(idx_anticipation),1)
+            x_pursuit      = np.arange(0,len(idx_pursuit),1)
 
-                for t in range(len(time)) :
+            velocity = np.zeros(len(time))
+            velocity[idx_baseline]     = baseline * np.ones(len(idx_baseline))
+            velocity[idx_anticipation] = baseline + a_anti*x_anticipation
 
-                    if time[t] < start_anti :
-                        velocity.append(baseline)
-                    else :
-                        if time[t] < latency :
-                            velocity.append(baseline+((time[t]-start_anti)*a_anti))
-                        else :
-                            velocity.append(maxi*(1-np.exp(-1/tau*(time[t]-latency)))+y)
+            max_anticipation      = velocity[idx_anticipation[-1]] if len(idx_anticipation)>0 else velocity[idx_baseline[-1]]
+            exponential_pursuit   = (steady_state-max_anticipation)*(1 - np.exp(-1/tau*x_pursuit))
+            velocity[idx_pursuit] = max_anticipation + exponential_pursuit - exponential_pursuit[0]
+            
+            # velocity.append(maxi*(1-np.exp(-1/tau*(time[t]-latency)))+y)
 
-                if do_whitening is True : velocity = whitening(velocity)
+            missing_data = list(set(time)-set(x))
 
-            return velocity
+            if len(missing_data):
+                return velocity[~np.isin(time,missing_data)]
+            else:
+                return velocity
 
-        def fct_velocity_sigmo(x, dir_target, baseline, start_anti, a_anti, latency, ramp_pursuit, steady_state, horizontal_shift, a_pur, do_whitening, allow_baseline:bool=False, allow_horizontalShift:bool=False, allow_acceleration:bool=False) :
+
+        def fct_velocity_line(x, t_0, t_end, dir_target, baseline, start_anti, a_anti, latency, ramp_pursuit, steady_state, fit_steadyState:bool) :
+            '''
+            Function reproducing the velocity of the eye during the smooth pursuit of a moving target
+
+            Parameters
+            ----------
+            x : ndarray
+                time in milliseconds
+            t_0 : int 
+                fixation offset
+            t_end : int 
+                trial offset
+            dir_target : int
+                direction of the target -1 or 1
+            start_anti : int
+                onset of the anticipatory phase
+            a_anti : float
+                slope of the anticipatory phase (acceleration) in degrees/second^2
+            latency : int
+                latency of the visually-guided pursuit / offset of the anticipatry phase
+            ramp_pursuit : float
+                pursuit acceleration in deg/second^2
+            steady_state : float
+                steady_state velocity reached at later phase of the pursuit
+
+            Returns
+            -------
+            velocity : list
+                model of the eye velocity in deg/sec
+            '''
+
+            a_anti       = a_anti/1000 # to switch from sec to ms
+            ramp_pursuit = dir_target*(ramp_pursuit)/1000
+            x            = list(x)
+            time         = np.arange(t_0, t_end+1, 1)
+
+
+            idx_baseline     = np.where(time < start_anti)[0]
+            idx_anticipation = np.where((time >= start_anti)&(time < latency))[0]
+            idx_pursuit      = np.where(time >= latency)[0]
+
+            x_anticipation = np.arange(0,len(idx_anticipation),1)
+            x_pursuit      = np.arange(0,len(idx_pursuit),1)
+
+            velocity = np.zeros(len(time))
+            velocity[idx_baseline]     = baseline*np.ones(len(idx_baseline))
+            velocity[idx_anticipation] = baseline + a_anti*x_anticipation
+
+            max_anticipation      = velocity[idx_anticipation[-1]] if len(idx_anticipation)>0 else velocity[idx_baseline[-1]]
+            pursuit = max_anticipation + ramp_pursuit*x_pursuit
+            if fit_steadyState:
+                pursuit[pursuit>=steady_state] = steady_state * np.ones(sum(pursuit>=steady_state))
+            velocity[idx_pursuit] = pursuit
+
+            missing_data = list(set(time)-set(x))
+
+            if len(missing_data):
+                return velocity[~np.isin(time,missing_data)]
+            else:
+                return velocity
+            
+        def fct_velocity_sigmo(x, t_0, t_end, dir_target, baseline, start_anti, a_anti, latency, ramp_pursuit, steady_state, horizontal_shift, allow_baseline:bool=False, allow_horizontalShift:bool=False) :
 
             '''
             Function reproducing the velocity of the eye during the smooth pursuit of a moving target
@@ -864,22 +934,24 @@ class ANEMO(object) :
             Parameters
             ----------
             x : ndarray
-                time of the function
+                time in milliseconds
+            t_0 : int 
+                fixation offset
+            t_end : int 
+                trial offset
 
             dir_target : int
                 direction of the target -1 or 1
             start_anti : int
-                time when anticipation begins
+                onset of the anticipatory phase
             a_anti : float
-                velocity of anticipation in seconds
+                slope of the anticipatory phase (acceleration) in degrees/second^2
             latency : int
-                time when the movement begins
+                latency of the visually-guided pursuit / offset of the anticipatry phase
             ramp_pursuit : float
-                curve of the pursuit
+                pursuit acceleration in deg/second^2
             steady_state : float
-                steady_state velocity reached during the pursuit
-            do_whitening : bool
-                if ``True`` return the whitened velocity
+                steady_state velocity reached at later phase of the pursuit
 
             Returns
             -------
@@ -890,104 +962,105 @@ class ANEMO(object) :
             if not allow_baseline:          baseline = 0
             if not allow_horizontalShift:   horizontal_shift = 0
 
-            if start_anti >= latency :
-                velocity = None
+            a_anti       = a_anti/1000 # to switch from deg/sec to deg/ms
+            ramp_pursuit = dir_target*ramp_pursuit/1000
+            steady_state = steady_state*dir_target
+            start_anti   = np.floor(start_anti)
+            latency      = np.floor(latency)
+            x            = list(x)
+            time         = np.arange(t_0, t_end+1, 1)
 
-            else :
-                a_anti = a_anti/1000 # to switch from sec to ms
-                a_pur = a_pur/1000 # to switch from sec to ms
-                ramp_pursuit = -ramp_pursuit/1000
-                time = x
-                velocity = []
+            idx_baseline     = np.where(time < start_anti)[0]
+            idx_anticipation = np.where((time >= start_anti)&(time < latency))[0]
+            idx_pursuit      = np.where(time >= latency)[0]
+                
+            x_anticipation = np.arange(0,len(idx_anticipation),1)
+            x_pursuit      = np.arange(0,len(idx_pursuit),1)
 
-                e = np.exp(1)
-                time_r = np.arange(-e, np.max(time), 1) # (-e, len(time), 1)
+            velocity = np.zeros(len(time))
+            velocity[idx_baseline]     = baseline * np.ones(len(idx_baseline))
+            velocity[idx_anticipation] = baseline + a_anti*x_anticipation
 
-                y = ((latency-1)-start_anti)*a_anti
-                maxi = (dir_target*steady_state) - y
-                start_rampe = maxi / (1+np.exp((ramp_pursuit*time_r[0] + e + horizontal_shift)))
+            max_anticipation      = velocity[idx_anticipation[-1]] if len(idx_anticipation)>0 else velocity[idx_baseline[-1]]
+            sigmoid_pursuit       = (steady_state-max_anticipation)/(1 + np.exp(-ramp_pursuit*(x_pursuit-horizontal_shift)))
+            velocity[idx_pursuit] = max_anticipation + sigmoid_pursuit - sigmoid_pursuit[0]
 
-                first = True
-                for t in range(len(time)):
-                    if time[t] < start_anti :
-                        velocity.append(baseline)
-                    else :
-                        if time[t] < latency :
-                            velocity.append(baseline + (time[t]-start_anti)*a_anti)
-                        else :
-                            v = baseline + (y-start_rampe) + (maxi / (1 + np.exp(ramp_pursuit*time_r[int(time[t]-latency)] + e + horizontal_shift)))
-                            if allow_acceleration:
-                                if (v >= maxi) & (time[t]>latency+10) & first: start_maxi = time[t]; first = False
-                                if not first: v = maxi + (time[t]-start_maxi)*a_pur
-                            velocity.append(v)
+            missing_data = list(set(time)-set(x))
 
-                if do_whitening is True : velocity = whitening(velocity)
-
-            return velocity
-
-        def fct_velocity_line(x, dir_target, baseline, start_anti, a_anti, latency, ramp_pursuit, steady_state, do_whitening, fit_steadyState:bool=True) :
-
+            if len(missing_data):
+                return velocity[~np.isin(time,missing_data)]
+            else:
+                return velocity
+            
+        def fct_velocity_antiSigmo(x, t_0, t_end, dir_target, baseline, start_anti, a_anti, anti_offset, ramp_pursuit, horizontal_shift, steady_state, allow_baseline:bool=False) :
 
             '''
-            Function reproducing the velocity of the eye during the smooth pursuit of a moving target
+            Model of eye-velocity over time, in a smooth pursuit task. 
+            Anticipatory phase is modeled as an exponential, and initial visually guided pursuit is modeled as a sigmoid
 
             Parameters
             ----------
             x : ndarray
-                time of the function
-
+                time in milliseconds
             dir_target : int
-                direction of the target -1 or 1
+                direction of the target -1 (corresponding usually to left/down) or 1 (corresponding usually to right/up)
             start_anti : int
-                time when anticipation begins
+                anticipation onset in milliseconds
             a_anti : float
-                velocity of anticipation in seconds
-            latency : int
-                time when the movement begins
+                defines the slope of the sigmoid corresponding to the anticipatory phase (deg/s^2)
+            anti_offset : int
+                offset of the anticipatory phase in milliseconds
             ramp_pursuit : float
-                pursuit acceleration in deg/seconds^2
+                defines the slope of the sigmoid corresponding to the initial phase of the visually-guided pursuit
+            horizontal_shift : int
+                shift in the sigmoid function corresponding to the initial phase of the visually-guided pursuit
             steady_state : float
-                steady_state velocity reached during the pursuit
+                eye velocity reached in the late phase of visually-guided pursuit (in degrees/sec)
             do_whitening : bool
                 if ``True`` return the whitened velocity
+            allow_baseline : bool
+                if ``True``, fits a flat regression corresponding to the baseline velocity
+                this parameter is intended to be used when there were problems with the eye-tracker calibration, 
+                such that eye velocity is not centered in zero during the fixation phase
 
             Returns
             -------
             velocity : list
-                velocity of the eye in deg/sec
+                model of the eye velocity in deg/sec
             '''
 
-            if start_anti >= latency :
-                velocity = None
-            else :
-                a_anti = a_anti/1000 # to switch from sec to ms
-                ramp_pursuit = dir_target*(ramp_pursuit)/1000
-                time = x
-                vitesse = []
+            if not allow_baseline:      baseline = 0
 
-                y = ((latency-1)-start_anti)*a_anti + baseline
-                maxi = (dir_target*steady_state) - y
-                end_ramp_pursuit = (maxi/ramp_pursuit) + latency
+            anti_sign    = np.sign(a_anti)
+            a_anti       = abs(a_anti)/1000 # to switch from deg/sec to deg/ms
+            ramp_pursuit = dir_target*ramp_pursuit/1000
+            steady_state = steady_state*dir_target
+            start_anti   = np.floor(start_anti)
+            anti_offset  = np.floor(anti_offset)
+            x            = list(x)
+            time         = np.arange(t_0, t_end+1, 1)
 
-                for t in range(len(time)):
-                    if time[t] < start_anti :
-                        vitesse.append(baseline)
-                    else :
-                        if time[t] < latency :
-                            vitesse.append((time[t]-start_anti)*a_anti + baseline)
+            idx_baseline     = np.where(time < start_anti)[0]
+            idx_anticipation = np.where((time >= start_anti)&(time < anti_offset))[0]
+            idx_pursuit      = np.where(time >= anti_offset)[0]
+                
+            x_anticipation = np.arange(0,len(idx_anticipation),1)
+            x_pursuit      = np.arange(0,len(idx_pursuit),1)
 
-                        else :
-                            if latency >= end_ramp_pursuit :
-                                vitesse.append(maxi)
-                            else :
-                                if fit_steadyState:
-                                    vitesse.append(maxi+y)
-                                else:
-                                    vitesse.append((time[t]-latency)*ramp_pursuit+y)
+            velocity = np.zeros(len(time))
+            velocity[idx_baseline]     = baseline * np.ones(len(idx_baseline))
+            velocity[idx_anticipation] = baseline + anti_sign*(np.exp(a_anti*x_anticipation)-1)
 
-                if do_whitening is True : velocity = whitening(velocity)
+            max_anticipation      = velocity[idx_anticipation[-1]] if len(idx_anticipation)>0 else velocity[idx_baseline[-1]]
+            sigmoid_pursuit       = (steady_state-max_anticipation)/(1 + np.exp(-ramp_pursuit*(x_pursuit-horizontal_shift)))
+            velocity[idx_pursuit] = max_anticipation + sigmoid_pursuit - sigmoid_pursuit[0]
 
-            return vitesse
+            missing_data = list(set(time)-set(x))
+
+            if len(missing_data):
+                return velocity[~np.isin(time,missing_data)]
+            else:
+                return velocity
         
         def fct_position(x, data_x, saccades, nb_sacc, dir_target, start_anti, a_anti, latency, tau, steady_state, t_0, px_per_deg, before_sacc, after_sacc, do_whitening) :
 
@@ -1052,7 +1125,7 @@ class ANEMO(object) :
                 a_anti = a_anti/ms
                 steady_state   = steady_state/ms
 
-                speed = ANEMO.Equation.fct_velocity(x=x, dir_target=dir_target, start_anti=start_anti, a_anti=a_anti, latency=latency, tau=tau, steady_state=steady_state, do_whitening=False)
+                speed = ANEMO.Equation.fct_velocity(x=x, t_0=t_0, t_end=x[-1], dir_target=dir_target, start_anti=start_anti, a_anti=a_anti, latency=latency, tau=tau, steady_state=steady_state)
                 pos = np.cumsum(speed)
 
 
@@ -1196,7 +1269,7 @@ class ANEMO(object) :
 
         def generation_param_fit(self, equation='fct_velocity', data_x=None, dir_target=None,
                                  trackertime=None, TargetOn=None, StimulusOf=None, saccades=None,
-                                 value_latency:int=None, value_steady_state:float=15., value_anti:float=0.,
+                                 value_latency:int=None, value_steady_state:float=15.0, value_anti:float=0.0,
                                  before_sacc=5, after_sacc=15, fit_anticipation=True, **opt) :
 
             '''
@@ -1260,76 +1333,108 @@ class ANEMO(object) :
                 dictionary containing the independent variables of the fit
             '''
 
-            if equation in ['fct_velocity', 'fct_velocity_sigmo', 'fct_velocity_line', 'fct_position'] :
+            t_0 = list(trackertime)[0]
+            t_end = list(trackertime)[-1]
+            inde_vars={'x':trackertime}
+            
+            if fit_anticipation is True :
+                vary_anti, vary_start_anti = 'vary', True
+            else :
+                value_anti = 0
+                vary_anti, vary_start_anti = False, False
 
-                TargetOn    = Test.crash_None('TargetOn', TargetOn)
-                StimulusOf  = Test.crash_None('StimulusOf', StimulusOf)
-                saccades    = Test.crash_None('saccades', saccades)
+            TargetOn    = Test.crash_None('TargetOn', TargetOn)
+            StimulusOf  = Test.crash_None('StimulusOf', StimulusOf)
+            saccades    = Test.crash_None('saccades', saccades)
 
-                trackertime = Test.crash_None('trackertime', trackertime)
-                t_0 = trackertime[0]
+            if dir_target is None : dir_target = Test.test_value('dir_target', self.param_exp, value=None)
 
-                if dir_target is None : dir_target = Test.test_value('dir_target', self.param_exp, value=None)
+            value_latency      = Test.test_None(value_latency, value=TargetOn-t_0+100)
+            value_steady_state = Test.test_None(value_steady_state, value=30.)
 
-                value_latency      = Test.test_None(value_latency, value=TargetOn-t_0+100)
-                # value_steady_state = Test.test_None(value_steady_state, value=30.)
+            if equation == 'fct_velocity':
+                param_fit=[{'name':'steady_state',      'value':value_steady_state, 'min':3.,                   'max':40.,             'vary':True  },
+                            {'name':'dir_target',        'value':dir_target,         'min':None,                 'max':None,            'vary':False },
+                            {'name':'a_anti_tmp',        'value':value_anti,         'min':-40.,                 'max':40.,             'vary':vary_anti,},
+                            {'name':'a_anti',            'expr':'a_anti_tmp if abs(a_anti_tmp) >= .5 else 0'}, # arbitrary threshold for valid acceleration
+                            {'name':'latency',           'value':TargetOn+100,      'min':TargetOn+80,      'max':TargetOn+250,     'vary':True  },
+                            {'name':'start_anti_tmp',    'value':TargetOn-100,   'min':t_0-200,     'max':TargetOn,    'vary':vary_start_anti},
+                            {'name':'start_anti',        'expr':'start_anti_tmp if a_anti != 0 else latency-1'},
+                            {'name':'tau',              'value':15., 'min':13., 'max':80., 'vary':'vary'},
+                            {'name':'baseline',         'value':0,  'min':-.5,  'max':.5,   'vary':True},
+                            {'name':'t_0',              'value':t_0, 'min':None,                 'max':None,            'vary':False },
+                            {'name':'t_end',            'value':t_end, 'min':None,                 'max':None,            'vary':False },
+                            ]
 
+            if equation == 'fct_velocity_sigmo' :
+                param_fit=[{'name':'steady_state',      'value':value_steady_state, 'min':3.,                   'max':40.,             'vary':True  },
+                            {'name':'dir_target',        'value':dir_target,         'min':None,                 'max':None,            'vary':False },
+                            {'name':'a_anti_tmp',        'value':value_anti,         'min':-40.,                 'max':40.,             'vary':vary_anti,},
+                            {'name':'a_anti',            'expr':'a_anti_tmp if abs(a_anti_tmp) >= .5 else 0'}, # arbitrary threshold for valid acceleration
+                            {'name':'latency',           'value':TargetOn+100,      'min':TargetOn+80,      'max':TargetOn+220,     'vary':True  },
+                            {'name':'start_anti_tmp',    'value':TargetOn-100,   'min':t_0-200,     'max':TargetOn,    'vary':vary_start_anti},
+                            {'name':'start_anti',        'expr':'start_anti_tmp if a_anti != 0 else latency-1'},
+                            {'name':'ramp_pursuit',       'value':100, 'min':10., 'max':500., 'vary':'vary'},
+                            {'name':'baseline',           'value':0,  'min':-0.5,  'max':0.5,   'vary':True},
+                            {'name':'horizontal_shift',   'value':0,  'min':0,  'max':110,   'vary':True},
+                            {'name':'t_0',          'value':t_0, 'min':None,                 'max':None,            'vary':False },
+                            {'name':'t_end',          'value':t_end, 'min':None,                 'max':None,            'vary':False },
+                            ]
+
+            if equation == 'fct_velocity_line' :
+                param_fit=[{'name':'steady_state',      'value':value_steady_state, 'min':3.,                   'max':40.,             'vary':True  },
+                            {'name':'dir_target',        'value':dir_target,         'min':None,                 'max':None,            'vary':False },
+                            {'name':'a_anti_tmp',        'value':value_anti,         'min':-40.,                 'max':40.,             'vary':vary_anti,},
+                            {'name':'a_anti',            'expr':'a_anti_tmp if abs(a_anti_tmp) >= .5 else 0'}, # arbitrary threshold for valid acceleration
+                            {'name':'latency',           'value':TargetOn+100,      'min':TargetOn+80,      'max':TargetOn+250,     'vary':True  },
+                            {'name':'start_anti_tmp',    'value':TargetOn-100,   'min':t_0-200,     'max':TargetOn,    'vary':vary_start_anti},
+                            {'name':'start_anti',        'expr':'start_anti_tmp if a_anti != 0 else latency-1'},
+                            {'name':'ramp_pursuit', 'value':40., 'min':-10., 'max':80., 'vary':True},
+                            {'name':'baseline',     'value':0,  'min':-0.5,  'max':0.5,   'vary':True},
+                            {'name':'t_0',          'value':t_0, 'min':None,                 'max':None,            'vary':False },
+                            {'name':'t_end',          'value':t_end, 'min':None,                 'max':None,            'vary':False },
+                            ]
+                
+            if equation == 'fct_velocity_antiSigmo' :
                 if fit_anticipation is True :
-                    # value_anti  = Test.test_None(value_anti, value=0.)
-                    vary_anti, vary_start_anti = 'vary', 'vary'
+                    vary_anti, vary_start_anti = True, True
                 else :
                     value_anti = 0
                     vary_anti, vary_start_anti = False, False
 
-                #----------------------------------------------
-                max_latency = []
-                for s in range(len(saccades)) :
-                    if (saccades[s][0]-t_0) >= (TargetOn-t_0+100) : max_latency.append((saccades[s][0]-t_0))
-                if max_latency == [] :                              max_latency.append(TargetOn-t_0 + 150)
-                max_latency = max_latency[0]
-
-                if value_latency >= max_latency-50 : value_latency = max_latency-150
-                if value_latency > 250 :             value_latency = TargetOn-t_0+100
-                #----------------------------------------------
-
                 param_fit=[{'name':'steady_state',      'value':value_steady_state, 'min':3.,                   'max':40.,             'vary':True  },
-                           {'name':'dir_target',        'value':dir_target,         'min':None,                 'max':None,            'vary':False },
-                           {'name':'a_anti_tmp',        'value':value_anti,         'min':-40.,                 'max':40.,             'vary':vary_anti,},
-                           {'name':'a_anti',            'expr':'a_anti_tmp if abs(a_anti_tmp) >= .5 else 0'}, # arbitrary threshold for valid acceleration
-                           {'name':'latency',           'value':value_latency,      'min':TargetOn-t_0+80,      'max':max_latency,     'vary':True  },
-                           {'name':'start_anti_tmp',    'value':TargetOn-t_0-100,   'min':t_0-200,     'max':TargetOn-t_0,    'vary':vary_start_anti},
-                           {'name':'start_anti',        'expr':'start_anti_tmp if a_anti != 0 else latency-1'},
-                           ]
-
-                inde_vars={'x':np.arange(len(trackertime))}
-
-            if equation in ['fct_velocity', 'fct_position'] :
-                param_fit.extend([{'name':'tau',  'value':15., 'min':13., 'max':80., 'vary':'vary'}])
-
-            if equation == 'fct_velocity':
-                param_fit.extend([{'name':'baseline',     'value':0,  'min':-.5,  'max':.5,   'vary':True}])
-
-            if equation == 'fct_velocity_sigmo' :
-                param_fit.extend([{'name':'ramp_pursuit',       'value':100, 'min':10., 'max':500., 'vary':'vary'},
-                                  {'name':'baseline',           'value':0,  'min':-1,  'max':1,   'vary':True},
-                                  {'name':'horizontal_shift',   'value':0,  'min':-5,  'max':25,   'vary':True},
-                                  {'name':'a_pur',              'value':0,  'min':-40., 'max':40., 'vary':True},
-                                  ])
-
-            if equation == 'fct_velocity_line' :
-                param_fit.extend([{'name':'ramp_pursuit', 'value':40., 'min':10., 'max':80., 'vary':True},
-                                  {'name':'baseline',     'value':0,  'min':-1,  'max':1,   'vary':True}])
-               
+                            {'name':'dir_target',        'value':dir_target,         'min':None,                 'max':None,            'vary':False },
+                            {'name':'a_anti_tmp',        'value':value_anti,         'min':-40.,                 'max':40.,             'vary':vary_anti,},
+                            {'name':'a_anti',            'expr':'a_anti_tmp if abs(a_anti_tmp) >= 1 else 0'}, # arbitrary threshold for valid acceleration
+                            {'name':'anti_offset',       'value':TargetOn+90,      'min':TargetOn,      'max':TargetOn+120,     'vary':True  },
+                            {'name':'start_anti_tmp',    'value':TargetOn-150,   'min':t_0,     'max':TargetOn,    'vary':vary_start_anti},
+                            {'name':'start_anti',        'expr':'start_anti_tmp if a_anti != 0 else anti_offset-1'},
+                            {'name':'ramp_pursuit',       'value':80, 'min':5., 'max':500., 'vary':'vary'},
+                            {'name':'baseline',           'value':0,  'min':-0.5,  'max':0.5,   'vary':True},
+                            {'name':'horizontal_shift',   'value':100,  'min':10,  'max':110,   'vary':True},
+                            {'name':'t_0',          'value':t_0, 'min':None,                 'max':None,            'vary':False },
+                            {'name':'t_end',          'value':t_end, 'min':None,                 'max':None,            'vary':False },
+                            ]
+                
+                
             if equation == 'fct_position' :
 
                 data_x = Test.crash_None('data_x', data_x)
                 px_per_deg = Test.test_value('px_per_deg', self.param_exp, print_crash="px_per_deg is not defined in param_exp")
 
-                param_fit.extend(({'name':'px_per_deg',  'value':px_per_deg,    'min':None, 'max':None, 'vary':False},
-                                  {'name':'t_0',         'value':t_0,           'min':None, 'max':None, 'vary':False},
-                                  {'name':'before_sacc', 'value':before_sacc,   'min':None, 'max':None, 'vary':False},
-                                  {'name':'after_sacc',  'value':after_sacc,    'min':None, 'max':None, 'vary':False},
-                                  {'name':'nb_sacc',     'value':len(saccades), 'min':None, 'max':None, 'vary':False}))
+                param_fit=[{'name':'steady_state',      'value':value_steady_state, 'min':3.,                   'max':40.,             'vary':True  },
+                            {'name':'dir_target',        'value':dir_target,         'min':None,                 'max':None,            'vary':False },
+                            {'name':'a_anti_tmp',        'value':value_anti,         'min':-40.,                 'max':40.,             'vary':vary_anti,},
+                            {'name':'a_anti',            'expr':'a_anti_tmp if abs(a_anti_tmp) >= .5 else 0'}, # arbitrary threshold for valid acceleration
+                            {'name':'latency',           'value':TargetOn+100,      'min':TargetOn+80,      'max':TargetOn+250,     'vary':True  },
+                            {'name':'start_anti_tmp',    'value':TargetOn-100,   'min':t_0-200,     'max':TargetOn,    'vary':vary_start_anti},
+                            {'name':'start_anti',        'expr':'start_anti_tmp if a_anti != 0 else latency-1'},
+                            {'name':'tau',  'value':15., 'min':13., 'max':80., 'vary':'vary'},
+                            {'name':'px_per_deg',  'value':px_per_deg,    'min':None, 'max':None, 'vary':False},
+                            {'name':'t_0',         'value':t_0,           'min':None, 'max':None, 'vary':False},
+                            {'name':'before_sacc', 'value':before_sacc,   'min':None, 'max':None, 'vary':False},
+                            {'name':'after_sacc',  'value':after_sacc,    'min':None, 'max':None, 'vary':False},
+                            {'name':'nb_sacc',     'value':len(saccades), 'min':None, 'max':None, 'vary':False}]
 
                 sacc = np.zeros(len(trackertime))
                 i=0
@@ -1360,8 +1465,9 @@ class ANEMO(object) :
                 inde_vars={'x':np.arange(len(data_x))}
 
 
-            if equation not in ['fct_velocity', 'fct_velocity_sigmo', 'fct_velocity_line', 'fct_position', 'fct_saccade'] :
+            if equation not in ['fct_velocity', 'fct_velocity_sigmo', 'fct_velocity_line', 'fct_position', 'fct_saccade', 'fct_velocity_antiSigmo'] :
                 param_fit, inde_vars = None, None
+                print('Unknown equation! If you created your own equation, you need to create the param_fit and inde_vars by hand...')
 
             return param_fit, inde_vars
 
@@ -1385,6 +1491,7 @@ class ANEMO(object) :
                     - if ``equation`` is ``'fct_velocity'`` : velocity data in deg/sec
                     - if ``equation`` is ``'fct_velocity_sigmo'`` : velocity data in deg/sec
                     - if ``equation`` is ``'fct_velocity_line'`` : velocity data in deg/sec
+                    - if ``equation`` is ``'fct_velocity_antiSigmo'`` : velocity data in deg/sec
                     - if ``equation`` is ``'fct_position'`` : position data in deg
                     - if ``equation`` is ``'fct_saccades'`` : position data in deg
                     - if ``equation`` is ``function`` : velocity or position
@@ -1394,6 +1501,7 @@ class ANEMO(object) :
                     - ``'fct_velocity'`` : does a data fit with function ``'fct_velocity'``
                     - ``'fct_velocity_sigmo'`` : does a data fit with function ``'fct_velocity_sigmo'``
                     - ``'fct_velocity_line'`` : does a data fit with function ``'fct_velocity_line'``
+                    - ``'fct_velocity_antiSigmo'`` : fit an exponential to the anticipatory phase, plus a sigmoid for the visually-guided pursuit
                     - ``'fct_position'`` : does a data fit with function ``'fct_position'``
                     - ``'fct_saccades'`` : does a data fit with function ``'fct_saccades'``
                     - ``function`` : does a data fit with function
@@ -1507,11 +1615,12 @@ class ANEMO(object) :
             if equation == 'fct_velocity' :          equation = ANEMO.Equation.fct_velocity
             elif equation == 'fct_velocity_sigmo' :  equation = ANEMO.Equation.fct_velocity_sigmo
             elif equation == 'fct_velocity_line' :   equation = ANEMO.Equation.fct_velocity_line
+            elif equation == 'fct_velocity_antiSigmo' :   equation = ANEMO.Equation.fct_velocity_antiSigmo
             elif equation == 'fct_position' :        equation = ANEMO.Equation.fct_position
             elif equation == 'fct_saccade' :         equation = ANEMO.Equation.fct_saccade
 
             params = Parameters()
-            model = Model(equation, independent_vars=inde_vars.keys())
+            model = Model(equation, independent_vars=list(inde_vars.keys()))
 
             for num_par in range(len(param_fit)) :
 
@@ -1530,6 +1639,7 @@ class ANEMO(object) :
             params.add('allow_baseline', value=allow_baseline, vary=False)
             params.add('allow_horizontalShift', value=allow_horizontalShift, vary=False)
             params.add('allow_acceleration', value=allow_acceleration, vary=False)
+            params.add('fit_steadyState', value=fit_steadyState, vary=False)
 
             if step_fit == 1 :
 
