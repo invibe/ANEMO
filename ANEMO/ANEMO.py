@@ -982,7 +982,7 @@ class ANEMO(object) :
             velocity[idx_anticipation] = baseline + a_anti*x_anticipation
 
             max_anticipation      = velocity[idx_anticipation[-1]] if len(idx_anticipation)>0 else velocity[idx_baseline[-1]]
-            sigmoid_pursuit       = (steady_state-max_anticipation)/(1 + np.exp(-ramp_pursuit*(x_pursuit-horizontal_shift)))
+            sigmoid_pursuit       = dir_target*(steady_state-max_anticipation)/(1 + np.exp(-ramp_pursuit*(x_pursuit-horizontal_shift)))
             velocity[idx_pursuit] = max_anticipation + sigmoid_pursuit - sigmoid_pursuit[0]
 
             missing_data = list(set(time)-set(x))
@@ -1052,7 +1052,7 @@ class ANEMO(object) :
             velocity[idx_anticipation] = baseline + anti_sign*(np.exp(a_anti*x_anticipation)-1)
 
             max_anticipation      = velocity[idx_anticipation[-1]] if len(idx_anticipation)>0 else velocity[idx_baseline[-1]]
-            sigmoid_pursuit       = (steady_state-max_anticipation)/(1 + np.exp(-ramp_pursuit*(x_pursuit-horizontal_shift)))
+            sigmoid_pursuit       = dir_target*(steady_state-max_anticipation)/(1 + np.exp(-ramp_pursuit*(x_pursuit-horizontal_shift)))
             velocity[idx_pursuit] = max_anticipation + sigmoid_pursuit - sigmoid_pursuit[0]
 
             missing_data = list(set(time)-set(x))
